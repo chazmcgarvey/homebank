@@ -1,0 +1,126 @@
+/*
+** homebank documentation css
+
+http://webdesign.about.com/od/colorpalettes/ig/Color-Palettes/Apple-Color-Palette.-EQ5.htm
+    #979797
+    #666666
+    #eeeeee
+    #000000
+    #0088cc
+
+*/
+
+/* suggested line-height:140% */
+body { font: 13px/18px "Lucida Grande","Lucida Sans Unicode",Helvetica,Arial,Verdana,sans-serif; color:#333333; background-color:#F5F6F7;}
+
+a { color: #0088cc; text-decoration:none;}
+a:hover { text-decoration:underline; }
+
+h1,h2,h3,h4,h5,h6 { /*font-family: Times, 'Times New Roman', serif; font-style:italic;*/  color:#000000; font-weight:normal; }
+
+h1,h2,h3:first-of-type { margin-top:0; }
+
+/*h1 { color: #f57900; margin-top:0; }
+h2 { color: #3465a4; }
+h3 { color: #484848; }
+h4 { color: #484848; }
+h5 { color: #484848; }*/
+
+/*
+h2 { color: #fe9500; }
+h3 { color: #4686c0; }
+h4 { color: #3c3c3c; }
+h4 img { vertical-align: baseline; padding: 4px; }
+*/
+ul {/*list-style-type:square;*/overflow:hidden;}
+
+p { margin-left:1.5em; }
+
+ol li { margin-top:.5em; }
+
+.toc li { /*list-style:none;*/ list-style-image:url('images/arrow.png');}
+
+.csvexample { font-family:monospace; border: 1px solid #dddddd; background: #efefef; white-space: pre; margin-left: 16px; width: 50%; padding: 8px;}
+
+.argument {color:#888888; font-size:110%;}
+.rounded {
+    border-radius: 4px 4px 4px 4px;
+}
+
+.mainpage {margin-top:100px;}
+.mainpage p {margin-left:0;padding:0; text-align:center;}
+
+.dochead{ border-bottom: 1px solid #E1E1E1; padding-bottom: 8px;color:#888888;}
+
+.title {border-top: 1px solid #FFFFFF;padding:16px; }
+
+p.top {margin:0;padding:0;font-size:x-small;}
+
+.content {
+background-color: #ffffff;
+padding:16px;
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+margin:0 1em 1.5em 0;
+}
+
+/* navigation link */
+
+.navig a { color: #484848;padding:0 10px;}
+.navig a:hover { background:#DDDDDD;text-decoration:none;border-radius:5px;}
+.navig p { margin:1em;}
+
+div.head {
+	border-top: 1px solid #babdb6;
+	background-image:url(images/top-gradient.png);
+	background-repeat:repeat-x;
+	background-position:top;
+	height:30px;
+	margin-top:4px;	
+}
+
+.left { float: left; }
+.right {	float: right;}
+.clear  { clear: both; }
+
+.gtkshot {
+	padding: 2px;
+	margin: 1em;
+	text-align: center;
+	border: 1px dotted #979797; /*#005C9C;*/ 
+/*	background-image:url(images/top-gradient.png);
+	background-repeat:repeat-x;
+	background-position:top; */
+}
+
+.gtkshot:first-of-type {margin-top:0;}
+
+div.gtkgroup { margin-left: 16px; padding: 0px; background:#ff0000;};
+span.gtkgrouptitle { font-weight: bold; color: #000000; }
+
+div.concept p { margin-left: 16px; }
+div.concept h4 { margin-bottom: 0px; }
+
+div.note { border: solid 1px #eeeeee; background: #efefef; margin: 16px; padding: 8px;}
+
+/* table */
+table {line-height:120%;}
+td, th {vertical-align: top;}
+
+table.lexicon {width:100%;table-layout: fixed;}
+table.lexicon td, th {width: 20%;text-align: left;}
+
+table.t2col td {width:50%;}
+
+table.widgetinfo {margin-left:1.5em;}
+table.widgetinfo th, table.widgetinfo td {border: 1px solid #E1E1E1;text-align: left;vertical-align:top;padding:2px 4px;}
+table.widgetinfo th {	min-width: 80px;	width: 20%;	background-color: #DEDEDE;font-weight:normal;}
+table.widgetinfo td {background-color: #ffffff; background-color: #EFEFEF;}
+
+span.i {
+	font-style: italic;
+}
+
+span.u {
+	text-decoration: underline;
+}
+;

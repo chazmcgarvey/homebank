@@ -1,0 +1,4 @@
+version=3
+opts=uversionmangle=s/(\d)(beta\d*)$/$1~$2/ \
+http://homebank.free.fr/downloads.php \
+(?:|.*/)homebank(?:[_\-]v?|)(\d[^\s/]*)\.(?:tar\.xz|txz|tar\.bz2|tbz2|tar\.gz|tgz)

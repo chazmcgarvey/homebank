@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=utf-8">
+
+  <title>CSV file format</title>
+  <link rel="stylesheet" href="help.css" type="text/css">
+</head>
+
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+
+  <div class="title">
+    <h1>CSV file format</h1>
+
+    <p>With HomeBank you can import/export some of the internal data's in
+    the most common file format that is CSV.</p>
+
+    <p>Notice: meanwhile csv should uses comma as separator, HomeBank uses
+    semi-colon as separator (this is most common than comma)</p>
+
+    <p>The format used for the different files is specific to HomeBank, so
+    don't expect to import files your bank should offers you directly, you
+    will need to arrange it a little in a spreadsheet like Gnumeric
+    before.</p>
+
+    <p>Below is a description with example of the CSV format that HomeBank
+    uses.</p><!-- separator -->
+
+    <ul class="toc">
+      <li><a href="#txn">Transaction</a></li>
+
+      <li><a href="#bud">Budget</a></li>
+
+      <li><a href="#cat">Category</a></li>
+
+      <li><a href="#pay">Payee</a></li>
+    </ul>
+  </div>
+
+  <div class="rounded content">
+    <h2><a name="txn" id="txn"></a>Transaction</h2>
+
+
+
+    <table class="widgetinfo">
+
+
+      <tr>
+        <th>date</th>
+
+        <td>format should be DD-MM-YY</td>
+      </tr>
+
+      <tr>
+        <th>paymode</th>
+
+        <td>from 0=none to 10=FI fee</td>
+      </tr>
+
+      <tr>
+        <th>info</th>
+
+        <td>a string</td>
+      </tr>
+
+      <tr>
+        <th>payee</th>
+
+        <td>a payee name</td>
+      </tr>
+
+      <tr>
+        <th>memo</th>
+
+        <td>a string</td>
+      </tr>
+
+      <tr>
+        <th>amount</th>
+
+        <td>a number with a '.' or ',' as decimal separator, ex: -24.12 or
+        36,75</td>
+      </tr>
+
+      <tr>
+        <th>category</th>
+
+        <td>a full category name (category, or category:subcategory)</td>
+      </tr>
+
+      <tr>
+        <th>tags</th>
+
+        <td>tags separated by space<br>
+		tag is mandatory since v4.5</td>
+      </tr>
+
+    </table>
+
+    <p>Example:</p>
+    <pre class="csvexample">
+15-02-04;0;;;Some cash;-40,00;Bill:Withdrawal of cash;tag1
+15-02-04;1;;;Internet DSL;-45,00;Inline service/Internet;tag2
+... 
+</pre>
+    <p class="top"><a href="#top">[top]</a></p>
+
+  </div>
+  
+  <!-- separator -->
+
+
+
+  <div class="rounded content">
+    <h2><a name="bud" id="bud"></a>Budget</h2>
+
+    <table class="widgetinfo">
+
+       <tr>
+        <th>type</th>
+
+        <td>* = monthly<br>
+        <em>blank</em> = month value</td>
+      </tr>
+ 
+      <tr>
+        <th>category</th>
+
+        <td>the category name</td>
+      </tr>
+ 
+      <tr>
+        <th>value(s)</th>
+
+        <td>1 amount : if the type is monthly<br>
+        12 amounts, separated by ';' : if type month value</td>
+      </tr>
+      
+    </table>
+
+    <p>Example:</p>
+<pre class="csvexample">
+*;Fuel;45.00
+ ;Domestic animals;1.00;2.00;3.00;4.00;...
+*;Food;17.00
+... 
+</pre>
+    <p class="top"><a href="#top">[top]</a></p>
+
+  </div><!-- separator -->
+
+  <div class="rounded content">
+    <h2><a name="cat" id="cat"></a>Category</h2>
+
+    <table class="widgetinfo">
+
+       <tr>
+        <th>level</th>
+
+        <td>1 = category <br>
+        2 = subcategory</td>
+      </tr>
+      
+       <tr>
+        <th>type</th>
+
+        <td>- = expense <br>
+        + = income</td>
+      </tr>
+ 
+       <tr>
+        <th>category name</th>
+
+        <td>the category name</td>
+      </tr>
+
+     </table>
+
+    <p>Example:</p>
+    <pre class="csvexample">
+1;-;Food
+2; ;Grocer
+2; ;Restaurant
+1;+;Wage
+... 
+</pre>
+    <p class="top"><a href="#top">[top]</a></p>
+
+  </div>
+  
+    <div class="rounded content">
+    <h2><a name="pay" id="pay"></a>Payee</h2>
+
+    <table class="widgetinfo">
+
+       <tr>
+        <th>payee name</th>
+
+        <td>the name of the payee</td>
+      </tr>
+    </table>
+
+    <p>Example:</p>
+<pre class="csvexample">
+payee_name1
+payee_name2
+... 
+</pre>
+    <p class="top"><a href="#top">[top]</a></p>
+
+  </div><!-- separator -->
+  
+</body>
+</html>

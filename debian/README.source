@@ -1,0 +1,8 @@
+README.source for homebank.
+
+The homebank package uses CDBS's simple-patchsys patch system.
+
+* To apply patches, run 'debian/rules patch'.
+* To unapply patches, run 'debian/rules unpatch'.
+* To add a new patch, or edit an existing patch, the 'cdbs-edit-patch' tool 
+  can be used.  See 'man cdbs-edit-patch' for details

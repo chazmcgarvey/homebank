@@ -1,0 +1,15 @@
+homebank for Debian
+-------------------
+
+Homebank is a project born for the amiga, now the author has migrated it
+to GTK+, the primary development target is linux, but the roadmap previews
+a macOS port (quite done) and a window$ port.
+
+PATCHES TO HTML DOCUMENTATION
+-----------------------------
+If you want to contribute enhancing the html feel free to send patches to
+the upstream author or to the maintainers of homebank. Consider that the
+documentation is made using a normal text editor, so a simple patch is
+fine.
+
+ -- Francesco Namuri <francesco@namuri.it>  Mon, 20 Aug 2007 00:57:09 +0200

@@ -1,0 +1,48 @@
+
+1. Introduction
+
+
+2. Concept
+	. The balances fundamentals
+	. The Archives
+	. Minor currency (for €uro countries)
+
+3. Usage
+	. HomeBank: First start
+	. Main window
+	. Operation book window
+	. Working on Operations
+		. Add/Import operations
+		. Automate recurrent operations
+		. Create an archive from an operation
+		. Validate operation with my bank statement
+		. Multiple field edition on operation
+		. Remind operation
+
+4. Dialogs
+	. Properties
+	.1 Accounts
+	.2 Payee
+	.3 Category
+	.4 Archives
+	.5 Budget
+	. Operation filter
+	. Settings
+		.1 General
+		.2 Interface
+		.3 Display format
+		.4 Help system
+		.5 Euro options
+		.6 Report options
+
+5. Reports
+	.1 Statistics
+	.2 Budget
+	.3 Overdrawn
+	.4 Car cost
+
+6. CSV file format
+	1. Payee
+	2. Category
+	3. Budget
+	4. Operation

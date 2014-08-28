@@ -1,0 +1,4 @@
+# List of source files containing translatable strings.
+
+# Main application
+data/homebank.desktop.in

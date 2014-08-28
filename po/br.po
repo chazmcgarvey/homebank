@@ -1,0 +1,2872 @@
+# Breton translation for homebank
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the homebank package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: homebank\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-09 16:05+0200\n"
+"PO-Revision-Date: 2014-07-17 21:15+0000\n"
+"Last-Translator: Alan <Unknown>\n"
+"Language-Team: Breton <alan.monfort@free.fr>\n"
+"Language: br\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-07-26 09:05+0000\n"
+"X-Generator: Launchpad (build 17131)\n"
+"X-Poedit-SearchPath-0: br\n"
+"X-Poedit-Basepath: .\n"
+
+#: ../data/homebank.desktop.in.in.h:1 ../src/dsp_mainwindow.c:828
+msgid "HomeBank"
+msgstr "HomeBank"
+
+#: ../data/homebank.desktop.in.in.h:2 ../src/dsp_mainwindow.c:434
+#: ../src/dsp_mainwindow.c:832
+msgid "Free, easy, personal accounting for everyone."
+msgstr "Jederezh personel digoust, aes evit an holl."
+
+#: ../src/dsp_account.c:173
+msgid "No transaction changed"
+msgstr "N'eus treuzgread ebet bet kemmet"
+
+#: ../src/dsp_account.c:175
+#, c-format
+msgid "transaction auto assigned: %d"
+msgstr "treuzgread derannet ent emgefreek : %d"
+
+#: ../src/dsp_account.c:178
+msgid "Auto assigment result"
+msgstr "Disoc'h an derannadur emgefreek"
+
+#: ../src/dsp_account.c:348
+msgid ""
+"Do you want to create a template with\n"
+"each of the selected transaction ?"
+msgstr ""
+"Ha fellout a ra deoc'h krouiñ ur patrom gant\n"
+"bep treuzgread bet diuzet ?"
+
+#: ../src/dsp_account.c:393
+msgid "(new archive)"
+msgstr "(diell nevez)"
+
+#: ../src/dsp_account.c:912
+msgid ""
+"Do you want to break the internal transfer ?\n"
+"\n"
+"Proceeding will delete the target transaction."
+msgstr ""
+"Ha fellout a ra deoc'h terriñ an treuzkas diabarzh ?\n"
+"\n"
+"Mar bez graet e vo dilamet an treuzgread arvoned."
+
+#: ../src/dsp_account.c:972
+msgid ""
+"Do you want to delete\n"
+"each of the selected transaction ?"
+msgstr ""
+"Ha fellout a ra deoc'h dilemel\n"
+"bep treuzgread bet diuzet ?"
+
+#: ../src/dsp_account.c:1285
+#, c-format
+msgid "%d items (%s)"
+msgstr "%d ergorenn (%s)"
+
+#. TRANSLATORS: detail of the 3 %s which are some amount of selected transaction, 1=total 2=income, 3=expense
+#. msg = g_strdup_printf (_("transaction selected: %d, hidden: %d / %s ( %s - %s)"), count, data->hidden, buf3, buf1, buf2);
+#: ../src/dsp_account.c:1290
+#, c-format
+msgid "%d items (%d selected %s)"
+msgstr "%d elfenn (%d diuzet %s)"
+
+#: ../src/dsp_account.c:1360
+msgid "Modify date..."
+msgstr "Daskemmañ an deiziad..."
+
+#: ../src/dsp_account.c:1365
+msgid "Modify info..."
+msgstr "Daskemmañ an titouroù..."
+
+#: ../src/dsp_account.c:1372
+msgid "Modify payee..."
+msgstr "Daskemmañ an emvataer..."
+
+#: ../src/dsp_account.c:1378
+msgid "Modify description..."
+msgstr "Daskemmañ an deskrivadenn..."
+
+#: ../src/dsp_account.c:1385
+msgid "Modify amount..."
+msgstr "Daskemmañ ar savad..."
+
+#: ../src/dsp_account.c:1390
+msgid "Modify category..."
+msgstr "Daskemmañ ar rummad..."
+
+#: ../src/dsp_account.c:1396
+msgid "Modify tags..."
+msgstr "Daskemmañ ar c'hlavioù..."
+
+#. name, stock id, label
+#: ../src/dsp_account.c:1702
+msgid "_Account"
+msgstr "_Kont"
+
+#: ../src/dsp_account.c:1703
+msgid "Transacti_on"
+msgstr "Treuz_gread"
+
+#: ../src/dsp_account.c:1704
+msgid "_Actions"
+msgstr "_Gwezhioù"
+
+#: ../src/dsp_account.c:1705
+msgid "_Tools"
+msgstr "_Binvioù"
+
+#: ../src/dsp_account.c:1707 ../src/dsp_mainwindow.c:167
+msgid "_Close"
+msgstr "_Serriñ"
+
+#: ../src/dsp_account.c:1707
+msgid "Close the current account"
+msgstr "Serriñ ar gont vremanel"
+
+#. name, stock id, label, accelerator, tooltip
+#: ../src/dsp_account.c:1710
+msgid "_Filter..."
+msgstr "_Silañ..."
+
+#: ../src/dsp_account.c:1710
+msgid "Open the list filter"
+msgstr "Digeriñ sil ar roll"
+
+#: ../src/dsp_account.c:1712
+msgid "_Add..."
+msgstr "_Ouzhpennañ..."
+
+#: ../src/dsp_account.c:1712
+msgid "Add a new transaction"
+msgstr "Ouzhpennañ un treuzgread all"
+
+#: ../src/dsp_account.c:1713
+msgid "_Inherit..."
+msgstr "_Hêrezhiñ..."
+
+#: ../src/dsp_account.c:1713
+msgid "Inherit from the active transaction"
+msgstr "Hêrezhiñ diouzh an treuzgread oberiant"
+
+#: ../src/dsp_account.c:1714
+msgid "_Edit..."
+msgstr "Daskemmañ"
+
+#: ../src/dsp_account.c:1714
+msgid "Edit the active transaction"
+msgstr "Daskemmañ an treuzgread oberiant"
+
+#: ../src/dsp_account.c:1715 ../src/ui-archive.c:839
+#: ../src/ui-transaction.c:1170
+msgid "_Reconciled"
+msgstr "Ad_unvanet"
+
+#: ../src/dsp_account.c:1715
+msgid "Toggle reconciled status of active transactions"
+msgstr "Trec'haoliñ stad adunvanet an treuzgread oberiant"
+
+#: ../src/dsp_account.c:1716
+msgid "_Remove..."
+msgstr "_Dilemel..."
+
+#: ../src/dsp_account.c:1716
+msgid "Remove the active transactions"
+msgstr "Dilemel an treuzgread oberiant"
+
+#: ../src/dsp_account.c:1717
+msgid "Create template..."
+msgstr "Krouiñ ur patrom..."
+
+#: ../src/dsp_account.c:1719
+msgid "Auto. Assignments"
+msgstr "Derannadurioù emgefreek"
+
+#: ../src/dsp_account.c:1719
+msgid "Run auto assignments"
+msgstr "Erounit derannadurioù emgefreek"
+
+#: ../src/dsp_account.c:1720 ../src/dsp_mainwindow.c:172
+msgid "Export QIF..."
+msgstr "Ezporzhiañ ar restr mod QIF..."
+
+#: ../src/dsp_account.c:1720 ../src/ui-dialogs.c:140
+msgid "Export as QIF"
+msgstr "Ezporzhiañ evel restr mod QIF..."
+
+#: ../src/dsp_account.c:1721
+msgid "Export CSV..."
+msgstr "Ezporzhiañ ar restr mod CSV..."
+
+#: ../src/dsp_account.c:1721 ../src/rep_stats.c:71 ../src/rep_time.c:69
+#: ../src/ui-dialogs.c:190
+msgid "Export as CSV"
+msgstr "Ezporzhiañ evel restr mod CSV..."
+
+#: ../src/dsp_account.c:1852 ../src/dsp_mainwindow.c:2443
+msgid "Add"
+msgstr "Ouzhpennañ"
+
+#: ../src/dsp_account.c:1855
+msgid "Inherit"
+msgstr "Hêrezhiñ"
+
+#: ../src/dsp_account.c:1858
+msgid "Edit"
+msgstr "Kemmañ"
+
+#: ../src/dsp_account.c:1861 ../src/rep_stats.c:68
+msgid "Filter"
+msgstr "Sil"
+
+#: ../src/dsp_account.c:1864
+msgid "Reconcile"
+msgstr "Adunvaniñ"
+
+#: ../src/dsp_account.c:1916
+msgid "Future:"
+msgstr "Dazont :"
+
+#: ../src/dsp_account.c:1922
+msgid "Today:"
+msgstr "Hiziv :"
+
+#: ../src/dsp_account.c:1928
+msgid "Bank:"
+msgstr "Bank :"
+
+#: ../src/dsp_account.c:1951 ../src/rep_balance.c:896 ../src/rep_budget.c:1168
+#: ../src/rep_stats.c:1497 ../src/rep_time.c:1341 ../src/rep_vehicle.c:636
+msgid "_Range:"
+msgstr "_Ledad :"
+
+#: ../src/dsp_account.c:1956 ../src/ui-account.c:1244
+#: ../src/ui-assist-start.c:332
+msgid "_Type:"
+msgstr "_Rizh :"
+
+#: ../src/dsp_account.c:1961
+msgid "_Status:"
+msgstr "_Stad :"
+
+#: ../src/dsp_account.c:1966
+msgid "Reset _Filter"
+msgstr "Adderaouekaat ar _sil"
+
+#. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
+#: ../src/dsp_account.c:1971 ../src/rep_balance.c:875 ../src/rep_budget.c:1147
+#: ../src/rep_stats.c:1468 ../src/rep_time.c:1319 ../src/rep_vehicle.c:622
+msgid "_Minor currency"
+msgstr "_Moneiz vroadel a-gent"
+
+#. name, stock id, label
+#: ../src/dsp_mainwindow.c:147
+msgid "_File"
+msgstr "_Restr"
+
+#: ../src/dsp_mainwindow.c:148
+msgid "_Edit"
+msgstr "K_emmañ"
+
+#: ../src/dsp_mainwindow.c:149
+msgid "_View"
+msgstr "G_welout"
+
+#: ../src/dsp_mainwindow.c:150
+msgid "_Manage"
+msgstr "_Ardeiñ"
+
+#: ../src/dsp_mainwindow.c:151
+msgid "_Transactions"
+msgstr "_Treuzgreadoù"
+
+#: ../src/dsp_mainwindow.c:152
+msgid "_Reports"
+msgstr "_Danevelloù"
+
+#: ../src/dsp_mainwindow.c:153
+msgid "_Help"
+msgstr "_Skoazell"
+
+#. { "Import"       , NULL, N_("Import") },
+#. { "Export"       , NULL, N_("Export to") },
+#. name, stock id, label, accelerator, tooltip
+#. FileMenu
+#: ../src/dsp_mainwindow.c:160
+msgid "_New"
+msgstr "_Nevez"
+
+#: ../src/dsp_mainwindow.c:160
+msgid "Create a new file"
+msgstr "Krouiñ ur restr nevez"
+
+#: ../src/dsp_mainwindow.c:161
+msgid "_Open..."
+msgstr "_Digeriñ..."
+
+#: ../src/dsp_mainwindow.c:161 ../src/dsp_mainwindow.c:2504
+msgid "Open a file"
+msgstr "Digeriñ ur restr"
+
+#: ../src/dsp_mainwindow.c:162
+msgid "_Save"
+msgstr "_Enrollañ"
+
+#: ../src/dsp_mainwindow.c:162
+msgid "Save the current file"
+msgstr "Enrollañ ar restr vremanel"
+
+#: ../src/dsp_mainwindow.c:163
+msgid "Save As..."
+msgstr "Enrollañ evel..."
+
+#: ../src/dsp_mainwindow.c:163
+msgid "Save the current file with a different name"
+msgstr "Enrollañ ar restr vremanel gant un anv all"
+
+#: ../src/dsp_mainwindow.c:164
+msgid "Revert"
+msgstr "Distreiñ"
+
+#: ../src/dsp_mainwindow.c:164
+msgid "Revert to a saved version of this file"
+msgstr "Distreiñ d'un handelv enrollet eus ar restr-mañ"
+
+#: ../src/dsp_mainwindow.c:166
+msgid "_Properties..."
+msgstr "_Perzhioù..."
+
+#: ../src/dsp_mainwindow.c:166
+msgid "Configure the file"
+msgstr "Kefluniañ ar restr"
+
+#: ../src/dsp_mainwindow.c:167
+msgid "Close the current file"
+msgstr "Serriñ ar restr vremanel"
+
+#: ../src/dsp_mainwindow.c:168
+msgid "_Quit"
+msgstr "_Kuitaat"
+
+#: ../src/dsp_mainwindow.c:168
+msgid "Quit homebank"
+msgstr "Kuitaat Homebank"
+
+#. Exchange
+#: ../src/dsp_mainwindow.c:171
+msgid "Import QIF/OFX/CSV..."
+msgstr "Enporzhiañ QIF/OFX/CSV..."
+
+#: ../src/dsp_mainwindow.c:171
+msgid "Open the import assistant"
+msgstr "Digeriñ skoazeller an enporzhiañ"
+
+#: ../src/dsp_mainwindow.c:172
+msgid "Open the export to QIF assistant"
+msgstr "Digeriñ skoazeller an ezporzhiañ da restroù mod QIF"
+
+#: ../src/dsp_mainwindow.c:173
+msgid "Anonymize..."
+msgstr "Lakaat da zizanv..."
+
+#. EditMenu
+#: ../src/dsp_mainwindow.c:176
+msgid "Preferences..."
+msgstr "Gwellvezioù..."
+
+#: ../src/dsp_mainwindow.c:176
+msgid "Configure homebank"
+msgstr "Kefluniañ homebank"
+
+#. ManageMenu
+#. { "Currency"   , "hb-currency"  , N_("Currencies...") , NULL,    N_("Configure the currencies"), G_CALLBACK (ui_mainwindow_action_defcurrency) },
+#: ../src/dsp_mainwindow.c:180
+msgid "Acc_ounts..."
+msgstr "Kont_où..."
+
+#: ../src/dsp_mainwindow.c:180
+msgid "Configure the accounts"
+msgstr "Kefluniañ ar c'hontoù"
+
+#: ../src/dsp_mainwindow.c:181
+msgid "_Payees..."
+msgstr "_Emvataerion..."
+
+#: ../src/dsp_mainwindow.c:181
+msgid "Configure the payees"
+msgstr "Kefluniañ an emvataerion"
+
+#: ../src/dsp_mainwindow.c:182
+msgid "Categories..."
+msgstr "Rummadoù..."
+
+#: ../src/dsp_mainwindow.c:182
+msgid "Configure the categories"
+msgstr "Kefluniañ ar rummadoù"
+
+#: ../src/dsp_mainwindow.c:183
+msgid "Scheduled/Template..."
+msgstr "Steuñvet/Patrom..."
+
+#: ../src/dsp_mainwindow.c:183
+msgid "Configure the scheduled/template transactions"
+msgstr "Kefluniañ an treuzgreadoù steuñvet pe ar patromoù"
+
+#: ../src/dsp_mainwindow.c:184
+msgid "Budget..."
+msgstr "Kellidsteuñv..."
+
+#: ../src/dsp_mainwindow.c:184
+msgid "Configure the budget"
+msgstr "Kefluniañ ar c'hellidsteuñv"
+
+#: ../src/dsp_mainwindow.c:185
+msgid "Assignments..."
+msgstr "Derannadurioù..."
+
+#: ../src/dsp_mainwindow.c:185
+msgid "Configure the automatic assignments"
+msgstr "Kefluniañ an derannadurioù emgefreek"
+
+#. TransactionMenu
+#: ../src/dsp_mainwindow.c:188
+msgid "Show..."
+msgstr "Diskouez..."
+
+#: ../src/dsp_mainwindow.c:188
+msgid "Shows selected account transactions"
+msgstr "Diskouez a ra treuzgreadoù ar gont diuzet"
+
+#: ../src/dsp_mainwindow.c:189
+msgid "Add..."
+msgstr "Ouzhpennañ"
+
+#: ../src/dsp_mainwindow.c:189 ../src/ui-transaction.c:49
+msgid "Add transaction"
+msgstr "Ouzhpennañ un treuzgread"
+
+#: ../src/dsp_mainwindow.c:190
+msgid "Set scheduler..."
+msgstr "Arventennañ ar steuñverez..."
+
+#: ../src/dsp_mainwindow.c:190
+msgid "Configure the transaction scheduler"
+msgstr "Kefluniañ steuñv an treuzgreadoù"
+
+#: ../src/dsp_mainwindow.c:191
+msgid "Process scheduled..."
+msgstr "Argerzh steuñvet..."
+
+#: ../src/dsp_mainwindow.c:191
+msgid "Insert pending scheduled transactions"
+msgstr "Enlakaat an treuzgreadoù steuñvet o c'hortoz"
+
+#. ReportMenu
+#: ../src/dsp_mainwindow.c:194
+msgid "_Statistics..."
+msgstr "_Stadegoù..."
+
+#: ../src/dsp_mainwindow.c:194
+msgid "Open the Statistics report"
+msgstr "Digeriñ danevell ar stadegoù"
+
+#: ../src/dsp_mainwindow.c:195
+msgid "_Trend Time..."
+msgstr "_Tuadur dre an amzer..."
+
+#: ../src/dsp_mainwindow.c:195
+msgid "Open the Trend Time report"
+msgstr "Digeriñ danevell evit an tuadur dre an amzer"
+
+#: ../src/dsp_mainwindow.c:196
+msgid "B_udget..."
+msgstr "Kellidste_uñv..."
+
+#: ../src/dsp_mainwindow.c:196
+msgid "Open the Budget report"
+msgstr "Digeriñ danevell ar c'hellidsteuñv"
+
+#: ../src/dsp_mainwindow.c:197
+msgid "Balance..."
+msgstr "Mentelad..."
+
+#: ../src/dsp_mainwindow.c:197
+msgid "Open the Balance report"
+msgstr "Digeriñ danevell ar ventelad"
+
+#: ../src/dsp_mainwindow.c:198
+msgid "_Vehicle cost..."
+msgstr "Kost ar _c'harbed..."
+
+#: ../src/dsp_mainwindow.c:198
+msgid "Open the Vehicle cost report"
+msgstr "Digeriñ danevell koust ar c'harbed"
+
+#. HelpMenu
+#: ../src/dsp_mainwindow.c:201
+msgid "_Contents"
+msgstr "Endal_c'hadoù"
+
+#: ../src/dsp_mainwindow.c:201
+msgid "Documentation about HomeBank"
+msgstr "Teuliadur a-zivout Homebank"
+
+#: ../src/dsp_mainwindow.c:202
+msgid "Show welcome dialog..."
+msgstr "Diskouez boestad emziviz Donemat..."
+
+#: ../src/dsp_mainwindow.c:203
+msgid "Get Help Online..."
+msgstr "Kaout skoazell enlinenn..."
+
+#: ../src/dsp_mainwindow.c:203
+msgid "Connect to the LaunchPad website for online help"
+msgstr "Kennaskañ ouzh lec'hienn Launchpad evit kaout ar skoazell enlinenn"
+
+#: ../src/dsp_mainwindow.c:204
+msgid "Translate this Application..."
+msgstr "Treiñ an arload-mañ..."
+
+#: ../src/dsp_mainwindow.c:204
+msgid "Connect to the LaunchPad website to help translate this application"
+msgstr ""
+"Kennaskañ ouzh lec'hienn Launchpad evit reiñ skoazell da dreiñ an arload-mañ"
+
+#: ../src/dsp_mainwindow.c:205
+msgid "Report a Problem..."
+msgstr "Danevellañ ur gudenn..."
+
+#: ../src/dsp_mainwindow.c:205
+msgid "Connect to the LaunchPad website to help fix problems"
+msgstr ""
+"Kennaskañ ouzh lec'hienn Launchpad evit reiñ skoazell da ratreañ kudennoù"
+
+#: ../src/dsp_mainwindow.c:207
+msgid "_About"
+msgstr "_A-zivout"
+
+#: ../src/dsp_mainwindow.c:207
+msgid "About HomeBank"
+msgstr "A-zivout Homebank"
+
+#. name         , stockid, label, accelerator, tooltip, callback, is_active
+#: ../src/dsp_mainwindow.c:215
+msgid "_Toolbar"
+msgstr "Barrenn_Ostilhoù"
+
+#: ../src/dsp_mainwindow.c:216
+msgid "_Top spending"
+msgstr "Dispignoù pouezusañ"
+
+#: ../src/dsp_mainwindow.c:217
+msgid "_Scheduled list"
+msgstr "Roll _steuñvet"
+
+#: ../src/dsp_mainwindow.c:218
+msgid "Minor currency"
+msgstr "Moneiz vroadel a-gent"
+
+#: ../src/dsp_mainwindow.c:342
+#, c-format
+msgid "Revert to the previously saved file of '%s'?"
+msgstr "Distreiñ d'ar restr enrollet a-raok eus '%s' ?"
+
+#: ../src/dsp_mainwindow.c:348
+msgid ""
+"- Changes made to the file will be permanently lost\n"
+"- File will be restored to the last save (.xhb~)"
+msgstr ""
+"- Da vat e vo kollet ar c'hemmoù graet d'ar restr\n"
+"- Assavet e vo ar restr gant an enrolladenn diwezhañ (.xhb~)"
+
+#: ../src/dsp_mainwindow.c:547
+msgid "Anonymize the file ?"
+msgstr "Lakaat ar restr da vezañ dizanv ?"
+
+#: ../src/dsp_mainwindow.c:548
+msgid ""
+"Proceeding will changes name/memo to anonymous datas,\n"
+"please confirm."
+msgstr ""
+"Mar bez erounezet e vo kemmet an anvioù/koungerioù da roadennoù dizanv,\n"
+"kadarnait mar plij."
+
+#: ../src/dsp_mainwindow.c:815
+msgid "Welcome to HomeBank"
+msgstr "Donemat e Homebank"
+
+#: ../src/dsp_mainwindow.c:842
+msgid "What do you want to do:"
+msgstr "Petra a fell deoc'h ober :"
+
+#: ../src/dsp_mainwindow.c:846
+msgid "Read HomeBank _Manual"
+msgstr "Lenn dornlevr Ho_mebank"
+
+#: ../src/dsp_mainwindow.c:850
+msgid "Configure _Preferences"
+msgstr "Kefluniañ ar _gwellvezioù"
+
+#: ../src/dsp_mainwindow.c:854
+msgid "Create a _new file"
+msgstr "Krouiñ ur restr _nevez"
+
+#: ../src/dsp_mainwindow.c:858
+msgid "_Open an existing file"
+msgstr "_Digeriñ ur restr ez eus anezhi"
+
+#: ../src/dsp_mainwindow.c:862
+msgid "Open the _example file"
+msgstr "Digeriñ ar restr skou_er"
+
+#: ../src/dsp_mainwindow.c:1250 ../src/rep_stats.c:1012
+#: ../src/rep_stats.c:1032 ../src/ui-budget.c:123 ../src/ui-category.c:334
+#: ../src/ui-category.c:487
+msgid "(no category)"
+msgstr "(rummad ebet)"
+
+#: ../src/dsp_mainwindow.c:1271
+msgid "Other"
+msgstr "All"
+
+#: ../src/dsp_mainwindow.c:1473
+msgid "No transaction to add"
+msgstr "Treuzgread ebet da ouzhpennañ"
+
+#: ../src/dsp_mainwindow.c:1475
+#, c-format
+msgid "transaction added: %d"
+msgstr "treuzgread ouzhpennet : %d"
+
+#: ../src/dsp_mainwindow.c:1478
+msgid "Check scheduled transactions result"
+msgstr "Gwiriañ disoc'hoù an treuzgreadoù steuñvet"
+
+#: ../src/dsp_mainwindow.c:1557 ../src/dsp_mainwindow.c:1830
+#: ../src/rep_vehicle.c:716
+msgid "Total"
+msgstr "Hollad"
+
+#: ../src/dsp_mainwindow.c:1637
+msgid "Unknow error"
+msgstr "Fazi dianav"
+
+#: ../src/dsp_mainwindow.c:1642
+#, c-format
+msgid "I/O error for file '%s'."
+msgstr "Fazi enankañ/ec'hankañ evit ar restr '%s'."
+
+#: ../src/dsp_mainwindow.c:1645
+#, c-format
+msgid "The file '%s' is not a valid HomeBank file."
+msgstr "Ar restr '%s' n'eo ket ur restr mod Homebank talvoudek."
+
+#: ../src/dsp_mainwindow.c:1648
+#, c-format
+msgid ""
+"The file '%s' was saved with a higher version of HomeBank\n"
+"and cannot be loaded by the current version."
+msgstr ""
+"Gant un handelv nevesoc'h eus Homebank eb bet enrollet ar restr '%s'\n"
+"ha n'hall ket bezañ karget gant an handelv vremanel."
+
+#: ../src/dsp_mainwindow.c:1653 ../src/dsp_mainwindow.c:1718
+#: ../src/dsp_mainwindow.c:2336
+msgid "File error"
+msgstr "Fazi gant ar restr"
+
+#: ../src/dsp_mainwindow.c:1715
+#, c-format
+msgid "I/O error for file %s."
+msgstr "Fazi enankañ/ec'hankañ gant ar restr %s."
+
+#: ../src/dsp_mainwindow.c:1861
+msgid "Grand total"
+msgstr "Hollad diwezhel"
+
+#: ../src/dsp_mainwindow.c:2337
+#, c-format
+msgid "The file %s is not a valid HomeBank file."
+msgstr "Ar restr %s n'eo ket ur restr mod Homebank talvoudek."
+
+#: ../src/dsp_mainwindow.c:2418 ../src/dsp_mainwindow.c:2511
+msgid "Open"
+msgstr "Digeriñ"
+
+#: ../src/dsp_mainwindow.c:2424 ../src/list_operation.c:755
+#: ../src/list_operation.c:1001 ../src/list_upcoming.c:408
+#: ../src/rep_time.c:116 ../src/ui-account.c:1239 ../src/ui-filter.c:1391
+msgid "Account"
+msgstr "Kont"
+
+#: ../src/dsp_mainwindow.c:2427 ../src/list_operation.c:438
+#: ../src/list_operation.c:1061 ../src/list_upcoming.c:360
+#: ../src/rep_stats.c:142 ../src/rep_time.c:116 ../src/ui-assign.c:40
+#: ../src/ui-filter.c:1383 ../src/ui-pref.c:123 ../src/ui-pref.c:2513
+msgid "Payee"
+msgstr "Emvataer"
+
+#: ../src/dsp_mainwindow.c:2430 ../src/list_operation.c:503
+#: ../src/list_operation.c:1072 ../src/rep_budget.c:109
+#: ../src/rep_budget.c:1486 ../src/rep_stats.c:140 ../src/rep_time.c:116
+#: ../src/ui-filter.c:1378 ../src/ui-pref.c:2518 ../src/ui-transaction.c:381
+msgid "Category"
+msgstr "Rummad"
+
+#. TRANSLATORS: an archive is stored transaction buffers (kind of bookmark to prefill manual insertion)
+#: ../src/dsp_mainwindow.c:2434
+msgid "Archive"
+msgstr "Diell"
+
+#. column: Income
+#: ../src/dsp_mainwindow.c:2437 ../src/dsp_mainwindow.c:2449
+#: ../src/rep_budget.c:113 ../src/rep_budget.c:1501
+msgid "Budget"
+msgstr "Kellidsteuñv"
+
+#: ../src/dsp_mainwindow.c:2440
+msgid "Show"
+msgstr "Diskouez"
+
+#: ../src/dsp_mainwindow.c:2446
+msgid "Statistics"
+msgstr "Stadegoù"
+
+#. column: Balance
+#: ../src/dsp_mainwindow.c:2452 ../src/list_operation.c:802
+#: ../src/rep_balance.c:1264 ../src/rep_stats.c:153 ../src/rep_stats.c:719
+#: ../src/rep_stats.c:1872 ../src/ui-pref.c:2520
+msgid "Balance"
+msgstr "Mentelad"
+
+#: ../src/dsp_mainwindow.c:2455 ../src/ui-hbfile.c:249
+msgid "Vehicle cost"
+msgstr "Koust ar c'harbed"
+
+#: ../src/dsp_mainwindow.c:2506
+msgid "Open a recently used file"
+msgstr "Digeriñ ur restr nevez-implijet"
+
+#: ../src/dsp_mainwindow.c:2529
+msgid "Your accounts"
+msgstr "Ho kontoù"
+
+#: ../src/dsp_mainwindow.c:2560
+msgid "Where your money goes"
+msgstr "Da belec'h ez a hoc'h arc'hant"
+
+#: ../src/dsp_mainwindow.c:2577
+msgid "Top 5 spending"
+msgstr "Ar 5 dispign pennañ"
+
+#: ../src/dsp_mainwindow.c:2626
+msgid "Scheduled transactions"
+msgstr "Treuzgreadoù steuñvet"
+
+#: ../src/dsp_mainwindow.c:2632
+msgid "maximum post date"
+msgstr "deiziad pellañ ar postañ"
+
+#: ../src/dsp_mainwindow.c:2672
+msgid "Skip"
+msgstr "Lammat dreisti"
+
+#: ../src/dsp_mainwindow.c:2678
+msgid "Post"
+msgstr "Postañ"
+
+#: ../src/hb-category.c:841
+msgid "invalid csv format"
+msgstr "mentrezh mod CSV didalvoudek"
+
+#: ../src/hb-filter.c:74
+#, c-format
+msgid "<i>from</i> %s <i>to</i> %s"
+msgstr "<i>eus</i> %s <i>betek</i> %s"
+
+#: ../src/hb-hbfile.c:389
+msgid "Unknown"
+msgstr "Dianav"
+
+#: ../src/homebank.c:67
+msgid "Output version information and exit"
+msgstr "Ec'hankañ stlennoù an handelv ha mont kuit"
+
+#: ../src/homebank.c:70
+msgid "[FILE]"
+msgstr "[RESTR]"
+
+#: ../src/homebank.c:305
+msgid "Browser error."
+msgstr "Fazi digant ar merdeer."
+
+#: ../src/homebank.c:306
+#, c-format
+msgid "Could not display the URL '%s'"
+msgstr "N'haller ket skrammañ an URL '%s'"
+
+#: ../src/homebank.c:977 ../src/homebank.c:978
+msgid "HomeBank options"
+msgstr "Dibarzhioù Homebank"
+
+#: ../src/homebank.c:1126
+#, c-format
+msgid "Unable to open '%s', the file does not exist.\n"
+msgstr "N'haller ket digeriñ '%s', n'eus ket eus ar restr-mañ.\n"
+
+#: ../src/import.c:59
+msgid "HomeBank Import Assistant"
+msgstr "Skoazeller Homebank evit an enporzhiañ"
+
+#. file informations
+#: ../src/import.c:60 ../src/import.c:1953
+msgid "File to import"
+msgstr "Restr da enporzhiañ"
+
+#: ../src/import.c:61
+msgid "File analysis results"
+msgstr "Disoc'hoù dezrannañ ar restroù"
+
+#: ../src/import.c:62
+msgid "Adjust what to import"
+msgstr "Kengeidañ pezh a zo da enporzhiañ"
+
+#: ../src/import.c:63
+msgid "Update your accounts"
+msgstr "Hizivaat ho kontoù"
+
+#: ../src/import.c:99 ../src/import.c:144
+#, c-format
+msgid "(account %d)"
+msgstr "(kont %d)"
+
+#: ../src/import.c:1244
+msgid "Change HomeBank account target"
+msgstr "Kemmañ kont vukenn Homebank"
+
+#: ../src/import.c:1270
+msgid "new account"
+msgstr "kont nevez"
+
+#: ../src/import.c:1273 ../src/ui-account.c:1312 ../src/ui-assist-start.c:321
+msgid "_Name:"
+msgstr "_Anv :"
+
+#: ../src/import.c:1280
+msgid "existing account"
+msgstr "kont ez eus anezhi"
+
+#: ../src/import.c:1283 ../src/rep_balance.c:856 ../src/ui-archive.c:782
+msgid "A_ccount:"
+msgstr "Ko_nt :"
+
+#: ../src/import.c:1342 ../src/ui-account.c:959 ../src/ui-account.c:1045
+#: ../src/ui-category.c:1150 ../src/ui-payee.c:724
+msgid "Error"
+msgstr "Fazi"
+
+#: ../src/import.c:1343 ../src/ui-account.c:1046
+#, c-format
+msgid ""
+"Cannot rename this Account,\n"
+"from '%s' to '%s',\n"
+"this name already exists."
+msgstr ""
+"N'haller ket adenvel ar gont-mañ,\n"
+"eus '%s' da '%s',\n"
+"an anv zo anezhañ endeo."
+
+#: ../src/import.c:1391
+msgid "Please select a file..."
+msgstr "Dibabit ur restr, mar plij..."
+
+#: ../src/import.c:1408
+msgid "QIF file recognised !"
+msgstr "Restr mod QIF anavezet !"
+
+#: ../src/import.c:1414
+msgid "OFX file recognised !"
+msgstr "Restr mod OFX anavezet !"
+
+#: ../src/import.c:1417
+msgid "** OFX support is disabled **"
+msgstr "** Diweredekaet eo bet skor OFX **"
+
+#: ../src/import.c:1422
+msgid "CSV transaction file recognised !"
+msgstr "Restr an treuzgread mod QIF anavezet !"
+
+#: ../src/import.c:1428
+msgid "Unknown/Invalid file..."
+msgstr "Restr dianav/didalvoudek..."
+
+#. file content detail
+#. TODO: difficult translation here
+#: ../src/import.c:1477
+#, c-format
+msgid "account: %d - transaction: %d - payee: %d - categorie: %d"
+msgstr "kont : %d - treuzgread : %d - emvataer : %d - rummad : %d"
+
+#: ../src/import.c:1691
+#, c-format
+msgid "HomeBank Import Assistant - (%d of %d)"
+msgstr "Skoazeller Homebank evit an enporzhiañ - (%d eus %d)"
+
+#: ../src/import.c:1791
+msgid ""
+"Welcome to the HomeBank Import Assistant.\n"
+"\n"
+"With this assistant you will be guided throught the process\n"
+"of importing an external file into HomeBank.\n"
+"\n"
+"No changes will be made until you click \"Apply\" at the end\n"
+"of this assistant."
+msgstr ""
+"Donemat e Skoazeller Homebank evit an Enporzhiañ.\n"
+"\n"
+"Sturiet e viot dre an argerzh da enporzhiañ restroù diavaez \n"
+"e-barzh Homebank gant ar Skoazeller-mañ.\n"
+"\n"
+"Digemm e chomo an traoù betek ma vo pouezet\n"
+"war \"Arloañ\" ganeoc'h e dibenn an argerzh."
+
+#: ../src/import.c:1803
+msgid ""
+"HomeBank can import files in the following formats:\n"
+"- QIF\n"
+"- OFX/QFX (optional at compilation time)\n"
+"- CSV (format is specific to HomeBank, see the documentation)\n"
+msgstr ""
+"Gant HomeBank e vez enporzhiet restroù o mentrezh :\n"
+"- QIF\n"
+"- OFX/QFX (dibarzhel gant ar c'hempunañ)\n"
+"- CSV (mentrezh spesadel HomeBank, lennit an teuliadur)\n"
+
+#: ../src/import.c:1858
+msgid "Known files"
+msgstr "Restroù anavezet"
+
+#: ../src/import.c:1868 ../src/ui-dialogs.c:149
+msgid "QIF files"
+msgstr "Restroù mod QIF"
+
+#: ../src/import.c:1874
+msgid "OFX/QFX files"
+msgstr "Restroù mod OFX/QFX"
+
+#: ../src/import.c:1880 ../src/ui-dialogs.c:207
+msgid "CSV files"
+msgstr "Restroù mod CSV"
+
+#: ../src/import.c:1885 ../src/ui-dialogs.c:150 ../src/ui-dialogs.c:208
+#: ../src/ui-dialogs.c:263
+msgid "All files"
+msgstr "An holl restroù"
+
+#: ../src/import.c:1967
+msgid "Path:"
+msgstr "Treug :"
+
+#: ../src/import.c:1974
+msgid "Name:"
+msgstr "Anv :"
+
+#: ../src/import.c:1981
+msgid "Encoding:"
+msgstr "Bonegañ :"
+
+#: ../src/import.c:1988
+msgid "Content:"
+msgstr "Endalc'had :"
+
+#: ../src/import.c:2000
+msgid "Import options"
+msgstr "Dibarzhioù enporzhiañ"
+
+#: ../src/import.c:2007 ../src/ui-pref.c:1317
+msgid "Date order:"
+msgstr "Urzh an deiziad :"
+
+#: ../src/import.c:2015
+msgid "Load the file again"
+msgstr "Kargañ ar restr en-dro"
+
+#: ../src/import.c:2044
+msgid ""
+"Some date conversion errors were encountered during the load of the file.\n"
+"Please try to change the date order format and load the file again."
+msgstr ""
+"Degouezhet ez eus bet fazioù e-keñver amdroadur an deiziadoù e-pad ma oa o "
+"kargañ ar restr.\n"
+"Mar plij, klaskit kemmañ mentrezh urzh an deiziad ha kargit ar restr en-dro."
+
+#: ../src/import.c:2093
+msgid "Edit account to import"
+msgstr "Kempenn ar gont da enporzhiañ"
+
+#. duplicate section
+#: ../src/import.c:2125
+msgid "Detail of duplicate transactions"
+msgstr "Munud an treuzgread bet arredaolet"
+
+#: ../src/import.c:2157
+msgid "Date _tolerance:"
+msgstr "Aotrevar_z an deiziad :"
+
+#. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days of date tolerance
+#: ../src/import.c:2164
+msgid "days"
+msgstr "a zeizioù"
+
+#: ../src/import.c:2181
+msgid ""
+"The match is done in order: by account, amount and date.\n"
+"A date tolerance of 0 day means an exact match"
+msgstr ""
+"Graet eo ar genglotadenn en urzh-mañ : dre ar gont, ar savad hag an "
+"deiziad.\n"
+"Un aotrevarz o kevatal da 0 a dalv d'ur genglotadenn rik"
+
+#. account selection
+#: ../src/import.c:2220
+msgid "Account to import"
+msgstr "Kont da enporzhiañ"
+
+#. transaction selection
+#: ../src/import.c:2225
+msgid "Transaction to import"
+msgstr "Treuzgread da enporzhiañ"
+
+#: ../src/import.c:2270
+msgid "Click \"Apply\" to update your accounts.\n"
+msgstr "Klikit war \"Arloañ\" da hizivaat ho kont.\n"
+
+#: ../src/import.c:2281 ../src/list_account.c:359
+msgid "Accounts"
+msgstr "Kontoù"
+
+#: ../src/import.c:2293
+msgid "to update"
+msgstr "da hizivaat"
+
+#: ../src/import.c:2301
+msgid "to create"
+msgstr "da grouiñ"
+
+#: ../src/import.c:2305 ../src/ui-pref.c:89
+msgid "Transactions"
+msgstr "Treuzgreadoù"
+
+#: ../src/import.c:2314
+msgid "to import"
+msgstr "da enporzhiañ"
+
+#: ../src/import.c:2322
+msgid "to reject"
+msgstr "da zisteurel"
+
+#: ../src/import.c:2330
+msgid "auto-assigned"
+msgstr "derannet emgefreek"
+
+#: ../src/import.c:2525
+msgid "Create new"
+msgstr "Krouiñ unan nevez"
+
+#: ../src/import.c:2527
+msgid "Import into"
+msgstr "Enporzhiañ e-barzh"
+
+#: ../src/import.c:2609
+msgid "Imported name"
+msgstr "Anv enporzhiet"
+
+#: ../src/import.c:2617
+msgid "Action"
+msgstr "Gwezh"
+
+#: ../src/import.c:2625
+msgid "HomeBank name"
+msgstr "Anv Homebank"
+
+#: ../src/list_account.c:342 ../src/list_operation.c:728
+#: ../src/ui-filter.c:1358
+msgid "Status"
+msgstr "Stad"
+
+#. Bank
+#: ../src/list_account.c:376 ../src/ui-account.c:39
+msgid "Bank"
+msgstr "Bank"
+
+#. Today
+#: ../src/list_account.c:381
+msgid "Today"
+msgstr "Hiziv"
+
+#. Future
+#: ../src/list_account.c:386
+msgid "Future"
+msgstr "Dazont"
+
+#: ../src/list_operation.c:387
+msgid "- split -"
+msgstr "- marz -"
+
+#. datas
+#. status
+#. date
+#: ../src/list_operation.c:412 ../src/list_operation.c:1045
+#: ../src/ui-pref.c:2386 ../src/ui-pref.c:2512
+msgid "Info"
+msgstr "Titouroù"
+
+#: ../src/list_operation.c:457 ../src/list_operation.c:1023
+#: ../src/list_upcoming.c:372 ../src/ui-assign.c:39 ../src/ui-pref.c:122
+#: ../src/ui-pref.c:2514 ../src/ui-transaction.c:385
+msgid "Memo"
+msgstr "Kounger"
+
+#: ../src/list_operation.c:522 ../src/ui-pref.c:2519
+msgid "Tags"
+msgstr "Klavioù"
+
+#. common (date + status + amount)
+#. label = gtk_label_new(_("General"));
+#. page = ui_flt_manage_page_general(&data);
+#. gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
+#.
+#: ../src/list_operation.c:767 ../src/list_operation.c:1012
+#: ../src/rep_balance.c:1246 ../src/rep_vehicle.c:968 ../src/ui-filter.c:1353
+msgid "Date"
+msgstr "Deiziad"
+
+#. column: Amount
+#: ../src/list_operation.c:785 ../src/list_operation.c:1033
+#: ../src/rep_time.c:581 ../src/rep_time.c:1638 ../src/rep_vehicle.c:1012
+#: ../src/ui-filter.c:1368 ../src/ui-pref.c:2515 ../src/ui-transaction.c:389
+msgid "Amount"
+msgstr "Savad"
+
+#. column: Expense
+#: ../src/list_operation.c:788 ../src/list_upcoming.c:384
+#: ../src/rep_balance.c:1256 ../src/rep_budget.c:111 ../src/rep_stats.c:151
+#: ../src/rep_stats.c:1860 ../src/ui-filter.c:49 ../src/ui-pref.c:2516
+msgid "Expense"
+msgstr "Ezkefiad"
+
+#. column: Income
+#: ../src/list_operation.c:791 ../src/list_upcoming.c:396
+#: ../src/rep_balance.c:1260 ../src/rep_budget.c:111 ../src/rep_stats.c:152
+#: ../src/rep_stats.c:719 ../src/rep_stats.c:1866 ../src/ui-filter.c:50
+#: ../src/ui-pref.c:2517
+msgid "Income"
+msgstr "Enkefiad"
+
+#: ../src/list_upcoming.c:316
+msgid "Late"
+msgstr "Diwezhat"
+
+#: ../src/list_upcoming.c:349
+msgid "Next date"
+msgstr "Deiziad da zont"
+
+#: ../src/rep_balance.c:121 ../src/rep_budget.c:119 ../src/rep_stats.c:64
+#: ../src/rep_time.c:63
+msgid "List"
+msgstr "Roll"
+
+#: ../src/rep_balance.c:121 ../src/rep_budget.c:119 ../src/rep_stats.c:64
+#: ../src/rep_time.c:63
+msgid "View results as list"
+msgstr "Gwelout an disoc'hoù evel ur roll"
+
+#: ../src/rep_balance.c:122 ../src/rep_time.c:64
+msgid "Line"
+msgstr "Linenn"
+
+#: ../src/rep_balance.c:122 ../src/rep_time.c:64
+msgid "View results as lines"
+msgstr "Gwelout an disoc'hoù evel linennoù"
+
+#. { "Filter"  , "hb-filter"    , N_("Filter") , NULL,   N_("Edit the filter"), G_CALLBACK (ui_reptime_action_filter) },
+#: ../src/rep_balance.c:123 ../src/rep_budget.c:121 ../src/rep_stats.c:69
+#: ../src/rep_time.c:67
+msgid "Refresh"
+msgstr "Azbevaat"
+
+#: ../src/rep_balance.c:123 ../src/rep_budget.c:121 ../src/rep_stats.c:69
+#: ../src/rep_time.c:67
+msgid "Refresh results"
+msgstr "Azbevaat an disoc'hoù"
+
+#. name, stock id
+#: ../src/rep_balance.c:130 ../src/rep_budget.c:128 ../src/rep_stats.c:78
+#: ../src/rep_time.c:75
+msgid "Detail"
+msgstr "Munud"
+
+#. label, accelerator
+#: ../src/rep_balance.c:131 ../src/rep_budget.c:129 ../src/rep_stats.c:79
+#: ../src/rep_time.c:76
+msgid "Toggle detail"
+msgstr "Trec'haoliñ ar munudoù"
+
+#. DB( g_print(" acc key = %d\n", acckey) );
+#. acc = da_acc_get(acckey);
+#. hb_strfmon(buf, 127, data->minimum, selectall ? GLOBALS->kcur : acc->kcur);
+#. //TRANSLATORS: count of transaction in balancedrawn / count of total transaction under abalancedrawn amount threshold
+#: ../src/rep_balance.c:357
+#, c-format
+msgid "%d/%d under %s"
+msgstr "%d/%d dindan %s"
+
+#: ../src/rep_balance.c:825
+msgid "Balance report"
+msgstr "Danevell ar ventelad"
+
+#: ../src/rep_balance.c:851 ../src/rep_budget.c:1120 ../src/rep_stats.c:1444
+#: ../src/rep_time.c:1255 ../src/rep_vehicle.c:609
+msgid "Display"
+msgstr "Skrammañ"
+
+#: ../src/rep_balance.c:864 ../src/rep_time.c:1302
+msgid "Select _all"
+msgstr "Diuzañ pep tr_a"
+
+#: ../src/rep_balance.c:869
+msgid "Each _day"
+msgstr "Bem_dez"
+
+#: ../src/rep_balance.c:880 ../src/rep_budget.c:1152 ../src/rep_stats.c:1474
+#: ../src/rep_time.c:1324
+msgid "_Zoom X:"
+msgstr "_Zoum X :"
+
+#: ../src/rep_balance.c:891 ../src/rep_budget.c:1163 ../src/rep_stats.c:1492
+#: ../src/rep_time.c:1336 ../src/rep_vehicle.c:631
+msgid "Date filter"
+msgstr "Sil dre an deiziad"
+
+#: ../src/rep_balance.c:902 ../src/rep_budget.c:1174 ../src/rep_stats.c:1503
+#: ../src/rep_time.c:1347 ../src/rep_vehicle.c:642 ../src/ui-filter.c:968
+#: ../src/ui-filter.c:1101
+msgid "_From:"
+msgstr "_Eus :"
+
+#: ../src/rep_balance.c:908 ../src/rep_budget.c:1180 ../src/rep_stats.c:1509
+#: ../src/rep_time.c:1353 ../src/rep_vehicle.c:648 ../src/ui-filter.c:976
+#: ../src/ui-filter.c:1108
+msgid "_To:"
+msgstr "_Da :"
+
+#: ../src/rep_budget.c:109 ../src/rep_stats.c:141
+msgid "Subcategory"
+msgstr "Isrummad"
+
+#: ../src/rep_budget.c:111 ../src/rep_stats.c:150
+msgid "Exp. & Inc."
+msgstr "Ezk. & Enk."
+
+#: ../src/rep_budget.c:113
+msgid "Spent & Budget"
+msgstr "Dispign & Kellidsteuñv"
+
+#. column: Expense
+#: ../src/rep_budget.c:113 ../src/rep_budget.c:1497
+msgid "Spent"
+msgstr "Dispignet"
+
+#. column: Result
+#. header
+#: ../src/rep_budget.c:113 ../src/rep_budget.c:1505 ../src/rep_stats.c:719
+#: ../src/rep_stats.c:1849
+msgid "Result"
+msgstr "Disoc'h"
+
+#: ../src/rep_budget.c:120 ../src/rep_stats.c:65
+msgid "Bar"
+msgstr "Barrenn"
+
+#: ../src/rep_budget.c:120 ../src/rep_stats.c:65
+msgid "View results as bars"
+msgstr "Gwelout an disoc'hoù dre barrennoù"
+
+#. is_active
+#. name, stock id
+#: ../src/rep_budget.c:134 ../src/rep_stats.c:84
+msgid "Legend"
+msgstr "Leadell"
+
+#. label, accelerator
+#: ../src/rep_budget.c:135 ../src/rep_stats.c:85
+msgid "Toggle legend"
+msgstr "Trec'haoliñ al leadell"
+
+#: ../src/rep_budget.c:1094
+msgid "Budget report"
+msgstr "Danevell ar c'hellidsteuñv"
+
+#: ../src/rep_budget.c:1125 ../src/rep_time.c:1260
+msgid "_For:"
+msgstr "_Evit :"
+
+#: ../src/rep_budget.c:1133
+msgid "_Kind:"
+msgstr "_Seurt :"
+
+#: ../src/rep_budget.c:1140 ../src/rep_stats.c:1449
+msgid "_View:"
+msgstr "_Gwelout :"
+
+#: ../src/rep_budget.c:1249
+msgid "Result:"
+msgstr "Disoc'h :"
+
+#: ../src/rep_budget.c:1255
+msgid "Budget:"
+msgstr "Kellidsteuñv :"
+
+#: ../src/rep_budget.c:1261
+msgid "Spent:"
+msgstr "Dispignet :"
+
+#: ../src/rep_budget.c:1379
+msgid "No account is defined to be part of the budget."
+msgstr "N'eus kont ebet bet despizet da vezañ lakaet er c'hellidsteuñv."
+
+#: ../src/rep_budget.c:1380
+msgid "You should include some accounts from the account dialog."
+msgstr "Gwell e vefe deoc'h enlakaat kontoù dre voestad emziviz ar c'hontoù."
+
+#: ../src/rep_stats.c:66
+msgid "Pie"
+msgstr "Gwastell"
+
+#: ../src/rep_stats.c:66
+msgid "View results as pies"
+msgstr "Gwelout an disoc'h dre wastilli"
+
+#: ../src/rep_stats.c:68
+msgid "Edit the filter"
+msgstr "Daskemmañ ar sil"
+
+#: ../src/rep_stats.c:71 ../src/rep_time.c:69
+msgid "Export"
+msgstr "Ezporzhiañ"
+
+#. is_active
+#. name, stock id
+#: ../src/rep_stats.c:90
+msgid "Rate"
+msgstr "Feur"
+
+#. label, accelerator
+#: ../src/rep_stats.c:91
+msgid "Toggle rate"
+msgstr "Trec'haoliñ ar feur"
+
+#: ../src/rep_stats.c:143
+msgid "Tag"
+msgstr "Klav"
+
+#: ../src/rep_stats.c:144 ../src/rep_time.c:120 ../src/ui-archive.c:46
+msgid "Month"
+msgstr "Miz"
+
+#: ../src/rep_stats.c:145 ../src/rep_time.c:120 ../src/ui-archive.c:46
+msgid "Year"
+msgstr "Bloaz"
+
+#: ../src/rep_stats.c:162 ../src/ui-filter.c:88
+msgid "January"
+msgstr "Genver"
+
+#: ../src/rep_stats.c:163 ../src/ui-filter.c:89
+msgid "February"
+msgstr "C'hwevrer"
+
+#: ../src/rep_stats.c:164 ../src/ui-filter.c:90
+msgid "March"
+msgstr "Meurzh"
+
+#: ../src/rep_stats.c:165 ../src/ui-filter.c:91
+msgid "April"
+msgstr "Ebrel"
+
+#: ../src/rep_stats.c:166 ../src/rep_time.c:131 ../src/ui-filter.c:92
+msgid "May"
+msgstr "Mae"
+
+#: ../src/rep_stats.c:167 ../src/ui-filter.c:93
+msgid "June"
+msgstr "Mezheven"
+
+#: ../src/rep_stats.c:168 ../src/ui-filter.c:94
+msgid "July"
+msgstr "Gouere"
+
+#: ../src/rep_stats.c:169 ../src/ui-filter.c:95
+msgid "August"
+msgstr "Eost"
+
+#: ../src/rep_stats.c:170 ../src/ui-filter.c:96
+msgid "September"
+msgstr "Gwengolo"
+
+#: ../src/rep_stats.c:171 ../src/ui-filter.c:97
+msgid "October"
+msgstr "Here"
+
+#: ../src/rep_stats.c:172 ../src/ui-filter.c:98
+msgid "November"
+msgstr "Du"
+
+#: ../src/rep_stats.c:173 ../src/ui-filter.c:99
+msgid "December"
+msgstr "Kerzu"
+
+#. set chart title
+#. //TRANSLATORS: example 'Expense by Category'
+#: ../src/rep_stats.c:615
+#, c-format
+msgid "%s by %s"
+msgstr "%s dre %s"
+
+#: ../src/rep_stats.c:719
+msgid "expense"
+msgstr "ezkefiad"
+
+#: ../src/rep_stats.c:1044 ../src/ui-payee.c:271 ../src/ui-payee.c:408
+msgid "(no payee)"
+msgstr "(emvataer ebet)"
+
+#: ../src/rep_stats.c:1418
+msgid "Statistics Report"
+msgstr "Danevell ar stadegoù"
+
+#: ../src/rep_stats.c:1456
+msgid "_By:"
+msgstr "_Dre :"
+
+#: ../src/rep_stats.c:1463
+msgid "By _amount"
+msgstr "Dre ar s_avad"
+
+#: ../src/rep_stats.c:1586
+msgid "Balance:"
+msgstr "Mentelad :"
+
+#: ../src/rep_stats.c:1592
+msgid "Income:"
+msgstr "Enkefiad :"
+
+#: ../src/rep_stats.c:1599
+msgid "Expense:"
+msgstr "Ezkefiad :"
+
+#: ../src/rep_time.c:120 ../src/ui-archive.c:46
+msgid "Day"
+msgstr "Deiz"
+
+#: ../src/rep_time.c:120 ../src/ui-archive.c:46
+msgid "Week"
+msgstr "Sizhun"
+
+#: ../src/rep_time.c:120
+msgid "Quarter"
+msgstr "Trimiziad"
+
+#: ../src/rep_time.c:127
+msgid "Jan"
+msgstr "Gen"
+
+#: ../src/rep_time.c:128
+msgid "Feb"
+msgstr "C'hwe"
+
+#: ../src/rep_time.c:129
+msgid "Mar"
+msgstr "Meu"
+
+#: ../src/rep_time.c:130
+msgid "Apr"
+msgstr "Ebr"
+
+#: ../src/rep_time.c:132
+msgid "Jun"
+msgstr "Mez"
+
+#: ../src/rep_time.c:133
+msgid "Jul"
+msgstr "Gou"
+
+#: ../src/rep_time.c:134
+msgid "Aug"
+msgstr "Eos"
+
+#: ../src/rep_time.c:135
+msgid "Sep"
+msgstr "Gwe"
+
+#: ../src/rep_time.c:136
+msgid "Oct"
+msgstr "Her"
+
+#: ../src/rep_time.c:137
+msgid "Nov"
+msgstr "Du"
+
+#: ../src/rep_time.c:138
+msgid "Dec"
+msgstr "Ker"
+
+#. //TRANSLATORS: example 'Expense by Category'
+#: ../src/rep_time.c:548
+#, c-format
+msgid "%s Over Time"
+msgstr "%s a-hed an amzer"
+
+#. header
+#: ../src/rep_time.c:581 ../src/rep_time.c:1627
+msgid "Time slice"
+msgstr "Trovezh"
+
+#: ../src/rep_time.c:1229
+msgid "Trend Time Report"
+msgstr "Danevell an tuadur dre an amzer"
+
+#: ../src/rep_time.c:1277
+msgid "_Account:"
+msgstr "_Kont"
+
+#: ../src/rep_time.c:1286 ../src/ui-archive.c:823 ../src/ui-assign.c:769
+#: ../src/ui-hbfile.c:254 ../src/ui-transaction.c:1146
+msgid "_Category:"
+msgstr "_Rummad :"
+
+#: ../src/rep_time.c:1295 ../src/ui-archive.c:816 ../src/ui-assign.c:783
+#: ../src/ui-transaction.c:1138
+msgid "_Payee:"
+msgstr "_Emvataer :"
+
+#: ../src/rep_time.c:1307
+msgid "_Cumulate"
+msgstr "_Dassammañ"
+
+#: ../src/rep_time.c:1312
+msgid "_View by:"
+msgstr "_Gwelout dre :"
+
+#: ../src/rep_vehicle.c:582
+msgid "Vehicle cost report"
+msgstr "Danevelloù a-fet koust ar c'harbed"
+
+#: ../src/rep_vehicle.c:614
+msgid "Vehi_cle:"
+msgstr "Kar_bed :"
+
+#: ../src/rep_vehicle.c:683
+msgid "Meter:"
+msgstr "Pellder :"
+
+#: ../src/rep_vehicle.c:687
+msgid "Consumption:"
+msgstr "Bevezerezh :"
+
+#: ../src/rep_vehicle.c:691
+msgid "Fuel cost:"
+msgstr "Koust an strilheoul :"
+
+#: ../src/rep_vehicle.c:695
+msgid "Other cost:"
+msgstr "Koust all :"
+
+#: ../src/rep_vehicle.c:699
+msgid "Total cost:"
+msgstr "Koust hollek :"
+
+#.
+#. LST_CAR_DATE,
+#. LST_CAR_WORDING,
+#. LST_CAR_METER,
+#. LST_CAR_FUEL,
+#. LST_CAR_PRICE,
+#. LST_CAR_AMOUNT,
+#. LST_CAR_DIST,
+#. LST_CAR_100KM
+#.
+#.
+#. column: Wording
+#.
+#. column = gtk_tree_view_column_new();
+#. gtk_tree_view_column_set_title(column, _("Wording"));
+#. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+#. renderer = gtk_cell_renderer_text_new();
+#. gtk_tree_view_column_pack_start(column, renderer, TRUE);
+#. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_WORDING);
+#. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
+#.
+#. column: Meter
+#: ../src/rep_vehicle.c:1000
+msgid "Meter"
+msgstr "Pellder"
+
+#. column: Fuel load
+#: ../src/rep_vehicle.c:1004
+msgid "Fuel"
+msgstr "Trelosk"
+
+#. column: Price by unit
+#: ../src/rep_vehicle.c:1008
+msgid "Price"
+msgstr "Priz"
+
+#. column: Distance done
+#: ../src/rep_vehicle.c:1016
+msgid "Dist."
+msgstr "Pellder"
+
+#: ../src/ui-account.c:38
+msgid "(no type)"
+msgstr "(rizh ebet)"
+
+#: ../src/ui-account.c:40 ../src/ui-widgets.c:755
+msgid "Cash"
+msgstr "Arc'hant liñvel"
+
+#: ../src/ui-account.c:41
+msgid "Asset"
+msgstr "Fred"
+
+#: ../src/ui-account.c:42 ../src/ui-widgets.c:753
+msgid "Credit card"
+msgstr "Kartenn gred"
+
+#: ../src/ui-account.c:43
+msgid "Liability"
+msgstr "Diwan"
+
+#: ../src/ui-account.c:366 ../src/ui-assign.c:115 ../src/ui-widgets.c:752
+msgid "(none)"
+msgstr "(tra ebet)"
+
+#: ../src/ui-account.c:524 ../src/ui-assign.c:266 ../src/ui-payee.c:538
+#: ../src/ui-pref.c:2643
+msgid "Visible"
+msgstr "Hewel"
+
+#: ../src/ui-account.c:953 ../src/ui-account.c:1039
+msgid "Account name"
+msgstr "Anv ar gont"
+
+#: ../src/ui-account.c:960
+#, c-format
+msgid ""
+"Cannot add an account '%s',\n"
+"this name already exists."
+msgstr ""
+"N'haller ket ouzhpennañ ur gont '%s',\n"
+"an anv-mañ zo anezhañ endeo."
+
+#: ../src/ui-account.c:1001
+msgid "Remove not allowed"
+msgstr "N'eo ket aotreet an dilemel"
+
+#: ../src/ui-account.c:1002
+msgid "This account is used and cannot be removed."
+msgstr "War arver emañ ar gont-mañ ha n'hall ket bezañ dilamet."
+
+#: ../src/ui-account.c:1170
+msgid "Manage Accounts"
+msgstr "Ardeiñ kontoù"
+
+#: ../src/ui-account.c:1209
+msgid ""
+"Drag & drop to change the order\n"
+"Double-click to rename"
+msgstr ""
+"Riklañ & leuskel da gemmañ an urzh\n"
+"Daouglikañ da adenvel"
+
+#.
+#. label = make_label(_("Default currency"), 0.0, 0.5);
+#. gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
+#. gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 3, row, row+1);
+#.
+#. row++;
+#. label = make_label(_("Code:"), 0, 0.5);
+#. //----------------------------------------- l, r, t, b
+#. gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
+#. widget = make_label(NULL, 0.0, 0.0);
+#. data->LB_default = widget;
+#. gtk_table_attach (GTK_TABLE (table), widget, 2, 3, row, row+1, (GtkAttachOptions) (GTK_FILL|GTK_EXPAND), (GtkAttachOptions) (0), 0, 0);
+#.
+#.
+#.
+#. row++;
+#. widget = gtk_button_new_with_mnemonic (_("_Change"));
+#. data->BT_default = widget;
+#. gtk_table_attach (GTK_TABLE (table), widget, 2, 3, row, row+1, (GtkAttachOptions) (GTK_FILL|GTK_EXPAND), (GtkAttachOptions) (0), 0, 0);
+#.
+#.
+#. row++;
+#.
+#: ../src/ui-account.c:1235 ../src/ui-hbfile.c:203 ../src/ui-pref.c:87
+#: ../src/ui-pref.c:1507 ../src/ui-pref.c:1894
+msgid "General"
+msgstr "Hollek"
+
+#: ../src/ui-account.c:1260
+msgid "Start _balance:"
+msgstr "Kregiñ gant ar _ventelad :"
+
+#: ../src/ui-account.c:1269
+msgid "this account was _closed"
+msgstr "serret e oa bet ar gont-mañ"
+
+#: ../src/ui-account.c:1275
+msgid "Current check number"
+msgstr "Niver ar chekenn vremanel"
+
+#: ../src/ui-account.c:1280
+msgid "Checkbook _1:"
+msgstr "Karned chekennoù _1 :"
+
+#: ../src/ui-account.c:1287
+msgid "Checkbook _2:"
+msgstr "Karned chekennoù _2 :"
+
+#: ../src/ui-account.c:1302 ../src/ui-budget.c:968
+msgid "Options"
+msgstr "Dibarzhioù"
+
+#: ../src/ui-account.c:1307
+msgid "Institution"
+msgstr "Ensavadur"
+
+#: ../src/ui-account.c:1319 ../src/ui-assist-start.c:339
+msgid "N_umber:"
+msgstr "Ni_ver :"
+
+#: ../src/ui-account.c:1326
+msgid "Limits"
+msgstr "Bevennoù"
+
+#: ../src/ui-account.c:1333
+msgid "_Min. balance:"
+msgstr "_Mentelad izek :"
+
+#: ../src/ui-account.c:1340
+msgid "Report exclusion"
+msgstr "Lakaat an ezlakadenn en danevell"
+
+#: ../src/ui-account.c:1345
+msgid "exclude from account _summary"
+msgstr "ezlakaat diouzh _berrskrid ar gont"
+
+#: ../src/ui-account.c:1350
+msgid "exclude from the _budget"
+msgstr "ezlakaat diouzh ar c'hellid_steuñv"
+
+#: ../src/ui-account.c:1355
+msgid "exclude from any _reports"
+msgstr "ezlakaat diouzh an holl _zanevelloù"
+
+#: ../src/ui-archive.c:48
+msgid "Possible"
+msgstr "Gallout a ra bezañ"
+
+#: ../src/ui-archive.c:48
+msgid "Before"
+msgstr "Kent"
+
+#: ../src/ui-archive.c:48
+msgid "After"
+msgstr "Goude"
+
+#: ../src/ui-archive.c:195
+#, c-format
+msgid "(archive %d)"
+msgstr "(diell %d)"
+
+#: ../src/ui-archive.c:746
+msgid "Transaction detail"
+msgstr "Munudoù an treuzgread"
+
+#: ../src/ui-archive.c:751 ../src/ui-transaction.c:1067
+msgid "_Amount:"
+msgstr "_Savad :"
+
+#: ../src/ui-archive.c:759 ../src/ui-transaction.c:1076
+msgid "Toggle amount sign"
+msgstr "Trec'haoliñ arouez ar savad"
+
+#: ../src/ui-archive.c:768
+msgid "Pay_ment:"
+msgstr "Tala_dur :"
+
+#: ../src/ui-archive.c:775 ../src/ui-transaction.c:1097
+msgid "Of notebook _2"
+msgstr "Eus karned _2"
+
+#: ../src/ui-archive.c:789
+msgid "_To account:"
+msgstr "_Er gont :"
+
+#: ../src/ui-archive.c:830 ../src/ui-filter.c:1040
+msgid "_Memo:"
+msgstr "_Kounger"
+
+#: ../src/ui-archive.c:844 ../src/ui-transaction.c:1175
+msgid "Re_mind"
+msgstr "Der_c'hel soñj"
+
+#: ../src/ui-archive.c:863
+msgid "Scheduled insertion"
+msgstr "Enlakadenn steuñvet"
+
+#: ../src/ui-archive.c:868
+msgid "_Activate"
+msgstr "_Gweredekaat"
+
+#: ../src/ui-archive.c:873
+msgid "Next _date:"
+msgstr "Deiziad _da zont :"
+
+#: ../src/ui-archive.c:880
+msgid "Ever_y:"
+msgstr "Be_p :"
+
+#: ../src/ui-archive.c:895
+msgid "Week end:"
+msgstr "Dibenn sizhun :"
+
+#: ../src/ui-archive.c:906
+msgid "_Stop after:"
+msgstr "_Arsaviñ goude :"
+
+#: ../src/ui-archive.c:914
+msgid "posts"
+msgstr "a bostadurioù"
+
+#: ../src/ui-archive.c:929
+msgid "Manage scheduled/template transactions"
+msgstr "Ardeiñ an treuzgreadoù steuñvet pe batrom"
+
+#: ../src/ui-assign.c:509
+#, c-format
+msgid "(assignment %d)"
+msgstr "(derannadur %d)"
+
+#: ../src/ui-assign.c:668
+msgid "Manage Assignments"
+msgstr "Ardeiñ an derannadurioù"
+
+#: ../src/ui-assign.c:737
+msgid "Condition"
+msgstr "Diferadenn"
+
+#: ../src/ui-assign.c:742
+msgid "_Field:"
+msgstr "_Maezienn :"
+
+#: ../src/ui-assign.c:749
+msgid "Con_tains:"
+msgstr "Enderc'hel a ra :"
+
+#: ../src/ui-assign.c:756 ../src/ui-filter.c:1036
+msgid "Case _sensitive"
+msgstr "Teurel e_vezh ouzh an direnneg"
+
+#: ../src/ui-assign.c:764
+msgid "Assignments"
+msgstr "Derannadurioù"
+
+#: ../src/ui-assign.c:779 ../src/ui-transaction.c:1152
+msgid ""
+"Autocompletion and direct seizure\n"
+"is available for Category"
+msgstr ""
+"Hegerz eo an emglokaat hag\n"
+"an emenankañ evit ar rummadoù"
+
+#: ../src/ui-assign.c:793 ../src/ui-transaction.c:1143
+msgid ""
+"Autocompletion and direct seizure\n"
+"is available for Payee"
+msgstr ""
+"Hegerz eo an emglokaat hag\n"
+"an emenankañ evit an emvataerion"
+
+#: ../src/ui-assist-start.c:122
+#, c-format
+msgid "New HomeBank file (%d of %d)"
+msgstr "Restr nevez mod HomeBank file (%d eus %d)"
+
+#: ../src/ui-assist-start.c:153
+msgid "Not found"
+msgstr "N'eo ket bet kavet"
+
+#: ../src/ui-assist-start.c:196
+msgid "Owner:"
+msgstr "Perc'hennour :"
+
+#: ../src/ui-assist-start.c:208
+msgid "File properties"
+msgstr "Perzhioù ar restr"
+
+#: ../src/ui-assist-start.c:237
+msgid "System detection"
+msgstr "Dinoadur ar reizhiad"
+
+#: ../src/ui-assist-start.c:246
+msgid "Languages:"
+msgstr "Yezhoù :"
+
+#: ../src/ui-assist-start.c:253
+msgid "Preset file:"
+msgstr "Ragarventennañ ar restr :"
+
+#: ../src/ui-assist-start.c:271
+msgid "Initialize my categories with this file"
+msgstr "Deraouekaat ma rummadoù gant ar restr-mañ"
+
+#: ../src/ui-assist-start.c:283
+msgid "Preset categories"
+msgstr "Ragarventennañ ar rummadoù"
+
+#: ../src/ui-assist-start.c:312
+msgid "Informations"
+msgstr "Stlennoù"
+
+#: ../src/ui-assist-start.c:351
+msgid "Balances"
+msgstr "Menteladoù"
+
+#: ../src/ui-assist-start.c:356
+msgid "_Initial:"
+msgstr "_Derou :"
+
+#: ../src/ui-assist-start.c:368
+msgid "_Overdrawn at:"
+msgstr "_Trazennet gant :"
+
+#: ../src/ui-assist-start.c:385
+msgid "Create an account"
+msgstr "Krouiñ ur gont"
+
+#: ../src/ui-assist-start.c:402
+msgid "This is a confirmation page, press 'Apply' to apply changes"
+msgstr ""
+"Ur bajennad da gadarnaat eo homañ. Pouezit war 'Arloañ' da arloañ ar c'hemmoù"
+
+#: ../src/ui-assist-start.c:408
+msgid "Confirmation"
+msgstr "Kadarnaat"
+
+#: ../src/ui-budget.c:438 ../src/ui-category.c:938
+msgid "File format error"
+msgstr "Fazi mentrezh ar restr"
+
+#: ../src/ui-budget.c:439
+msgid ""
+"The csv file must contains the exact numbers of column,\n"
+"separated by a semi-colon, read the help for more details."
+msgstr ""
+"Gant ar restr mod CSV e rank bezañ an niver rik a vannoù,\n"
+"dispartiet gant ur pik-skej, lennit ar skoazell da c'houzout hiroc'h."
+
+#: ../src/ui-budget.c:852
+msgid "Manage Budget"
+msgstr "Ardeiñ ar c'hellidsteuñv"
+
+#: ../src/ui-budget.c:912
+msgid "Budget for each month"
+msgstr "Kellidsteuñ evit bep miz"
+
+#: ../src/ui-budget.c:921
+msgid "is the same"
+msgstr "zo heñvel"
+
+#: ../src/ui-budget.c:932
+msgid "_Clear input"
+msgstr "_Skarzhañ an enankad"
+
+#: ../src/ui-budget.c:944
+msgid "is different"
+msgstr "zo disheñvel"
+
+#: ../src/ui-budget.c:973
+msgid "_Force monitoring this category"
+msgstr "_Bountañ war ouarnerezh ar rummad-mañ"
+
+#: ../src/ui-budget.c:984 ../src/ui-category.c:1633 ../src/ui-payee.c:1034
+msgid "_Import"
+msgstr "Enporzh_iañ"
+
+#: ../src/ui-budget.c:988 ../src/ui-category.c:1637 ../src/ui-payee.c:1038
+msgid "E_xport"
+msgstr "E_zporzhiañ"
+
+#: ../src/ui-category.c:939
+msgid ""
+"The csv file must contains the exact numbers of column,\n"
+"separated by a semi-colon, please see the help for more details."
+msgstr ""
+"Gant ar restr mod CSV e rank bezañ an niver rik a vannoù,\n"
+"dispartiet gant ur pik-skej, lennit ar skoazell da c'houzout hiroc'h."
+
+#: ../src/ui-category.c:1079 ../src/ui-payee.c:676
+msgid "Modify..."
+msgstr "Daskemmañ..."
+
+#: ../src/ui-category.c:1103
+msgid "_Income"
+msgstr "_Enkefiad"
+
+#: ../src/ui-category.c:1151
+#, c-format
+msgid ""
+"Cannot rename this Category,\n"
+"from '%s' to '%s',\n"
+"this name already exists."
+msgstr ""
+"N'haller ket adenvel ar rummad-mañ,\n"
+"eus '%s' da '%s',\n"
+"an anv zo anezhañ endeo."
+
+#: ../src/ui-category.c:1215 ../src/ui-payee.c:777
+msgid "Move to..."
+msgstr "Dilec'hiañ betek..."
+
+#: ../src/ui-category.c:1253
+msgid "Move this category to another one ?"
+msgstr "Dilec'hiañ ar rummad-mañ betek unan all ?"
+
+#: ../src/ui-category.c:1254 ../src/ui-payee.c:818
+#, c-format
+msgid ""
+"This will replace '%s' by '%s',\n"
+"and then remove '%s'"
+msgstr ""
+"An dra-se a amsavo  '%s' dre '%s',\n"
+"ha neuze e tilamo '%s'"
+
+#: ../src/ui-category.c:1318
+msgid "Remove a category ?"
+msgstr "Dilemel ur rummad ?"
+
+#: ../src/ui-category.c:1319
+#, c-format
+msgid ""
+"If you remove '%s', archive and transaction referencing this category\n"
+"will set place to 'no category'"
+msgstr ""
+"Mar dilamot '%s' e vo skrammet 'rummad ebet' gant\n"
+"an dielloù ha daveañ an treuzgreadoù."
+
+#: ../src/ui-category.c:1537
+msgid "Manage Categories"
+msgstr "Ardeiñ ar rummadoù"
+
+#: ../src/ui-category.c:1575
+msgid "I_ncome"
+msgstr "E_nkefiad"
+
+#: ../src/ui-category.c:1626 ../src/ui-payee.c:1027
+msgid "_Move"
+msgstr "_Dilec'hiañ"
+
+#: ../src/ui-dialogs.c:184
+msgid "Import from CSV"
+msgstr "Enporzhiañ diouzh ur restr mod CSV"
+
+#: ../src/ui-dialogs.c:246
+msgid "Open homebank file"
+msgstr "Digeriñ ur restr mod Homebank"
+
+#: ../src/ui-dialogs.c:251
+msgid "Save homebank file as"
+msgstr "Enrollañ ar restr mod Homebank evel"
+
+#: ../src/ui-dialogs.c:262
+msgid "HomeBank files"
+msgstr "Restroù mod Homebank"
+
+#: ../src/ui-dialogs.c:364
+msgid ""
+"Do you want to save the changes\n"
+"in the current file ?"
+msgstr ""
+"Ha fellout a ra deoc'h enrollañ ar c'hemmoù\n"
+"er restr vremanel ?"
+
+#: ../src/ui-dialogs.c:368
+#, c-format
+msgid ""
+"If you do not save, some changes will be\n"
+"definitively lost: %d."
+msgstr ""
+"Na n'enrollot ket e vo kollet ul lod eus\n"
+"ar c'hemmoù da vat : %d."
+
+#: ../src/ui-dialogs.c:373
+msgid "Do _not save"
+msgstr "Arabat e_nrollañ"
+
+#: ../src/ui-dialogs.c:476
+msgid "Select among possible transactions..."
+msgstr "Diuzañ e-touez an treuzgread diskouezet..."
+
+#: ../src/ui-dialogs.c:479
+msgid ""
+"HomeBank has found some transaction that may be the associated transaction "
+"for the internal transfer."
+msgstr ""
+"Treuzgreadoù a c'hallfe bezañ an treuzgread kevredet evit an treuzkas "
+"diabarzh zo bet kavet gant Homebank."
+
+#: ../src/ui-dialogs.c:491
+msgid "Select an action:"
+msgstr "Diuzañ ur gwezh :"
+
+#: ../src/ui-dialogs.c:496
+msgid "create a new transaction"
+msgstr "krouiñ un treuzgread nevez"
+
+#: ../src/ui-dialogs.c:499
+msgid "select an existing transaction"
+msgstr "diuzañ un treuzgread ez eus anezhañ"
+
+#: ../src/ui-filter.c:52
+msgid "Any Type"
+msgstr "Ne vern pe rizh"
+
+#: ../src/ui-filter.c:57
+msgid "Uncategorized"
+msgstr "Dirummad"
+
+#: ../src/ui-filter.c:58
+msgid "Unreconciled"
+msgstr "Digompez"
+
+#: ../src/ui-filter.c:60
+msgid "Any Status"
+msgstr "Ne vern pe stad"
+
+#: ../src/ui-filter.c:65
+msgid "This Month"
+msgstr "Er miz-mañ"
+
+#: ../src/ui-filter.c:66
+msgid "Last Month"
+msgstr "Er miz tremenet"
+
+#: ../src/ui-filter.c:67
+msgid "This Quarter"
+msgstr "En trimiziad-mañ"
+
+#: ../src/ui-filter.c:68
+msgid "Last Quarter"
+msgstr "En trimiziad diwezhañ"
+
+#: ../src/ui-filter.c:69
+msgid "This Year"
+msgstr "Er bloaz-mañ"
+
+#: ../src/ui-filter.c:70
+msgid "Last Year"
+msgstr "Er bloaz tremenet"
+
+#: ../src/ui-filter.c:72
+msgid "Last 30 days"
+msgstr "E korf an 30 deiz diwezhañ"
+
+#: ../src/ui-filter.c:73
+msgid "Last 60 days"
+msgstr "E korf an 60 deiz diwezhañ"
+
+#: ../src/ui-filter.c:74
+msgid "Last 90 days"
+msgstr "E korf an 90 deiz diwezhañ"
+
+#: ../src/ui-filter.c:75
+msgid "Last 12 months"
+msgstr "E korf an 12 miz diwezhañ"
+
+#: ../src/ui-filter.c:77
+msgid "Other..."
+msgstr "All..."
+
+#: ../src/ui-filter.c:79
+msgid "All date"
+msgstr "An holl zeiziadoù"
+
+#: ../src/ui-filter.c:87
+msgid "All month"
+msgstr "An holl vizioù"
+
+#: ../src/ui-filter.c:745 ../src/ui-filter.c:794 ../src/ui-filter.c:843
+#: ../src/ui-filter.c:960 ../src/ui-filter.c:1027 ../src/ui-filter.c:1092
+#: ../src/ui-filter.c:1150 ../src/ui-filter.c:1219
+msgid "_Option:"
+msgstr "_Dibarzh :"
+
+#: ../src/ui-filter.c:766 ../src/ui-filter.c:815 ../src/ui-filter.c:864
+msgid "All"
+msgstr "An holl anezho"
+
+#: ../src/ui-filter.c:770 ../src/ui-filter.c:819 ../src/ui-filter.c:868
+msgid "None"
+msgstr "Tra ebet"
+
+#: ../src/ui-filter.c:774 ../src/ui-filter.c:823 ../src/ui-filter.c:872
+msgid "Invert"
+msgstr "Tuginañ"
+
+#: ../src/ui-filter.c:950
+msgid "Filter Date"
+msgstr "Silañ dre an deiziad"
+
+#: ../src/ui-filter.c:984
+msgid "_Month:"
+msgstr "_Miz :"
+
+#: ../src/ui-filter.c:990
+msgid "_Year:"
+msgstr "_Bloaz :"
+
+#: ../src/ui-filter.c:1018
+msgid "Filter Text"
+msgstr "Silañ dre an destenn"
+
+#: ../src/ui-filter.c:1046 ../src/ui-transaction.c:1102
+msgid "_Info:"
+msgstr "_Keloù :"
+
+#: ../src/ui-filter.c:1053
+msgid "_Tag:"
+msgstr "Kl_av :"
+
+#: ../src/ui-filter.c:1083
+msgid "Filter Amount"
+msgstr "Silañ ar savad"
+
+#: ../src/ui-filter.c:1141
+msgid "Filter Status"
+msgstr "Silañ dre ar stad"
+
+#: ../src/ui-filter.c:1161
+msgid "reconciled"
+msgstr "kompezet"
+
+#: ../src/ui-filter.c:1165
+msgid "remind"
+msgstr "derc'hel soñj"
+
+#: ../src/ui-filter.c:1170
+msgid "Force:"
+msgstr "Kreñvder :"
+
+#: ../src/ui-filter.c:1176
+msgid "display 'Added'"
+msgstr "skrammañ 'Ouzhpennet'"
+
+#: ../src/ui-filter.c:1180
+msgid "display 'Edited'"
+msgstr "skrammañ 'Embannet'"
+
+#: ../src/ui-filter.c:1209
+msgid "Filter Payment"
+msgstr "Silañ dre an taladur"
+
+#: ../src/ui-filter.c:1314
+msgid "Edit Filter"
+msgstr "Embann ar sil"
+
+#: ../src/ui-filter.c:1363
+msgid "Paymode"
+msgstr "Doare da dalañ"
+
+#: ../src/ui-filter.c:1373
+msgid "Text"
+msgstr "Testenn"
+
+#: ../src/ui-hbfile.c:171
+msgid "HomeBank file properties"
+msgstr "Perzhioù ar restr mod Homebank"
+
+#: ../src/ui-hbfile.c:208
+msgid "_Owner:"
+msgstr "_Perc'henner :"
+
+#: ../src/ui-hbfile.c:216
+msgid "Scheduled transaction"
+msgstr "Treuzgread steuñvet"
+
+#: ../src/ui-hbfile.c:221
+msgid "add until"
+msgstr "ouzhpennañ betek"
+
+#: ../src/ui-hbfile.c:230
+msgid "of each month (excluded)"
+msgstr "eus bep miz (ezlakaet)"
+
+#: ../src/ui-hbfile.c:234
+msgid "add"
+msgstr "ouzhpennañ"
+
+#. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
+#: ../src/ui-hbfile.c:244
+msgid "days in advance the current date"
+msgstr "a zeizioù a-raok an deiziad bremanel"
+
+#: ../src/ui-payee.c:725
+#, c-format
+msgid ""
+"Cannot rename this Payee,\n"
+"from '%s' to '%s',\n"
+"this name already exists."
+msgstr ""
+"N'haller ket adenvel an emvataer-mañ,\n"
+"eus '%s' da '%s',\n"
+"an anv zo anezhañ endeo."
+
+#: ../src/ui-payee.c:817
+msgid "Move this payee to another one ?"
+msgstr "Dilec'hiañ an emvataer-mañ en unan all ?"
+
+#: ../src/ui-payee.c:879
+msgid "Remove a payee ?"
+msgstr "Dilemel un emvataer ?"
+
+#: ../src/ui-payee.c:880
+#, c-format
+msgid ""
+"If you remove '%s', archive and transaction referencing this payee\n"
+"will set place to 'no payee'"
+msgstr ""
+"Mar dilamot '%s' e vo skrammet 'emvataer ebet' gant\n"
+"an dielloù ha daveañ an treuzgreadoù."
+
+#: ../src/ui-payee.c:964
+msgid "Manage Payees"
+msgstr "Ardeiñ an emvataerion"
+
+#: ../src/ui-pref.c:88
+msgid "Interface"
+msgstr "Ketal"
+
+#: ../src/ui-pref.c:90
+msgid "Display format"
+msgstr "Mentrezh ar skrammañ"
+
+#: ../src/ui-pref.c:91
+msgid "Import/Export"
+msgstr "Enporzhiañ/Ezporzhiañ"
+
+#: ../src/ui-pref.c:92
+msgid "Report"
+msgstr "Danevell"
+
+#: ../src/ui-pref.c:93
+msgid "Euro minor"
+msgstr "Moneiz vroadel kent an euro"
+
+#: ../src/ui-pref.c:98
+msgid "System defaults"
+msgstr "Arventennoù dre ziouer ar reizhiad"
+
+#: ../src/ui-pref.c:99
+msgid "Icons only"
+msgstr "Arlunioù hepken"
+
+#: ../src/ui-pref.c:100
+msgid "Text only"
+msgstr "Testenn hepken"
+
+#: ../src/ui-pref.c:101
+msgid "Text under icons"
+msgstr "Testenn dindan an arlunioù"
+
+#: ../src/ui-pref.c:102
+msgid "Text beside icons"
+msgstr "Testenn e-kichen an arlunioù"
+
+#: ../src/ui-pref.c:108
+msgid "Tango light"
+msgstr "Tango sklaer"
+
+#: ../src/ui-pref.c:109
+msgid "Tango medium"
+msgstr "Tango etre"
+
+#: ../src/ui-pref.c:110
+msgid "Tango dark"
+msgstr "Tango teñval"
+
+#: ../src/ui-pref.c:115
+msgid "m-d-y"
+msgstr "m-d-b"
+
+#: ../src/ui-pref.c:116
+msgid "d-m-y"
+msgstr "d-m-b"
+
+#: ../src/ui-pref.c:117
+msgid "y-m-d"
+msgstr "b-m-d"
+
+#: ../src/ui-pref.c:128
+msgid "Ignore"
+msgstr "Leuskel a-gostez"
+
+#: ../src/ui-pref.c:129
+msgid "Append to Info"
+msgstr "Ouzhpennañ da Stlennoù"
+
+#: ../src/ui-pref.c:130
+msgid "Append to Memo"
+msgstr "Ouzhpennañ da Kounger"
+
+#: ../src/ui-pref.c:503
+msgid "System Language"
+msgstr "Yezh ar reizhiad"
+
+#: ../src/ui-pref.c:728
+msgid "Choose a default HomeBank files folder"
+msgstr "Dibab ur c'havlec'hiad restroù mod Homebank dre ziouer"
+
+#: ../src/ui-pref.c:733
+msgid "Choose a default import folder"
+msgstr "Dibab ur c'havlec'hiad enporzhiañ dre ziouer"
+
+#: ../src/ui-pref.c:738
+msgid "Choose a default export folder"
+msgstr "Dibab ur c'havlec'hiad ezporzhiañ dre ziouer"
+
+#: ../src/ui-pref.c:1312 ../src/ui-pref.c:1673
+msgid "Date options"
+msgstr "Dibarzhioù an deiziad"
+
+#: ../src/ui-pref.c:1327
+msgid "OFX/QFX options"
+msgstr "Dibarzhioù ar restroù mod OFX/QFX"
+
+#: ../src/ui-pref.c:1332
+msgid "_Memo field:"
+msgstr "Maezienn ar c'hounger :"
+
+#: ../src/ui-pref.c:1342 ../src/ui-pref.c:2050
+msgid "Files folder"
+msgstr "Kavlec'hiad restroù"
+
+#: ../src/ui-pref.c:1348
+msgid "_Import:"
+msgstr "E_nporzhiañ :"
+
+#: ../src/ui-pref.c:1364
+msgid "_Export:"
+msgstr "_Ezporzhiañ :"
+
+#: ../src/ui-pref.c:1403
+msgid "Initial filter"
+msgstr "Sil deraouiñ"
+
+#: ../src/ui-pref.c:1408 ../src/ui-pref.c:1821 ../src/ui-pref.c:2041
+msgid "Date _range:"
+msgstr "Ledad _deiziadoù :"
+
+#: ../src/ui-pref.c:1418
+msgid "Charts options"
+msgstr "Dibarzhioù an diervadoù"
+
+#: ../src/ui-pref.c:1423
+msgid "Color Scheme:"
+msgstr "Livaoueg :"
+
+#: ../src/ui-pref.c:1433
+msgid "Statistics options"
+msgstr "Dibarzhioù ar stadegoù"
+
+#: ../src/ui-pref.c:1438
+msgid "Show by _amount"
+msgstr "Diskouez dre s_avad"
+
+#: ../src/ui-pref.c:1443
+msgid "Show _rate column"
+msgstr "Diskouez bann ar feu_r"
+
+#: ../src/ui-pref.c:1448 ../src/ui-pref.c:1458
+msgid "Show _details"
+msgstr "Diskouez ar munu_doù"
+
+#: ../src/ui-pref.c:1453
+msgid "Budget options"
+msgstr "Dibarzhioù ar c'hellidsteuñv"
+
+#: ../src/ui-pref.c:1512
+msgid "_Enable"
+msgstr "_Gweredekaat"
+
+#: ../src/ui-pref.c:1517
+msgid "Fill from:"
+msgstr "Leuniañ diouzh :"
+
+#: ../src/ui-pref.c:1526
+msgid "Country:"
+msgstr "Bro :"
+
+#: ../src/ui-pref.c:1535
+msgid "Value:"
+msgstr "Talvoud :"
+
+#: ../src/ui-pref.c:1544
+msgid "Numbers format"
+msgstr "Mentrezh an niveroù"
+
+#: ../src/ui-pref.c:1549 ../src/ui-pref.c:1717
+msgid "Symbol:"
+msgstr "Arouez :"
+
+#: ../src/ui-pref.c:1556 ../src/ui-pref.c:1724
+msgid "Is prefix"
+msgstr "A dalv da rakger"
+
+#: ../src/ui-pref.c:1561 ../src/ui-pref.c:1729
+msgid "Decimal char:"
+msgstr "Arouezenn dekrannel :"
+
+#: ../src/ui-pref.c:1568 ../src/ui-pref.c:1736
+msgid "Grouping char:"
+msgstr "Arouezenn strollañ :"
+
+#: ../src/ui-pref.c:1575 ../src/ui-pref.c:1743
+msgid "_Frac digits:"
+msgstr "Si_froù goude ar skej :"
+
+#: ../src/ui-pref.c:1678
+msgid "_Date format:"
+msgstr "_Mentrezh an deiziad :"
+
+#: ../src/ui-pref.c:1687
+msgid ""
+"%a locale's abbreviated weekday name.\n"
+"%A locale's full weekday name. \n"
+"%b locale's abbreviated month name. \n"
+"%B locale's full month name. \n"
+"%c locale's appropriate date and time representation. \n"
+"%C century number (the year divided by 100 and truncated to an integer) as a "
+"decimal number [00-99]. \n"
+"%d day of the month as a decimal number [01,31]. \n"
+"%D same as %m/%d/%y. \n"
+"%e day of the month as a decimal number [1,31]; a single digit is preceded "
+"by a space. \n"
+"%j day of the year as a decimal number [001,366]. \n"
+"%m month as a decimal number [01,12]. \n"
+"%p locale's appropriate date representation. \n"
+"%y year without century as a decimal number [00,99]. \n"
+"%Y year with century as a decimal number. \n"
+msgstr ""
+"%a anv deiz ar sizhun berraet evit ar yezh-mañ.\n"
+"%A anv deiz ar sizhun klok evit ar yezh-mañ. \n"
+"%b anv ar miz berraet evit ar yezh-mañ. \n"
+"%B anv ar miz klok evit ar yezh-mañ. \n"
+"%c doare dereat da ziskouez an eus hag an deiz evit ar yezh-mañ. \n"
+"%C niver ar c'hantved (ar bloaz rannet dre 100 ha kempennet d'un niver "
+"kevan) evel un niver dekrannel [00-99]. \n"
+"%d deiz ar miz evel un niver dekrannel [01,31]. \n"
+"%D heñvel ouzh %m/%d/%y. \n"
+"%e deiz ar miz evel un niver dekrannel [1,31]; un esaou ez eus kent ur sifr "
+"eeun. \n"
+"%j deiz ar bloaz evel un niver dekrannel [001,366]. \n"
+"%m miz evel un niver dekrannel [01,12]. \n"
+"%p doare dereat da ziskouez an deiziad. \n"
+"%y bloaz hep ar c'hantved evel un niver dekrannel [00,99]. \n"
+"%Y bloaz gant ar c'hantved evel un niver dekrannel. \n"
+
+#: ../src/ui-pref.c:1712
+msgid "Numbers options"
+msgstr "Dibarzhioù an niveroù"
+
+#: ../src/ui-pref.c:1777
+msgid "Measurement units"
+msgstr "Unanennoù muzuliañ"
+
+#: ../src/ui-pref.c:1787
+msgid "Use _miles for meter"
+msgstr "Ober gant _mileoù evit ar pellder"
+
+#: ../src/ui-pref.c:1792
+msgid "Use _galons for fuel"
+msgstr "Ober gant _galonoù evit an trelosk"
+
+#: ../src/ui-pref.c:1816
+msgid "Transaction window"
+msgstr "Prenestr an treuzgread"
+
+#: ../src/ui-pref.c:1829
+msgid "Hide reconciled transactions"
+msgstr "Kuzhat an treuzgreadoù kompezet"
+
+#: ../src/ui-pref.c:1835
+msgid "Multiple add"
+msgstr "Ouzhpennadurioù lies"
+
+#: ../src/ui-pref.c:1840
+msgid "Keep the last date"
+msgstr "Mirout an deiziad diwezhañ"
+
+#: ../src/ui-pref.c:1846
+msgid "Column list"
+msgstr "Listenn ar bann"
+
+#: ../src/ui-pref.c:1857
+msgid "Drag & drop to change the order"
+msgstr "Riklañ ha leuskel da gemmañ an urzh"
+
+#: ../src/ui-pref.c:1882
+msgid "Language"
+msgstr "Yezh"
+
+#: ../src/ui-pref.c:1887
+msgid "_Language:"
+msgstr "_Yezh :"
+
+#: ../src/ui-pref.c:1899
+msgid "_Toolbar:"
+msgstr "_Barrennad ostilhoù :"
+
+#: ../src/ui-pref.c:1922
+msgid "Treeview"
+msgstr "Gwezennad"
+
+#: ../src/ui-pref.c:1927
+msgid "Show rules hint"
+msgstr "Diskouez kuzul ar reolennoù"
+
+#: ../src/ui-pref.c:1933
+msgid "Amount colors"
+msgstr "Livioù ar savadoù"
+
+#: ../src/ui-pref.c:1938
+msgid "Uses custom colors"
+msgstr "Arverañ a ra al livioù personelaet"
+
+#: ../src/ui-pref.c:1943
+msgid "_Preset:"
+msgstr "_Ragarventennañ :"
+
+#: ../src/ui-pref.c:1952
+msgid "_Expense:"
+msgstr "E_zkefiad :"
+
+#: ../src/ui-pref.c:1962
+msgid "_Income:"
+msgstr "E_nkefiad :"
+
+#: ../src/ui-pref.c:1969
+msgid "_Warning:"
+msgstr "_Evezh :"
+
+#: ../src/ui-pref.c:1996
+msgid "Program start"
+msgstr "Loc'hadur ar goulev"
+
+#: ../src/ui-pref.c:2001
+msgid "Load last opened file"
+msgstr "Kargañ ar restr digoret da ziwezhañ"
+
+#: ../src/ui-pref.c:2006
+msgid "Post pending scheduled transactions"
+msgstr "Postañ an treuzgreadoù steuñvet o c'hortoz"
+
+#: ../src/ui-pref.c:2011
+msgid "Show splash screen"
+msgstr "Diskouez ar skeudenn ginnig"
+
+#: ../src/ui-pref.c:2017
+msgid "Fiscal year"
+msgstr "Bloavezh kemedel"
+
+#. TRANSLATORS: (fiscal year) starts on
+#: ../src/ui-pref.c:2023
+msgid "Starts _on:"
+msgstr "Kre_giñ a ra d'an/ar :"
+
+#: ../src/ui-pref.c:2036
+msgid "Main window reports"
+msgstr "Danevelloù ar prenestr pennañ"
+
+#: ../src/ui-pref.c:2055
+msgid "_Default:"
+msgstr "Ar re _dre ziouer :"
+
+#: ../src/ui-pref.c:2159
+msgid "Clear every preferences ?"
+msgstr "Skarzhañ an holl wellvezioù ?"
+
+#: ../src/ui-pref.c:2160
+msgid ""
+"This will revert the preferences\n"
+"to its default values"
+msgstr ""
+"Distroet e vo ar gwellvezioù\n"
+"betek ar gwerzhioù dre ziouer"
+
+#: ../src/ui-pref.c:2179
+msgid "Preferences"
+msgstr "Gwellvezioù"
+
+#: ../src/ui-pref.c:2387
+msgid ""
+"You will have to restart HomeBank\n"
+"for the language change to take effect."
+msgstr ""
+"Ret eo deoc'h adloc'h Homebank\n"
+"a-benn ma vo efedus ar c'hemm yezh."
+
+#: ../src/ui-pref.c:2654
+msgid "Column"
+msgstr "Bann"
+
+#: ../src/ui-transaction.c:50
+msgid "Inherit transaction"
+msgstr "Treuzgread dre hêrezh"
+
+#: ../src/ui-transaction.c:51
+msgid "Modify transaction"
+msgstr "Daskemmañ an treuzgread"
+
+#: ../src/ui-transaction.c:334
+msgid "Transaction split"
+msgstr "Marz an treuzgread"
+
+#. sum button must appear only when new split add
+#. #1258821
+#. if(data.splittype == TXN_SPLIT_NEW)
+#: ../src/ui-transaction.c:354
+msgid "Sum"
+msgstr "Sammad"
+
+#: ../src/ui-transaction.c:439
+msgid "Sum of splits:"
+msgstr "Sammad ar marzioù"
+
+#: ../src/ui-transaction.c:451
+msgid "Unassigned:"
+msgstr "Anderannet :"
+
+#: ../src/ui-transaction.c:465
+msgid "Transaction amount:"
+msgstr "Savad an treuzgread :"
+
+#: ../src/ui-transaction.c:1059
+msgid "_Date:"
+msgstr "_Deiziad :"
+
+#: ../src/ui-transaction.c:1064
+msgid ""
+"Date accepted here are:\n"
+"day,\n"
+"day/month or month/day,\n"
+"and complete date into your locale"
+msgstr ""
+"An deiziad degemeret amañ a dalv da :\n"
+"deiz,\n"
+"deiz/miz pe miz/deiz,\n"
+"hag an deiziad klok en ho yezh"
+
+#: ../src/ui-transaction.c:1087
+msgid "Category split"
+msgstr "Marz ar rummad"
+
+#: ../src/ui-transaction.c:1090
+msgid "Pa_yment:"
+msgstr "Tal_adur :"
+
+#: ../src/ui-transaction.c:1109
+msgid "Acc_ount:"
+msgstr "K_ont :"
+
+#: ../src/ui-transaction.c:1116
+msgid "To acc_ount:"
+msgstr "Er gont :"
+
+#: ../src/ui-transaction.c:1155
+msgid "M_emo:"
+msgstr "Koung_er :"
+
+#: ../src/ui-transaction.c:1163
+msgid "Ta_gs:"
+msgstr "Kla_vioù :"
+
+#: ../src/ui-transaction.c:1275
+msgid "Fill in with a template"
+msgstr "Leuniañ gant ur standilhoñ"
+
+#: ../src/ui-transaction.c:1281
+msgid "_Template:"
+msgstr "_Standilhon :"
+
+#: ../src/ui-widgets.c:754
+msgid "Check"
+msgstr "Gwiriañ"
+
+#: ../src/ui-widgets.c:756
+msgid "Transfer"
+msgstr "Treuzkas"
+
+#: ../src/ui-widgets.c:757
+msgid "Internal transfer"
+msgstr "Treuzkas diabarzh"
+
+#: ../src/ui-widgets.c:758
+msgid "Debit card"
+msgstr "Kartenn dle"
+
+#: ../src/ui-widgets.c:759
+msgid "Standing order"
+msgstr "Urzh treuzkas"
+
+#: ../src/ui-widgets.c:760
+msgid "Electronic payment"
+msgstr "Taladur elektronek"
+
+#: ../src/ui-widgets.c:761
+msgid "Deposit"
+msgstr "Fiziad"
+
+#: ../src/ui-widgets.c:762
+msgid "FI fee"
+msgstr "Mizoù arc'hant un ensavadur"
+
+#: ../src/ui-widgets.c:763
+msgid "Direct Debit"
+msgstr "Dle dihanterat"
+
+#: ../src/ui-widgets.c:892
+msgid "Inactive"
+msgstr "Dioberiant"
+
+#: ../src/ui-widgets.c:893
+msgid "Include"
+msgstr "Enlakaat"
+
+#: ../src/ui-widgets.c:894
+msgid "Exclude"
+msgstr "Ezlakaat"

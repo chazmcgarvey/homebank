@@ -1,0 +1,126 @@
+1;-;Alimony
+1;-;Automobile
+2;-;Car Payment
+2;-;Gasoline
+2;-;Maintenance
+1;-;Bank Charges
+2;-;Interest Paid
+2;-;Service charge
+1;-;Bills
+2;-;Cable/Satellite Television
+2;-;Cell Phone
+2;-;Cellular
+2;-;Electricity
+2;-;Garbage & Recycle
+2;-;Health Club
+2;-;Home-owner's Dues
+2;-;Membership Fees
+2;-;Mortgage Payment
+2;-;Natural Gas/Oil
+2;-;Newspaper
+2;-;On-line/Internet Service
+2;-;Other Loan Payment
+2;-;Rent
+2;-;Student Loan Payment
+2;-;Telephone
+2;-;Water & Sewer
+1;-;Cash Withdrawal
+1;-;Charitable Donations
+1;-;Childcare
+1;-;Children/Toys
+2;-;Child Support
+2;-;Daycare
+1;-;Clothing
+1;-;Credit Card Payments/Transfers
+1;-;Dining Out
+1;-;Education
+2;-;Books
+2;-;Fees
+2;-;Tuition
+1;-;Entertainment
+1;-;Fees
+1;-;Food
+1;-;Gifts
+1;-;Groceries
+1;-;Health-care
+2;-;Dental
+2;-;Eye-care
+2;-;Hospital
+2;-;Physician
+2;-;Prescriptions
+1;-;Hobbies/Leisure
+2;-;Books & Magazines
+2;-;Cultural Events
+2;-;Entertaining
+2;-;Movies & Video Rentals
+2;-;Sporting Events
+2;-;Sporting Goods
+2;-;Tapes & CDs
+2;-;Toys & Games
+1;-;Home Improvement
+1;-;Household
+2;-;Furnishing
+2;-;House Cleaning
+2;-;Yard Service
+1;-;Insurance
+2;-;Automobile
+2;-;Health
+2;-;Home-owner's/Renter's
+2;-;Life
+1;-;Job Expense
+2;-;Non-Reimbursed
+2;-;Reimbursed
+1;-;Loan
+2;-;Loan Interest
+2;-;Mortgage Interest
+2;-;Student Loan Interest
+1;-;Miscellaneous
+1;-;Mortgage/Rent
+1;-;Personal Care
+1;-;Pet Care
+2;-;Food
+2;-;Supplies
+2;-;Veterinarian
+1;-;Phone/Wireless
+1;-;Services/Memberships
+1;-;Taxes
+2;-;Federal Income Tax
+2;-;Federal Income Tax-Previous Year
+2;-;Local Income Tax
+2;-;Medicare tax
+2;-;Other Taxes
+2;-;Real Estate Taxes
+2;-;Sales Tax
+2;-;Social Security Tax
+2;-;State Income Tax
+2;-;State/Provincial
+1;-;Travel/Vacation
+2;-;Lodging
+2;-;Travel
+1;-;Utilities
+1;+;Income/Interest
+1;+;Investment Income
+2;+;Capital Gains
+2;+;Dividends
+2;+;Interest
+2;+;Tax-Exempt Interest
+1;+;Not an Expense
+1;+;Other Income
+2;+;Child Support Received
+2;+;Employee Stock Option
+2;+;Gifts Received
+2;+;Loan Principal Received
+2;+;Lotteries
+2;+;State & Local Tax Refund
+2;+;Unemployment Compensation
+1;+;Retirement Income
+2;+;IRA Distribution
+2;+;Pensions & Annuities
+2;+;Social Security Benefits
+1;+;Wage & Salary
+2;+;Bonus
+2;+;Commission
+2;+;Employer Matching
+2;+;Gross Pay
+2;+;Net Pay
+2;+;Overtime

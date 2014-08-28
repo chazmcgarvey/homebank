@@ -1,0 +1,58 @@
+Source: homebank
+Section: gnome
+Priority: optional
+Maintainer: Francesco Namuri <franam@debian.org>
+Build-Depends: debhelper (>= 5.0.0), cdbs, autotools-dev, pkg-config, libgtk2.0-dev, libxml-parser-perl, quilt, libofx-dev, intltool
+Standards-Version: 3.9.5
+Vcs-Svn: svn://anonscm.debian.org/collab-maint/ext-maint/homebank/trunk
+Vcs-Browser: http://anonscm.debian.org/wsvn/collab-maint/ext-maint/homebank/trunk/
+Homepage: http://homebank.free.fr/
+
+Package: homebank
+Architecture: any
+Depends: homebank-data (>= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
+Recommends: librsvg2-common
+Replaces: homebank-data (<= 3.3-0ubuntu2)
+Description: Manage your personal accounts at home
+ HomeBank is a fast, simple and easy to use program to manage your personal
+ accounting.
+ It differs from gnucash for the better look and feel, and for the greatest
+ start-up speed. It has a lot of features such as easy analysis with
+ graphical charts (statistics, budget, overdrawn, car cost), useful reports
+ ("Where your money goes", "Trend Time Report" ), multi-accounts  support, 
+ budget management, reminder, import from  OFX/QFX-CSV files, visual status 
+ of operations.  It is based on GTK2.
+
+Package: homebank-data
+Architecture: all
+Depends: ${misc:Depends}
+Recommends: homebank (>= ${source:Version})
+Description: Data files for homebank
+ HomeBank is a fast, simple and easy to use program to manage your personal
+ accounting.
+ It differs from gnucash for the better look and feel, and for the greatest
+ start-up speed. It has a lot of features such as easy analysis with
+ graphical charts (statistics, budget, overdrawn, car cost), useful reports
+ ("Where your money goes", "Trend Time Report" ), multi-accounts  support,
+ budget management, reminder, import from  OFX/QFX-CSV files, visual status
+ of operations.  It is based on GTK2.
+ .
+ This package contains the architecture independent portions of homebank
+
+Package: homebank-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends: ${misc:Depends}, homebank (= ${binary:Version})
+Recommends: homebank (>= ${source:Version})
+Description: Debugginf symbols for homebank
+ HomeBank is a fast, simple and easy to use program to manage your personal
+ accounting.
+ It differs from gnucash for the better look and feel, and for the greatest
+ start-up speed. It has a lot of features such as easy analysis with
+ graphical charts (statistics, budget, overdrawn, car cost), useful reports
+ ("Where your money goes", "Trend Time Report" ), multi-accounts  support, 
+ budget management, reminder, import from  OFX/QFX-CSV files, visual status 
+ of operations.  It is based on GTK2.
+ .
+ This package contains the debugging symbols for homebank

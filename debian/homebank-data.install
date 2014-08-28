@@ -1,0 +1,4 @@
+debian/tmp/usr/share/homebank/images
+debian/tmp/usr/share/locale
+debian/tmp/usr/share/homebank/help /usr/share/doc/homebank-data
+debian/tmp/usr/share/homebank/datas

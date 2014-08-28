@@ -1,0 +1,10 @@
+Document: homebank
+Title: homebank documentation
+Author: Maxime Doyen <homebank@free.fr>
+Abstract: This manual describes homebank, a program for
+ managing your accounts at home.
+Section: Office
+
+Format: HTML
+Index: /usr/share/doc/homebank-data/help/index.html
+Files: /usr/share/doc/homebank-data/help/*.html

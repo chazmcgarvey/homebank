@@ -1,0 +1,2809 @@
+# Belarusian translation for homebank
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the homebank package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: homebank\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-09 16:05+0200\n"
+"PO-Revision-Date: 2009-11-09 07:33+0000\n"
+"Last-Translator: Mikhail S. Pobolovets <styx.mp@gmail.com>\n"
+"Language-Team: Belarusian <be@li.org>\n"
+"Language: be\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-07-26 09:05+0000\n"
+"X-Generator: Launchpad (build 17131)\n"
+
+#: ../data/homebank.desktop.in.in.h:1 ../src/dsp_mainwindow.c:828
+msgid "HomeBank"
+msgstr "HomeBank"
+
+#: ../data/homebank.desktop.in.in.h:2 ../src/dsp_mainwindow.c:434
+#: ../src/dsp_mainwindow.c:832
+msgid "Free, easy, personal accounting for everyone."
+msgstr "Простае і лёгкае кіраванне асабістымі фінансамі для кожнага."
+
+#: ../src/dsp_account.c:173
+msgid "No transaction changed"
+msgstr ""
+
+#: ../src/dsp_account.c:175
+#, c-format
+msgid "transaction auto assigned: %d"
+msgstr ""
+
+#: ../src/dsp_account.c:178
+msgid "Auto assigment result"
+msgstr ""
+
+#: ../src/dsp_account.c:348
+msgid ""
+"Do you want to create a template with\n"
+"each of the selected transaction ?"
+msgstr ""
+
+#: ../src/dsp_account.c:393
+msgid "(new archive)"
+msgstr "(новы архіў)"
+
+#: ../src/dsp_account.c:912
+msgid ""
+"Do you want to break the internal transfer ?\n"
+"\n"
+"Proceeding will delete the target transaction."
+msgstr ""
+
+#: ../src/dsp_account.c:972
+msgid ""
+"Do you want to delete\n"
+"each of the selected transaction ?"
+msgstr ""
+"Выдаліць кожную\n"
+"з абраных транзакцый?"
+
+#: ../src/dsp_account.c:1285
+#, c-format
+msgid "%d items (%s)"
+msgstr ""
+
+#. TRANSLATORS: detail of the 3 %s which are some amount of selected transaction, 1=total 2=income, 3=expense
+#. msg = g_strdup_printf (_("transaction selected: %d, hidden: %d / %s ( %s - %s)"), count, data->hidden, buf3, buf1, buf2);
+#: ../src/dsp_account.c:1290
+#, c-format
+msgid "%d items (%d selected %s)"
+msgstr ""
+
+#: ../src/dsp_account.c:1360
+msgid "Modify date..."
+msgstr "Змяніць дату..."
+
+#: ../src/dsp_account.c:1365
+msgid "Modify info..."
+msgstr "Змяніць інфармацыю..."
+
+#: ../src/dsp_account.c:1372
+msgid "Modify payee..."
+msgstr "Змяніць атрымальніка плацяжу..."
+
+#: ../src/dsp_account.c:1378
+msgid "Modify description..."
+msgstr "Змяніць апісанне..."
+
+#: ../src/dsp_account.c:1385
+msgid "Modify amount..."
+msgstr "Змяніць суму..."
+
+#: ../src/dsp_account.c:1390
+msgid "Modify category..."
+msgstr "Змяніць катэгорыю..."
+
+#: ../src/dsp_account.c:1396
+msgid "Modify tags..."
+msgstr "Змяніць тэгі..."
+
+#. name, stock id, label
+#: ../src/dsp_account.c:1702
+msgid "_Account"
+msgstr "_Рахунак"
+
+#: ../src/dsp_account.c:1703
+msgid "Transacti_on"
+msgstr "_Транзакцыя"
+
+#: ../src/dsp_account.c:1704
+msgid "_Actions"
+msgstr "_Дзеяньні"
+
+#: ../src/dsp_account.c:1705
+msgid "_Tools"
+msgstr "_Прылады"
+
+#: ../src/dsp_account.c:1707 ../src/dsp_mainwindow.c:167
+msgid "_Close"
+msgstr "_Зачыніць"
+
+#: ../src/dsp_account.c:1707
+msgid "Close the current account"
+msgstr "Зачыніць _бягучы рахунак"
+
+#. name, stock id, label, accelerator, tooltip
+#: ../src/dsp_account.c:1710
+msgid "_Filter..."
+msgstr "_Фільтр..."
+
+#: ../src/dsp_account.c:1710
+msgid "Open the list filter"
+msgstr "Адкрыць спіс фільтраў"
+
+#: ../src/dsp_account.c:1712
+msgid "_Add..."
+msgstr "_Дадаць..."
+
+#: ../src/dsp_account.c:1712
+msgid "Add a new transaction"
+msgstr "Дадаць транзакцыю"
+
+#: ../src/dsp_account.c:1713
+msgid "_Inherit..."
+msgstr "_Успадкоўваць..."
+
+#: ../src/dsp_account.c:1713
+msgid "Inherit from the active transaction"
+msgstr "Успадкаваць ад бягучай транзакцыі"
+
+#: ../src/dsp_account.c:1714
+msgid "_Edit..."
+msgstr "_Праўка..."
+
+#: ../src/dsp_account.c:1714
+msgid "Edit the active transaction"
+msgstr "Кіраваць бягучую транзакцыю"
+
+#: ../src/dsp_account.c:1715 ../src/ui-archive.c:839
+#: ../src/ui-transaction.c:1170
+msgid "_Reconciled"
+msgstr ""
+
+#: ../src/dsp_account.c:1715
+msgid "Toggle reconciled status of active transactions"
+msgstr ""
+
+#: ../src/dsp_account.c:1716
+msgid "_Remove..."
+msgstr "_Выдаліць..."
+
+#: ../src/dsp_account.c:1716
+msgid "Remove the active transactions"
+msgstr "Выдаліць бягучыя транзакцыі"
+
+#: ../src/dsp_account.c:1717
+msgid "Create template..."
+msgstr ""
+
+#: ../src/dsp_account.c:1719
+msgid "Auto. Assignments"
+msgstr ""
+
+#: ../src/dsp_account.c:1719
+msgid "Run auto assignments"
+msgstr ""
+
+#: ../src/dsp_account.c:1720 ../src/dsp_mainwindow.c:172
+msgid "Export QIF..."
+msgstr ""
+
+#: ../src/dsp_account.c:1720 ../src/ui-dialogs.c:140
+msgid "Export as QIF"
+msgstr "Экспартаваць як QIF"
+
+#: ../src/dsp_account.c:1721
+msgid "Export CSV..."
+msgstr "Экспарт CSV..."
+
+#: ../src/dsp_account.c:1721 ../src/rep_stats.c:71 ../src/rep_time.c:69
+#: ../src/ui-dialogs.c:190
+msgid "Export as CSV"
+msgstr "Экспарт у CSV"
+
+#: ../src/dsp_account.c:1852 ../src/dsp_mainwindow.c:2443
+msgid "Add"
+msgstr "Дадаць"
+
+#: ../src/dsp_account.c:1855
+msgid "Inherit"
+msgstr "Успадкавать"
+
+#: ../src/dsp_account.c:1858
+msgid "Edit"
+msgstr "Рэдагаваць"
+
+#: ../src/dsp_account.c:1861 ../src/rep_stats.c:68
+msgid "Filter"
+msgstr "Фільтр"
+
+#: ../src/dsp_account.c:1864
+msgid "Reconcile"
+msgstr ""
+
+#: ../src/dsp_account.c:1916
+msgid "Future:"
+msgstr "Будучыня:"
+
+#: ../src/dsp_account.c:1922
+msgid "Today:"
+msgstr "Сёння:"
+
+#: ../src/dsp_account.c:1928
+msgid "Bank:"
+msgstr "Банк:"
+
+#: ../src/dsp_account.c:1951 ../src/rep_balance.c:896 ../src/rep_budget.c:1168
+#: ../src/rep_stats.c:1497 ../src/rep_time.c:1341 ../src/rep_vehicle.c:636
+msgid "_Range:"
+msgstr "_Дыяпазон:"
+
+#: ../src/dsp_account.c:1956 ../src/ui-account.c:1244
+#: ../src/ui-assist-start.c:332
+msgid "_Type:"
+msgstr "_Тып:"
+
+#: ../src/dsp_account.c:1961
+msgid "_Status:"
+msgstr ""
+
+#: ../src/dsp_account.c:1966
+msgid "Reset _Filter"
+msgstr ""
+
+#. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
+#: ../src/dsp_account.c:1971 ../src/rep_balance.c:875 ../src/rep_budget.c:1147
+#: ../src/rep_stats.c:1468 ../src/rep_time.c:1319 ../src/rep_vehicle.c:622
+msgid "_Minor currency"
+msgstr "_Другасная валюта"
+
+#. name, stock id, label
+#: ../src/dsp_mainwindow.c:147
+msgid "_File"
+msgstr "_Файл"
+
+#: ../src/dsp_mainwindow.c:148
+msgid "_Edit"
+msgstr "_Рэдагаваць"
+
+#: ../src/dsp_mainwindow.c:149
+msgid "_View"
+msgstr "_Выгляд"
+
+#: ../src/dsp_mainwindow.c:150
+msgid "_Manage"
+msgstr "_Кіраванне"
+
+#: ../src/dsp_mainwindow.c:151
+msgid "_Transactions"
+msgstr "_Транзакцыі"
+
+#: ../src/dsp_mainwindow.c:152
+msgid "_Reports"
+msgstr "_Справаздачы"
+
+#: ../src/dsp_mainwindow.c:153
+msgid "_Help"
+msgstr "_Дапамога"
+
+#. { "Import"       , NULL, N_("Import") },
+#. { "Export"       , NULL, N_("Export to") },
+#. name, stock id, label, accelerator, tooltip
+#. FileMenu
+#: ../src/dsp_mainwindow.c:160
+msgid "_New"
+msgstr "_Новы"
+
+#: ../src/dsp_mainwindow.c:160
+msgid "Create a new file"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:161
+msgid "_Open..."
+msgstr "_Адкрыць"
+
+#: ../src/dsp_mainwindow.c:161 ../src/dsp_mainwindow.c:2504
+msgid "Open a file"
+msgstr "Адкрыць файл"
+
+#: ../src/dsp_mainwindow.c:162
+msgid "_Save"
+msgstr "_Захаваць"
+
+#: ../src/dsp_mainwindow.c:162
+msgid "Save the current file"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:163
+msgid "Save As..."
+msgstr "Захаваць як..."
+
+#: ../src/dsp_mainwindow.c:163
+msgid "Save the current file with a different name"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:164
+msgid "Revert"
+msgstr "Адкаціць"
+
+#: ../src/dsp_mainwindow.c:164
+msgid "Revert to a saved version of this file"
+msgstr "Адкаціць да захаванай версіі"
+
+#: ../src/dsp_mainwindow.c:166
+msgid "_Properties..."
+msgstr "_Уласцівасці..."
+
+#: ../src/dsp_mainwindow.c:166
+msgid "Configure the file"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:167
+msgid "Close the current file"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:168
+msgid "_Quit"
+msgstr "_Выйсці"
+
+#: ../src/dsp_mainwindow.c:168
+msgid "Quit homebank"
+msgstr "Выйсці з праграмы"
+
+#. Exchange
+#: ../src/dsp_mainwindow.c:171
+msgid "Import QIF/OFX/CSV..."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:171
+msgid "Open the import assistant"
+msgstr "Адкрыць майстар імпарту"
+
+#: ../src/dsp_mainwindow.c:172
+msgid "Open the export to QIF assistant"
+msgstr "Адкрыць памагатага экспарту ў QIF"
+
+#: ../src/dsp_mainwindow.c:173
+msgid "Anonymize..."
+msgstr ""
+
+#. EditMenu
+#: ../src/dsp_mainwindow.c:176
+msgid "Preferences..."
+msgstr "Налады..."
+
+#: ../src/dsp_mainwindow.c:176
+msgid "Configure homebank"
+msgstr "Наладзіць homebank"
+
+#. ManageMenu
+#. { "Currency"   , "hb-currency"  , N_("Currencies...") , NULL,    N_("Configure the currencies"), G_CALLBACK (ui_mainwindow_action_defcurrency) },
+#: ../src/dsp_mainwindow.c:180
+msgid "Acc_ounts..."
+msgstr "_Рахункі..."
+
+#: ../src/dsp_mainwindow.c:180
+msgid "Configure the accounts"
+msgstr "Рэдагаваць рахункі"
+
+#: ../src/dsp_mainwindow.c:181
+msgid "_Payees..."
+msgstr "_Атрымальнікі плацяжу..."
+
+#: ../src/dsp_mainwindow.c:181
+msgid "Configure the payees"
+msgstr "Наладзіць атрымальнікаў"
+
+#: ../src/dsp_mainwindow.c:182
+msgid "Categories..."
+msgstr "Катэгорыі..."
+
+#: ../src/dsp_mainwindow.c:182
+msgid "Configure the categories"
+msgstr "Наладзіць катэгорыі"
+
+#: ../src/dsp_mainwindow.c:183
+msgid "Scheduled/Template..."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:183
+msgid "Configure the scheduled/template transactions"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:184
+msgid "Budget..."
+msgstr "Бюджэт..."
+
+#: ../src/dsp_mainwindow.c:184
+msgid "Configure the budget"
+msgstr "Наладзіць бюджэт"
+
+#: ../src/dsp_mainwindow.c:185
+msgid "Assignments..."
+msgstr "Заданні..."
+
+#: ../src/dsp_mainwindow.c:185
+msgid "Configure the automatic assignments"
+msgstr "Настройка аўтаматычных заданняў"
+
+#. TransactionMenu
+#: ../src/dsp_mainwindow.c:188
+msgid "Show..."
+msgstr "Паказаць..."
+
+#: ../src/dsp_mainwindow.c:188
+msgid "Shows selected account transactions"
+msgstr "Паказаць транзакцыі ў абраных рахунках"
+
+#: ../src/dsp_mainwindow.c:189
+msgid "Add..."
+msgstr "Дадаць..."
+
+#: ../src/dsp_mainwindow.c:189 ../src/ui-transaction.c:49
+msgid "Add transaction"
+msgstr "Дадаць транзакцыю"
+
+#: ../src/dsp_mainwindow.c:190
+msgid "Set scheduler..."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:190
+msgid "Configure the transaction scheduler"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:191
+msgid "Process scheduled..."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:191
+msgid "Insert pending scheduled transactions"
+msgstr ""
+
+#. ReportMenu
+#: ../src/dsp_mainwindow.c:194
+msgid "_Statistics..."
+msgstr "_Статыстыка..."
+
+#: ../src/dsp_mainwindow.c:194
+msgid "Open the Statistics report"
+msgstr "Адкрыць статыстычную справаздачу"
+
+#: ../src/dsp_mainwindow.c:195
+msgid "_Trend Time..."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:195
+msgid "Open the Trend Time report"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:196
+msgid "B_udget..."
+msgstr "_Бюджэт..."
+
+#: ../src/dsp_mainwindow.c:196
+msgid "Open the Budget report"
+msgstr "Адкрыць бюджэтную справаздачу"
+
+#: ../src/dsp_mainwindow.c:197
+msgid "Balance..."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:197
+msgid "Open the Balance report"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:198
+msgid "_Vehicle cost..."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:198
+msgid "Open the Vehicle cost report"
+msgstr ""
+
+#. HelpMenu
+#: ../src/dsp_mainwindow.c:201
+msgid "_Contents"
+msgstr "Змест"
+
+#: ../src/dsp_mainwindow.c:201
+msgid "Documentation about HomeBank"
+msgstr "Дакументацыя па HomeBank"
+
+#: ../src/dsp_mainwindow.c:202
+msgid "Show welcome dialog..."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:203
+msgid "Get Help Online..."
+msgstr "Атрымаць дапамогу ў Інтэрнэце..."
+
+#: ../src/dsp_mainwindow.c:203
+msgid "Connect to the LaunchPad website for online help"
+msgstr "Атрымаць дапамогу з сайта LaunchPad"
+
+#: ../src/dsp_mainwindow.c:204
+msgid "Translate this Application..."
+msgstr "Перавесці гэтае прыкладанне..."
+
+#: ../src/dsp_mainwindow.c:204
+msgid "Connect to the LaunchPad website to help translate this application"
+msgstr ""
+"Злучыцца з сайтам LaunchPad для дапамогі ў перакладзе гэтага прыкладання"
+
+#: ../src/dsp_mainwindow.c:205
+msgid "Report a Problem..."
+msgstr "Паведаміць аб праблеме..."
+
+#: ../src/dsp_mainwindow.c:205
+msgid "Connect to the LaunchPad website to help fix problems"
+msgstr "Перайсці на сайт для рашэння праблемы"
+
+#: ../src/dsp_mainwindow.c:207
+msgid "_About"
+msgstr "Аб праграме"
+
+#: ../src/dsp_mainwindow.c:207
+msgid "About HomeBank"
+msgstr "Аб праграме"
+
+#. name         , stockid, label, accelerator, tooltip, callback, is_active
+#: ../src/dsp_mainwindow.c:215
+msgid "_Toolbar"
+msgstr "_Панэль прыладаў"
+
+#: ../src/dsp_mainwindow.c:216
+msgid "_Top spending"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:217
+msgid "_Scheduled list"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:218
+msgid "Minor currency"
+msgstr "_Другасная валюта"
+
+#: ../src/dsp_mainwindow.c:342
+#, c-format
+msgid "Revert to the previously saved file of '%s'?"
+msgstr "Адкаціць да папярэдняй версіі файла '%s'?"
+
+#: ../src/dsp_mainwindow.c:348
+msgid ""
+"- Changes made to the file will be permanently lost\n"
+"- File will be restored to the last save (.xhb~)"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:547
+msgid "Anonymize the file ?"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:548
+msgid ""
+"Proceeding will changes name/memo to anonymous datas,\n"
+"please confirm."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:815
+msgid "Welcome to HomeBank"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:842
+msgid "What do you want to do:"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:846
+msgid "Read HomeBank _Manual"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:850
+msgid "Configure _Preferences"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:854
+msgid "Create a _new file"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:858
+msgid "_Open an existing file"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:862
+msgid "Open the _example file"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1250 ../src/rep_stats.c:1012
+#: ../src/rep_stats.c:1032 ../src/ui-budget.c:123 ../src/ui-category.c:334
+#: ../src/ui-category.c:487
+msgid "(no category)"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1271
+msgid "Other"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1473
+msgid "No transaction to add"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1475
+#, c-format
+msgid "transaction added: %d"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1478
+msgid "Check scheduled transactions result"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1557 ../src/dsp_mainwindow.c:1830
+#: ../src/rep_vehicle.c:716
+msgid "Total"
+msgstr "Разам"
+
+#: ../src/dsp_mainwindow.c:1637
+msgid "Unknow error"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1642
+#, c-format
+msgid "I/O error for file '%s'."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1645
+#, c-format
+msgid "The file '%s' is not a valid HomeBank file."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1648
+#, c-format
+msgid ""
+"The file '%s' was saved with a higher version of HomeBank\n"
+"and cannot be loaded by the current version."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1653 ../src/dsp_mainwindow.c:1718
+#: ../src/dsp_mainwindow.c:2336
+msgid "File error"
+msgstr "Памылка файла"
+
+#: ../src/dsp_mainwindow.c:1715
+#, c-format
+msgid "I/O error for file %s."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1861
+msgid "Grand total"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:2337
+#, c-format
+msgid "The file %s is not a valid HomeBank file."
+msgstr "Файл %s не з'яўляецца файлам HomeBank"
+
+#: ../src/dsp_mainwindow.c:2418 ../src/dsp_mainwindow.c:2511
+msgid "Open"
+msgstr "Адкрыць"
+
+#: ../src/dsp_mainwindow.c:2424 ../src/list_operation.c:755
+#: ../src/list_operation.c:1001 ../src/list_upcoming.c:408
+#: ../src/rep_time.c:116 ../src/ui-account.c:1239 ../src/ui-filter.c:1391
+msgid "Account"
+msgstr "Рахунак"
+
+#: ../src/dsp_mainwindow.c:2427 ../src/list_operation.c:438
+#: ../src/list_operation.c:1061 ../src/list_upcoming.c:360
+#: ../src/rep_stats.c:142 ../src/rep_time.c:116 ../src/ui-assign.c:40
+#: ../src/ui-filter.c:1383 ../src/ui-pref.c:123 ../src/ui-pref.c:2513
+msgid "Payee"
+msgstr "Атрымальнік плацяжу"
+
+#: ../src/dsp_mainwindow.c:2430 ../src/list_operation.c:503
+#: ../src/list_operation.c:1072 ../src/rep_budget.c:109
+#: ../src/rep_budget.c:1486 ../src/rep_stats.c:140 ../src/rep_time.c:116
+#: ../src/ui-filter.c:1378 ../src/ui-pref.c:2518 ../src/ui-transaction.c:381
+msgid "Category"
+msgstr "Катэгорыя"
+
+#. TRANSLATORS: an archive is stored transaction buffers (kind of bookmark to prefill manual insertion)
+#: ../src/dsp_mainwindow.c:2434
+msgid "Archive"
+msgstr "Архіў"
+
+#. column: Income
+#: ../src/dsp_mainwindow.c:2437 ../src/dsp_mainwindow.c:2449
+#: ../src/rep_budget.c:113 ../src/rep_budget.c:1501
+msgid "Budget"
+msgstr "Бюджэт"
+
+#: ../src/dsp_mainwindow.c:2440
+msgid "Show"
+msgstr "Паказаць"
+
+#: ../src/dsp_mainwindow.c:2446
+msgid "Statistics"
+msgstr "Статыстыка"
+
+#. column: Balance
+#: ../src/dsp_mainwindow.c:2452 ../src/list_operation.c:802
+#: ../src/rep_balance.c:1264 ../src/rep_stats.c:153 ../src/rep_stats.c:719
+#: ../src/rep_stats.c:1872 ../src/ui-pref.c:2520
+msgid "Balance"
+msgstr "Баланс"
+
+#: ../src/dsp_mainwindow.c:2455 ../src/ui-hbfile.c:249
+msgid "Vehicle cost"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:2506
+msgid "Open a recently used file"
+msgstr "Адкрыць адзін з папярэдніх файлаў"
+
+#: ../src/dsp_mainwindow.c:2529
+msgid "Your accounts"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:2560
+msgid "Where your money goes"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:2577
+msgid "Top 5 spending"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:2626
+msgid "Scheduled transactions"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:2632
+msgid "maximum post date"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:2672
+msgid "Skip"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:2678
+msgid "Post"
+msgstr ""
+
+#: ../src/hb-category.c:841
+msgid "invalid csv format"
+msgstr "няслушны csv фармат"
+
+#: ../src/hb-filter.c:74
+#, c-format
+msgid "<i>from</i> %s <i>to</i> %s"
+msgstr ""
+
+#: ../src/hb-hbfile.c:389
+msgid "Unknown"
+msgstr ""
+
+#: ../src/homebank.c:67
+msgid "Output version information and exit"
+msgstr "Паказаць інфармацыю аб версіі і выйсці"
+
+#: ../src/homebank.c:70
+msgid "[FILE]"
+msgstr "[Файл]"
+
+#: ../src/homebank.c:305
+msgid "Browser error."
+msgstr ""
+
+#: ../src/homebank.c:306
+#, c-format
+msgid "Could not display the URL '%s'"
+msgstr "Не атрымалася адлюстраваць URL '%s'"
+
+#: ../src/homebank.c:977 ../src/homebank.c:978
+msgid "HomeBank options"
+msgstr "Налады HomeBank"
+
+#: ../src/homebank.c:1126
+#, c-format
+msgid "Unable to open '%s', the file does not exist.\n"
+msgstr "Не атрымалася адкрыць '%s', файл не існуе.\n"
+
+#: ../src/import.c:59
+msgid "HomeBank Import Assistant"
+msgstr "HomeBank памочнік па імпарту"
+
+#. file informations
+#: ../src/import.c:60 ../src/import.c:1953
+msgid "File to import"
+msgstr ""
+
+#: ../src/import.c:61
+msgid "File analysis results"
+msgstr ""
+
+#: ../src/import.c:62
+msgid "Adjust what to import"
+msgstr ""
+
+#: ../src/import.c:63
+msgid "Update your accounts"
+msgstr "Абнавіць вашы рахункі"
+
+#: ../src/import.c:99 ../src/import.c:144
+#, c-format
+msgid "(account %d)"
+msgstr "(рахунак %d)"
+
+#: ../src/import.c:1244
+msgid "Change HomeBank account target"
+msgstr "Змяніць рахунак прызначэння ў HomeBank"
+
+#: ../src/import.c:1270
+msgid "new account"
+msgstr "новы рахунак"
+
+#: ../src/import.c:1273 ../src/ui-account.c:1312 ../src/ui-assist-start.c:321
+msgid "_Name:"
+msgstr "_Імя:"
+
+#: ../src/import.c:1280
+msgid "existing account"
+msgstr "існы рахунак"
+
+#: ../src/import.c:1283 ../src/rep_balance.c:856 ../src/ui-archive.c:782
+msgid "A_ccount:"
+msgstr "_Рахунак"
+
+#: ../src/import.c:1342 ../src/ui-account.c:959 ../src/ui-account.c:1045
+#: ../src/ui-category.c:1150 ../src/ui-payee.c:724
+msgid "Error"
+msgstr "Памылка"
+
+#: ../src/import.c:1343 ../src/ui-account.c:1046
+#, c-format
+msgid ""
+"Cannot rename this Account,\n"
+"from '%s' to '%s',\n"
+"this name already exists."
+msgstr ""
+"Не магу пераназваць гэты Акаўнт.\n"
+"з '%s' у '%s',\n"
+"гэтае імя ўжо выкарыстоўваецца."
+
+#: ../src/import.c:1391
+msgid "Please select a file..."
+msgstr "Калі ласка абярыце файл ..."
+
+#: ../src/import.c:1408
+msgid "QIF file recognised !"
+msgstr "Распазнаны файл QIF!"
+
+#: ../src/import.c:1414
+msgid "OFX file recognised !"
+msgstr "Распазнаны файл OFX!"
+
+#: ../src/import.c:1417
+msgid "** OFX support is disabled **"
+msgstr "** Падтрымка OFX адключаная **"
+
+#: ../src/import.c:1422
+msgid "CSV transaction file recognised !"
+msgstr ""
+
+#: ../src/import.c:1428
+msgid "Unknown/Invalid file..."
+msgstr "Невядомы фармат файла ..."
+
+#. file content detail
+#. TODO: difficult translation here
+#: ../src/import.c:1477
+#, c-format
+msgid "account: %d - transaction: %d - payee: %d - categorie: %d"
+msgstr "Уліковы запіс: %d - здзелка: %d - атрымальнік: %d - катэгорыя: %d"
+
+#: ../src/import.c:1691
+#, c-format
+msgid "HomeBank Import Assistant - (%d of %d)"
+msgstr "Памочнік па імпарту ў HomeBank - (%d з %d)"
+
+#: ../src/import.c:1791
+msgid ""
+"Welcome to the HomeBank Import Assistant.\n"
+"\n"
+"With this assistant you will be guided throught the process\n"
+"of importing an external file into HomeBank.\n"
+"\n"
+"No changes will be made until you click \"Apply\" at the end\n"
+"of this assistant."
+msgstr ""
+
+#: ../src/import.c:1803
+msgid ""
+"HomeBank can import files in the following formats:\n"
+"- QIF\n"
+"- OFX/QFX (optional at compilation time)\n"
+"- CSV (format is specific to HomeBank, see the documentation)\n"
+msgstr ""
+
+#: ../src/import.c:1858
+msgid "Known files"
+msgstr ""
+
+#: ../src/import.c:1868 ../src/ui-dialogs.c:149
+msgid "QIF files"
+msgstr "Файлы QIF"
+
+#: ../src/import.c:1874
+msgid "OFX/QFX files"
+msgstr "OFX/QFX файлы"
+
+#: ../src/import.c:1880 ../src/ui-dialogs.c:207
+msgid "CSV files"
+msgstr "Файлы CSV"
+
+#: ../src/import.c:1885 ../src/ui-dialogs.c:150 ../src/ui-dialogs.c:208
+#: ../src/ui-dialogs.c:263
+msgid "All files"
+msgstr "Усе файлы"
+
+#: ../src/import.c:1967
+msgid "Path:"
+msgstr ""
+
+#: ../src/import.c:1974
+msgid "Name:"
+msgstr ""
+
+#: ../src/import.c:1981
+msgid "Encoding:"
+msgstr ""
+
+#: ../src/import.c:1988
+msgid "Content:"
+msgstr "Зьмест:"
+
+#: ../src/import.c:2000
+msgid "Import options"
+msgstr ""
+
+#: ../src/import.c:2007 ../src/ui-pref.c:1317
+msgid "Date order:"
+msgstr ""
+
+#: ../src/import.c:2015
+msgid "Load the file again"
+msgstr ""
+
+#: ../src/import.c:2044
+msgid ""
+"Some date conversion errors were encountered during the load of the file.\n"
+"Please try to change the date order format and load the file again."
+msgstr ""
+
+#: ../src/import.c:2093
+msgid "Edit account to import"
+msgstr ""
+
+#. duplicate section
+#: ../src/import.c:2125
+msgid "Detail of duplicate transactions"
+msgstr ""
+
+#: ../src/import.c:2157
+msgid "Date _tolerance:"
+msgstr "Розніца ў датах"
+
+#. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days of date tolerance
+#: ../src/import.c:2164
+msgid "days"
+msgstr "дзён"
+
+#: ../src/import.c:2181
+msgid ""
+"The match is done in order: by account, amount and date.\n"
+"A date tolerance of 0 day means an exact match"
+msgstr ""
+"Супастаўленне вырабляецца ў наступным парадку: па рахунку, па суме і па "
+"даце.\n"
+"Розніца ў датах \"0\" дзён азначае дакладнае супадзенне."
+
+#. account selection
+#: ../src/import.c:2220
+msgid "Account to import"
+msgstr ""
+
+#. transaction selection
+#: ../src/import.c:2225
+msgid "Transaction to import"
+msgstr ""
+
+#: ../src/import.c:2270
+msgid "Click \"Apply\" to update your accounts.\n"
+msgstr ""
+
+#: ../src/import.c:2281 ../src/list_account.c:359
+msgid "Accounts"
+msgstr ""
+
+#: ../src/import.c:2293
+msgid "to update"
+msgstr ""
+
+#: ../src/import.c:2301
+msgid "to create"
+msgstr ""
+
+#: ../src/import.c:2305 ../src/ui-pref.c:89
+msgid "Transactions"
+msgstr ""
+
+#: ../src/import.c:2314
+msgid "to import"
+msgstr ""
+
+#: ../src/import.c:2322
+msgid "to reject"
+msgstr ""
+
+#: ../src/import.c:2330
+msgid "auto-assigned"
+msgstr ""
+
+#: ../src/import.c:2525
+msgid "Create new"
+msgstr ""
+
+#: ../src/import.c:2527
+msgid "Import into"
+msgstr "Імпартаваць у мову"
+
+#: ../src/import.c:2609
+msgid "Imported name"
+msgstr "Імпартаванае імя"
+
+#: ../src/import.c:2617
+msgid "Action"
+msgstr "Дзеянне"
+
+#: ../src/import.c:2625
+msgid "HomeBank name"
+msgstr "Імя ў HomeBank"
+
+#: ../src/list_account.c:342 ../src/list_operation.c:728
+#: ../src/ui-filter.c:1358
+msgid "Status"
+msgstr ""
+
+#. Bank
+#: ../src/list_account.c:376 ../src/ui-account.c:39
+msgid "Bank"
+msgstr "Банк"
+
+#. Today
+#: ../src/list_account.c:381
+msgid "Today"
+msgstr "Сёння"
+
+#. Future
+#: ../src/list_account.c:386
+msgid "Future"
+msgstr "Будучыня"
+
+#: ../src/list_operation.c:387
+msgid "- split -"
+msgstr ""
+
+#. datas
+#. status
+#. date
+#: ../src/list_operation.c:412 ../src/list_operation.c:1045
+#: ../src/ui-pref.c:2386 ../src/ui-pref.c:2512
+msgid "Info"
+msgstr "Інфармацыя"
+
+#: ../src/list_operation.c:457 ../src/list_operation.c:1023
+#: ../src/list_upcoming.c:372 ../src/ui-assign.c:39 ../src/ui-pref.c:122
+#: ../src/ui-pref.c:2514 ../src/ui-transaction.c:385
+msgid "Memo"
+msgstr ""
+
+#: ../src/list_operation.c:522 ../src/ui-pref.c:2519
+msgid "Tags"
+msgstr "Пазнакі"
+
+#. common (date + status + amount)
+#. label = gtk_label_new(_("General"));
+#. page = ui_flt_manage_page_general(&data);
+#. gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
+#.
+#: ../src/list_operation.c:767 ../src/list_operation.c:1012
+#: ../src/rep_balance.c:1246 ../src/rep_vehicle.c:968 ../src/ui-filter.c:1353
+msgid "Date"
+msgstr "Дата"
+
+#. column: Amount
+#: ../src/list_operation.c:785 ../src/list_operation.c:1033
+#: ../src/rep_time.c:581 ../src/rep_time.c:1638 ../src/rep_vehicle.c:1012
+#: ../src/ui-filter.c:1368 ../src/ui-pref.c:2515 ../src/ui-transaction.c:389
+msgid "Amount"
+msgstr "Сума"
+
+#. column: Expense
+#: ../src/list_operation.c:788 ../src/list_upcoming.c:384
+#: ../src/rep_balance.c:1256 ../src/rep_budget.c:111 ../src/rep_stats.c:151
+#: ../src/rep_stats.c:1860 ../src/ui-filter.c:49 ../src/ui-pref.c:2516
+msgid "Expense"
+msgstr "Выдатак"
+
+#. column: Income
+#: ../src/list_operation.c:791 ../src/list_upcoming.c:396
+#: ../src/rep_balance.c:1260 ../src/rep_budget.c:111 ../src/rep_stats.c:152
+#: ../src/rep_stats.c:719 ../src/rep_stats.c:1866 ../src/ui-filter.c:50
+#: ../src/ui-pref.c:2517
+msgid "Income"
+msgstr "Прыбытак"
+
+#: ../src/list_upcoming.c:316
+msgid "Late"
+msgstr ""
+
+#: ../src/list_upcoming.c:349
+msgid "Next date"
+msgstr ""
+
+#: ../src/rep_balance.c:121 ../src/rep_budget.c:119 ../src/rep_stats.c:64
+#: ../src/rep_time.c:63
+msgid "List"
+msgstr "Спіс"
+
+#: ../src/rep_balance.c:121 ../src/rep_budget.c:119 ../src/rep_stats.c:64
+#: ../src/rep_time.c:63
+msgid "View results as list"
+msgstr "Вынікі спісам"
+
+#: ../src/rep_balance.c:122 ../src/rep_time.c:64
+msgid "Line"
+msgstr "Лінія"
+
+#: ../src/rep_balance.c:122 ../src/rep_time.c:64
+msgid "View results as lines"
+msgstr "Вынікі ў выглядзе ліній"
+
+#. { "Filter"  , "hb-filter"    , N_("Filter") , NULL,   N_("Edit the filter"), G_CALLBACK (ui_reptime_action_filter) },
+#: ../src/rep_balance.c:123 ../src/rep_budget.c:121 ../src/rep_stats.c:69
+#: ../src/rep_time.c:67
+msgid "Refresh"
+msgstr "Абнавіць"
+
+#: ../src/rep_balance.c:123 ../src/rep_budget.c:121 ../src/rep_stats.c:69
+#: ../src/rep_time.c:67
+msgid "Refresh results"
+msgstr "Абнавіць вынікі"
+
+#. name, stock id
+#: ../src/rep_balance.c:130 ../src/rep_budget.c:128 ../src/rep_stats.c:78
+#: ../src/rep_time.c:75
+msgid "Detail"
+msgstr "Дэталі"
+
+#. label, accelerator
+#: ../src/rep_balance.c:131 ../src/rep_budget.c:129 ../src/rep_stats.c:79
+#: ../src/rep_time.c:76
+msgid "Toggle detail"
+msgstr "Паказаць дэталі"
+
+#. DB( g_print(" acc key = %d\n", acckey) );
+#. acc = da_acc_get(acckey);
+#. hb_strfmon(buf, 127, data->minimum, selectall ? GLOBALS->kcur : acc->kcur);
+#. //TRANSLATORS: count of transaction in balancedrawn / count of total transaction under abalancedrawn amount threshold
+#: ../src/rep_balance.c:357
+#, c-format
+msgid "%d/%d under %s"
+msgstr "%d/%d пад %s"
+
+#: ../src/rep_balance.c:825
+msgid "Balance report"
+msgstr ""
+
+#: ../src/rep_balance.c:851 ../src/rep_budget.c:1120 ../src/rep_stats.c:1444
+#: ../src/rep_time.c:1255 ../src/rep_vehicle.c:609
+msgid "Display"
+msgstr ""
+
+#: ../src/rep_balance.c:864 ../src/rep_time.c:1302
+msgid "Select _all"
+msgstr ""
+
+#: ../src/rep_balance.c:869
+msgid "Each _day"
+msgstr ""
+
+#: ../src/rep_balance.c:880 ../src/rep_budget.c:1152 ../src/rep_stats.c:1474
+#: ../src/rep_time.c:1324
+msgid "_Zoom X:"
+msgstr ""
+
+#: ../src/rep_balance.c:891 ../src/rep_budget.c:1163 ../src/rep_stats.c:1492
+#: ../src/rep_time.c:1336 ../src/rep_vehicle.c:631
+msgid "Date filter"
+msgstr ""
+
+#: ../src/rep_balance.c:902 ../src/rep_budget.c:1174 ../src/rep_stats.c:1503
+#: ../src/rep_time.c:1347 ../src/rep_vehicle.c:642 ../src/ui-filter.c:968
+#: ../src/ui-filter.c:1101
+msgid "_From:"
+msgstr "_З:"
+
+#: ../src/rep_balance.c:908 ../src/rep_budget.c:1180 ../src/rep_stats.c:1509
+#: ../src/rep_time.c:1353 ../src/rep_vehicle.c:648 ../src/ui-filter.c:976
+#: ../src/ui-filter.c:1108
+msgid "_To:"
+msgstr "_Да:"
+
+#: ../src/rep_budget.c:109 ../src/rep_stats.c:141
+msgid "Subcategory"
+msgstr "Падкатэгорыя"
+
+#: ../src/rep_budget.c:111 ../src/rep_stats.c:150
+msgid "Exp. & Inc."
+msgstr "Выд. і прыб."
+
+#: ../src/rep_budget.c:113
+msgid "Spent & Budget"
+msgstr "Выдаткі і бюджэт"
+
+#. column: Expense
+#: ../src/rep_budget.c:113 ../src/rep_budget.c:1497
+msgid "Spent"
+msgstr "Выдаткавана"
+
+#. column: Result
+#. header
+#: ../src/rep_budget.c:113 ../src/rep_budget.c:1505 ../src/rep_stats.c:719
+#: ../src/rep_stats.c:1849
+msgid "Result"
+msgstr "Вынік"
+
+#: ../src/rep_budget.c:120 ../src/rep_stats.c:65
+msgid "Bar"
+msgstr "Паласа"
+
+#: ../src/rep_budget.c:120 ../src/rep_stats.c:65
+msgid "View results as bars"
+msgstr "Вынікі гістаграмай"
+
+#. is_active
+#. name, stock id
+#: ../src/rep_budget.c:134 ../src/rep_stats.c:84
+msgid "Legend"
+msgstr "Легенда"
+
+#. label, accelerator
+#: ../src/rep_budget.c:135 ../src/rep_stats.c:85
+msgid "Toggle legend"
+msgstr "Паказаць легенду"
+
+#: ../src/rep_budget.c:1094
+msgid "Budget report"
+msgstr "Справаздача па бюджэце"
+
+#: ../src/rep_budget.c:1125 ../src/rep_time.c:1260
+msgid "_For:"
+msgstr "_Для:"
+
+#: ../src/rep_budget.c:1133
+msgid "_Kind:"
+msgstr "_Тып:"
+
+#: ../src/rep_budget.c:1140 ../src/rep_stats.c:1449
+msgid "_View:"
+msgstr "_Выгляд:"
+
+#: ../src/rep_budget.c:1249
+msgid "Result:"
+msgstr ""
+
+#: ../src/rep_budget.c:1255
+msgid "Budget:"
+msgstr "Бюджэт:"
+
+#: ../src/rep_budget.c:1261
+msgid "Spent:"
+msgstr "Выдаткавана:"
+
+#: ../src/rep_budget.c:1379
+msgid "No account is defined to be part of the budget."
+msgstr ""
+
+#: ../src/rep_budget.c:1380
+msgid "You should include some accounts from the account dialog."
+msgstr ""
+
+#: ../src/rep_stats.c:66
+msgid "Pie"
+msgstr "Кругавая дыяграма"
+
+#: ../src/rep_stats.c:66
+msgid "View results as pies"
+msgstr "Вынікі ў выглядзе кругавой дыяграмы"
+
+#: ../src/rep_stats.c:68
+msgid "Edit the filter"
+msgstr "Рэдагаваць фільтр"
+
+#: ../src/rep_stats.c:71 ../src/rep_time.c:69
+msgid "Export"
+msgstr "Экспартаваць"
+
+#. is_active
+#. name, stock id
+#: ../src/rep_stats.c:90
+msgid "Rate"
+msgstr "Стаўка"
+
+#. label, accelerator
+#: ../src/rep_stats.c:91
+msgid "Toggle rate"
+msgstr "Змяніць стаўку"
+
+#: ../src/rep_stats.c:143
+msgid "Tag"
+msgstr "Пазнака"
+
+#: ../src/rep_stats.c:144 ../src/rep_time.c:120 ../src/ui-archive.c:46
+msgid "Month"
+msgstr "Месяц"
+
+#: ../src/rep_stats.c:145 ../src/rep_time.c:120 ../src/ui-archive.c:46
+msgid "Year"
+msgstr "Год"
+
+#: ../src/rep_stats.c:162 ../src/ui-filter.c:88
+msgid "January"
+msgstr "Студзень"
+
+#: ../src/rep_stats.c:163 ../src/ui-filter.c:89
+msgid "February"
+msgstr "Люты"
+
+#: ../src/rep_stats.c:164 ../src/ui-filter.c:90
+msgid "March"
+msgstr "Сакавік"
+
+#: ../src/rep_stats.c:165 ../src/ui-filter.c:91
+msgid "April"
+msgstr "Красавік"
+
+#: ../src/rep_stats.c:166 ../src/rep_time.c:131 ../src/ui-filter.c:92
+msgid "May"
+msgstr "Травень"
+
+#: ../src/rep_stats.c:167 ../src/ui-filter.c:93
+msgid "June"
+msgstr "Чэрвень"
+
+#: ../src/rep_stats.c:168 ../src/ui-filter.c:94
+msgid "July"
+msgstr "Ліпень"
+
+#: ../src/rep_stats.c:169 ../src/ui-filter.c:95
+msgid "August"
+msgstr "Жнівень"
+
+#: ../src/rep_stats.c:170 ../src/ui-filter.c:96
+msgid "September"
+msgstr "Верасень"
+
+#: ../src/rep_stats.c:171 ../src/ui-filter.c:97
+msgid "October"
+msgstr "Кастрычнік"
+
+#: ../src/rep_stats.c:172 ../src/ui-filter.c:98
+msgid "November"
+msgstr "Лістапад"
+
+#: ../src/rep_stats.c:173 ../src/ui-filter.c:99
+msgid "December"
+msgstr "Снежань"
+
+#. set chart title
+#. //TRANSLATORS: example 'Expense by Category'
+#: ../src/rep_stats.c:615
+#, c-format
+msgid "%s by %s"
+msgstr ""
+
+#: ../src/rep_stats.c:719
+msgid "expense"
+msgstr ""
+
+#: ../src/rep_stats.c:1044 ../src/ui-payee.c:271 ../src/ui-payee.c:408
+msgid "(no payee)"
+msgstr ""
+
+#: ../src/rep_stats.c:1418
+msgid "Statistics Report"
+msgstr "Справаздача па статыстыцы"
+
+#: ../src/rep_stats.c:1456
+msgid "_By:"
+msgstr ""
+
+#: ../src/rep_stats.c:1463
+msgid "By _amount"
+msgstr "Па _суме"
+
+#: ../src/rep_stats.c:1586
+msgid "Balance:"
+msgstr "Баланс:"
+
+#: ../src/rep_stats.c:1592
+msgid "Income:"
+msgstr "Прыбытак:"
+
+#: ../src/rep_stats.c:1599
+msgid "Expense:"
+msgstr "Выдатак:"
+
+#: ../src/rep_time.c:120 ../src/ui-archive.c:46
+msgid "Day"
+msgstr "Дзень"
+
+#: ../src/rep_time.c:120 ../src/ui-archive.c:46
+msgid "Week"
+msgstr "Тыдзень"
+
+#: ../src/rep_time.c:120
+msgid "Quarter"
+msgstr ""
+
+#: ../src/rep_time.c:127
+msgid "Jan"
+msgstr ""
+
+#: ../src/rep_time.c:128
+msgid "Feb"
+msgstr ""
+
+#: ../src/rep_time.c:129
+msgid "Mar"
+msgstr ""
+
+#: ../src/rep_time.c:130
+msgid "Apr"
+msgstr ""
+
+#: ../src/rep_time.c:132
+msgid "Jun"
+msgstr ""
+
+#: ../src/rep_time.c:133
+msgid "Jul"
+msgstr ""
+
+#: ../src/rep_time.c:134
+msgid "Aug"
+msgstr ""
+
+#: ../src/rep_time.c:135
+msgid "Sep"
+msgstr ""
+
+#: ../src/rep_time.c:136
+msgid "Oct"
+msgstr ""
+
+#: ../src/rep_time.c:137
+msgid "Nov"
+msgstr ""
+
+#: ../src/rep_time.c:138
+msgid "Dec"
+msgstr ""
+
+#. //TRANSLATORS: example 'Expense by Category'
+#: ../src/rep_time.c:548
+#, c-format
+msgid "%s Over Time"
+msgstr ""
+
+#. header
+#: ../src/rep_time.c:581 ../src/rep_time.c:1627
+msgid "Time slice"
+msgstr ""
+
+#: ../src/rep_time.c:1229
+msgid "Trend Time Report"
+msgstr ""
+
+#: ../src/rep_time.c:1277
+msgid "_Account:"
+msgstr ""
+
+#: ../src/rep_time.c:1286 ../src/ui-archive.c:823 ../src/ui-assign.c:769
+#: ../src/ui-hbfile.c:254 ../src/ui-transaction.c:1146
+msgid "_Category:"
+msgstr "_Катэгорыя:"
+
+#: ../src/rep_time.c:1295 ../src/ui-archive.c:816 ../src/ui-assign.c:783
+#: ../src/ui-transaction.c:1138
+msgid "_Payee:"
+msgstr "Атрымальнік плаця_жу:"
+
+#: ../src/rep_time.c:1307
+msgid "_Cumulate"
+msgstr ""
+
+#: ../src/rep_time.c:1312
+msgid "_View by:"
+msgstr ""
+
+#: ../src/rep_vehicle.c:582
+msgid "Vehicle cost report"
+msgstr ""
+
+#: ../src/rep_vehicle.c:614
+msgid "Vehi_cle:"
+msgstr ""
+
+#: ../src/rep_vehicle.c:683
+msgid "Meter:"
+msgstr "Лічыльнік:"
+
+#: ../src/rep_vehicle.c:687
+msgid "Consumption:"
+msgstr "Спажыванне:"
+
+#: ../src/rep_vehicle.c:691
+msgid "Fuel cost:"
+msgstr "Кошт паліва:"
+
+#: ../src/rep_vehicle.c:695
+msgid "Other cost:"
+msgstr "Іншыя выдаткі:"
+
+#: ../src/rep_vehicle.c:699
+msgid "Total cost:"
+msgstr "Агульны кошт:"
+
+#.
+#. LST_CAR_DATE,
+#. LST_CAR_WORDING,
+#. LST_CAR_METER,
+#. LST_CAR_FUEL,
+#. LST_CAR_PRICE,
+#. LST_CAR_AMOUNT,
+#. LST_CAR_DIST,
+#. LST_CAR_100KM
+#.
+#.
+#. column: Wording
+#.
+#. column = gtk_tree_view_column_new();
+#. gtk_tree_view_column_set_title(column, _("Wording"));
+#. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+#. renderer = gtk_cell_renderer_text_new();
+#. gtk_tree_view_column_pack_start(column, renderer, TRUE);
+#. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_WORDING);
+#. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
+#.
+#. column: Meter
+#: ../src/rep_vehicle.c:1000
+msgid "Meter"
+msgstr "Лічыльнік"
+
+#. column: Fuel load
+#: ../src/rep_vehicle.c:1004
+msgid "Fuel"
+msgstr "Паліва"
+
+#. column: Price by unit
+#: ../src/rep_vehicle.c:1008
+msgid "Price"
+msgstr "Кошт"
+
+#. column: Distance done
+#: ../src/rep_vehicle.c:1016
+msgid "Dist."
+msgstr "Адлегл."
+
+#: ../src/ui-account.c:38
+msgid "(no type)"
+msgstr ""
+
+#: ../src/ui-account.c:40 ../src/ui-widgets.c:755
+msgid "Cash"
+msgstr "Гатоўка"
+
+#: ../src/ui-account.c:41
+msgid "Asset"
+msgstr ""
+
+#: ../src/ui-account.c:42 ../src/ui-widgets.c:753
+msgid "Credit card"
+msgstr "Крэдытная карта"
+
+#: ../src/ui-account.c:43
+msgid "Liability"
+msgstr ""
+
+#: ../src/ui-account.c:366 ../src/ui-assign.c:115 ../src/ui-widgets.c:752
+msgid "(none)"
+msgstr "(пуста)"
+
+#: ../src/ui-account.c:524 ../src/ui-assign.c:266 ../src/ui-payee.c:538
+#: ../src/ui-pref.c:2643
+msgid "Visible"
+msgstr "Бачны"
+
+#: ../src/ui-account.c:953 ../src/ui-account.c:1039
+msgid "Account name"
+msgstr ""
+
+#: ../src/ui-account.c:960
+#, c-format
+msgid ""
+"Cannot add an account '%s',\n"
+"this name already exists."
+msgstr ""
+
+#: ../src/ui-account.c:1001
+msgid "Remove not allowed"
+msgstr "Выдаленне не дазволенае"
+
+#: ../src/ui-account.c:1002
+msgid "This account is used and cannot be removed."
+msgstr "Гэты рахунак выкарыстоўваецца і не можа быць выдалены."
+
+#: ../src/ui-account.c:1170
+msgid "Manage Accounts"
+msgstr "Кіраванне рахункамі"
+
+#: ../src/ui-account.c:1209
+msgid ""
+"Drag & drop to change the order\n"
+"Double-click to rename"
+msgstr ""
+
+#.
+#. label = make_label(_("Default currency"), 0.0, 0.5);
+#. gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
+#. gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 3, row, row+1);
+#.
+#. row++;
+#. label = make_label(_("Code:"), 0, 0.5);
+#. //----------------------------------------- l, r, t, b
+#. gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
+#. widget = make_label(NULL, 0.0, 0.0);
+#. data->LB_default = widget;
+#. gtk_table_attach (GTK_TABLE (table), widget, 2, 3, row, row+1, (GtkAttachOptions) (GTK_FILL|GTK_EXPAND), (GtkAttachOptions) (0), 0, 0);
+#.
+#.
+#.
+#. row++;
+#. widget = gtk_button_new_with_mnemonic (_("_Change"));
+#. data->BT_default = widget;
+#. gtk_table_attach (GTK_TABLE (table), widget, 2, 3, row, row+1, (GtkAttachOptions) (GTK_FILL|GTK_EXPAND), (GtkAttachOptions) (0), 0, 0);
+#.
+#.
+#. row++;
+#.
+#: ../src/ui-account.c:1235 ../src/ui-hbfile.c:203 ../src/ui-pref.c:87
+#: ../src/ui-pref.c:1507 ../src/ui-pref.c:1894
+msgid "General"
+msgstr "Агульны"
+
+#: ../src/ui-account.c:1260
+msgid "Start _balance:"
+msgstr ""
+
+#: ../src/ui-account.c:1269
+msgid "this account was _closed"
+msgstr ""
+
+#: ../src/ui-account.c:1275
+msgid "Current check number"
+msgstr ""
+
+#: ../src/ui-account.c:1280
+msgid "Checkbook _1:"
+msgstr ""
+
+#: ../src/ui-account.c:1287
+msgid "Checkbook _2:"
+msgstr ""
+
+#: ../src/ui-account.c:1302 ../src/ui-budget.c:968
+msgid "Options"
+msgstr ""
+
+#: ../src/ui-account.c:1307
+msgid "Institution"
+msgstr ""
+
+#: ../src/ui-account.c:1319 ../src/ui-assist-start.c:339
+msgid "N_umber:"
+msgstr ""
+
+#: ../src/ui-account.c:1326
+msgid "Limits"
+msgstr ""
+
+#: ../src/ui-account.c:1333
+msgid "_Min. balance:"
+msgstr ""
+
+#: ../src/ui-account.c:1340
+msgid "Report exclusion"
+msgstr ""
+
+#: ../src/ui-account.c:1345
+msgid "exclude from account _summary"
+msgstr ""
+
+#: ../src/ui-account.c:1350
+msgid "exclude from the _budget"
+msgstr ""
+
+#: ../src/ui-account.c:1355
+msgid "exclude from any _reports"
+msgstr ""
+
+#: ../src/ui-archive.c:48
+msgid "Possible"
+msgstr ""
+
+#: ../src/ui-archive.c:48
+msgid "Before"
+msgstr ""
+
+#: ../src/ui-archive.c:48
+msgid "After"
+msgstr ""
+
+#: ../src/ui-archive.c:195
+#, c-format
+msgid "(archive %d)"
+msgstr "(архіў %d)"
+
+#: ../src/ui-archive.c:746
+msgid "Transaction detail"
+msgstr ""
+
+#: ../src/ui-archive.c:751 ../src/ui-transaction.c:1067
+msgid "_Amount:"
+msgstr "_Сума:"
+
+#: ../src/ui-archive.c:759 ../src/ui-transaction.c:1076
+msgid "Toggle amount sign"
+msgstr ""
+
+#: ../src/ui-archive.c:768
+msgid "Pay_ment:"
+msgstr "П_лацёж:"
+
+#: ../src/ui-archive.c:775 ../src/ui-transaction.c:1097
+msgid "Of notebook _2"
+msgstr "У запісной кніжцы _2"
+
+#: ../src/ui-archive.c:789
+msgid "_To account:"
+msgstr "_Да рахунку:"
+
+#: ../src/ui-archive.c:830 ../src/ui-filter.c:1040
+msgid "_Memo:"
+msgstr ""
+
+#: ../src/ui-archive.c:844 ../src/ui-transaction.c:1175
+msgid "Re_mind"
+msgstr ""
+
+#: ../src/ui-archive.c:863
+msgid "Scheduled insertion"
+msgstr ""
+
+#: ../src/ui-archive.c:868
+msgid "_Activate"
+msgstr "_Уключыть"
+
+#: ../src/ui-archive.c:873
+msgid "Next _date:"
+msgstr ""
+
+#: ../src/ui-archive.c:880
+msgid "Ever_y:"
+msgstr "Кож_ны:"
+
+#: ../src/ui-archive.c:895
+msgid "Week end:"
+msgstr ""
+
+#: ../src/ui-archive.c:906
+msgid "_Stop after:"
+msgstr ""
+
+#: ../src/ui-archive.c:914
+msgid "posts"
+msgstr ""
+
+#: ../src/ui-archive.c:929
+msgid "Manage scheduled/template transactions"
+msgstr ""
+
+#: ../src/ui-assign.c:509
+#, c-format
+msgid "(assignment %d)"
+msgstr ""
+
+#: ../src/ui-assign.c:668
+msgid "Manage Assignments"
+msgstr ""
+
+#: ../src/ui-assign.c:737
+msgid "Condition"
+msgstr ""
+
+#: ../src/ui-assign.c:742
+msgid "_Field:"
+msgstr ""
+
+#: ../src/ui-assign.c:749
+msgid "Con_tains:"
+msgstr ""
+
+#: ../src/ui-assign.c:756 ../src/ui-filter.c:1036
+msgid "Case _sensitive"
+msgstr "З _улікам рэгістру"
+
+#: ../src/ui-assign.c:764
+msgid "Assignments"
+msgstr ""
+
+#: ../src/ui-assign.c:779 ../src/ui-transaction.c:1152
+msgid ""
+"Autocompletion and direct seizure\n"
+"is available for Category"
+msgstr ""
+"Аўтазавяршэнне і прамая вынятка\n"
+"даступнае для Катэгорыі"
+
+#: ../src/ui-assign.c:793 ../src/ui-transaction.c:1143
+msgid ""
+"Autocompletion and direct seizure\n"
+"is available for Payee"
+msgstr ""
+"Аўтазавяршэнне і прамая вынятка\n"
+"даступнае для атрымальніка плацяжу"
+
+#: ../src/ui-assist-start.c:122
+#, c-format
+msgid "New HomeBank file (%d of %d)"
+msgstr ""
+
+#: ../src/ui-assist-start.c:153
+msgid "Not found"
+msgstr ""
+
+#: ../src/ui-assist-start.c:196
+msgid "Owner:"
+msgstr ""
+
+#: ../src/ui-assist-start.c:208
+msgid "File properties"
+msgstr ""
+
+#: ../src/ui-assist-start.c:237
+msgid "System detection"
+msgstr ""
+
+#: ../src/ui-assist-start.c:246
+msgid "Languages:"
+msgstr ""
+
+#: ../src/ui-assist-start.c:253
+msgid "Preset file:"
+msgstr ""
+
+#: ../src/ui-assist-start.c:271
+msgid "Initialize my categories with this file"
+msgstr ""
+
+#: ../src/ui-assist-start.c:283
+msgid "Preset categories"
+msgstr ""
+
+#: ../src/ui-assist-start.c:312
+msgid "Informations"
+msgstr ""
+
+#: ../src/ui-assist-start.c:351
+msgid "Balances"
+msgstr ""
+
+#: ../src/ui-assist-start.c:356
+msgid "_Initial:"
+msgstr "_Пачатковы:"
+
+#: ../src/ui-assist-start.c:368
+msgid "_Overdrawn at:"
+msgstr "_Перавышэнне на:"
+
+#: ../src/ui-assist-start.c:385
+msgid "Create an account"
+msgstr ""
+
+#: ../src/ui-assist-start.c:402
+msgid "This is a confirmation page, press 'Apply' to apply changes"
+msgstr ""
+
+#: ../src/ui-assist-start.c:408
+msgid "Confirmation"
+msgstr ""
+
+#: ../src/ui-budget.c:438 ../src/ui-category.c:938
+msgid "File format error"
+msgstr "Памылка фармату файла"
+
+#: ../src/ui-budget.c:439
+msgid ""
+"The csv file must contains the exact numbers of column,\n"
+"separated by a semi-colon, read the help for more details."
+msgstr ""
+"Гэты CSV файл павінен утрымоўваць дакладны лік слупкоў,\n"
+"падзеленых кропкай з коскай, звяртайцеся да даведкі за падрабязнасцямі."
+
+#: ../src/ui-budget.c:852
+msgid "Manage Budget"
+msgstr "Кіраванне бюджэтам"
+
+#: ../src/ui-budget.c:912
+msgid "Budget for each month"
+msgstr ""
+
+#: ../src/ui-budget.c:921
+msgid "is the same"
+msgstr "аднолькавы"
+
+#: ../src/ui-budget.c:932
+msgid "_Clear input"
+msgstr ""
+
+#: ../src/ui-budget.c:944
+msgid "is different"
+msgstr "розны"
+
+#: ../src/ui-budget.c:973
+msgid "_Force monitoring this category"
+msgstr ""
+
+#: ../src/ui-budget.c:984 ../src/ui-category.c:1633 ../src/ui-payee.c:1034
+msgid "_Import"
+msgstr "_Імпарт"
+
+#: ../src/ui-budget.c:988 ../src/ui-category.c:1637 ../src/ui-payee.c:1038
+msgid "E_xport"
+msgstr "Э_кспарт"
+
+#: ../src/ui-category.c:939
+msgid ""
+"The csv file must contains the exact numbers of column,\n"
+"separated by a semi-colon, please see the help for more details."
+msgstr ""
+"CSV файл павінен утрымоўваць дакладны лік слупкоў,\n"
+"падзеленых кропкай з коскі, звяртайцеся да даведкі за падрабязнасцямі."
+
+#: ../src/ui-category.c:1079 ../src/ui-payee.c:676
+msgid "Modify..."
+msgstr "Змяніць..."
+
+#: ../src/ui-category.c:1103
+msgid "_Income"
+msgstr "_Прыбыткі"
+
+#: ../src/ui-category.c:1151
+#, c-format
+msgid ""
+"Cannot rename this Category,\n"
+"from '%s' to '%s',\n"
+"this name already exists."
+msgstr ""
+"Немагчыма пераназваць катэгорыю\n"
+"з '%s' у '%s',\n"
+"гэтае імя ўжо выкарыстоўваецца."
+
+#: ../src/ui-category.c:1215 ../src/ui-payee.c:777
+msgid "Move to..."
+msgstr ""
+
+#: ../src/ui-category.c:1253
+msgid "Move this category to another one ?"
+msgstr ""
+
+#: ../src/ui-category.c:1254 ../src/ui-payee.c:818
+#, c-format
+msgid ""
+"This will replace '%s' by '%s',\n"
+"and then remove '%s'"
+msgstr ""
+
+#: ../src/ui-category.c:1318
+msgid "Remove a category ?"
+msgstr "Выдаліць катэгорыю?"
+
+#: ../src/ui-category.c:1319
+#, c-format
+msgid ""
+"If you remove '%s', archive and transaction referencing this category\n"
+"will set place to 'no category'"
+msgstr ""
+
+#: ../src/ui-category.c:1537
+msgid "Manage Categories"
+msgstr "Кіраванне катэгорыямі"
+
+#: ../src/ui-category.c:1575
+msgid "I_ncome"
+msgstr "_Прыбытак"
+
+#: ../src/ui-category.c:1626 ../src/ui-payee.c:1027
+msgid "_Move"
+msgstr "Пера_мясьціць"
+
+#: ../src/ui-dialogs.c:184
+msgid "Import from CSV"
+msgstr "Імпарт з CSV"
+
+#: ../src/ui-dialogs.c:246
+msgid "Open homebank file"
+msgstr "Адкрыць файл HomeBank"
+
+#: ../src/ui-dialogs.c:251
+msgid "Save homebank file as"
+msgstr "Захаваць файл HomeBank як"
+
+#: ../src/ui-dialogs.c:262
+msgid "HomeBank files"
+msgstr "Файлы HomeBank"
+
+#: ../src/ui-dialogs.c:364
+msgid ""
+"Do you want to save the changes\n"
+"in the current file ?"
+msgstr ""
+"Захаваць змены\n"
+"у бягучым файле?"
+
+#: ../src/ui-dialogs.c:368
+#, c-format
+msgid ""
+"If you do not save, some changes will be\n"
+"definitively lost: %d."
+msgstr ""
+
+#: ../src/ui-dialogs.c:373
+msgid "Do _not save"
+msgstr "_Не захоўваць"
+
+#: ../src/ui-dialogs.c:476
+msgid "Select among possible transactions..."
+msgstr ""
+
+#: ../src/ui-dialogs.c:479
+msgid ""
+"HomeBank has found some transaction that may be the associated transaction "
+"for the internal transfer."
+msgstr ""
+
+#: ../src/ui-dialogs.c:491
+msgid "Select an action:"
+msgstr ""
+
+#: ../src/ui-dialogs.c:496
+msgid "create a new transaction"
+msgstr ""
+
+#: ../src/ui-dialogs.c:499
+msgid "select an existing transaction"
+msgstr ""
+
+#: ../src/ui-filter.c:52
+msgid "Any Type"
+msgstr ""
+
+#: ../src/ui-filter.c:57
+msgid "Uncategorized"
+msgstr ""
+
+#: ../src/ui-filter.c:58
+msgid "Unreconciled"
+msgstr ""
+
+#: ../src/ui-filter.c:60
+msgid "Any Status"
+msgstr ""
+
+#: ../src/ui-filter.c:65
+msgid "This Month"
+msgstr ""
+
+#: ../src/ui-filter.c:66
+msgid "Last Month"
+msgstr ""
+
+#: ../src/ui-filter.c:67
+msgid "This Quarter"
+msgstr ""
+
+#: ../src/ui-filter.c:68
+msgid "Last Quarter"
+msgstr ""
+
+#: ../src/ui-filter.c:69
+msgid "This Year"
+msgstr ""
+
+#: ../src/ui-filter.c:70
+msgid "Last Year"
+msgstr ""
+
+#: ../src/ui-filter.c:72
+msgid "Last 30 days"
+msgstr "Апошнія 30 дзён"
+
+#: ../src/ui-filter.c:73
+msgid "Last 60 days"
+msgstr ""
+
+#: ../src/ui-filter.c:74
+msgid "Last 90 days"
+msgstr ""
+
+#: ../src/ui-filter.c:75
+msgid "Last 12 months"
+msgstr "Апошні год"
+
+#: ../src/ui-filter.c:77
+msgid "Other..."
+msgstr ""
+
+#: ../src/ui-filter.c:79
+msgid "All date"
+msgstr "Усе даты"
+
+#: ../src/ui-filter.c:87
+msgid "All month"
+msgstr "Усе месяцы"
+
+#: ../src/ui-filter.c:745 ../src/ui-filter.c:794 ../src/ui-filter.c:843
+#: ../src/ui-filter.c:960 ../src/ui-filter.c:1027 ../src/ui-filter.c:1092
+#: ../src/ui-filter.c:1150 ../src/ui-filter.c:1219
+msgid "_Option:"
+msgstr "_Опцыя:"
+
+#: ../src/ui-filter.c:766 ../src/ui-filter.c:815 ../src/ui-filter.c:864
+msgid "All"
+msgstr "Усе"
+
+#: ../src/ui-filter.c:770 ../src/ui-filter.c:819 ../src/ui-filter.c:868
+msgid "None"
+msgstr "Нічога"
+
+#: ../src/ui-filter.c:774 ../src/ui-filter.c:823 ../src/ui-filter.c:872
+msgid "Invert"
+msgstr "Інвертаваць"
+
+#: ../src/ui-filter.c:950
+msgid "Filter Date"
+msgstr ""
+
+#: ../src/ui-filter.c:984
+msgid "_Month:"
+msgstr "_Месяц:"
+
+#: ../src/ui-filter.c:990
+msgid "_Year:"
+msgstr "_Год:"
+
+#: ../src/ui-filter.c:1018
+msgid "Filter Text"
+msgstr ""
+
+#: ../src/ui-filter.c:1046 ../src/ui-transaction.c:1102
+msgid "_Info:"
+msgstr "_Інфармацыя"
+
+#: ../src/ui-filter.c:1053
+msgid "_Tag:"
+msgstr "_Тэг:"
+
+#: ../src/ui-filter.c:1083
+msgid "Filter Amount"
+msgstr ""
+
+#: ../src/ui-filter.c:1141
+msgid "Filter Status"
+msgstr ""
+
+#: ../src/ui-filter.c:1161
+msgid "reconciled"
+msgstr ""
+
+#: ../src/ui-filter.c:1165
+msgid "remind"
+msgstr "нагадаць"
+
+#: ../src/ui-filter.c:1170
+msgid "Force:"
+msgstr "Чыннік:"
+
+#: ../src/ui-filter.c:1176
+msgid "display 'Added'"
+msgstr "паказаць 'Дададзены'"
+
+#: ../src/ui-filter.c:1180
+msgid "display 'Edited'"
+msgstr "паказаць 'Зменены'"
+
+#: ../src/ui-filter.c:1209
+msgid "Filter Payment"
+msgstr ""
+
+#: ../src/ui-filter.c:1314
+msgid "Edit Filter"
+msgstr "Рэдагаваць фільтр"
+
+#: ../src/ui-filter.c:1363
+msgid "Paymode"
+msgstr ""
+
+#: ../src/ui-filter.c:1373
+msgid "Text"
+msgstr ""
+
+#: ../src/ui-hbfile.c:171
+msgid "HomeBank file properties"
+msgstr ""
+
+#: ../src/ui-hbfile.c:208
+msgid "_Owner:"
+msgstr "_Уладальнік:"
+
+#: ../src/ui-hbfile.c:216
+msgid "Scheduled transaction"
+msgstr ""
+
+#: ../src/ui-hbfile.c:221
+msgid "add until"
+msgstr ""
+
+#: ../src/ui-hbfile.c:230
+msgid "of each month (excluded)"
+msgstr ""
+
+#: ../src/ui-hbfile.c:234
+msgid "add"
+msgstr ""
+
+#. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
+#: ../src/ui-hbfile.c:244
+msgid "days in advance the current date"
+msgstr ""
+
+#: ../src/ui-payee.c:725
+#, c-format
+msgid ""
+"Cannot rename this Payee,\n"
+"from '%s' to '%s',\n"
+"this name already exists."
+msgstr ""
+"Немагчыма пераназваць гэтага Атрымальніка,\n"
+"з '%s' у '%s',\n"
+"гэтае імя ўжо выкарыстоўваецца."
+
+#: ../src/ui-payee.c:817
+msgid "Move this payee to another one ?"
+msgstr ""
+
+#: ../src/ui-payee.c:879
+msgid "Remove a payee ?"
+msgstr "Выдаліць атрымальніка?"
+
+#: ../src/ui-payee.c:880
+#, c-format
+msgid ""
+"If you remove '%s', archive and transaction referencing this payee\n"
+"will set place to 'no payee'"
+msgstr ""
+
+#: ../src/ui-payee.c:964
+msgid "Manage Payees"
+msgstr "Кіраванне Атрымальнікамі"
+
+#: ../src/ui-pref.c:88
+msgid "Interface"
+msgstr "Вонкавы выгляд"
+
+#: ../src/ui-pref.c:90
+msgid "Display format"
+msgstr "Фармат адлюстравання"
+
+#: ../src/ui-pref.c:91
+msgid "Import/Export"
+msgstr ""
+
+#: ../src/ui-pref.c:92
+msgid "Report"
+msgstr ""
+
+#: ../src/ui-pref.c:93
+msgid "Euro minor"
+msgstr ""
+
+#: ../src/ui-pref.c:98
+msgid "System defaults"
+msgstr "Па змаўчанні"
+
+#: ../src/ui-pref.c:99
+msgid "Icons only"
+msgstr "Толькі значкі"
+
+#: ../src/ui-pref.c:100
+msgid "Text only"
+msgstr "Толькі тэкст"
+
+#: ../src/ui-pref.c:101
+msgid "Text under icons"
+msgstr "Тэкст пад значкамі"
+
+#: ../src/ui-pref.c:102
+msgid "Text beside icons"
+msgstr "Тэкст побач са значкамі"
+
+#: ../src/ui-pref.c:108
+msgid "Tango light"
+msgstr "Tango лёгкі"
+
+#: ../src/ui-pref.c:109
+msgid "Tango medium"
+msgstr "Tango ўмераны"
+
+#: ../src/ui-pref.c:110
+msgid "Tango dark"
+msgstr "Tango цёмны"
+
+#: ../src/ui-pref.c:115
+msgid "m-d-y"
+msgstr ""
+
+#: ../src/ui-pref.c:116
+msgid "d-m-y"
+msgstr ""
+
+#: ../src/ui-pref.c:117
+msgid "y-m-d"
+msgstr ""
+
+#: ../src/ui-pref.c:128
+msgid "Ignore"
+msgstr ""
+
+#: ../src/ui-pref.c:129
+msgid "Append to Info"
+msgstr ""
+
+#: ../src/ui-pref.c:130
+msgid "Append to Memo"
+msgstr ""
+
+#: ../src/ui-pref.c:503
+msgid "System Language"
+msgstr ""
+
+#: ../src/ui-pref.c:728
+msgid "Choose a default HomeBank files folder"
+msgstr ""
+
+#: ../src/ui-pref.c:733
+msgid "Choose a default import folder"
+msgstr ""
+
+#: ../src/ui-pref.c:738
+msgid "Choose a default export folder"
+msgstr ""
+
+#: ../src/ui-pref.c:1312 ../src/ui-pref.c:1673
+msgid "Date options"
+msgstr ""
+
+#: ../src/ui-pref.c:1327
+msgid "OFX/QFX options"
+msgstr ""
+
+#: ../src/ui-pref.c:1332
+msgid "_Memo field:"
+msgstr ""
+
+#: ../src/ui-pref.c:1342 ../src/ui-pref.c:2050
+msgid "Files folder"
+msgstr ""
+
+#: ../src/ui-pref.c:1348
+msgid "_Import:"
+msgstr "І_мпарт"
+
+#: ../src/ui-pref.c:1364
+msgid "_Export:"
+msgstr "_Экспарт"
+
+#: ../src/ui-pref.c:1403
+msgid "Initial filter"
+msgstr ""
+
+#: ../src/ui-pref.c:1408 ../src/ui-pref.c:1821 ../src/ui-pref.c:2041
+msgid "Date _range:"
+msgstr ""
+
+#: ../src/ui-pref.c:1418
+msgid "Charts options"
+msgstr ""
+
+#: ../src/ui-pref.c:1423
+msgid "Color Scheme:"
+msgstr ""
+
+#: ../src/ui-pref.c:1433
+msgid "Statistics options"
+msgstr ""
+
+#: ../src/ui-pref.c:1438
+msgid "Show by _amount"
+msgstr "Паказаць па _суме"
+
+#: ../src/ui-pref.c:1443
+msgid "Show _rate column"
+msgstr "Паказаць слупок курсу"
+
+#: ../src/ui-pref.c:1448 ../src/ui-pref.c:1458
+msgid "Show _details"
+msgstr "Паказаць _дэталі"
+
+#: ../src/ui-pref.c:1453
+msgid "Budget options"
+msgstr ""
+
+#: ../src/ui-pref.c:1512
+msgid "_Enable"
+msgstr ""
+
+#: ../src/ui-pref.c:1517
+msgid "Fill from:"
+msgstr "Запоўніць з:"
+
+#: ../src/ui-pref.c:1526
+msgid "Country:"
+msgstr "Краіна:"
+
+#: ../src/ui-pref.c:1535
+msgid "Value:"
+msgstr "Значэнне:"
+
+#: ../src/ui-pref.c:1544
+msgid "Numbers format"
+msgstr ""
+
+#: ../src/ui-pref.c:1549 ../src/ui-pref.c:1717
+msgid "Symbol:"
+msgstr ""
+
+#: ../src/ui-pref.c:1556 ../src/ui-pref.c:1724
+msgid "Is prefix"
+msgstr ""
+
+#: ../src/ui-pref.c:1561 ../src/ui-pref.c:1729
+msgid "Decimal char:"
+msgstr "Дзесятковы падзельнік:"
+
+#: ../src/ui-pref.c:1568 ../src/ui-pref.c:1736
+msgid "Grouping char:"
+msgstr "Знак тысячнага падзельніка:"
+
+#: ../src/ui-pref.c:1575 ../src/ui-pref.c:1743
+msgid "_Frac digits:"
+msgstr "Лі_чбаў пасля коскі:"
+
+#: ../src/ui-pref.c:1678
+msgid "_Date format:"
+msgstr "Фармат _даты:"
+
+#: ../src/ui-pref.c:1687
+msgid ""
+"%a locale's abbreviated weekday name.\n"
+"%A locale's full weekday name. \n"
+"%b locale's abbreviated month name. \n"
+"%B locale's full month name. \n"
+"%c locale's appropriate date and time representation. \n"
+"%C century number (the year divided by 100 and truncated to an integer) as a "
+"decimal number [00-99]. \n"
+"%d day of the month as a decimal number [01,31]. \n"
+"%D same as %m/%d/%y. \n"
+"%e day of the month as a decimal number [1,31]; a single digit is preceded "
+"by a space. \n"
+"%j day of the year as a decimal number [001,366]. \n"
+"%m month as a decimal number [01,12]. \n"
+"%p locale's appropriate date representation. \n"
+"%y year without century as a decimal number [00,99]. \n"
+"%Y year with century as a decimal number. \n"
+msgstr ""
+
+#: ../src/ui-pref.c:1712
+msgid "Numbers options"
+msgstr ""
+
+#: ../src/ui-pref.c:1777
+msgid "Measurement units"
+msgstr ""
+
+#: ../src/ui-pref.c:1787
+msgid "Use _miles for meter"
+msgstr ""
+
+#: ../src/ui-pref.c:1792
+msgid "Use _galons for fuel"
+msgstr ""
+
+#: ../src/ui-pref.c:1816
+msgid "Transaction window"
+msgstr ""
+
+#: ../src/ui-pref.c:1829
+msgid "Hide reconciled transactions"
+msgstr ""
+
+#: ../src/ui-pref.c:1835
+msgid "Multiple add"
+msgstr ""
+
+#: ../src/ui-pref.c:1840
+msgid "Keep the last date"
+msgstr ""
+
+#: ../src/ui-pref.c:1846
+msgid "Column list"
+msgstr ""
+
+#: ../src/ui-pref.c:1857
+msgid "Drag & drop to change the order"
+msgstr "Перацягні для змянення парадку"
+
+#: ../src/ui-pref.c:1882
+msgid "Language"
+msgstr ""
+
+#: ../src/ui-pref.c:1887
+msgid "_Language:"
+msgstr ""
+
+#: ../src/ui-pref.c:1899
+msgid "_Toolbar:"
+msgstr "Панэль пр_ылад"
+
+#: ../src/ui-pref.c:1922
+msgid "Treeview"
+msgstr ""
+
+#: ../src/ui-pref.c:1927
+msgid "Show rules hint"
+msgstr "Паказаць падказкі для правілаў"
+
+#: ../src/ui-pref.c:1933
+msgid "Amount colors"
+msgstr ""
+
+#: ../src/ui-pref.c:1938
+msgid "Uses custom colors"
+msgstr "Выкарыстаньне карыстацкіх колераў"
+
+#: ../src/ui-pref.c:1943
+msgid "_Preset:"
+msgstr "_Прадусталяванне:"
+
+#: ../src/ui-pref.c:1952
+msgid "_Expense:"
+msgstr "Вы_датак:"
+
+#: ../src/ui-pref.c:1962
+msgid "_Income:"
+msgstr "Пры_бытак:"
+
+#: ../src/ui-pref.c:1969
+msgid "_Warning:"
+msgstr "Пап_ярэджанне:"
+
+#: ../src/ui-pref.c:1996
+msgid "Program start"
+msgstr ""
+
+#: ../src/ui-pref.c:2001
+msgid "Load last opened file"
+msgstr "Загрузіць апошні адчынены файл"
+
+#: ../src/ui-pref.c:2006
+msgid "Post pending scheduled transactions"
+msgstr ""
+
+#: ../src/ui-pref.c:2011
+msgid "Show splash screen"
+msgstr ""
+
+#: ../src/ui-pref.c:2017
+msgid "Fiscal year"
+msgstr ""
+
+#. TRANSLATORS: (fiscal year) starts on
+#: ../src/ui-pref.c:2023
+msgid "Starts _on:"
+msgstr ""
+
+#: ../src/ui-pref.c:2036
+msgid "Main window reports"
+msgstr ""
+
+#: ../src/ui-pref.c:2055
+msgid "_Default:"
+msgstr ""
+
+#: ../src/ui-pref.c:2159
+msgid "Clear every preferences ?"
+msgstr ""
+
+#: ../src/ui-pref.c:2160
+msgid ""
+"This will revert the preferences\n"
+"to its default values"
+msgstr ""
+
+#: ../src/ui-pref.c:2179
+msgid "Preferences"
+msgstr "Налады"
+
+#: ../src/ui-pref.c:2387
+msgid ""
+"You will have to restart HomeBank\n"
+"for the language change to take effect."
+msgstr ""
+
+#: ../src/ui-pref.c:2654
+msgid "Column"
+msgstr "Слупок"
+
+#: ../src/ui-transaction.c:50
+msgid "Inherit transaction"
+msgstr "Успадкаваць транзакцыю"
+
+#: ../src/ui-transaction.c:51
+msgid "Modify transaction"
+msgstr "Змяніць транзакцыю"
+
+#: ../src/ui-transaction.c:334
+msgid "Transaction split"
+msgstr ""
+
+#. sum button must appear only when new split add
+#. #1258821
+#. if(data.splittype == TXN_SPLIT_NEW)
+#: ../src/ui-transaction.c:354
+msgid "Sum"
+msgstr ""
+
+#: ../src/ui-transaction.c:439
+msgid "Sum of splits:"
+msgstr ""
+
+#: ../src/ui-transaction.c:451
+msgid "Unassigned:"
+msgstr ""
+
+#: ../src/ui-transaction.c:465
+msgid "Transaction amount:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1059
+msgid "_Date:"
+msgstr "_Дата:"
+
+#: ../src/ui-transaction.c:1064
+msgid ""
+"Date accepted here are:\n"
+"day,\n"
+"day/month or month/day,\n"
+"and complete date into your locale"
+msgstr ""
+"Прымальныя фарматы даты:\n"
+"дзень,\n"
+"дзень/месяц або месяц/дзень\n"
+"поўная дата ў вашым рэгіянальным фармаце"
+
+#: ../src/ui-transaction.c:1087
+msgid "Category split"
+msgstr ""
+
+#: ../src/ui-transaction.c:1090
+msgid "Pa_yment:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1109
+msgid "Acc_ount:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1116
+msgid "To acc_ount:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1155
+msgid "M_emo:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1163
+msgid "Ta_gs:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1275
+msgid "Fill in with a template"
+msgstr ""
+
+#: ../src/ui-transaction.c:1281
+msgid "_Template:"
+msgstr ""
+
+#: ../src/ui-widgets.c:754
+msgid "Check"
+msgstr "Спраўдзіць"
+
+#: ../src/ui-widgets.c:756
+msgid "Transfer"
+msgstr "Перадача"
+
+#: ../src/ui-widgets.c:757
+msgid "Internal transfer"
+msgstr "Унутраны пераклад"
+
+#: ../src/ui-widgets.c:758
+msgid "Debit card"
+msgstr ""
+
+#: ../src/ui-widgets.c:759
+msgid "Standing order"
+msgstr ""
+
+#: ../src/ui-widgets.c:760
+msgid "Electronic payment"
+msgstr ""
+
+#: ../src/ui-widgets.c:761
+msgid "Deposit"
+msgstr ""
+
+#: ../src/ui-widgets.c:762
+msgid "FI fee"
+msgstr ""
+
+#: ../src/ui-widgets.c:763
+msgid "Direct Debit"
+msgstr ""
+
+#: ../src/ui-widgets.c:892
+msgid "Inactive"
+msgstr "Неакты_ўны"
+
+#: ../src/ui-widgets.c:893
+msgid "Include"
+msgstr "Улу_чыць"
+
+#: ../src/ui-widgets.c:894
+msgid "Exclude"
+msgstr "Выкл_ючыць"

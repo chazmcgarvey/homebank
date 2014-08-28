@@ -1,0 +1,4 @@
+?package(homebank):needs="X11" section="Applications/Office"\
+  icon="/usr/share/pixmaps/homebank.xpm" title="homebank"\
+  longtitle="Free easy personal accounting for all"\
+  command="/usr/bin/homebank"

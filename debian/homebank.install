@@ -1,0 +1,8 @@
+debian/tmp/usr/bin
+debian/tmp/usr/share/application-registry
+debian/tmp/usr/share/applications
+debian/tmp/usr/share/icons
+debian/tmp/usr/share/mime
+debian/tmp/usr/share/mime-info
+debian/homebank.xpm /usr/share/pixmaps/
+debian/tmp/usr/share/homebank/icons
