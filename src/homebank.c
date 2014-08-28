@@ -18,6 +18,7 @@
  */
 
 #include "homebank.h"
+#include "ext.h"
 
 #include "dsp_mainwindow.h"
 #include "hb-preferences.h"
@@ -52,6 +53,7 @@ static gchar *pixmaps_dir  = NULL;
 static gchar *locale_dir   = NULL;
 static gchar *help_dir     = NULL;
 static gchar *datas_dir    = NULL;
+static gchar *pkglib_dir   = NULL;
 
 
 //#define MARKUP_STRING "<span size='small'>%s</span>"
@@ -543,7 +545,8 @@ homebank_register_stock_icons()
 		"prf-display",
 		"prf-euro",
 		"prf-report",
-		"prf-import"
+		"prf-import",
+		"prf-plugins"
 	};
 
 	factory = gtk_icon_factory_new ();
@@ -635,6 +638,12 @@ homebank_app_get_datas_dir (void)
 	return datas_dir;
 }
 
+const gchar *
+homebank_app_get_pkglib_dir (void)
+{
+	return pkglib_dir;
+}
+
 
 /* build package paths at runtime */
 static void
@@ -651,6 +660,7 @@ build_package_paths (void)
 	pixmaps_dir  = g_build_filename (prefix, "share", PACKAGE, "icons", NULL);
 	help_dir     = g_build_filename (prefix, "share", PACKAGE, "help", NULL);
 	datas_dir    = g_build_filename (prefix, "share", PACKAGE, "datas", NULL);
+	pkglib_dir   = g_build_filename (prefix, "lib", PACKAGE, NULL);
 #ifdef PORTABLE_APP
 	DB( g_print("- app is portable under windows\n") );
 	config_dir   = g_build_filename(prefix, "config", NULL);
@@ -664,8 +674,9 @@ build_package_paths (void)
 	pixmaps_dir  = g_build_filename (DATA_DIR, PACKAGE, "icons", NULL);
 	help_dir     = g_build_filename (DATA_DIR, PACKAGE, "help", NULL);
 	datas_dir    = g_build_filename (DATA_DIR, PACKAGE, "datas", NULL);
-	config_dir   = g_build_filename(g_get_user_config_dir(), HB_DATA_PATH, NULL);
-	
+	config_dir   = g_build_filename (g_get_user_config_dir(), HB_DATA_PATH, NULL);
+	pkglib_dir   = g_build_filename (PKGLIB_DIR, NULL);
+
 	//#870023 Ubuntu packages the help files in "/usr/share/doc/homebank-data/help/" for some strange reason
 	if(! g_file_test(help_dir, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)))
 	{
@@ -680,6 +691,7 @@ build_package_paths (void)
 	DB( g_print("- locale_dir : %s\n", locale_dir) );
 	DB( g_print("- help_dir   : %s\n", help_dir) );
 	DB( g_print("- datas_dir  : %s\n", datas_dir) );
+	DB( g_print("- pkglib_dir : %s\n", pkglib_dir) );
 
 }
 
@@ -826,6 +838,7 @@ static void homebank_cleanup()
 	g_free (pixmaps_dir);
 	g_free (locale_dir);
 	g_free (help_dir);
+	g_free (pkglib_dir);
 
 }
 
@@ -957,7 +970,7 @@ homebank_init_i18n (void)
 
 
 int
-main (int argc, char *argv[])
+main (int argc, char *argv[], char *env[])
 {
 GOptionContext *option_context;
 GOptionGroup *option_group;
@@ -1029,6 +1042,22 @@ gboolean openlast;
 		/*  change the locale if a language is specified  */
 		language_init (PREFS->language);
 
+		DB( g_print(" -> loading plugins\n") );
+		ext_init(&argc, &argv, &env);
+
+		GList* it;
+		for (it = PREFS->ext_whitelist; it; it = g_list_next(it)) {
+			ext_load_plugin(it->data);
+		}
+
+		gchar** plugins = ext_list_plugins();
+		gchar** plugins_it;
+		for (plugins_it = plugins; *plugins_it; ++plugins_it) {
+			gboolean loaded = ext_is_plugin_loaded(*plugins_it);
+			g_print("found plugin: %s, loaded: %d\n", *plugins_it, loaded);
+		}
+		g_strfreev(plugins);
+
 		if( PREFS->showsplash == TRUE )
 		{
 			splash = homebank_construct_splash();
@@ -1053,6 +1082,9 @@ gboolean openlast;
 
 
 		mainwin = (GtkWidget *)create_hbfile_window (NULL);
+
+		GValue mainwin_val = G_VALUE_INIT;
+		ext_hook("create_main_window", EXT_OBJECT(&mainwin_val, mainwin), NULL);
 
 		if(mainwin)
 		{
@@ -1134,10 +1166,16 @@ gboolean openlast;
 			/* update the mainwin display */
 			ui_mainwindow_update(mainwin, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_BALANCE+UF_VISUAL));
 
-		DB( g_print(" -> gtk_main()\n" ) );
+			ext_hook("enter_main_loop", NULL);
 
+		DB( g_print(" -> gtk_main()\n" ) );
 			gtk_main ();
+
+			ext_hook("exit_main_loop", NULL);
 		}
+
+		DB( g_print(" -> unloading plugins\n") );
+		ext_term();
 
 	}
 

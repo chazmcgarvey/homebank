@@ -115,12 +115,26 @@ struct defpref_data
 	GtkWidget	*CY_dtex_datefmt;
 	GtkWidget	*CY_dtex_ofxmemo;
 
+	GtkWidget	*PI_plugin_columns;
+};
+
+enum
+{
+	PREF_GENERAL,
+	PREF_INTERFACE,
+	PREF_COLUMNS,
+	PREF_DISPLAY,
+	PREF_IMPORT,
+	PREF_REPORT,
+	PREF_EURO,
+	PREF_PLUGINS,
+	PREF_MAX
 };
 
 
 void free_pref_icons(void);
 void load_pref_icons(void);
 
-GtkWidget *defpref_dialog_new (void);
+GtkWidget *defpref_dialog_new (gint initial_selection);
 
 #endif

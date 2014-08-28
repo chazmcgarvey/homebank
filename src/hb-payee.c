@@ -20,6 +20,9 @@
 #include "homebank.h"
 #include "hb-payee.h"
 
+#include "ext.h"
+#include "refcount.h"
+
 
 /****************************************************************************/
 /* Debug macros										 */
@@ -41,12 +44,12 @@ void
 da_pay_free(Payee *item)
 {
 	DB( g_print("da_pay_free\n") );
-	if(item != NULL)
+	if(rc_unref(item))
 	{
 		DB( g_print(" => %d, %s\n", item->key, item->name) );
 
 		g_free(item->name);
-		g_free(item);
+		rc_free(item);
 	}
 }
 
@@ -55,7 +58,7 @@ Payee *
 da_pay_malloc(void)
 {
 	DB( g_print("da_pay_malloc\n") );
-	return g_malloc0(sizeof(Payee));
+	return rc_alloc(sizeof(Payee));
 }
 
 

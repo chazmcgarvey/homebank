@@ -22,6 +22,9 @@
 #include "hb-transaction.h"
 #include "hb-tag.h"
 
+#include "ext.h"
+#include "refcount.h"
+
 /****************************************************************************/
 /* Debug macros										 */
 /****************************************************************************/
@@ -202,10 +205,10 @@ da_transaction_clean(Transaction *item)
 void
 da_transaction_free(Transaction *item)
 {
-	if(item != NULL)
+	if(rc_unref(item))
 	{
 		da_transaction_clean(item);
-		g_free(item);
+		rc_free(item);
 	}
 }
 
@@ -213,7 +216,7 @@ da_transaction_free(Transaction *item)
 Transaction *
 da_transaction_malloc(void)
 {
-	return g_malloc0(sizeof(Transaction));
+	return rc_alloc(sizeof(Transaction));
 }
 
 
@@ -262,7 +265,7 @@ Transaction *da_transaction_init_from_template(Transaction *txn, Archive *arc)
 
 Transaction *da_transaction_clone(Transaction *src_item)
 {
-Transaction *new_item = g_memdup(src_item, sizeof(Transaction));
+Transaction *new_item = rc_dup(src_item, sizeof(Transaction));
 guint count;
 
 	DB( g_print("da_transaction_clone\n") );
@@ -632,6 +635,9 @@ gchar swap;
 
 			if(treeview != NULL)
 				transaction_add_treeview(child, treeview, ope->kacc);
+
+			GValue txn_value = G_VALUE_INIT;
+			ext_hook("transaction_inserted", EXT_TRANSACTION(&txn_value, child), NULL);
 		}
 	}
 
@@ -827,6 +833,9 @@ Account *acc;
 		{
 			transaction_xfer_search_or_add_child(newope, treeview);
 		}
+
+		GValue txn_value = G_VALUE_INIT;
+		ext_hook("transaction_inserted", EXT_TRANSACTION(&txn_value, newope), NULL);
 	}
 }
 

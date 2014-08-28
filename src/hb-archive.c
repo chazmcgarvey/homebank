@@ -20,6 +20,9 @@
 #include "homebank.h"
 #include "hb-archive.h"
 
+#include "ext.h"
+#include "refcount.h"
+
 /****************************************************************************/
 /* Debug macros                                                             */
 /****************************************************************************/
@@ -40,12 +43,12 @@ extern struct HomeBank *GLOBALS;
 
 Archive *da_archive_malloc(void)
 {
-	return g_malloc0(sizeof(Archive));
+	return rc_alloc(sizeof(Archive));
 }
 
 Archive *da_archive_clone(Archive *src_item)
 {
-Archive *new_item = g_memdup(src_item, sizeof(Archive));
+Archive *new_item = rc_dup(src_item, sizeof(Archive));
 
 	if(new_item)
 	{
@@ -57,12 +60,12 @@ Archive *new_item = g_memdup(src_item, sizeof(Archive));
 
 void da_archive_free(Archive *item)
 {
-	if(item != NULL)
+	if(rc_unref(item))
 	{
 		if(item->wording != NULL)
 			g_free(item->wording);
 
-		g_free(item);
+		rc_free(item);
 	}
 }
 

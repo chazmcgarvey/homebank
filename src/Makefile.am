@@ -1,7 +1,8 @@
 
 common_defines = \
 	-DSHARE_DIR=\""$(pkgdatadir)"\" \
-	-DDATA_DIR=\""$(datadir)"\"
+	-DDATA_DIR=\""$(datadir)"\" \
+	-DPKGLIB_DIR=\""$(pkglibdir)"\"
 
 
 bin_PROGRAMS = homebank
@@ -108,11 +109,33 @@ homebank_SOURCES =  \
 	ui-widgets.c \
 	ui-widgets.h \
 	gtk-chart-colors.c \
-	gtk-chart-colors.h 
+	gtk-chart-colors.h \
+	refcount.h \
+	ext.c \
+	ext.h \
+	ext-value.c \
+	ext-value.h \
+	ext-native.c \
+	ext-perl.xs
 
-homebank_LDADD = $(DEPS_LIBS)
+EXTRA_homebank_DEPENDENCIES = $(PERL_OBJS)
+
+homebank_LDADD = $(PERL_OBJS) $(DEPS_LIBS)
 
 AM_CPPFLAGS = \
 	$(DEPS_CFLAGS) \
 	$(common_defines)
+
+$(PERL_OBJS): CPPFLAGS += $(PERL_CPPFLAGS)
+
+ext-perl.c: ext-perl.xs typemap
+	$(XSUBPP) -typemap $(PERL_PRIVLIBEXP)/ExtUtils/typemap -typemap typemap $< >$@
+
+perlxsi.c: Makefile
+	$(PERL) -MExtUtils::Embed -e xsinit -- -std HomeBank
+
+CLEANFILES = ext-perl.c perlxsi.c
+
+pluginsupportdir = $(pkglibdir)
+pluginsupport_DATA = HomeBank.pm
 

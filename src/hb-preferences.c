@@ -282,6 +282,9 @@ void homebank_pref_free(void)
 	g_free(PREFS->minor_cur.decimal_char);
 	g_free(PREFS->minor_cur.grouping_char);
 
+	g_strfreev(PREFS->ext_path);
+	g_list_free_full(PREFS->ext_whitelist, g_free);
+
 	memset(PREFS, 0, sizeof(struct Preferences));
 }
 
@@ -397,6 +400,23 @@ gint i;
 	PREFS->vehicle_unit_ismile = FALSE;
 	PREFS->vehicle_unit_isgal  = FALSE;
 
+	gchar** plugin_path = g_new0(gchar**, 4);
+	i = 0;
+	const gchar* env = g_getenv("HOMEBANK_PLUGINS");
+	if (env) {
+		if (g_path_is_absolute(env)) {
+			plugin_path[i++] = g_strdup(env);
+		} else {
+			gchar* cur = g_get_current_dir();
+			plugin_path[i++] = g_build_filename(cur, env, NULL);
+			g_free(cur);
+		}
+	}
+	plugin_path[i++] = g_build_filename(homebank_app_get_config_dir(), "plugins", NULL);
+	plugin_path[i++] = g_build_filename(homebank_app_get_pkglib_dir(), "plugins", NULL);
+	PREFS->ext_path = plugin_path;
+	PREFS->ext_whitelist = NULL;
+
 	_homebank_pref_createformat();
 	_homebank_pref_init_measurement_units();
 
@@ -428,9 +448,6 @@ static void homebank_pref_get_wingeometry(
 			storage->t = 0;
 	}
 }
-
-
-
 
 static void homebank_pref_get_boolean(
 	GKeyFile *key_file,
@@ -869,6 +886,27 @@ GError *error = NULL;
 			//PREFS->chart_legend = g_key_file_get_boolean (keyfile, group, "Legend", NULL);
 
 
+			group = "Plugins";
+			{
+				DB( g_print(" -> ** Plugins\n") );
+
+				gchar** strv = g_key_file_get_string_list(keyfile, group, "Path", NULL, NULL);
+				if (strv) {
+					g_strfreev(PREFS->ext_path);
+					PREFS->ext_path = strv;
+				}
+
+				strv = g_key_file_get_string_list(keyfile, group, "Whitelist", NULL, NULL);
+				if (strv) {
+					gchar** it;
+					for (it = strv; it && *it; ++it) {
+						PREFS->ext_whitelist = g_list_append(PREFS->ext_whitelist, g_strdup(*it));
+					}
+					g_strfreev(strv);
+				}
+			}
+
+
 			/*
 			#if MYDEBUG == 1
 			gsize length;
@@ -1040,6 +1078,21 @@ gsize length;
 
 		//group = "Chart";
 		//g_key_file_set_boolean (keyfile, group, "Legend", PREFS->chart_legend);
+
+		group = "Plugins";
+		{
+			g_key_file_set_string_list(keyfile, group, "Path", (const gchar* const*)PREFS->ext_path, g_strv_length(PREFS->ext_path));
+
+			gsize len = g_list_length(PREFS->ext_whitelist);
+			gchar** strv = g_new0(gchar*, len + 1);
+			guint i;
+
+			for (i = 0; i < len; ++i) {
+				strv[i] = g_list_nth_data(PREFS->ext_whitelist, i);
+			}
+			g_key_file_set_string_list(keyfile, group, "Whitelist", (const gchar* const*)strv, len);
+			g_free(strv);
+		}
 
 		//g_key_file_set_string  (keyfile, group, "", PREFS->);
 		//g_key_file_set_boolean (keyfile, group, "", PREFS->);

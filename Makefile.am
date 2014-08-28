@@ -1,7 +1,9 @@
 # HomeBank Makefile.am
 
+ACLOCAL_AMFLAGS	= -I m4
+
 #SUBDIRS = src
-SUBDIRS = src data images mime po doc
+SUBDIRS = src data images mime po doc plugins
 
 
 # don't forget to do a 'make check' 
@@ -18,3 +20,9 @@ DISTCLEANFILES = ... intltool-extract \
                  intltool-merge \
                  intltool-update \
                  po/.intltool-merge-cache
+
+run: all
+	PERL5LIB=src src/homebank
+
+debug: all
+	PERL5LIB=src gdb src/homebank

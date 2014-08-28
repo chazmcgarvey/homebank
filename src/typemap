@@ -1,0 +1,60 @@
+
+TYPEMAP
+
+Account*        T_HB_OBJECT
+Transaction*    T_HB_OBJECT
+GObject*        T_GOBJECT
+
+gint            T_IV
+guint           T_UV
+gdouble         T_NV
+gboolean        T_GBOOLEAN
+gchar           T_CHAR
+gchar*          T_GCHAR_PTR
+const gchar*    T_GCHAR_PTR
+
+GPtrArray*      T_GPTRARRAY
+GHashTable*     T_GHASHTABLE
+
+
+INPUT
+
+T_HB_OBJECT
+	EXT_P2C_OBJECT(\"HomeBank::${ my ($t) = $ntype =~ /(.+)Ptr$/; \$t }\", $arg, $var, $type);
+
+T_GOBJECT
+	$var = SvGobject($arg);
+
+T_GCHAR_PTR
+	$var = SvGchar_ptr($arg);
+
+T_GBOOLEAN
+	$var = SvGboolean($arg);
+
+T_GPTRARRAY
+	$var = SvGptrarray($arg);
+
+T_GHASHTABLE
+	$var = SvGhashtable($arg);
+
+
+OUTPUT
+
+T_HB_OBJECT
+	EXT_C2P_OBJECT(\"HomeBank::${ my ($t) = $ntype =~ /(.+)Ptr$/; \$t }\", $arg, rc_ref($var));
+
+T_GOBJECT
+	$arg = newSVgobject($var);
+
+T_GCHAR_PTR
+	$arg = newSVgchar_ptr($var);
+
+T_GBOOLEAN
+	$arg = newSVgboolean($var);
+
+T_GPTRARRAY
+	$arg = newSVgptrarray($var);
+
+T_GHASHTABLE
+	$arg = newSVghashtable($var);
+

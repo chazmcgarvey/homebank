@@ -20,6 +20,9 @@
 #include "homebank.h"
 #include "hb-category.h"
 
+#include "ext.h"
+#include "refcount.h"
+
 
 /****************************************************************************/
 /* Debug macros										 */
@@ -40,7 +43,7 @@ extern struct HomeBank *GLOBALS;
 Category *
 da_cat_clone(Category *src_item)
 {
-Category *new_item = g_memdup(src_item, sizeof(Category));
+Category *new_item = rc_dup(src_item, sizeof(Category));
 
 	DB( g_print("da_cat_clone\n") );
 	if(new_item)
@@ -56,12 +59,12 @@ void
 da_cat_free(Category *item)
 {
 	DB( g_print("da_cat_free\n") );
-	if(item != NULL)
+	if(rc_unref(item))
 	{
 		DB( g_print(" => %d, %s\n", item->key, item->name) );
 
 		g_free(item->name);
-		g_free(item);
+		rc_free(item);
 	}
 }
 
@@ -70,7 +73,7 @@ Category *
 da_cat_malloc(void)
 {
 	DB( g_print("da_cat_malloc\n") );
-	return g_malloc0(sizeof(Category));
+	return rc_alloc(sizeof(Category));
 }
 
 

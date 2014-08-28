@@ -22,6 +22,8 @@
 
 #include "dsp_mainwindow.h"
 
+#include "ext.h"
+
 #include "list_account.h"
 #include "list_upcoming.h"
 #include "list_topspending.h"
@@ -104,6 +106,8 @@ static void ui_mainwindow_action_budget(void);
 static void ui_mainwindow_action_balance(void);
 static void ui_mainwindow_action_vehiclecost(void);
 
+static void ui_mainwindow_action_pluginprefs(void);
+
 static void ui_mainwindow_action_import(void);
 static void ui_mainwindow_action_export(void);
 static void ui_mainwindow_action_anonymize(void);
@@ -137,6 +141,8 @@ void ui_mainwindow_recent_add (struct hbfile_data *data, const gchar *path);
 static void ui_mainwindow_scheduled_populate(GtkWidget *widget, gpointer user_data);
 void ui_mainwindow_scheduled_postall(GtkWidget *widget, gpointer user_data);
 
+static void ui_mainwindow_showprefs(gint page);
+
 
 extern gchar *CYA_ACC_TYPE[];
 
@@ -150,6 +156,7 @@ static GtkActionEntry entries[] = {
   { "ManageMenu"   , NULL, N_("_Manage"), NULL, NULL, NULL },
   { "TransactionMenu", NULL, N_("_Transactions"), NULL, NULL, NULL },
   { "ReportMenu"   , NULL, N_("_Reports"), NULL, NULL, NULL  },
+  { "PluginMenu"   , NULL, N_("_Plugins"), NULL, NULL, NULL },
   { "HelpMenu"     , NULL, N_("_Help"), NULL, NULL, NULL },
 
 //  { "Import"       , NULL, N_("Import") },
@@ -196,6 +203,8 @@ static GtkActionEntry entries[] = {
   { "RBudget"    , HB_STOCK_REP_BUDGET, N_("B_udget...")     , NULL,    N_("Open the Budget report"),    G_CALLBACK (ui_mainwindow_action_budget) },
   { "RBalance"  , HB_STOCK_REP_BALANCE, N_("Balance...")  , NULL,    N_("Open the Balance report"),    G_CALLBACK (ui_mainwindow_action_balance) },
   { "RVehiculeCost"    , HB_STOCK_REP_CAR   , N_("_Vehicle cost...")   , NULL,    N_("Open the Vehicle cost report"),    G_CALLBACK (ui_mainwindow_action_vehiclecost) },
+
+  { "PluginPreferences", "prf-plugins", N_("_Plugins..."), "<control>U", N_("Configure plugin preferences"), G_CALLBACK(ui_mainwindow_action_pluginprefs) },
 
   /* HelpMenu */
   { "Contents"   , GTK_STOCK_HELP    , N_("_Contents")                    , "F1", N_("Documentation about HomeBank"), G_CALLBACK (ui_mainwindow_action_help) },
@@ -277,6 +286,11 @@ static const gchar *ui_info =
 "      <menuitem action='RBudget'/>"
 "      <menuitem action='RVehiculeCost'/>"
 "    </menu>"
+"    <menu action='PluginMenu'>"
+"      <separator/>"
+"      <menuitem action='PluginPreferences'/>"
+"      <separator/>"
+"    </menu>"
 "    <menu action='HelpMenu'>"
 "      <menuitem action='Contents'/>"
 "        <separator/>"
@@ -310,6 +324,7 @@ static const gchar *ui_info =
 "    <toolitem action='RBalance'/>"
 "    <toolitem action='RBudget'/>"
 "    <toolitem action='RVehiculeCost'/>"
+"      <separator/>"
 "  </toolbar>"
 
 "</ui>";
@@ -394,7 +409,8 @@ GdkPixbuf *pixbuf;
   static const gchar *authors[] = {
     "Lead developer:\n" \
     "Maxime DOYEN",
-    "\nContributor:\n" \
+    "\nContributors:\n" \
+    "Charles MCGARVEY (Plugin system, Perl support)\n" \
     "Ga\xc3\xabtan LORIDANT (Maths formulas for charts)\n",
     NULL
   };
@@ -629,9 +645,14 @@ static void ui_mainwindow_action_defassign(void)
 
 static void ui_mainwindow_action_preferences(void)
 {
+	ui_mainwindow_showprefs(PREF_GENERAL);
+}
+
+static void ui_mainwindow_showprefs(gint page)
+{
 struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "inst_data");
 
-	defpref_dialog_new();
+	defpref_dialog_new(page);
 	if(!PREFS->euro_active)
 	{
 	GtkToggleAction *action = (GtkToggleAction *)gtk_ui_manager_get_action(data->manager, "/MenuBar/ViewMenu/AsMinor");
@@ -743,6 +764,11 @@ struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "ins
 static void ui_mainwindow_action_vehiclecost(void)
 {
 	repcost_window_new();
+}
+
+static void ui_mainwindow_action_pluginprefs(void)
+{
+	ui_mainwindow_showprefs(PREF_PLUGINS);
 }
 
 static void ui_mainwindow_action_import(void)
@@ -2130,6 +2156,9 @@ static gboolean ui_mainwindow_dispose(GtkWidget *widget, GdkEvent *event, gpoint
 struct hbfile_data *data = user_data;
 struct WinGeometry *wg;
 gboolean retval = FALSE;
+
+	GValue widget_value = G_VALUE_INIT;
+	ext_hook("main_window_disposal", EXT_OBJECT(&widget_value, widget), NULL);
 
 	DB( g_print("\n[ui-mainwindow] dispose\n") );
 

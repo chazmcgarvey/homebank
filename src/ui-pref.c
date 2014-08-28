@@ -24,6 +24,7 @@
 #include "dsp_mainwindow.h"
 #include "gtk-chart-colors.h"
 
+#include "ext.h"
 
 /****************************************************************************/
 /* Debug macros                                                             */
@@ -59,14 +60,11 @@ enum
 
 enum
 {
-	PREF_GENERAL,
-	PREF_INTERFACE,
-	PREF_COLUMNS,
-	PREF_DISPLAY,
-	PREF_IMPORT,
-	PREF_REPORT,
-	PREF_EURO,
-	PREF_MAX
+	EXT_COLUMN_ENABLED = 0,
+	EXT_COLUMN_LABEL,
+	EXT_COLUMN_TOOLTIP,
+	EXT_COLUMN_PLUGIN_NAME,
+	EXT_NUM_COLUMNS
 };
 
 GdkPixbuf *pref_pixbuf[PREF_MAX];
@@ -80,6 +78,7 @@ static gchar *pref_pixname[PREF_MAX] = {
 "prf-import",
 "prf-report",
 "prf-euro",			// to be renamed
+"prf-plugins",
 //"prf_charts.svg"
 };
 
@@ -90,7 +89,8 @@ N_("Transactions"),
 N_("Display format"),
 N_("Import/Export"),
 N_("Report"),
-N_("Euro minor")
+N_("Euro minor"),
+N_("Plugins")
 //
 };
 
@@ -205,6 +205,7 @@ GtkWidget *list_txn_colprefcreate(void);
 
 static void list_txn_colpref_get(GtkTreeView *treeview, gboolean *columns);
 
+static void list_ext_colpref_get(GtkTreeView *treeview, GList **columns);
 
 
 
@@ -1247,6 +1248,7 @@ const gchar *lang;
 
 	//PREFS->chart_legend = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_chartlegend));
 
+	list_ext_colpref_get(GTK_TREE_VIEW(data->PI_plugin_columns), &(PREFS->ext_whitelist));
 }
 
 /*
@@ -2063,6 +2065,202 @@ gint row;
 	return(container);
 }
 
+
+void plugin_execute_action(GtkTreeView* treeview, GtkTreePath* path, GtkTreeViewColumn* col, gpointer userdata);
+
+static void
+toggle_plugin(GtkCellRendererToggle *cell, gchar* path_str, gpointer data)
+{
+	GtkTreeModel *model = (GtkTreeModel*)data;
+	GtkTreeIter  iter;
+	GtkTreePath *path = gtk_tree_path_new_from_string(path_str);
+
+	const gchar* plugin;
+
+	gtk_tree_model_get_iter(model, &iter, path);
+	gtk_tree_model_get(model, &iter, EXT_COLUMN_PLUGIN_NAME, &plugin, -1);
+
+	gboolean enabled = ext_is_plugin_loaded(plugin);
+	if (enabled) {
+		ext_unload_plugin(plugin);
+		enabled = FALSE;
+	} else {
+		enabled = (ext_load_plugin(plugin) == 0);
+		if (!enabled) {
+			ext_run_modal(_("Plugin Error"), _("The plugin failed to load properly."), "error");
+		}
+	}
+
+	/* set new value */
+	gtk_list_store_set(GTK_LIST_STORE (model), &iter, EXT_COLUMN_ENABLED, enabled, -1);
+
+	/* clean up */
+	gtk_tree_path_free(path);
+}
+
+
+void plugin_execute_action(GtkTreeView* treeview, GtkTreePath* path, GtkTreeViewColumn* col, gpointer userdata)
+{
+	GtkTreeModel*   model = gtk_tree_view_get_model(treeview);
+	GtkTreeIter     iter;
+
+	if (gtk_tree_model_get_iter(model, &iter, path)) {
+		gchar* plugin_filename;
+		gtk_tree_model_get(model, &iter, EXT_COLUMN_PLUGIN_NAME, &plugin_filename, -1);
+		ext_execute_action(plugin_filename);
+		g_free(plugin_filename);
+	}
+}
+
+static GtkWidget *defpref_page_plugins (struct defpref_data *data)
+{
+	GtkWidget *container;
+	GtkListStore *store;
+	GtkTreeIter it;
+	GtkWidget* view;
+
+	container = gtk_vbox_new(FALSE, 0);
+
+	store = gtk_list_store_new(EXT_NUM_COLUMNS, G_TYPE_BOOLEAN, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
+
+	gchar** plugins = ext_list_plugins();
+	gchar** plugins_it;
+	for (plugins_it = plugins; *plugins_it; ++plugins_it) {
+
+		gboolean    enabled = ext_is_plugin_loaded(*plugins_it);
+		GHashTable* metadata = ext_read_plugin_metadata(*plugins_it);
+		if (!metadata) {
+			metadata = g_hash_table_new(g_str_hash, g_str_equal);
+		}
+
+		gchar* tmp = NULL;
+
+		// NAME
+		gchar* name = g_hash_table_lookup(metadata, "name");
+		if (!name || *name == '\0') {
+			name = *plugins_it;
+		}
+		name = g_markup_escape_text(name, -1);
+		gchar* label = g_strdup_printf("<b>%s</b>", name);
+		gchar* tooltip = g_strdup_printf("<span size='x-large' weight='bold'>%s</span>", name);
+		g_free(name);
+
+		// VERSION
+		gchar* version = g_hash_table_lookup(metadata, "version");
+		if (version) {
+			version = g_markup_escape_text(version, -1);
+			tmp = label;
+			label = g_strdup_printf("%s %s", tmp, version);
+			g_free(tmp);
+			tmp = tooltip;
+			tooltip = g_strdup_printf("%s %s", tmp, version);
+			g_free(tmp);
+			g_free(version);
+		}
+
+		// ABSTRACT
+		gchar* abstract = g_hash_table_lookup(metadata, "abstract");
+		if (abstract) {
+			abstract = g_markup_escape_text(abstract, -1);
+			tmp = label;
+			label = g_strdup_printf("%s\n%s", tmp, abstract);
+			g_free(tmp);
+			g_free(abstract);
+		}
+
+		// AUTHOR
+		gchar* author = g_hash_table_lookup(metadata, "author");
+		if (author) {
+			author = g_markup_escape_text(author, -1);
+			tmp = tooltip;
+			tooltip = g_strdup_printf("%s\n%s", tmp, author);
+			g_free(tmp);
+			g_free(author);
+		}
+
+		// WEBSITE
+		gchar* website = g_hash_table_lookup(metadata, "website");
+		if (website) {
+			website = g_markup_escape_text(website, -1);
+			tmp = tooltip;
+			tooltip = g_strdup_printf("%s\n<b>%s:</b> %s", tmp, _("Website"), website);
+			g_free(tmp);
+			g_free(website);
+		}
+
+		// FILEPATH
+		tmp = ext_find_plugin(*plugins_it);
+		gchar* full = g_markup_escape_text(tmp, -1);
+		g_free(tmp);
+		tmp = tooltip;
+		tooltip = g_strdup_printf("%s\n<b>%s:</b> %s", tmp, _("File"), full);
+		g_free(tmp);
+		g_free(full);
+
+		g_hash_table_unref(metadata);
+
+		gtk_list_store_append(store, &it);
+		gtk_list_store_set(store, &it,
+				EXT_COLUMN_ENABLED,     enabled,
+				EXT_COLUMN_LABEL,       label,
+				EXT_COLUMN_TOOLTIP,     tooltip,
+				EXT_COLUMN_PLUGIN_NAME, *plugins_it,
+				-1);
+
+		g_free(label);
+		g_free(tooltip);
+	}
+	g_strfreev(plugins);
+
+	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+
+	g_signal_connect(view, "row-activated", (GCallback)plugin_execute_action, NULL);
+
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(view), TRUE);
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view), TRUE);
+	gtk_tree_view_set_tooltip_column(GTK_TREE_VIEW(view), EXT_COLUMN_TOOLTIP);
+
+
+	GtkTreeViewColumn   *col;
+	GtkCellRenderer     *renderer;
+
+
+	col = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(col, _("Enabled"));
+	gtk_tree_view_column_set_sort_column_id(col, EXT_COLUMN_ENABLED);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
+
+	renderer = gtk_cell_renderer_toggle_new();
+	gtk_tree_view_column_pack_start(col, renderer, TRUE);
+	gtk_tree_view_column_add_attribute(col, renderer, "active", 0);
+	g_signal_connect(renderer, "toggled", G_CALLBACK(toggle_plugin), store);
+
+	col = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(col, _("Plugin"));
+	gtk_tree_view_column_set_sort_column_id(col, EXT_COLUMN_LABEL);
+	gtk_tree_view_column_set_expand(col, TRUE);
+	/*gtk_tree_view_column_set_sort_order(col, GTK_SORT_ASCENDING);*/
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
+
+	renderer = gtk_cell_renderer_text_new();
+	g_object_set(renderer, "ellipsize", PANGO_ELLIPSIZE_END, NULL);
+	gtk_tree_view_column_pack_start(col, renderer, TRUE);
+	gtk_tree_view_column_add_attribute(col, renderer, "markup", EXT_COLUMN_LABEL);
+
+	data->PI_plugin_columns = view;
+
+	GtkWidget* sw = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(sw), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_container_add(GTK_CONTAINER(sw), view);
+
+	gtk_box_pack_start(GTK_BOX(container), sw, TRUE, TRUE, 0);
+
+	return(container);
+}
+
+
 static void defpref_selection(GtkTreeSelection *treeselection, gpointer user_data)
 {
 struct defpref_data *data;
@@ -2161,7 +2359,7 @@ gint result;
 
 
 // the window creation
-GtkWidget *defpref_dialog_new (void)
+GtkWidget *defpref_dialog_new (gint initial_selection)
 {
 struct defpref_data data;
 GtkWidget *window, *content, *mainvbox;
@@ -2290,6 +2488,10 @@ GtkWidget *hbox, *vbox, *sw, *widget, *notebook, *page, *ebox, *image, *label;
 	page = defpref_page_euro(&data);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
 
+	//plugins
+	page = defpref_page_plugins(&data);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
+
 
 	//todo:should move this
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data.CM_euro_enable), PREFS->euro_active);
@@ -2345,7 +2547,8 @@ GtkWidget *hbox, *vbox, *sw, *widget, *notebook, *page, *ebox, *image, *label;
 
 
 	//select first row
-	GtkTreePath *path = gtk_tree_path_new_first ();
+	GtkTreePath *path = gtk_tree_path_new_from_indices(initial_selection, -1);
+
 
 	gtk_tree_selection_select_path (gtk_tree_view_get_selection(GTK_TREE_VIEW(data.LV_page)), path);
 
@@ -2354,6 +2557,7 @@ GtkWidget *hbox, *vbox, *sw, *widget, *notebook, *page, *ebox, *image, *label;
 	gtk_tree_path_free(path);
 
 	gtk_widget_show_all (window);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), initial_selection);
 
 	gint result;
 	gchar *old_lang;
@@ -2653,5 +2857,34 @@ gint i;
 
 
 	return(view);
+}
+
+
+static void list_ext_colpref_get(GtkTreeView *treeview, GList **columns)
+{
+	GtkTreeModel *model;
+	GtkTreeIter	iter;
+
+	g_list_free_full(*columns, g_free);
+	*columns = NULL;
+
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(treeview));
+
+	gboolean valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+	while (valid) {
+		gboolean        enabled = FALSE;
+		const gchar*	name;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(model), &iter,
+			EXT_COLUMN_ENABLED,     &enabled,
+			EXT_COLUMN_PLUGIN_NAME, &name,
+			-1);
+
+		if (enabled) {
+			*columns = g_list_append(*columns, g_strdup(name));
+		}
+
+		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+	}
 }
 

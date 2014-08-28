@@ -20,6 +20,9 @@
 #include "homebank.h"
 #include "hb-account.h"
 
+#include "ext.h"
+#include "refcount.h"
+
 /****************************************************************************/
 /* Debug macros										 */
 /****************************************************************************/
@@ -41,7 +44,7 @@ extern struct HomeBank *GLOBALS;
 Account *
 da_acc_clone(Account *src_item)
 {
-Account *new_item = g_memdup(src_item, sizeof(Account));
+Account *new_item = rc_dup(src_item, sizeof(Account));
 
 	DB( g_print("da_acc_clone\n") );
 	if(new_item)
@@ -59,7 +62,7 @@ void
 da_acc_free(Account *item)
 {
 	DB( g_print("da_acc_free\n") );
-	if(item != NULL)
+	if(rc_unref(item))
 	{
 		DB( g_print(" => %d, %s\n", item->key, item->name) );
 
@@ -67,7 +70,7 @@ da_acc_free(Account *item)
 		g_free(item->name);
 		g_free(item->number);
 		g_free(item->bankname);
-		g_free(item);
+		rc_free(item);
 	}
 }
 
@@ -76,7 +79,7 @@ Account *
 da_acc_malloc(void)
 {
 	DB( g_print("da_acc_malloc\n") );
-	return g_malloc0(sizeof(Account));
+	return rc_alloc(sizeof(Account));
 }
 
 
@@ -169,6 +172,9 @@ guint32 *new_key;
 	*new_key = item->key;
 	g_hash_table_insert(GLOBALS->h_acc, new_key, item);
 
+	GValue item_val = G_VALUE_INIT;
+	ext_hook("account_inserted", EXT_ACCOUNT(&item_val, item), NULL);
+
 	return TRUE;
 }
 
@@ -204,6 +210,10 @@ guint32 *new_key;
 			DB( g_print(" -> insert id: %d\n", *new_key) );
 
 			g_hash_table_insert(GLOBALS->h_acc, new_key, item);
+
+			GValue item_val = G_VALUE_INIT;
+			ext_hook("account_inserted", EXT_ACCOUNT(&item_val, item), NULL);
+
 			return TRUE;
 		}
 	}

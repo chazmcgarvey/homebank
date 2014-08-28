@@ -23,6 +23,8 @@
 #include "hb-transaction.h"
 #include "hb-xml.h"
 
+#include "ext.h"
+
 /****************************************************************************/
 /* Debug macros                                                             */
 /****************************************************************************/
@@ -426,6 +428,9 @@ GMarkupParseContext *context;
 gboolean rc;
 
 	DB( g_print("\n[hb-xml] homebank_load_xml\n") );
+
+	GValue filename_val = G_VALUE_INIT;
+	ext_hook("load_file", EXT_STRING(&filename_val, filename), NULL);
 
 	retval = XML_OK;
 	if (!g_file_get_contents (filename, &buffer, &length, &error))
@@ -1185,6 +1190,9 @@ GIOChannel *io;
 char buf1[G_ASCII_DTOSTR_BUF_SIZE];
 gchar *outstr;
 gint retval = XML_OK;
+
+	GValue filename_val = G_VALUE_INIT;
+	ext_hook("save_file", EXT_STRING(&filename_val, filename), NULL);
 
 	io = g_io_channel_new_file(filename, "w", NULL);
 	if(io == NULL)

@@ -167,6 +167,10 @@ struct Preferences
 	gchar	   *vehicle_unit_100;
 	gchar	   *vehicle_unit_distbyvol;
 
+	// plugins
+	gchar** ext_path;
+	GList* ext_whitelist;
+
 };
 
 

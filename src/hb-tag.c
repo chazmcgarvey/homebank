@@ -20,6 +20,9 @@
 #include "homebank.h"
 #include "hb-tag.h"
 
+#include "ext.h"
+#include "refcount.h"
+
 #define MYDEBUG 0
 
 #if MYDEBUG
@@ -37,12 +40,12 @@ extern struct HomeBank *GLOBALS;
 void da_tag_free(Tag *item)
 {
 	DB( g_print("da_tag_free\n") );
-	if(item != NULL)
+	if(rc_unref(item))
 	{
 		DB( g_print(" => %d, %s\n", item->key, item->name) );
 
 		g_free(item->name);
-		g_free(item);
+		rc_free(item);
 	}
 }
 
@@ -50,7 +53,7 @@ void da_tag_free(Tag *item)
 Tag *da_tag_malloc(void)
 {
 	DB( g_print("da_tag_malloc\n") );
-	return g_malloc0(sizeof(Tag));
+	return rc_alloc(sizeof(Tag));
 }
 
 

@@ -20,6 +20,9 @@
 #include "homebank.h"
 #include "hb-assign.h"
 
+#include "ext.h"
+#include "refcount.h"
+
 #define MYDEBUG 0
 
 #if MYDEBUG
@@ -38,12 +41,12 @@ void
 da_asg_free(Assign *item)
 {
 	DB( g_print("da_asg_free\n") );
-	if(item != NULL)
+	if(rc_unref(item))
 	{
 		DB( g_print(" => %d, %s\n", item->key, item->name) );
 
 		g_free(item->name);
-		g_free(item);
+		rc_free(item);
 	}
 }
 
@@ -52,7 +55,7 @@ Assign *
 da_asg_malloc(void)
 {
 	DB( g_print("da_asg_malloc\n") );
-	return g_malloc0(sizeof(Assign));
+	return rc_alloc(sizeof(Assign));
 }
 
 

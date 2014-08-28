@@ -114,6 +114,8 @@ private_icons = \
 	hicolor_status_48x48_prf-report.png \
 	hicolor_status_22x22_prf-import.png \
 	hicolor_status_48x48_prf-import.png \
+	hicolor_status_22x22_prf-plugins.png \
+	hicolor_status_48x48_prf-plugins.png \
 	$(NULL)
 
 EXTRA_DIST = \

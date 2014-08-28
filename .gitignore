@@ -29,7 +29,9 @@
 /po/POTFILES
 /po/stamp-it
 /src/.deps
+/src/ext-perl.c
 /src/homebank
+/src/perlxsi.c
 /stamp-h1
 Makefile
 Makefile.in
