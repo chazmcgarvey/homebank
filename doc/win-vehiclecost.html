@@ -1,125 +1,73 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-
+<!DOCTYPE html>
 <html>
 <head>
-  <meta name="generator" content="Bluefish 2.2.3" >
-  <meta http-equiv="CONTENT-TYPE" content=
-  "text/html; charset=utf-8">
-
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
   <title>Vehicle cost report</title>
-  <link rel="stylesheet" href="help.css" type="text/css">
+  <link href="help.css" rel="stylesheet" type="text/css">
 </head>
-
 <body id="top">
   <div class="dochead">
     HomeBank User manual
   </div>
-
   <div class="title">
-
-  <h1>Vehicle cost report</h1>
-
-  <p>The vehicle cost report will focus on your vehicle costs
-  including fuel and repairs. It also display miscellaneous
-  information like fuel consumption ans others.</p>
-
-  <p>Please refer to the <a href="use-vehiclecost.html">using the vehicle
-  cost feature</a> for details on how using this feature.</p>
-
-  <h2>Window call</h2>
-
-  <ul>
-    <li>from the main window-menu: Reports / Vehicle cost</li>
-
-    <li>from the main window-tool-bar.</li>
-  </ul>
-
-</div>
-
+    <h1>Vehicle cost report</h1>
+    <p>The vehicle cost report will focus on your vehicle costs including fuel and repairs. It also display miscellaneous information like fuel consumption ans others.</p>
+    <p>Please refer to the <a href="use-vehiclecost.html">using the vehicle cost feature</a> for details on how using this feature.</p>
+    <h2>Window call</h2>
+    <ul>
+      <li>from the main window-menu: Reports / Vehicle cost</li>
+      <li>from the main window-tool-bar.</li>
+    </ul>
+  </div>
   <div class="rounded content">
-
-  <h2>Using vehicle cost report</h2>
-
-  <p><img src="images/05carcost1.png" class="gtkshot right"></p>
-
-  <h3><img src="images/1.png" name="graphics5" align="bottom"
-  width="12" height="12" border="0" id="graphics5"> Display</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Vehicle</th>
-
-      <td>select the category used for your vehicle costs</td>
-    </tr>
-  </table>
-
-  <h3><img src="images/2.png" name="graphics6" align="bottom"
-  width="12" height="12" border="0" id="graphics6"> Date
-  filter</h3>
-
-  <table class="widgetinfo">
-     <tr>
-      <th>Range</th>
-
-      <td>fast select a date with predefined range</td>
-    </tr>
-
-    <tr>
-      <th>From / To</th>
-
-      <td>specify date bound limit to restrict the results to</td>
-    </tr>
-  </table>
-
-  <h3><img src="images/3.png" name="graphics7" align="bottom"
-  width="12" height="12" border="0" id="graphics7"> Global
-  results</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Meter</th>
-
-      <td>the meter of the vehicle</td>
-    </tr>
-
-    <tr>
-      <th>Consumption</th>
-
-      <td>fuel consumption</td>
-    </tr>
-
-    <tr>
-      <th>Fuel cost</th>
-
-      <td>cost of the consumed fuel</td>
-    </tr>
-
-    <tr>
-      <th>Other cost</th>
-
-      <td>the other cost for the vehicle (insurance, repair, ...),
-      which mean the transaction affected to the current
-      vehicle cost category not containing (d=xx v=xx)</td>
-    </tr>
-
-    <tr>
-      <th>Total cost</th>
-
-      <td>the total cost for the vehicle in the selected
-      period</td>
-    </tr>
-  </table>
-
-  <h3><img src="images/4.png" name="graphics8" align="bottom"
-  width="12" height="12" border="0" id="graphics8"> Detailed
-  results</h3>
-
-  <p>his is a list-view which contains the detailed date by date
-  refuel done for the selected vehicle.<br>
-  The list is sortable, just click into the column title to change
-  the sort order.<br>
-  At the bottom is the total line, except for price which is the
-  average price by liter.</p>
+    <h2>Using vehicle cost report</h2>
+    <p><img class="gtkshot right" src="images/win-carcost1.png"></p>
+    <h3><img align="bottom" border="0" height="12" id="graphics5" name="graphics5" src="images/1.png" width="12"> Display</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Vehicle</th>
+        <td>select the category used for your vehicle costs</td>
+      </tr>
+    </table>
+    <h3><img align="bottom" border="0" height="12" id="graphics6" name="graphics6" src="images/2.png" width="12"> Date filter</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Range</th>
+        <td>fast select a date with predefined range</td>
+      </tr>
+      <tr>
+        <th>From / To</th>
+        <td>specify date bound limit to restrict the results to</td>
+      </tr>
+    </table>
+    <h3><img align="bottom" border="0" height="12" id="graphics7" name="graphics7" src="images/3.png" width="12"> Global results</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Meter</th>
+        <td>the meter of the vehicle</td>
+      </tr>
+      <tr>
+        <th>Consumption</th>
+        <td>fuel consumption</td>
+      </tr>
+      <tr>
+        <th>Fuel cost</th>
+        <td>cost of the consumed fuel</td>
+      </tr>
+      <tr>
+        <th>Other cost</th>
+        <td>the other cost for the vehicle (insurance, repair, ...), which mean the transaction affected to the current vehicle cost category not containing (d=xx v=xx)</td>
+      </tr>
+      <tr>
+        <th>Total cost</th>
+        <td>the total cost for the vehicle in the selected period</td>
+      </tr>
+    </table>
+    <h3><img align="bottom" border="0" height="12" id="graphics8" name="graphics8" src="images/4.png" width="12"> Detailed results</h3>
+    <p>his is a list-view which contains the detailed date by date refuel done for the selected vehicle.<br>
+    The list is sortable, just click into the column title to change the sort order.<br>
+    At the bottom is the total line, except for price which is the average price by liter.</p>
   </div>
 </body>
 </html>

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -78,8 +78,8 @@ GDate *date;
 
 static void filter_default_date_set(Filter *flt)
 {
-	flt->mindate = 693596;	//01/01/1900
-	flt->maxdate = 803533;	//31/12/2200
+	flt->mindate = HB_MINDATE;
+	flt->maxdate = HB_MAXDATE;
 }
 
 
@@ -115,42 +115,119 @@ gint i;
 	flt->type   = FLT_TYPE_ALL;
 	flt->status = FLT_STATUS_ALL;
 
+	flt->forceremind = PREFS->showremind;
+
 	flt->option[FILTER_DATE] = 1;
 	filter_default_date_set(flt);
 
 	for(i=0;i<NUM_PAYMODE_MAX;i++)
 		flt->paymode[i] = TRUE;
 
-	filter_preset_daterange_set(flt, flt->range);
+	filter_preset_daterange_set(flt, flt->range, 0);
 
 }
 
 
-void filter_preset_daterange_set(Filter *flt, gint range)
+static void filter_set_date_bounds(Filter *flt, guint32 kacc)
+{
+GList *lst_acc, *lnk_acc;
+GList *lnk_txn;
+
+	DB( g_print("(filter) set date bounds %p\n", flt) );
+
+	flt->mindate = 0;
+	flt->maxdate = 0;
+
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
+	{
+	Account *acc = lnk_acc->data;
+	
+		if( !(acc->flags & AF_CLOSED) )
+		{
+		Transaction *txn;
+		
+			DB( g_print(" - do '%s'\n", acc->name) );
+
+			lnk_txn = g_queue_peek_head_link(acc->txn_queue);
+			if(lnk_txn) {
+				txn = lnk_txn->data;
+				if( (kacc == 0) || (txn->kacc == kacc) )
+				{
+					if( flt->mindate == 0 )
+						flt->mindate = txn->date;
+					else
+						flt->mindate = MIN(flt->mindate, txn->date);
+				}
+			}
+
+			lnk_txn = g_queue_peek_tail_link(acc->txn_queue);
+			if(lnk_txn) {
+				txn = lnk_txn->data;
+				if( (kacc == 0) || (txn->kacc == kacc) )
+				{
+					if( flt->maxdate == 0 )
+						flt->maxdate = txn->date;
+					else
+						flt->maxdate = MAX(flt->maxdate, txn->date);
+				}
+			}
+
+		}
+		lnk_acc = g_list_next(lnk_acc);
+	}
+	
+	if( flt->mindate == 0 )
+		flt->mindate = HB_MINDATE;
+	
+	if( flt->maxdate == 0 )
+		flt->maxdate = HB_MAXDATE;	
+	
+	g_list_free(lst_acc);
+}
+
+
+void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays)
+{
+
+	if( nbdays <= 0 )
+		return;
+		
+	switch( filter->range )
+	{
+		case FLT_RANGE_THISMONTH:
+		case FLT_RANGE_THISQUARTER:
+		case FLT_RANGE_THISYEAR:
+		case FLT_RANGE_LAST30DAYS:
+		case FLT_RANGE_LAST60DAYS:
+		case FLT_RANGE_LAST90DAYS:
+		case FLT_RANGE_LAST12MONTHS:
+			filter->maxdate += nbdays;
+			break;
+	}
+
+}
+
+
+void filter_preset_daterange_set(Filter *flt, gint range, guint32 kacc)
 {
 GDate *date;
-GList *list;
 guint32 refjuliandate, month, year, qnum;
 
-	// any date :: todo : get date of current accout only when account 
+	DB( g_print("(filter) daterange set %p %d\n", flt, range) );
+
+	//filter_default_date_set(flt);
+	filter_set_date_bounds(flt, kacc);
+
 	flt->range = range;
-	if(g_list_length(GLOBALS->ope_list) > 0) // get all transaction date bound
-	{
-		GLOBALS->ope_list = da_transaction_sort(GLOBALS->ope_list);
-		list = g_list_first(GLOBALS->ope_list);
-		flt->mindate = ((Transaction *)list->data)->date;
-		list = g_list_last(GLOBALS->ope_list);
-		flt->maxdate = ((Transaction *)list->data)->date;
-	}
-	else
-		filter_default_date_set(flt);
-	
 	
 	// by default refjuliandate is today
 	// but we adjust if to max transaction date found
+	// removed for 5.0.4
 	refjuliandate = GLOBALS->today;
-	if(flt->maxdate < refjuliandate)
-		refjuliandate = flt->maxdate;
+	/*if(flt->maxdate < refjuliandate)
+		refjuliandate = flt->maxdate;*/
 
 	date  = g_date_new_julian(refjuliandate);
 	month = g_date_get_month(date);
@@ -297,9 +374,10 @@ GList *lcat, *list;
 	flt->status = status;
 	flt->option[FILTER_STATUS] = 0;
 	flt->reconciled = TRUE;
-	flt->reminded = TRUE;
-	flt->forceadd = FALSE;
-	flt->forcechg = FALSE;
+	flt->cleared  = TRUE;
+	//#1602835 fautly set
+	//flt->forceadd = TRUE;
+	//flt->forcechg = TRUE;
 
 	flt->option[FILTER_CATEGORY] = 0;
 	lcat = list = g_hash_table_get_values(GLOBALS->h_cat);
@@ -322,11 +400,28 @@ GList *lcat, *list;
 		case FLT_STATUS_UNRECONCILED:
 			flt->option[FILTER_STATUS] = 2;
 			flt->reconciled = TRUE;
-			//#1336882
-			flt->reminded = FALSE;
+			flt->cleared = FALSE;
 			break;
-	}
 
+		case FLT_STATUS_UNCLEARED:
+			flt->option[FILTER_STATUS] = 2;
+			flt->reconciled = FALSE;
+			flt->cleared = TRUE;
+			break;
+
+		case FLT_STATUS_RECONCILED:
+			flt->option[FILTER_STATUS] = 1;
+			flt->reconciled = TRUE;
+			flt->cleared = FALSE;
+			break;
+
+		case FLT_STATUS_CLEARED:
+			flt->option[FILTER_STATUS] = 1;
+			flt->reconciled = FALSE;
+			flt->cleared = TRUE;
+			break;
+		
+	}
 }
 
 
@@ -370,9 +465,30 @@ gchar *tags;
 
 	if(flags & FLT_QSEARCH_MEMO)
 	{
-		if(txn->wording)
+		//#1509485
+		if(txn->flags & OF_SPLIT)
 		{
-			retval |= filter_text_compare(txn->wording, needle, FALSE);
+		guint count, i;
+		Split *split;
+
+			count = da_splits_count(txn->splits);
+			for(i=0;i<count;i++)
+			{
+			gint tmpinsert = 0;
+		
+				split = txn->splits[i];
+				tmpinsert = filter_text_compare(split->memo, needle, FALSE);
+				retval |= tmpinsert;
+				if( tmpinsert )
+					break;
+			}
+		}
+		else
+		{
+			if(txn->wording)
+			{
+				retval |= filter_text_compare(txn->wording, needle, FALSE);
+			}
 		}
 		if(retval) goto end;
 	}
@@ -398,13 +514,42 @@ gchar *tags;
 
 	if(flags & FLT_QSEARCH_CATEGORY)
 	{
-		catitem = da_cat_get(txn->kcat);
-		if(catitem)
+		//#1509485
+		if(txn->flags & OF_SPLIT)
 		{
-		gchar *fullname = da_cat_get_fullname (catitem);
+		guint count, i;
+		Split *split;
 
-			retval |= filter_text_compare(fullname, needle, FALSE);
-			g_free(fullname);
+			count = da_splits_count(txn->splits);
+			for(i=0;i<count;i++)
+			{
+			gint tmpinsert = 0;
+				
+				split = txn->splits[i];
+				catitem = da_cat_get(split->kcat);
+				if(catitem)
+				{
+				gchar *fullname = da_cat_get_fullname (catitem);
+
+					tmpinsert = filter_text_compare(fullname, needle, FALSE);
+					retval |= tmpinsert;
+					g_free(fullname);
+				}
+
+				if( tmpinsert )
+					break;
+			}
+		}
+		else
+		{
+			catitem = da_cat_get(txn->kcat);
+			if(catitem)
+			{
+			gchar *fullname = da_cat_get_fullname (catitem);
+
+				retval |= filter_text_compare(fullname, needle, FALSE);
+				g_free(fullname);
+			}
 		}
 		if(retval) goto end;
 	}
@@ -439,11 +584,15 @@ gint insert;
 
 /*** start filtering ***/
 
-	/* add/change force */
+	/* force display */
 	if(flt->forceadd == TRUE && (txn->flags & OF_ADDED))
 		goto end;
 
 	if(flt->forcechg == TRUE && (txn->flags & OF_CHANGED))
+		goto end;
+
+	/* force remind if not filter on status */
+	if(flt->forceremind == TRUE && (txn->status == TXN_STATUS_REMIND))
 		goto end;
 
 /* date */
@@ -483,7 +632,7 @@ gint insert;
 		Split *split;
 
 			insert = 0;	 //fix: 1151259
-			count = da_transaction_splits_count(txn);
+			count = da_splits_count(txn->splits);
 			for(i=0;i<count;i++)
 			{
 			gint tmpinsert = 0;
@@ -515,9 +664,9 @@ gint insert;
 	gint insert1 = 0, insert2 = 0;
 
 		if(flt->reconciled)
-			insert1 = ( txn->flags & OF_VALID ) ? 1 : 0;
-		if(flt->reminded)
-			insert2 = ( txn->flags & OF_REMIND ) ? 1 : 0;
+			insert1 = ( txn->status == TXN_STATUS_RECONCILED ) ? 1 : 0;
+		if(flt->cleared)
+			insert2 = ( txn->status == TXN_STATUS_CLEARED ) ? 1 : 0;
 
 		insert = insert1 | insert2;
 		if(flt->option[FILTER_STATUS] == 2) insert ^= 1;
@@ -558,9 +707,29 @@ gint insert;
 
 		if(flt->wording)
 		{
-			if(txn->wording)
+			if(txn->flags & OF_SPLIT)
 			{
-				insert2 = filter_text_compare(txn->wording, flt->wording, flt->exact);
+			guint count, i;
+			Split *split;
+
+				count = da_splits_count(txn->splits);
+				for(i=0;i<count;i++)
+				{
+				gint tmpinsert = 0;
+			
+					split = txn->splits[i];
+					tmpinsert = filter_text_compare(split->memo, flt->wording, flt->exact);
+					insert2 |= tmpinsert;
+					if( tmpinsert )
+						break;
+				}
+			}
+			else
+			{
+				if(txn->wording)
+				{
+					insert2 = filter_text_compare(txn->wording, flt->wording, flt->exact);
+				}
 			}
 		}
 		else

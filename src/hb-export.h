@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,10 +20,28 @@
 #ifndef __HB_EXPORT_H__
 #define __HB_EXPORT_H__
 
+#include <cairo-pdf.h>
+
+
+#define PDF_NUMCOL 6 + 1
+
+typedef struct _pdfprintcontext		PdfPrintContext;
+
+struct _pdfprintcontext {
+	gdouble	   column_width[PDF_NUMCOL];
+	gchar      *column_txt[PDF_NUMCOL];
+
+	PangoFontDescription *desc;
+};
+
+
+
+
 
 void hb_export_qif_account_all(gchar *filename);
 void hb_export_qif_account_single(gchar *filename, Account *acc);
 
+void hb_export_pdf_listview(GtkTreeView *treeview);
 
 #endif
 

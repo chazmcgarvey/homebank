@@ -1,105 +1,55 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=utf-8">
-
-  <title>Automatic addition</title>
-  <link rel="stylesheet" href="help.css" type="text/css">
-
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Using the Scheduled transaction feature</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
 </head>
-
 <body id="top">
   <div class="dochead">
     HomeBank User manual
   </div>
-
   <div class="title">
-
-<h1>Using the Scheduled transaction feature</h1>
-
-  <p>The scheduled transaction feature allows you to manage the insertion of transactions
-  automatically before or at their due date.</p>
-
-  <ul class="toc">
-    <li>Step 1: <a href="#create">Create scheduled transactions</a></li>
-
-    <li>Step 2: <a href="#list">Control the list of scheduled transactions</a></li>
-
-    <li>Step 3: <a href="#rules">Configure the insertion rules and options</a></li>
-
-  </ul>
-
- </div>
-
+    <h1>Using the Scheduled transaction feature</h1>
+    <p>Scheduled transactions will allow you to automate the repetitive transaction input like bills, subscriptions, insurances or taxes. You setup the transaction once by creating or use an existing template transaction, then set a few parameters to organize the scheduled insertion. HomeBank will inform you when the transaction is ready to be inserted or will insert it automatically for you.</p>
+    <ul class="toc">
+      <li>Step 1: <a href="#create">Create scheduled transactions</a></li>
+      <li>Step 2: <a href="#rules">Configure the insertion rules and options</a></li>
+      <li>Step 3: <a href="#list">Control the scheduled transactions</a></li>
+    </ul>
+  </div>
   <div class="rounded content">
- 
-  <h3><a name="manage" id="manage"></a>Step 1: Create scheduled transactions</h3>
-
-  <p>Open the Scheduled/Template dialog from either the mainwindow menu or the toolbar.</p>
-
-
-  <p>Select an existing transaction, or create a new one</p>
-
-  <img src="images/use-scheduled1.png" class="gtkshot">
-
-  <ul>
-
+  <h3><a id="manage" name="manage"></a>Step 1: Create scheduled transactions</h3>
+  <ul class="step">
+    <li>open the <a href="dlg-arch.html">Scheduled/Template dialog</a> from either the main-window menu or the tool-bar</li>
+    <li>select an existing template transaction, or create a new one</li>
     <li>check the 'Activate' check-box in the 'Scheduled insertion' area, at the bottom</li>
-
-    <li>adjust the insertion parameters:
-
+    <li>set the insertion parameters:
       <ul>
-        <li>frequency: every x day, week, month, year</li>
-
-        <li>next occurrence date</li>
-
-        <li>optional limitation to X occurrence</li>
+        <li>next post date</li>
+        <li>recurrence: every X day, week, month, year</li>
+        <li>week-end behavior to apply</li>
+        <li>optional limitation to X posts</li>
       </ul>
     </li>
-  </ul>
-
- </div>
-
-
- <div class="rounded content">
- 
-  <h3><a name="list"></a>Step 2: Control the list of scheduled transactions</h3>
-
-  <p>Into the <a href="win-main.html">main window</a>, you can see the next occurrence of each
-  scheduled transactions status from their last insertion. This list gives you an overview of what is pending
-  with the next occurrence date and the remaining days.</p>
-
-  <p><img src="images/use-scheduled2.png" class="gtkshot"></p>
-
-  <p>The remaining day count is negative if the transaction insertion is
-  overdue.</p>
-
- </div>
-
+  </ul><img class="gtkshot" src="images/use-scheduled1.png"></div>
   <div class="rounded content">
- 
-  <h3><a name="rules"></a>Step 3: Configure the insertion rules and options</h3>
-
-  <p>With the default preferences, the transactions will be automatically inserted at
-  their due date every time you open your HomeBank file.</p>
-
-<p>You can change this behavior from the <a href="dlg-wall.html">file properties dialog</a> with 2 options:</p>
-
-<ul>
-<li>Add until xx of each month (excluded)
-<li>Add x days in advance the current date
-</ul>
-
-<p>To insert transaction to their due date again, insert 0 days in advance the current date. You can also reach this
-configuration dialog from the mainwindow menu Transaction/Set scheduler...</p>
-
-<p>The insertion at start can be changed from the <a href="dlg-pref.html#tab1">preferences dialog</a></p>
-
-<p>At last, you are able to trigger the insertion from the mainwindow menu Transaction/Process scheduled...</p>
-
- </div>
-
-  
+    <h3><a id="rules" name="rules"></a>Step 2: Configure the insertion rules and options</h3>
+    <p>By default the scheduled transactions will be automatically inserted at their due date every time you open your HomeBank file.</p>
+    <p>You can change this behavior from the <a href="dlg-wall.html">file properties dialog</a> with 2 options:</p>
+    <ul>
+      <li>Add until xx of each month (excluded)</li>
+      <li>Add x days in advance the current date</li>
+    </ul>
+    <p>To insert transaction to their due date again, insert 0 days in advance the current date. You can also reach this configuration dialog from the main-window menu Transaction/Set scheduler...</p>
+    <p>The insertion at program start can be changed from the <a href="dlg-pref.html#tab1">preferences dialog</a></p>
+    <p>At last, you are able to trigger the insertion from the main-window menu Transaction/Process scheduled...</p>
+  </div>
+  <div class="rounded content">
+    <h3><a id="list" name="list"></a>Step 3: Control the scheduled transactions</h3>
+    <p>In the <a href="win-main.html">main window</a>, a list of scheduled transaction can be displayed, it's a summary of every pending scheduled transaction post. You can control the transaction post or skip it if required from here directly with some tool-bar buttons below. If a scheduled transaction is late, you will see a warning icon with the number of day late in a maximum of 10. If the overdue is more than 10 days, it will shows +10.</p>
+    <p><img class="gtkshot" src="images/use-scheduled2.png"></p>
+  </div>
 </body>
 </html>

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -40,7 +40,21 @@ enum {
 
 struct repvehicle_data
 {
+	GQueue		*txn_queue;
+	GList		*vehicle_list;
+	Filter		*filter;
+
+	guint		total_dist;
+	gdouble		total_fuel;
+	gdouble		total_fuelcost;
+	gdouble		total_misccost;
+
 	GtkWidget	*window;
+
+	GtkUIManager	*ui;
+	GtkActionGroup *actions;
+
+	GtkWidget	*TB_bar;
 
 	//GtkWidget	*TX_info;
 	GtkWidget	*CM_minor;
@@ -54,16 +68,6 @@ struct repvehicle_data
 
 	GtkWidget	*LA_avera[MAX_CAR_RES];
 	GtkWidget	*LA_total[MAX_CAR_RES];
-
-	GList		*vehicle_list;
-
-	guint		total_dist;
-	gdouble		total_fuel;
-	gdouble		total_fuelcost;
-	gdouble		total_misccost;
-
-
-	Filter		*filter;
 
 	gulong		handler_id[MAX_REPVEHICLE_HID];
 };

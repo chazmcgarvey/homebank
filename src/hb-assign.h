@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -29,15 +29,23 @@ struct _assign
 	guint32   	key;
 	gushort		flags;
 	gushort		field;
-	gchar   	*name;
+	gchar   	*text;
 	guint32		kpay;
 	guint32		kcat;
+	gushort		paymode;
+	gushort		pad1;
 };
 
 
 #define ASGF_EXACT	(1<<0)
 #define ASGF_DOPAY	(1<<1)
 #define ASGF_DOCAT	(1<<2)
+#define ASGF_DOMOD	(1<<3)
+
+#define ASGF_REGEX	(1<<8)
+#define ASGF_OVWPAY	(1<<9)
+#define ASGF_OVWCAT	(1<<10)
+#define ASGF_OVWMOD	(1<<11)
 
 
 void

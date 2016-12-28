@@ -1,7 +1,7 @@
 # HomeBank Makefile.am
 
 #SUBDIRS = src
-SUBDIRS = src data images mime po doc
+SUBDIRS = src data images mime pixmaps themes po doc
 
 
 # don't forget to do a 'make check' 

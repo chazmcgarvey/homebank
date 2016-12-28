@@ -1,276 +1,215 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="noindex" name="robots">
   <title>Filter dialog</title>
-  <link rel="stylesheet" href="help.css" type="text/css">
+  <link href="help.css" rel="stylesheet" type="text/css">
 </head>
-
 <body id="top">
   <div class="dochead">
     HomeBank User manual
   </div>
-
   <div class="title">
-
-  <h1>Filter dialog</h1>
-
-  <p>The filter dialog is used to adjust the filter for transaction
-  from the account window and the statistics window.</p>
-
-
-  <ul class="toc">
-  <li><a href="#tab1">Date</a>
-  <li><a href="#tab2">Status</a>
-  <li><a href="#tab3">Paymode</a>
-  <li><a href="#tab4">Amount</a>
-  <li><a href="#tab5">Text</a>
-  <li><a href="#tab6">Category</a>
-  <li><a href="#tab6">Payee</a>
-  <li><a href="#tab6">Account</a>
-  </ul>
-
-</div>
-
+    <h1>Filter dialog</h1>
+    <p>The filter dialog is used to adjust the filter for transaction from the account window and the statistics window.</p>
+    <ul class="toc">
+      <li><a href="#tab1">Date</a></li>
+      <li><a href="#tab2">Status</a></li>
+      <li><a href="#tab4">Amount</a></li>
+      <li><a href="#tab5">Text</a></li>
+      <li><a href="#tab6">Category</a></li>
+      <li><a href="#tab7">Payee</a></li>
+      <li><a href="#tab8">Account</a></li>
+    </ul>
+  </div>
   <div class="rounded content">
-
-  <h2><a name="tab1" id="tab1"></a>Filter date</h2>
-
-  <p><img class="gtkshot right" src="images/dlg-filter1.png"></p>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Option</th>
-
-      <td>set this filter status:
-      <ul><li>inactive<li>include<li>exclude</ul></td>
-    </tr>
-
-    <tr>
-      <th>From</th>
-
-      <td>the date minimum value</td>
-    </tr>
-
-    <tr>
-      <th>To</th>
-
-      <td>the date maximum value</td>
-    </tr>
-    
-    <tr>
-      <th>Month</th>
-
-      <td>set a specific month</td>
-    </tr>
-
-    <tr>
-      <th>Year</th>
-
-      <td>set a specific year</td>
-    </tr>
-    
-  </table>
-
-</div>
-
+    <h2><a id="tab1" name="tab1"></a>Filter date</h2>
+    <p><img class="gtkshot right" src="images/dlg-filter1.png"></p>
+    <table class="widgetinfo">
+      <tr>
+        <th>Option</th>
+        <td>
+          set this filter status:
+          <ul>
+            <li>inactive</li>
+            <li>include</li>
+            <li>exclude</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>From</th>
+        <td>the date minimum value</td>
+      </tr>
+      <tr>
+        <th>To</th>
+        <td>the date maximum value</td>
+      </tr>
+      <tr>
+        <th>Month</th>
+        <td>set a specific month</td>
+      </tr>
+      <tr>
+        <th>Year</th>
+        <td>set a specific year</td>
+      </tr>
+    </table>
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
   <div class="rounded content">
-
-  <h2><a name="tab2" id="tab2"></a>Filter status</h2>
-
-  <p><img class="gtkshot right" src="images/dlg-filter2.png"></p>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Option</th>
-
-      <td>set this filter status:
-      <ul><li>inactive<li>include<li>exclude</ul></td>
-    </tr>
-
-    <tr>
-      <th>reconciled</th>
-
-      <td>select the reconciled transactions</td>
-    </tr>
-
-     <tr>
-      <th>remind</th>
-
-      <td>select the remind transactions</td>
-    </tr>
-   <tr>
-      <th>Force display 'Added'</th>
-
-      <td>force transaction in 'added' status to always be
-      displayed</td>
-    </tr>
-
-    <tr>
-      <th>Force display 'Edited'</th>
-
-      <td>force transaction in 'edited' status to always be
-      displayed</td>
-    </tr>
-  </table>
-
-</div>
-
+    <h2><a id="tab2" name="tab2"></a>Filter status</h2>
+    <p><img class="gtkshot right" src="images/dlg-filter2.png"></p>
+    <table class="widgetinfo">
+      <tr>
+        <th>Option</th>
+        <td>
+          set this filter status:
+          <ul>
+            <li>inactive</li>
+            <li>include</li>
+            <li>exclude</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>reconciled</th>
+        <td>select the reconciled transactions</td>
+      </tr>
+      <tr>
+        <th>cleared</th>
+        <td>select the cleared transactions</td>
+      </tr>
+      <tr>
+        <th>Force display 'Added'</th>
+        <td>force transaction in 'added' status to always be displayed</td>
+      </tr>
+      <tr>
+        <th>Force display 'Edited'</th>
+        <td>force transaction in 'edited' status to always be displayed</td>
+      </tr>
+      <tr>
+        <th>Force display 'Remind'</th>
+        <td>force remind transaction to always display</td>
+      </tr>
+    </table>
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
   <div class="rounded content">
-
-   <h2><a name="tab3" id="tab3"></a>Filter paymode</h2>
-
-  <p><img class="gtkshot right" src="images/dlg-filter3.png"></p>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Option</th>
-
-      <td>set this filter status:
-      <ul><li>inactive<li>include<li>exclude</ul></td>
-    </tr>
-
-    <tr>
-      <th>payment</th>
-
-      <td>
-
-         <ul>
-          <li>(none)</li>
-
-          <li>credit card</li>
-
-          <li>check</li>
-
-          <li>cash</li>
-
-          <li>transfer</li>
-
-          <li>internal transfer</li>
-
-          <li>debit card</li>
-
-          <li>standing order</li>
-
-          <li>electronic payment</li>
-
-          <li>deposit</li>
-
-          <li>fi fee</li>
-        </ul>
-              
-      </td>
-    </tr>
-  </table>
-
-</div>
-
+    <h2><a id="tab3" name="tab3"></a>Filter payment</h2>
+    <p><img class="gtkshot right" src="images/dlg-filter3.png"></p>
+    <table class="widgetinfo">
+      <tr>
+        <th>Option</th>
+        <td>
+          set this filter status:
+          <ul>
+            <li>inactive</li>
+            <li>include</li>
+            <li>exclude</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>payment</th>
+        <td>see the lexicon for <a href="00-lexicon.html#payment">payment</a> detail<br></td>
+      </tr>
+    </table>
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
   <div class="rounded content">
-
-  <h2><a name="tab4" id="tab4"></a>Filter amount</h2>
-
-  <p><img class="gtkshot right" src="images/dlg-filter4.png"></p>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Option</th>
-
-      <td>set this filter status:
-      <ul><li>inactive<li>include<li>exclude</ul></td>
-    </tr>
-
-    <tr>
-      <th>From</th>
-
-      <td>the amount minimum value</td>
-    </tr>
-
-    <tr>
-      <th>To</th>
-
-      <td>the amount maximum value</td>
-    </tr>
-  </table>
-
-</div>
-
+    <h2><a id="tab4" name="tab4"></a>Filter amount</h2>
+    <p><img class="gtkshot right" src="images/dlg-filter4.png"></p>
+    <table class="widgetinfo">
+      <tr>
+        <th>Option</th>
+        <td>
+          set this filter status:
+          <ul>
+            <li>inactive</li>
+            <li>include</li>
+            <li>exclude</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>From</th>
+        <td>the amount minimum value</td>
+      </tr>
+      <tr>
+        <th>To</th>
+        <td>the amount maximum value</td>
+      </tr>
+    </table>
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
   <div class="rounded content">
-
-  <h2><a name="tab5" id="tab5"></a>Filter text</h2>
-
-  <p><img class="gtkshot right" src="images/dlg-filter5.png"></p>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Option</th>
-
-      <td>set this filter status:
-      <ul><li>inactive<li>include<li>exclude</ul></td>
-    </tr>
-
-    <tr>
-      <th>Memo</th>
-
-      <td>the memo string to search</td>
-    </tr>
-
-    <tr>
-      <th>Info</th>
-
-      <td>the info string to search</td>
-    </tr>
-
-    <tr>
-      <th>Tag</th>
-
-      <td>the tag string to search</td>
-    </tr>
-
-  </table>
-
-</div>
-
+    <h2><a id="tab5" name="tab5"></a>Filter text</h2>
+    <p><img class="gtkshot right" src="images/dlg-filter5.png"></p>
+    <table class="widgetinfo">
+      <tr>
+        <th>Option</th>
+        <td>
+          set this filter status:
+          <ul>
+            <li>inactive</li>
+            <li>include</li>
+            <li>exclude</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Memo</th>
+        <td>the memo string to search</td>
+      </tr>
+      <tr>
+        <th>Info</th>
+        <td>the info string to search</td>
+      </tr>
+      <tr>
+        <th>Tag</th>
+        <td>the tag string to search</td>
+      </tr>
+    </table>
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
   <div class="rounded content">
-
-  <h2><a name="tab6" id="tab6"></a>Filter Category/Payee/Account</h2>
-
-  <p><img class="gtkshot right" src="images/dlg-filter6.png"></p>
-
-  <p>These tabs all function-the same manner. You can filter these
-  using a list of item, including or excluding the selected
-  items.<br>
-  The account tab is not showed when you filter from the account
-  window, it is showed only from the statistics dialog.</p>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Option</th>
-
-      <td>set this filter status:
-      <ul><li>inactive<li>include<li>exclude</ul></td>
-    </tr>
-
-    <tr>
-      <th>All</th>
-
-      <td>will select all the items in the list</td>
-    </tr>
-
-    <tr>
-      <th>None</th>
-
-      <td>will unselected all the items in the list</td>
-    </tr>
-   <tr>
-      <th>Invert</th>
-
-      <td>will invert all the items in the list</td>
-    </tr>
-
-  </table>
-
- </div>
+    <h2><a id="tab6" name="tab6"></a>Filter Category/Payee/Account</h2>
+    <p><img class="gtkshot right" src="images/dlg-filter6.png"></p>
+    <p>These tabs all function-the same manner. You can filter these using a list of item, including or excluding the selected items.<br>
+    The account tab is not showed when you filter from the account window, it is showed only from the statistics dialog.</p>
+    <table class="widgetinfo">
+      <tr>
+        <th>Option</th>
+        <td>
+          set this filter status:
+          <ul>
+            <li>inactive</li>
+            <li>include</li>
+            <li>exclude</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>All</th>
+        <td>will select all the items in the list</td>
+      </tr>
+      <tr>
+        <th>None</th>
+        <td>will unselected all the items in the list</td>
+      </tr>
+      <tr>
+        <th>Invert</th>
+        <td>will invert all the items in the list</td>
+      </tr>
+    </table>
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
 </body>
 </html>

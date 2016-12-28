@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -38,12 +38,14 @@ extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
 
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
+
 
 gboolean hbfile_file_hasbackup(gchar *filepath)
 {
 gchar *bakfilepath;
 
-	bakfilepath = hb_filename_new_with_extention(GLOBALS->xhb_filepath, "xhb~");
+	bakfilepath = hb_util_filename_new_with_extension(GLOBALS->xhb_filepath, "xhb~");
 	GLOBALS->xhb_hasbak = g_file_test(bakfilepath, G_FILE_TEST_EXISTS);
 	g_free(bakfilepath);
 	//todo check here if need to return something
@@ -72,70 +74,176 @@ static void hbfile_file_load_backup_xhb(void)
 
 
 
-
-
-
 }
 */
 
+void hbfile_replace_basecurrency(Currency4217 *curfmt)
+{
+Currency *item;
+guint32 oldkcur;
+
+	DB( g_print("\n[hbfile] replace base currency \n") );
+	
+	oldkcur = GLOBALS->kcur;
+	da_cur_remove(oldkcur);
+	item = currency_add_from_user(curfmt);
+	GLOBALS->kcur = item->key;
+	
+	DB( g_print(" %d ==> %d %s\n", oldkcur, GLOBALS->kcur, item->iso_code) );
+}
 
 
-/*
 void hbfile_change_basecurrency(guint32 key)
 {
 GList *list;
-
+guint32 oldkcur;
+	
+	// set every rate to 0
 	list = g_hash_table_get_values(GLOBALS->h_cur);
 	while (list != NULL)
 	{
 	Currency *entry = list->data;
 
 		if(entry->key != GLOBALS->kcur)
+		{
 			entry->rate = 0.0;
+			entry->mdate = 0;
+		}
 			
 		list = g_list_next(list);
 	}
 	g_list_free(list);	
 
-
-	GLOBALS->changes_count++;
+	oldkcur = GLOBALS->kcur;
 	GLOBALS->kcur = key;
 
+	// update account with old base currency
+	list = g_hash_table_get_values(GLOBALS->h_acc);
+	while (list != NULL)
+	{
+	Account *acc = list->data;
+
+		if( acc->kcur == oldkcur )
+			acc->kcur = key;
+
+		list = g_list_next(list);
+	}
+	g_list_free(list);
+	
+
+	GLOBALS->changes_count++;
 }
-*/
 
 
-void hbfile_change_owner(gchar *owner)
+GList *hbfile_transaction_get_all(guint32 kacc)
 {
-	g_free(GLOBALS->owner);
-	GLOBALS->owner = (owner != NULL) ? owner : NULL;
+GList *lst_acc, *lnk_acc;
+GList *lnk_txn;
+GList *list;
+
+	list = NULL;
+
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
+	{
+	Account *acc = lnk_acc->data;
+
+		if( (acc->flags & (AF_CLOSED|AF_NOREPORT)) )
+			goto next_acc;
+		if( (kacc > 0 ) && (acc->key != kacc) )
+			goto next_acc;
+
+		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
+		while (lnk_txn != NULL)
+		{
+			list = g_list_append(list, lnk_txn->data);
+			lnk_txn = g_list_next(lnk_txn);
+		}
+	
+	next_acc:
+		lnk_acc = g_list_next(lnk_acc);
+	}
+	g_list_free(lst_acc);
+
+	return da_transaction_sort (list);
 }
 
 
-void hbfile_change_filepath(gchar *filepath)
+GQueue *hbfile_transaction_get_partial(guint32 minjulian, guint32 maxjulian)
 {
-	g_free(GLOBALS->xhb_filepath);
-	GLOBALS->xhb_filepath = (filepath != NULL) ? filepath : NULL;
+GList *lst_acc, *lnk_acc;
+GList *lnk_txn;
+GQueue *txn_queue;
+
+	txn_queue = g_queue_new ();
+
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
+	{
+	Account *acc = lnk_acc->data;
+
+		if( (acc->flags & (AF_CLOSED|AF_NOREPORT)) )
+			goto next_acc;
+
+		lnk_txn = g_queue_peek_tail_link(acc->txn_queue);
+		while (lnk_txn != NULL)
+		{
+		Transaction *txn = lnk_txn->data;
+
+			if( txn->date < minjulian ) //no need to go below mindate
+				break;
+
+			if( !(txn->status == TXN_STATUS_REMIND) 
+				&& (txn->date >= minjulian) 
+				&& (txn->date <= maxjulian)
+			  )
+			{
+				g_queue_push_head (txn_queue, txn);
+			}
+			
+			lnk_txn = g_list_previous(lnk_txn);
+		}
+	
+	next_acc:
+		lnk_acc = g_list_next(lnk_acc);
+	}
+	g_list_free(lst_acc);
+
+	return txn_queue;
 }
 
 
 void hbfile_sanity_check(void)
 {
+GList *lst_acc, *lnk_acc;
+GList *lnk_txn;
 GList *lxxx, *list;
 
-	DB( g_print("\n[hbfile] sanity_check\n") );
+	DB( g_print("\n[hbfile] !! sanity_check !! \n") );
 
-
-	list = g_list_first(GLOBALS->ope_list);
-	while (list != NULL)
+	DB( g_print(" - transaction\n") );
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
 	{
-	Transaction *entry = list->data;
+	Account *acc = lnk_acc->data;
 
-		da_transaction_consistency(entry);
-		list = g_list_next(list);
+		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
+		while (lnk_txn != NULL)
+		{
+		Transaction *txn = lnk_txn->data;
+
+			da_transaction_consistency(txn);
+			lnk_txn = g_list_next(lnk_txn);
+		}
+		lnk_acc = g_list_next(lnk_acc);
 	}
+	g_list_free(lst_acc);
 
 
+	DB( g_print(" - scheduled/template\n") );
 	list = g_list_first(GLOBALS->arc_list);
 	while (list != NULL)
 	{
@@ -146,6 +254,7 @@ GList *lxxx, *list;
 	}
 
 
+	DB( g_print(" - account\n") );
 	lxxx = list = g_hash_table_get_values(GLOBALS->h_acc);
 	while (list != NULL)
 	{
@@ -157,6 +266,7 @@ GList *lxxx, *list;
 	g_list_free(lxxx);
 
 	
+	DB( g_print(" - payee\n") );
 	lxxx = list = g_hash_table_get_values(GLOBALS->h_pay);
 	while (list != NULL)
 	{
@@ -168,6 +278,7 @@ GList *lxxx, *list;
 	g_list_free(lxxx);
 
 	
+	DB( g_print(" - category\n") );
 	lxxx = list = g_hash_table_get_values(GLOBALS->h_cat);
 	while (list != NULL)
 	{
@@ -183,6 +294,8 @@ GList *lxxx, *list;
 
 void hbfile_anonymize(void)
 {
+GList *lst_acc, *lnk_acc;
+GList *lnk_txn;
 GList *lxxx, *list;
 guint cnt, i;
 
@@ -269,8 +382,8 @@ guint cnt, i;
 
 		if(item->key != 0)
 		{
-			g_free(item->name);
-			item->name = g_strdup_printf("assign %d", item->key);
+			g_free(item->text);
+			item->text = g_strdup_printf("assign %d", item->key);
 			GLOBALS->changes_count++;
 		}
 		list = g_list_next(list);
@@ -294,56 +407,88 @@ guint cnt, i;
 	}
 
 	//transaction
-	list = g_list_first(GLOBALS->ope_list);
-	while (list != NULL)
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
 	{
-	Transaction *item = list->data;
-	Split *split;
+	Account *acc = lnk_acc->data;
 
-		g_free(item->info);
-		item->info = NULL;
-		g_free(item->wording);
-		item->wording = g_strdup_printf("memo %d", item->date);
-		GLOBALS->changes_count++;
-		
-		if(item->flags & OF_SPLIT)
+		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
+		while (lnk_txn != NULL)
 		{
-			for(i=0;i<TXN_MAX_SPLIT;i++)
+		Transaction *item = lnk_txn->data;
+		Split *split;
+
+			g_free(item->info);
+			item->info = NULL;
+			g_free(item->wording);
+			item->wording = g_strdup_printf("memo %d", item->date);
+			GLOBALS->changes_count++;
+		
+			if(item->flags & OF_SPLIT)
 			{
-				split = item->splits[i];
-				if( split == NULL ) break;
+				for(i=0;i<TXN_MAX_SPLIT;i++)
+				{
+					split = item->splits[i];
+					if( split == NULL ) break;
 
-				if(split->memo != NULL)
-					g_free(split->memo);
+					if(split->memo != NULL)
+						g_free(split->memo);
 					
-				split->memo = g_strdup_printf("memo %d", i);
-				GLOBALS->changes_count++;
-			}		
-		
-		
+					split->memo = g_strdup_printf("memo %d", i);
+					GLOBALS->changes_count++;
+				}		
+			}
+			lnk_txn = g_list_next(lnk_txn);
 		}
-		
-		list = g_list_next(list);
+		lnk_acc = g_list_next(lnk_acc);
 	}
+	g_list_free(lst_acc);
 
+}
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
+
+
+void hbfile_change_owner(gchar *owner)
+{
+	g_free(GLOBALS->owner);
+	GLOBALS->owner = (owner != NULL) ? owner : NULL;
+}
+
+
+void hbfile_change_filepath(gchar *filepath)
+{
+	g_free(GLOBALS->xhb_filepath);
+	GLOBALS->xhb_filepath = (filepath != NULL) ? filepath : NULL;
 }
 
 
 void hbfile_cleanup(gboolean file_clear)
 {
+Transaction *txn;
+
 	DB( g_print("\n[hbfile] cleanup\n") );
 	DB( g_print("- file clear is %d\n", file_clear) );
 	
 	// Free data storage
-	//da_cur_destroy();
-	da_acc_destroy();
-	da_pay_destroy();
-	da_cat_destroy();
-	da_tag_destroy();
-	da_asg_destroy();
-	g_hash_table_destroy(GLOBALS->h_memo);
+	txn = g_trash_stack_pop(&GLOBALS->txn_stk);
+	while( txn != NULL )
+	{
+		da_transaction_free (txn);
+		txn = g_trash_stack_pop(&GLOBALS->txn_stk);
+	}
+
+	da_transaction_destroy();
 	da_archive_destroy(GLOBALS->arc_list);
-	da_transaction_destroy(GLOBALS->ope_list);
+	g_hash_table_destroy(GLOBALS->h_memo);
+	da_asg_destroy();
+	da_tag_destroy();
+	da_cat_destroy();
+	da_pay_destroy();
+	da_acc_destroy();
+	da_cur_destroy();
 
 	hbfile_change_owner(NULL);
 
@@ -360,7 +505,7 @@ void hbfile_setup(gboolean file_clear)
 	DB( g_print("- file clear is %d\n", file_clear) );
 
 	// Allocate data storage
-	//da_cur_new();
+	da_cur_new();
 	da_acc_new();
 	da_pay_new();
 	da_cat_new();
@@ -369,8 +514,7 @@ void hbfile_setup(gboolean file_clear)
 
 	GLOBALS->h_memo = g_hash_table_new_full(g_str_hash, g_str_equal, (GDestroyNotify)g_free, NULL);
 	GLOBALS->arc_list = NULL;
-	GLOBALS->ope_list = NULL;
-
+	GLOBALS->txn_stk = NULL;
 
 	if(file_clear == TRUE)
 	{
@@ -388,7 +532,7 @@ void hbfile_setup(gboolean file_clear)
 
 	hbfile_change_owner(g_strdup(_("Unknown")));
 	
-	//GLOBALS->kcur = 0;
+	GLOBALS->kcur = 1;
 
 	GLOBALS->vehicle_category = 0;
 	

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -41,9 +41,12 @@ struct hbfile_data
 	GtkWidget	*GR_upc;
 	GtkWidget	*LV_upc;
 	GtkWidget   *LB_maxpostdate;
-	GtkToolItem *BT_sched_post;
-	GtkToolItem *BT_sched_skip;
+	GtkWidget   *BT_sched_skip;
+	GtkWidget   *BT_sched_post;
+	GtkWidget   *BT_sched_editpost;
 
+	GtkWidget   *RA_type;
+	
 	gchar	*wintitle;
 
 	Account *acc;

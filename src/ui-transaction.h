@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,14 +20,11 @@
 #ifndef __HB_TRANSACTION_GTK_H__
 #define __HB_TRANSACTION_GTK_H__
 
+#include "ui-split.h"
+
 enum {
 	HID_AMOUNT,
 	MAX_HID_AMOUNT
-};
-
-enum {
-	TXN_SPLIT_NEW,
-	TXN_SPLIT_AMOUNT
 };
 
 
@@ -35,13 +32,18 @@ struct deftransaction_data
 {
 	GtkWidget	*window;
 
+	/* popover */
+	GtkWidget   *MB_template;
+	GtkTreeModel *model;
+	GtkTreeModelFilter *modelfilter;
+	GtkWidget   *LV_arc;
+	GtkWidget   *CM_showsched;
+	GtkWidget   *ST_search;
+
 	GtkWidget	*PO_date;
 	GtkWidget	*PO_pay;
-	GtkWidget	*PO_arc;
 	GtkWidget	*ST_word;
-	GtkWidget	*ST_amount, *BT_amount, *BT_split;
-	GtkWidget	*CM_valid;
-	GtkWidget	*CM_remind;
+	GtkWidget	*ST_amount, *BT_split;
 	GtkWidget	*CM_cheque;
 
 	GtkWidget	*NU_mode;
@@ -50,44 +52,30 @@ struct deftransaction_data
 	GtkWidget	*PO_acc;
 	GtkWidget	*LB_accto, *PO_accto;
 	GtkWidget	*ST_tags;
+	GtkWidget   *RA_status;
 
-	gint	action;
-	gint	accnum;
-	gint	type;
-
-	Transaction *ope;
-
-};
-
-struct ui_txn_split_dialog_data
-{
-	GtkWidget	*dialog;
-	GtkWidget	*BT_rem[TXN_MAX_SPLIT];
-	GtkWidget	*BT_add[TXN_MAX_SPLIT];
-	GtkWidget	*PO_cat[TXN_MAX_SPLIT];
-	GtkWidget	*ST_amount[TXN_MAX_SPLIT];
-	GtkWidget	*ST_memo[TXN_MAX_SPLIT];
-
-	GtkWidget	*LB_sumsplit;
-	GtkWidget	*LB_remain;
-	GtkWidget	*LB_txnamount;
-
-	Transaction *ope;
-	gdouble		amount;
-	gdouble		sumsplit;
-	gdouble		remsplit;
-
-	gint		nbsplit;
-	gint		splittype;
-	gint		activeline;
+	GtkWidget   *IB_warnsign;
 	
-	gulong		handler_id[TXN_MAX_SPLIT];
+	gint		action;
+	gint		accnum;
+	gint		type;
+	gboolean	showtemplate;
+
+	Transaction *ope;
+
+};
+
+enum
+{
+	LST_DSPTPL_DATAS,
+	LST_DSPTPL_NAME,
+	NUM_LST_DSPTPL
 };
 
 
-
-GtkWidget *create_deftransaction_window (GtkWindow *parent, gint type);
+GtkWidget *create_deftransaction_window (GtkWindow *parent, gint type, gboolean postmode);
 void deftransaction_set_amount(GtkWidget *widget, gdouble amount);
+gint deftransaction_external_edit(GtkWindow *parent, Transaction *old_txn, Transaction *new_txn);
 void deftransaction_set_transaction(GtkWidget *widget, Transaction *ope);
 void deftransaction_get			(GtkWidget *widget, gpointer user_data);
 void deftransaction_add			(GtkWidget *widget, gpointer user_data);

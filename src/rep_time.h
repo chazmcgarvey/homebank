@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -60,9 +60,14 @@ enum {
 
 struct ui_reptime_data
 {
-	GtkWidget	*window;
+	GQueue		*txn_queue;
+	Filter		*filter;
 
-	gint	busy;
+	gboolean	detail;
+	gint		charttype;
+	guint32		accnum;
+
+	GtkWidget	*window;
 
 	GtkUIManager	*ui;
 	GtkActionGroup *actions;
@@ -73,17 +78,17 @@ struct ui_reptime_data
 	GtkWidget	*TX_daterange;
 	GtkWidget	*CY_for;
 	GtkWidget	*CY_view;
-	GtkWidget	*RG_zoomx;
+	GtkWidget	*RG_zoomx, *LB_zoomx;
 	GtkWidget	*CM_minor;
 	GtkWidget	*CM_cumul;
 	GtkWidget	*LV_report;
 
 
-	GtkWidget	*GR_select;
+	//GtkWidget	*GR_select;
 	GtkWidget	*CM_all;
-	GtkWidget	*PO_acc;
-	GtkWidget	*PO_cat;
-	GtkWidget	*PO_pay;
+	GtkWidget	*LB_acc, *PO_acc;
+	GtkWidget	*LB_cat, *PO_cat;
+	GtkWidget	*LB_pay, *PO_pay;
 
 	GtkWidget	*PO_mindate, *PO_maxdate;
 
@@ -95,12 +100,8 @@ struct ui_reptime_data
 	GtkWidget	*GR_detail;
 	GtkWidget	*LV_detail;
 
-	gboolean	detail;
-
-	gint charttype;
 	gulong		handler_id[MAX_REPTIME_HID];
 
-	Filter		*filter;
 };
 
 

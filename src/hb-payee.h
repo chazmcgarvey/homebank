@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -26,11 +26,14 @@ typedef struct _payee		Payee;
 struct _payee
 {
 	guint32   	key;
-	//gushort 	flags;
+	gushort		paymode;
+	gushort 	_pad1;
+	guint32		kcat;
 	gchar   	*name;
 
 	/* unsaved datas */
 	gboolean	filter;
+	guint		usage_count;
 	gboolean	imported;
 };
 
@@ -50,9 +53,11 @@ Payee		*da_pay_get_by_name(gchar *name);
 Payee		*da_pay_get(guint32 key);
 void da_pay_consistency(Payee *item);
 
+void payee_delete_unused(void);
+void payee_fill_usage(void);
+
 GList *payee_glist_sorted(gint column);
 
-gboolean payee_is_used(guint32 key);
 void payee_move(guint32 key1, guint32 key2);
 gboolean payee_rename(Payee *item, const gchar *newname);
 Payee *payee_append_if_new(gchar *name);

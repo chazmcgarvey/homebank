@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -17,7 +17,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 #include "homebank.h"
+
 #include "hb-preferences.h"
 #include "hb-filter.h"
 #include "gtk-chart-colors.h"
@@ -41,7 +43,56 @@
 extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+static void homebank_pref_init_monetary(void)
+{
+
+	DB( g_print("\n[system] get currency code\n") );
+	
+#ifdef G_OS_UNIX
+	struct lconv *lc = localeconv();
+
+	g_stpcpy (PREFS->IntCurrSymbol, lc->int_curr_symbol);
+	g_strstrip(PREFS->IntCurrSymbol);
+
+	DB( g_print("- stored '%s' from linux system\n", PREFS->IntCurrSymbol) );
+#else
+
+	#ifdef G_OS_WIN32
+    #define BUFFER_SIZE 512
+    char buffer[BUFFER_SIZE];
+    //LPWSTR wcBuffer = buffer;
+    LPSTR wcBuffer = buffer;
+    int iResult;
+
+	//https://msdn.microsoft.com/en-us/library/windows/desktop/dd464799%28v=vs.85%29.aspx
+
+	//LOCALE_SINTLSYMBOL
+	iResult = GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SINTLSYMBOL, wcBuffer, BUFFER_SIZE);
+    if(iResult > 0)
+    {
+        DB( g_print("LOCALE_SINTLSYMBOL='%s'\n", buffer) );
+	 	g_stpcpy (PREFS->IntCurrSymbol, buffer);
+		g_strstrip(PREFS->IntCurrSymbol);
+
+		DB( g_print("- stored '%s' from windows system\n", PREFS->IntCurrSymbol) );
+    }
+	#else
+
+ 	g_stpcpy (PREFS->IntCurrSymbol, "USD");
+
+	DB( g_print("- stored '%s' as default\n", PREFS->IntCurrSymbol) );
+	
+	#endif
+	
+#endif
+	
+
+}
+
+
+/*
 static void homebank_pref_init_monetary(void)
 {
 	DB( g_print("\n[preferences] monetary\n") );
@@ -53,6 +104,8 @@ struct lconv *lc = localeconv();
 
 	DB( g_print("\n[preferences] monetary unix\n") );
 
+	DB( g_print("int_curr_symbol '%s'\n", lc->int_curr_symbol) );
+	
 	DB( g_print("mon_decimal_point is utf8: %d\n", g_utf8_validate(lc->mon_decimal_point, -1, NULL)) );
 	DB( g_print("mon_decimal_point '%s'\n", lc->mon_decimal_point) );
 	DB( g_print("mon_decimal_point %x %x %x %x\n", lc->mon_decimal_point[0], lc->mon_decimal_point[1], lc->mon_decimal_point[2], lc->mon_decimal_point[3]) );
@@ -70,19 +123,18 @@ struct lconv *lc = localeconv();
 
 	DB( g_print("n_cs_precedes '%d'\n", lc->n_cs_precedes) );
 
-	/* ok assign */
-
+	//PREFS->base_cur.iso_code = g_strdup(g_strstrip(lc->int_curr_symbol));
 
 	if( lc->p_cs_precedes || lc->n_cs_precedes )
 	{
 		PREFS->base_cur.symbol = g_strdup(lc->currency_symbol);
-		PREFS->base_cur.is_prefix = TRUE;
+		PREFS->base_cur.sym_prefix = TRUE;
 		DB( g_print("locale mon cs is a prefix\n") );
 	}
 	else
 	{
 		PREFS->base_cur.symbol = g_strdup(lc->currency_symbol);
-		PREFS->base_cur.is_prefix = FALSE;
+		PREFS->base_cur.sym_prefix = FALSE;
 	}
 
 	PREFS->base_cur.decimal_char  = g_strdup(lc->mon_decimal_point);
@@ -107,7 +159,7 @@ struct lconv *lc = localeconv();
 
 #else
 	#ifdef G_OS_WIN32
-	//todo: to be really set by a win32 specialist from the registry...
+
     #define BUFFER_SIZE 512
     char buffer[BUFFER_SIZE];
     //LPWSTR wcBuffer = buffer;
@@ -115,6 +167,11 @@ struct lconv *lc = localeconv();
     int iResult;
     gsize toto;
 
+	//https://msdn.microsoft.com/en-us/library/windows/desktop/dd464799%28v=vs.85%29.aspx
+
+	//LOCALE_SINTLSYMBOL
+
+	
     //see g_locale_to_utf8 here
 	iResult = GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SCURRENCY, wcBuffer, BUFFER_SIZE);
     if(iResult > 0)
@@ -123,6 +180,9 @@ struct lconv *lc = localeconv();
         PREFS->base_cur.symbol = g_locale_to_utf8(buffer, -1, NULL, &toto, NULL);
     }
 
+	// LOCALE_ICURRENCY
+	//PREFS->base_cur.sym_prefix =
+	
 	iResult = GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, wcBuffer, BUFFER_SIZE);
     if(iResult > 0)
     {
@@ -137,12 +197,14 @@ struct lconv *lc = localeconv();
         PREFS->base_cur.grouping_char = g_locale_to_utf8(buffer, -1, NULL, &toto, NULL);
     }
 
+	// LOCALE_ICURRDIGITS
  	PREFS->base_cur.frac_digits   = 2;
 
 	#else
 
-	PREFS->base_cur.prefix_symbol = NULL; //g_strdup("");
-	PREFS->base_cur.suffix_symbol = NULL; //g_strdup("");
+	PREFS->base_cur.iso_code      = g_strdup("USD");
+	PREFS->base_cur.symbol        = NULL; //g_strdup("");
+	PREFS->base_cur.sym_prefix    = FALSE;
 	PREFS->base_cur.decimal_char  = g_strdup(".");
 	PREFS->base_cur.grouping_char = NULL; //g_strdup("");
 	PREFS->base_cur.frac_digits   = 2;
@@ -151,6 +213,7 @@ struct lconv *lc = localeconv();
 #endif
 
 }
+*/
 
 
 
@@ -161,57 +224,6 @@ static void homebank_pref_init_wingeometry(struct WinGeometry *wg, gint l, gint 
 	wg->w = w;
 	wg->h = h;
 	wg->s = 0;
-}
-
-
-/*
-** create the format string for monetary strfmon (major/minor)
-*/
-static void _homebank_pref_createformat(void)
-{
-struct CurrencyFmt *cur;
-
-	DB( g_print("\n[preferences] pref create format\n") );
-
-/*
-	if(PREFS->base_cur.grouping_char != NULL)
-		g_snprintf(GLOBALS->fmt_maj_number, 15, "%%^.%dn", PREFS->base_cur.frac_digits);
-	else
-		g_snprintf(GLOBALS->fmt_maj_number, 15, "%%.%dn", PREFS->base_cur.frac_digits);
-
-	DB( g_print("+ major is: '%s'\n", GLOBALS->fmt_maj_number) );
-
-
-	if(PREFS->minor_cur.grouping_char != NULL)
-		g_snprintf(GLOBALS->fmt_min_number, 15, "%s %%!^.%dn %s",
-			PREFS->minor_cur.prefix_symbol,
-			PREFS->minor_cur.frac_digits,
-			PREFS->minor_cur.suffix_symbol
-			);
-	else
-		g_snprintf(GLOBALS->fmt_min_number, 15, "%s %%!.%dn %s",
-			PREFS->minor_cur.prefix_symbol,
-			PREFS->minor_cur.frac_digits,
-			PREFS->minor_cur.suffix_symbol
-			);
-
-	DB( g_print("+ minor is: '%s'\n", GLOBALS->fmt_min_number) );
-*/
-
-	/* base mon format */
-	cur = &PREFS->base_cur;
-	g_snprintf(cur->format , 8-1, "%%.%df", cur->frac_digits);
-	g_snprintf(cur->monfmt, 32-1, (cur->is_prefix) ? "%s %%s" : "%%s %s", cur->symbol);
-	DB( g_print(" - format: '%s'\n", cur->format) );
-	DB( g_print(" - monfmt: '%s'\n", cur->monfmt) );
-
-	/* minor mon format */
-	cur = &PREFS->minor_cur;
-	g_snprintf(cur->format , 8-1, "%%.%df", cur->frac_digits);
-	g_snprintf(cur->monfmt, 32-1, (cur->is_prefix) ? "%s %%s" : "%%s %s", cur->symbol);
-	DB( g_print(" - format: '%s'\n", cur->format) );
-	DB( g_print(" - monfmt: '%s'\n", cur->monfmt) );
-
 }
 
 
@@ -230,27 +242,30 @@ static void _homebank_pref_init_measurement_units(void)
 	// unit is miles
 	else
 	{
-		PREFS->vehicle_unit_dist = "%d m.";
-		PREFS->vehicle_unit_100  = "100 miles";
+		PREFS->vehicle_unit_dist = "%d mi.";
+		PREFS->vehicle_unit_100  = "100 mi.";
 	}
 
 	// unit is Liters
 	if(!PREFS->vehicle_unit_isgal)
 	{
-		PREFS->vehicle_unit_vol  = "%.2f L";
+		//TRANSLATORS: format a liter number with l/L as abbreviation
+		PREFS->vehicle_unit_vol  = _("%.2f l");
 		if(!PREFS->vehicle_unit_ismile)
-			PREFS->vehicle_unit_distbyvol  = "km/L";
+			//TRANSLATORS: kilometer per liter
+			PREFS->vehicle_unit_distbyvol  = _("km/l");
 		else
-			PREFS->vehicle_unit_distbyvol  = "miles/gal";
+			//TRANSLATORS: miles per liter
+			PREFS->vehicle_unit_distbyvol  = _("mi./l");
 	}
 	// unit is gallon
 	else
 	{
-		PREFS->vehicle_unit_vol  = "%.2f gal";
+		PREFS->vehicle_unit_vol  = "%.2f gal.";
 		if(!PREFS->vehicle_unit_ismile)
-			PREFS->vehicle_unit_distbyvol  = "km/gal";
+			PREFS->vehicle_unit_distbyvol  = "km/gal.";
 		else
-			PREFS->vehicle_unit_distbyvol  = "miles/gal";
+			PREFS->vehicle_unit_distbyvol  = "mi./gal.";
 	}
 
 }
@@ -274,9 +289,6 @@ void homebank_pref_free(void)
 
 	g_free(PREFS->language);
 
-	g_free(PREFS->base_cur.symbol);
-	g_free(PREFS->base_cur.decimal_char);
-	g_free(PREFS->base_cur.grouping_char);
 
 	g_free(PREFS->minor_cur.symbol);
 	g_free(PREFS->minor_cur.decimal_char);
@@ -306,16 +318,18 @@ gint i;
 	PREFS->showsplash = TRUE;
 	PREFS->loadlast = TRUE;
 	PREFS->appendscheduled = FALSE;
+	PREFS->do_update_currency = FALSE;
 
 	PREFS->heritdate = FALSE;
 	PREFS->hidereconciled = FALSE;
+	PREFS->showremind = TRUE;
 
 	PREFS->toolbar_style = 4;	//text beside icons
 	PREFS->custom_colors = TRUE;
 	PREFS->color_exp  = g_strdup(DEFAULT_EXP_COLOR);
 	PREFS->color_inc  = g_strdup(DEFAULT_INC_COLOR);
 	PREFS->color_warn = g_strdup(DEFAULT_WARN_COLOR);
-	PREFS->rules_hint = FALSE;
+	PREFS->grid_lines = GTK_TREE_VIEW_GRID_LINES_NONE;
 
 	/* fiscal year */
 	PREFS->fisc_year_day = 1;
@@ -329,6 +343,8 @@ gint i;
 	homebank_pref_init_wingeometry(&PREFS->ove_wg, 0, 0, 800, 494);
 	homebank_pref_init_wingeometry(&PREFS->bud_wg, 0, 0, 800, 494);
 	homebank_pref_init_wingeometry(&PREFS->cst_wg, 0, 0, 800, 494);
+
+	homebank_pref_init_wingeometry(&PREFS->txn_wg, 0, 0, -1, -1);
 
 	homebank_pref_init_monetary();
 
@@ -359,6 +375,7 @@ gint i;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_PAYEE;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_CATEGORY;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_TAGS;
+	PREFS->lst_ope_columns[i++] = LST_DSPOPE_CLR;
 	PREFS->lst_ope_columns[i++] = -LST_DSPOPE_AMOUNT;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_EXPENSE;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_INCOME;
@@ -368,20 +385,33 @@ gint i;
 	PREFS->lst_ope_sort_id    = LST_DSPOPE_DATE;
 	PREFS->lst_ope_sort_order = GTK_SORT_ASCENDING;
 
+	for( i=0;i<NUM_LST_DSPOPE;i++)
+		PREFS->lst_ope_col_size[i] = -1;
 
 	//PREFS->base_cur.nbdecimal = 2;
 	//PREFS->base_cur.separator = TRUE;
 
 	PREFS->date_range_wal = FLT_RANGE_LASTMONTH;
 	PREFS->date_range_txn = FLT_RANGE_LAST12MONTHS;
+	PREFS->date_future_nbdays = 0;
 	PREFS->date_range_rep = FLT_RANGE_THISYEAR;
 
+	//import/export
+	PREFS->dtex_nointro = TRUE;
+	//PREFS->dtex_datefmt
+	PREFS->dtex_ofxname = 1;
+	PREFS->dtex_ofxmemo = 2;
+	PREFS->dtex_qifmemo = TRUE;
+	PREFS->dtex_qifswap = FALSE;
 
 	//todo: add intelligence here
 	PREFS->euro_active  = FALSE;
 
 	PREFS->euro_country = 0;
 	PREFS->euro_value   = 1.0;
+	
+	da_cur_initformat(&PREFS->minor_cur);
+	
 	//PREFS->euro_nbdec   = 2;
 	//PREFS->euro_thsep   = TRUE;
 	//PREFS->euro_symbol	= g_strdup("??");
@@ -392,12 +422,11 @@ gint i;
 	PREFS->budg_showdetail = FALSE;
 	PREFS->report_color_scheme = CHART_COLMAP_HOMEBANK;
 
-	PREFS->chart_legend = FALSE;
+	//PREFS->chart_legend = FALSE;
 
 	PREFS->vehicle_unit_ismile = FALSE;
 	PREFS->vehicle_unit_isgal  = FALSE;
 
-	_homebank_pref_createformat();
 	_homebank_pref_init_measurement_units();
 
 }
@@ -531,18 +560,18 @@ gchar *string;
 }
 
 
-static void homebank_pref_currfmt_convert(struct CurrencyFmt *cur, gchar *prefix, gchar *suffix)
+static void homebank_pref_currfmt_convert(Currency *cur, gchar *prefix, gchar *suffix)
 {
 
 	if( (prefix != NULL) && (strlen(prefix) > 0) )
 	{
 		cur->symbol = g_strdup(prefix);
-		cur->is_prefix = TRUE;
+		cur->sym_prefix = TRUE;
 	}
 	else if( (suffix != NULL) )
 	{
 		cur->symbol = g_strdup(suffix);
-		cur->is_prefix = FALSE;
+		cur->sym_prefix = FALSE;
 	}
 }
 
@@ -615,7 +644,16 @@ GError *error = NULL;
 					homebank_pref_get_string(keyfile, group, "ColorInc" , &PREFS->color_inc);
 					homebank_pref_get_string(keyfile, group, "ColorWarn", &PREFS->color_warn);
 
-					homebank_pref_get_boolean(keyfile, group, "RulesHint", &PREFS->rules_hint);
+					if( version <= 500 )
+					{
+					gboolean rules_hint;
+						homebank_pref_get_boolean(keyfile, group, "RulesHint", &rules_hint);
+						if( rules_hint == TRUE )
+							PREFS->grid_lines = GTK_TREE_VIEW_GRID_LINES_HORIZONTAL;
+
+					}
+					else
+						homebank_pref_get_short(keyfile, group, "GridLines", &PREFS->grid_lines);
 				}
 
 				DB( g_print(" - color exp: %s\n", PREFS->color_exp) );
@@ -630,14 +668,16 @@ GError *error = NULL;
 				homebank_pref_get_boolean(keyfile, group, "ShowSplash", &PREFS->showsplash);
 				homebank_pref_get_boolean(keyfile, group, "LoadLast", &PREFS->loadlast);
 				homebank_pref_get_boolean(keyfile, group, "AppendScheduled", &PREFS->appendscheduled);
+				homebank_pref_get_boolean(keyfile, group, "UpdateCurrency", &PREFS->do_update_currency);	
 
 				homebank_pref_get_boolean(keyfile, group, "HeritDate", &PREFS->heritdate);
 				homebank_pref_get_boolean(keyfile, group, "HideReconciled", &PREFS->hidereconciled);
+				homebank_pref_get_boolean(keyfile, group, "ShowRemind", &PREFS->showremind);
 
 				if( g_key_file_has_key(keyfile, group, "ColumnsOpe", NULL) )
 				{
 				gboolean *bsrc;
-				gint *src, i;
+				gint *src, i, j;
 				gsize length;
 
 					if(version <= 2)	//retrieve old 0.1 or 0.2 visibility boolean
@@ -673,7 +713,30 @@ GError *error = NULL;
 									DB( g_print(" - upgrade from v7\n") );
 									DB( g_print(" - copying column order from pref file\n") );
 									memcpy(PREFS->lst_ope_columns, src, length*sizeof(gint));
+									//append balance column
 									PREFS->lst_ope_columns[10] = LST_DSPOPE_BALANCE;
+								}
+							}
+
+							if(version < 500)
+							{
+								if( length == NUM_LST_DSPOPE-2 )	//1 less column before v4.5.1
+								{
+									DB( g_print(" - upgrade prior v5.0\n") );
+									DB( g_print(" - copying column order from pref file\n") );
+									gboolean added = FALSE;
+									for(i=0,j=0; i<NUM_LST_DSPOPE-1 ; i++)
+									{
+										if( added == FALSE &&
+										    (ABS(src[i]) == LST_DSPOPE_AMOUNT ||
+										    ABS(src[i]) == LST_DSPOPE_EXPENSE ||
+										    ABS(src[i]) == LST_DSPOPE_INCOME) )
+										{
+											PREFS->lst_ope_columns[j++] = LST_DSPOPE_CLR;
+											added = TRUE;
+										}
+										PREFS->lst_ope_columns[j++] = src[i];
+									}
 								}
 							}
 
@@ -684,6 +747,22 @@ GError *error = NULL;
 
 				}
 
+				if( g_key_file_has_key(keyfile, group, "ColumnsOpeWidth", NULL) )
+				{
+				gint *src;
+				gsize length;
+
+					src = g_key_file_get_integer_list(keyfile, group, "ColumnsOpeWidth", &length, &error);
+
+					DB( g_print(" - length %d (max=%d)\n", length, NUM_LST_DSPOPE) );
+
+					if( length == NUM_LST_DSPOPE-1 )
+					{
+						DB( g_print(" - copying column width from pref file\n") );
+						memcpy(PREFS->lst_ope_col_size, src, length*sizeof(gint));
+					}
+				}
+			
 				homebank_pref_get_integer(keyfile, group, "OpeSortId", &PREFS->lst_ope_sort_id);
 				homebank_pref_get_integer(keyfile, group, "OpeSortOrder", &PREFS->lst_ope_sort_order);
 
@@ -704,10 +783,14 @@ GError *error = NULL;
 				homebank_pref_get_wingeometry(keyfile, group, "Ove", &PREFS->ove_wg);
 				homebank_pref_get_wingeometry(keyfile, group, "Bud", &PREFS->bud_wg);
 				homebank_pref_get_wingeometry(keyfile, group, "Car", &PREFS->cst_wg);
+
+				homebank_pref_get_wingeometry(keyfile, group, "Txn", &PREFS->txn_wg);
+
 				if(version <= 7)	//set maximize to 0
 				{
 					PREFS->wal_wg.s = 0;
 					PREFS->acc_wg.s = 0;
+					PREFS->txn_wg.s = 0;
 					PREFS->sta_wg.s = 0;
 					PREFS->tme_wg.s = 0;
 					PREFS->ove_wg.s = 0;
@@ -726,39 +809,6 @@ GError *error = NULL;
 				DB( g_print(" -> ** Format\n") );
 
 				homebank_pref_get_string(keyfile, group, "DateFmt", &PREFS->date_format);
-
-				if(version <= 1)
-				{
-					//retrieve old 0.1 preferences
-					homebank_pref_get_short(keyfile, group, "NumNbDec", &PREFS->base_cur.frac_digits);
-					//PREFS->base_cur.separator = g_key_file_get_boolean (keyfile, group, "NumSep", NULL);
-				}
-				else
-				{
-					if(version < 460)
-					{
-					gchar *prefix = NULL;
-					gchar *suffix = NULL;
-
-						homebank_pref_get_string(keyfile, group, "PreSymbol", &prefix);
-						homebank_pref_get_string(keyfile, group, "SufSymbol", &suffix);
-						homebank_pref_currfmt_convert(&PREFS->base_cur, prefix, suffix);
-						g_free(prefix);
-						g_free(suffix);
-					}
-					else
-					{
-						homebank_pref_get_string(keyfile, group, "Symbol", &PREFS->base_cur.symbol);
-						homebank_pref_get_boolean(keyfile, group, "IsPrefix", &PREFS->base_cur.is_prefix);
-					}
-					homebank_pref_get_string(keyfile, group, "DecChar"  , &PREFS->base_cur.decimal_char);
-					homebank_pref_get_string(keyfile, group, "GroupChar", &PREFS->base_cur.grouping_char);
-					homebank_pref_get_short(keyfile, group, "FracDigits", &PREFS->base_cur.frac_digits);
-
-					//fix 378992/421228
-					if( PREFS->base_cur.frac_digits > MAX_FRAC_DIGIT )
-						PREFS->base_cur.frac_digits = MAX_FRAC_DIGIT;
-				}
 
 				if(version < 460)
 				{
@@ -782,6 +832,7 @@ GError *error = NULL;
 
 				homebank_pref_get_integer(keyfile, group, "DateRangeWal", &PREFS->date_range_wal);
 				homebank_pref_get_integer(keyfile, group, "DateRangeTxn", &PREFS->date_range_txn);
+				homebank_pref_get_integer(keyfile, group, "DateFutureNbDays", &PREFS->date_future_nbdays);
 				homebank_pref_get_integer(keyfile, group, "DateRangeRep", &PREFS->date_range_rep);
 
 				if(version <= 7)
@@ -833,7 +884,7 @@ GError *error = NULL;
 					else
 					{
 						homebank_pref_get_string(keyfile, group, "Symbol", &PREFS->minor_cur.symbol);
-						homebank_pref_get_boolean(keyfile, group, "IsPrefix", &PREFS->minor_cur.is_prefix);
+						homebank_pref_get_boolean(keyfile, group, "IsPrefix", &PREFS->minor_cur.sym_prefix);
 					}
 					homebank_pref_get_string(keyfile, group, "DecChar"  , &PREFS->minor_cur.decimal_char);
 					homebank_pref_get_string(keyfile, group, "GroupChar", &PREFS->minor_cur.grouping_char);
@@ -843,6 +894,7 @@ GError *error = NULL;
 					if( PREFS->minor_cur.frac_digits > MAX_FRAC_DIGIT )
 						PREFS->minor_cur.frac_digits = MAX_FRAC_DIGIT;
 
+					da_cur_initformat(&PREFS->minor_cur);
 				}
 
 			//PREFS->euro_symbol = g_locale_to_utf8(tmpstr, -1, NULL, NULL, NULL);
@@ -861,8 +913,12 @@ GError *error = NULL;
 
 				DB( g_print(" -> ** Exchange\n") );
 
+				//homebank_pref_get_boolean(keyfile, group, "DoIntro", &PREFS->dtex_nointro);
 				homebank_pref_get_integer(keyfile, group, "DateFmt", &PREFS->dtex_datefmt);
+				homebank_pref_get_integer(keyfile, group, "OfxName", &PREFS->dtex_ofxname);
 				homebank_pref_get_integer(keyfile, group, "OfxMemo", &PREFS->dtex_ofxmemo);
+				homebank_pref_get_boolean(keyfile, group, "QifMemo", &PREFS->dtex_qifmemo);
+				homebank_pref_get_boolean(keyfile, group, "QifSwap", &PREFS->dtex_qifswap);
 
 
 			//group = "Chart";
@@ -882,7 +938,6 @@ GError *error = NULL;
 		g_free(filename);
 		g_key_file_free (keyfile);
 
-		_homebank_pref_createformat();
 		_homebank_pref_init_measurement_units();
 	}
 
@@ -938,8 +993,7 @@ gsize length;
 		g_key_file_set_string (keyfile, group, "ColorInc" , PREFS->color_inc);
 		g_key_file_set_string (keyfile, group, "ColorWarn", PREFS->color_warn);
 
-		g_key_file_set_boolean (keyfile, group, "RulesHint", PREFS->rules_hint);
-
+		g_key_file_set_integer (keyfile, group, "GridLines", PREFS->grid_lines);
 
 		homebank_pref_set_string  (keyfile, group, "WalletPath"   , PREFS->path_hbfile);
 		homebank_pref_set_string  (keyfile, group, "ImportPath"   , PREFS->path_import);
@@ -949,11 +1003,14 @@ gsize length;
 		g_key_file_set_boolean (keyfile, group, "ShowSplash", PREFS->showsplash);
 		g_key_file_set_boolean (keyfile, group, "LoadLast", PREFS->loadlast);
 		g_key_file_set_boolean (keyfile, group, "AppendScheduled", PREFS->appendscheduled);
+		g_key_file_set_boolean (keyfile, group, "UpdateCurrency", PREFS->do_update_currency);
 
 		g_key_file_set_boolean (keyfile, group, "HeritDate", PREFS->heritdate);
 		g_key_file_set_boolean (keyfile, group, "HideReconciled", PREFS->hidereconciled);
+		g_key_file_set_boolean (keyfile, group, "ShowRemind", PREFS->showremind);
 
 		g_key_file_set_integer_list(keyfile, group, "ColumnsOpe", PREFS->lst_ope_columns, NUM_LST_DSPOPE-1);
+		g_key_file_set_integer_list(keyfile, group, "ColumnsOpeWidth", PREFS->lst_ope_col_size, NUM_LST_DSPOPE-1);
 		g_key_file_set_integer     (keyfile, group, "OpeSortId" , PREFS->lst_ope_sort_id);
 		g_key_file_set_integer     (keyfile, group, "OpeSortOrder" , PREFS->lst_ope_sort_order);
 
@@ -972,6 +1029,8 @@ gsize length;
 		g_key_file_set_integer_list(keyfile, group, "Bud", (gint *)&PREFS->bud_wg, 5);
 		g_key_file_set_integer_list(keyfile, group, "Car", (gint *)&PREFS->cst_wg, 5);
 
+		g_key_file_set_integer_list(keyfile, group, "Txn", (gint *)&PREFS->txn_wg, 5);
+
 		g_key_file_set_integer (keyfile, group, "WalVPaned" , PREFS->wal_vpaned);
 		g_key_file_set_integer (keyfile, group, "WalHPaned" , PREFS->wal_hpaned);
 		g_key_file_set_boolean (keyfile, group, "WalToolbar", PREFS->wal_toolbar);
@@ -984,12 +1043,6 @@ gsize length;
 		group = "Format";
 		homebank_pref_set_string  (keyfile, group, "DateFmt"   , PREFS->date_format);
 
-		homebank_pref_set_string  (keyfile, group, "Symbol" , PREFS->base_cur.symbol);
-		g_key_file_set_boolean    (keyfile, group, "IsPrefix" , PREFS->base_cur.is_prefix);
-		homebank_pref_set_string  (keyfile, group, "DecChar"   , PREFS->base_cur.decimal_char);
-		homebank_pref_set_string  (keyfile, group, "GroupChar" , PREFS->base_cur.grouping_char);
-		g_key_file_set_integer (keyfile, group, "FracDigits", PREFS->base_cur.frac_digits);
-
 		//g_key_file_set_boolean (keyfile, group, "UKUnits" , PREFS->imperial_unit);
 		g_key_file_set_boolean (keyfile, group, "UnitIsMile" , PREFS->vehicle_unit_ismile);
 		g_key_file_set_boolean (keyfile, group, "UnitIsGal" , PREFS->vehicle_unit_isgal);
@@ -1000,6 +1053,7 @@ gsize length;
 		group = "Filter";
 		g_key_file_set_integer (keyfile, group, "DateRangeWal", PREFS->date_range_wal);
 		g_key_file_set_integer (keyfile, group, "DateRangeTxn", PREFS->date_range_txn);
+		g_key_file_set_integer (keyfile, group, "DateFutureNbdays", PREFS->date_future_nbdays);
 		g_key_file_set_integer (keyfile, group, "DateRangeRep", PREFS->date_range_rep);
 
 		DB( g_print(" -> ** euro\n") );
@@ -1017,7 +1071,7 @@ gsize length;
 			g_ascii_dtostr(ratestr, 63, PREFS->euro_value);
 			homebank_pref_set_string  (keyfile, group, "ChangeRate", ratestr);
 			homebank_pref_set_string  (keyfile, group, "Symbol" , PREFS->minor_cur.symbol);
-			g_key_file_set_boolean    (keyfile, group, "IsPrefix" , PREFS->minor_cur.is_prefix);
+			g_key_file_set_boolean    (keyfile, group, "IsPrefix" , PREFS->minor_cur.sym_prefix);
 			homebank_pref_set_string  (keyfile, group, "DecChar"   , PREFS->minor_cur.decimal_char);
 			homebank_pref_set_string  (keyfile, group, "GroupChar" , PREFS->minor_cur.grouping_char);
 			g_key_file_set_integer (keyfile, group, "FracDigits", PREFS->minor_cur.frac_digits);
@@ -1035,8 +1089,13 @@ gsize length;
 
 
 		group = "Exchange";
+		//g_key_file_set_boolean (keyfile, group, "DoIntro", PREFS->dtex_nointro);
 		g_key_file_set_integer (keyfile, group, "DateFmt", PREFS->dtex_datefmt);
+		g_key_file_set_integer (keyfile, group, "OfxName", PREFS->dtex_ofxname);
 		g_key_file_set_integer (keyfile, group, "OfxMemo", PREFS->dtex_ofxmemo);
+		g_key_file_set_boolean (keyfile, group, "QifMemo", PREFS->dtex_qifmemo);
+		g_key_file_set_boolean (keyfile, group, "QifSwap", PREFS->dtex_qifswap);
+
 
 		//group = "Chart";
 		//g_key_file_set_boolean (keyfile, group, "Legend", PREFS->chart_legend);
@@ -1071,7 +1130,6 @@ gsize length;
 		g_key_file_free (keyfile);
 	}
 
-	_homebank_pref_createformat();
 	_homebank_pref_init_measurement_units();
 
 	return retval;

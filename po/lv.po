@@ -8,58 +8,154 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-09 16:05+0200\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2016-08-07 11:54+0200\n"
 "PO-Revision-Date: 2014-03-04 14:33+0000\n"
 "Last-Translator: Gatis Kalnins <gatis.kalnins@metatrons.lv>\n"
 "Language-Team: gnome-gimp.doc.lv.2010-12-13 <kde-i18n-doc@kde.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-07-26 09:05+0000\n"
-"X-Generator: Launchpad (build 17131)\n"
+"X-Launchpad-Export-Date: 2016-11-06 07:52+0000\n"
+"X-Generator: Launchpad (build 18246)\n"
 
-#: ../data/homebank.desktop.in.in.h:1 ../src/dsp_mainwindow.c:828
+#: ../data/homebank.desktop.in.in.h:1 ../src/dsp_mainwindow.c:876
 msgid "HomeBank"
 msgstr "HomeBank"
 
-#: ../data/homebank.desktop.in.in.h:2 ../src/dsp_mainwindow.c:434
-#: ../src/dsp_mainwindow.c:832
-msgid "Free, easy, personal accounting for everyone."
-msgstr "Vienkārša bezmaksas personīgā grāmatvedība katram"
+#: ../data/homebank.desktop.in.in.h:2
+msgid "Personal finance"
+msgstr ""
 
-#: ../src/dsp_account.c:173
+#: ../data/homebank.desktop.in.in.h:3 ../src/dsp_mainwindow.c:449
+#: ../src/dsp_mainwindow.c:880
+msgid "Free, easy, personal accounting for everyone"
+msgstr ""
+
+#: ../data/homebank.desktop.in.in.h:4
+msgid "finance;accounting;budget;personal;money;"
+msgstr ""
+
+#: ../data/homebank.appdata.xml.in.h:1
+msgid ""
+"HomeBank is a free software (as in \"free speech\" and also as in \"free "
+"beer\") that will assist you to manage your personal accounting."
+msgstr ""
+
+#: ../data/homebank.appdata.xml.in.h:2
+msgid ""
+"It is designed to easy to use and be able to analyse your personal finance "
+"in detail using powerful filtering tools and beautiful graphs."
+msgstr ""
+
+#: ../data/homebank.appdata.xml.in.h:3
+msgid ""
+"If you are looking for a completely free and easy way to manage your "
+"personal accounting then HomeBank should be the software of choice."
+msgstr ""
+
+#. GTK_FILE_CHOOSER_ACTION_OPEN,
+#: ../src/dsp_account.c:338 ../src/ui-account.c:657
+#: ../src/ui-assist-import.c:939 ../src/ui-category.c:1304
+#: ../src/ui-category.c:1452 ../src/ui-currency.c:775 ../src/ui-currency.c:1043
+#: ../src/ui-dialogs.c:69 ../src/ui-dialogs.c:327 ../src/ui-dialogs.c:434
+#: ../src/ui-dialogs.c:489 ../src/ui-dialogs.c:549 ../src/ui-dialogs.c:600
+#: ../src/ui-dialogs.c:665 ../src/ui-dialogs.c:751 ../src/ui-filter.c:1270
+#: ../src/ui-hbfile.c:194 ../src/ui-payee.c:871 ../src/ui-payee.c:1032
+#: ../src/ui-pref.c:1962 ../src/ui-split.c:365 ../src/ui-transaction.c:1095
+msgid "_Cancel"
+msgstr ""
+
+#: ../src/dsp_account.c:340 ../src/ui-account.c:659
+#: ../src/ui-assist-import.c:941 ../src/ui-category.c:1306
+#: ../src/ui-currency.c:777 ../src/ui-currency.c:1045 ../src/ui-dialogs.c:328
+#: ../src/ui-dialogs.c:753 ../src/ui-filter.c:1272 ../src/ui-hbfile.c:196
+#: ../src/ui-payee.c:873 ../src/ui-pref.c:1964 ../src/ui-split.c:383
+#: ../src/ui-transaction.c:1096
+msgid "_OK"
+msgstr ""
+
+#: ../src/dsp_account.c:357
+msgid "Multiple edit transactions"
+msgstr ""
+
+#: ../src/dsp_account.c:372 ../src/ui-payee.c:921 ../src/ui-transaction.c:958
+msgid "Pa_yment:"
+msgstr ""
+
+#: ../src/dsp_account.c:386 ../src/ui-filter.c:1027 ../src/ui-transaction.c:971
+msgid "_Info:"
+msgstr "_Informācija:"
+
+#: ../src/dsp_account.c:402 ../src/rep_time.c:1395 ../src/ui-archive.c:959
+#: ../src/ui-assign.c:840 ../src/ui-transaction.c:996
+msgid "_Payee:"
+msgstr "D_arījuma partneris:"
+
+#: ../src/dsp_account.c:418 ../src/rep_time.c:1387 ../src/ui-archive.c:967
+#: ../src/ui-assign.c:869 ../src/ui-hbfile.c:279 ../src/ui-payee.c:913
+#: ../src/ui-transaction.c:1005
+msgid "_Category:"
+msgstr "_Kategorija:"
+
+#: ../src/dsp_account.c:434 ../src/ui-transaction.c:1030
+msgid "Ta_gs:"
+msgstr ""
+
+#: ../src/dsp_account.c:450 ../src/ui-transaction.c:1022
+msgid "M_emo:"
+msgstr ""
+
+#: ../src/dsp_account.c:628 ../src/dsp_account.c:638
+msgid "Check internal transfert result"
+msgstr ""
+
+#: ../src/dsp_account.c:629
+msgid "No inconsistency found !"
+msgstr ""
+
+#: ../src/dsp_account.c:639
+#, c-format
+msgid ""
+"Inconsistency were found: %d\n"
+"do you want to review and fix ?"
+msgstr ""
+
+#: ../src/dsp_account.c:696
+#, c-format
+msgid "Every transaction amount will be divided by %.6f."
+msgstr ""
+
+#: ../src/dsp_account.c:700
+msgid ""
+"Are you sure you want to convert this account\n"
+"to Euro as Major currency?"
+msgstr ""
+
+#: ../src/dsp_account.c:702
+msgid "_Convert"
+msgstr ""
+
+#: ../src/dsp_account.c:731
 msgid "No transaction changed"
 msgstr "Neviena transakcija nav mainīta"
 
-#: ../src/dsp_account.c:175
+#: ../src/dsp_account.c:733
 #, c-format
-msgid "transaction auto assigned: %d"
-msgstr "transakcija automātiski piesaistīta: %d"
+msgid "transaction changed: %d"
+msgstr ""
 
-#: ../src/dsp_account.c:178
-msgid "Auto assigment result"
-msgstr "Automātiskā uzdevuma rezultāts"
+#: ../src/dsp_account.c:736
+msgid "Automatic assignment result"
+msgstr ""
 
-#: ../src/dsp_account.c:348
+#: ../src/dsp_account.c:917
 msgid ""
 "Do you want to create a template with\n"
 "each of the selected transaction ?"
 msgstr "Vēlaties izveidot šablonu ar katru no izvēlētajām transakcijām?"
 
-#: ../src/dsp_account.c:393
-msgid "(new archive)"
-msgstr "(jauns arhīvs)"
-
-#: ../src/dsp_account.c:912
-msgid ""
-"Do you want to break the internal transfer ?\n"
-"\n"
-"Proceeding will delete the target transaction."
-msgstr ""
-
-#: ../src/dsp_account.c:972
+#: ../src/dsp_account.c:1518
 msgid ""
 "Do you want to delete\n"
 "each of the selected transaction ?"
@@ -67,805 +163,1507 @@ msgstr ""
 "Vai vēlaties dzēst\n"
 "katru atlasīto transakciju?"
 
-#: ../src/dsp_account.c:1285
+#: ../src/dsp_account.c:1607
+msgid "Are you sure you want to change the status to None?"
+msgstr ""
+
+#: ../src/dsp_account.c:1608 ../src/dsp_account.c:1670
+msgid "Some transaction in your selection are already Reconciled."
+msgstr ""
+
+#: ../src/dsp_account.c:1609 ../src/ui-assist-start.c:265
+#: ../src/ui-dialogs.c:368
+msgid "_Change"
+msgstr ""
+
+#: ../src/dsp_account.c:1669
+msgid "Are you sure you want to toggle the status Reconciled?"
+msgstr ""
+
+#: ../src/dsp_account.c:1671
+msgid "_Toggle"
+msgstr ""
+
+#: ../src/dsp_account.c:1912
 #, c-format
 msgid "%d items (%s)"
 msgstr ""
 
 #. TRANSLATORS: detail of the 3 %s which are some amount of selected transaction, 1=total 2=income, 3=expense
 #. msg = g_strdup_printf (_("transaction selected: %d, hidden: %d / %s ( %s - %s)"), count, data->hidden, buf3, buf1, buf2);
-#: ../src/dsp_account.c:1290
+#: ../src/dsp_account.c:1917
 #, c-format
 msgid "%d items (%d selected %s)"
 msgstr ""
 
-#: ../src/dsp_account.c:1360
-msgid "Modify date..."
-msgstr "Mainīt datumu..."
+#. name, icon-name, label
+#: ../src/dsp_account.c:2157
+msgid "A_ccount"
+msgstr ""
 
-#: ../src/dsp_account.c:1365
-msgid "Modify info..."
-msgstr "Mainīt informāciju..."
-
-#: ../src/dsp_account.c:1372
-msgid "Modify payee..."
-msgstr "Rediģet darījumu partneri"
-
-#: ../src/dsp_account.c:1378
-msgid "Modify description..."
-msgstr "Mainīt aprakstu..."
-
-#: ../src/dsp_account.c:1385
-msgid "Modify amount..."
-msgstr "Mainīt summu..."
-
-#: ../src/dsp_account.c:1390
-msgid "Modify category..."
-msgstr "Mainīt kategoriju..."
-
-#: ../src/dsp_account.c:1396
-msgid "Modify tags..."
-msgstr "Mainīt birkas..."
-
-#. name, stock id, label
-#: ../src/dsp_account.c:1702
-msgid "_Account"
-msgstr "_Konts"
-
-#: ../src/dsp_account.c:1703
+#: ../src/dsp_account.c:2158
 msgid "Transacti_on"
 msgstr "Tran_sakcija"
 
-#: ../src/dsp_account.c:1704
-msgid "_Actions"
-msgstr "D_arbības"
+#: ../src/dsp_account.c:2159
+msgid "_Status"
+msgstr ""
 
-#: ../src/dsp_account.c:1705
+#: ../src/dsp_account.c:2160 ../src/dsp_mainwindow.c:165
 msgid "_Tools"
 msgstr "_Rīki"
 
-#: ../src/dsp_account.c:1707 ../src/dsp_mainwindow.c:167
+#: ../src/dsp_account.c:2162 ../src/dsp_mainwindow.c:180
+#: ../src/dsp_mainwindow.c:866 ../src/ui-account.c:1187
+#: ../src/ui-archive.c:1086 ../src/ui-assign.c:717 ../src/ui-budget.c:996
+#: ../src/ui-category.c:1816 ../src/ui-currency.c:1464 ../src/ui-dialogs.c:179
+#: ../src/ui-payee.c:1222 ../src/ui-transaction.c:1104
+#: ../src/ui-transaction.c:1112
 msgid "_Close"
 msgstr "_Aizvērt"
 
-#: ../src/dsp_account.c:1707
+#: ../src/dsp_account.c:2162
 msgid "Close the current account"
 msgstr "Aizvērt pašreizējo kontu"
 
-#. name, stock id, label, accelerator, tooltip
-#: ../src/dsp_account.c:1710
+#. name, icon-name, label, accelerator, tooltip
+#: ../src/dsp_account.c:2165
 msgid "_Filter..."
 msgstr "_Filtrs..."
 
-#: ../src/dsp_account.c:1710
+#: ../src/dsp_account.c:2165
 msgid "Open the list filter"
 msgstr "Atvērt filtru sarakstu"
 
-#: ../src/dsp_account.c:1712
+#: ../src/dsp_account.c:2166
+msgid "Convert to Euro..."
+msgstr ""
+
+#: ../src/dsp_account.c:2166
+msgid "Convert this account to Euro currency"
+msgstr ""
+
+#: ../src/dsp_account.c:2168
 msgid "_Add..."
 msgstr "_Pievienot..."
 
-#: ../src/dsp_account.c:1712
+#: ../src/dsp_account.c:2168
 msgid "Add a new transaction"
 msgstr "Pievienot jaunu transakciju"
 
-#: ../src/dsp_account.c:1713
+#: ../src/dsp_account.c:2169
 msgid "_Inherit..."
 msgstr "_Mantot..."
 
-#: ../src/dsp_account.c:1713
+#: ../src/dsp_account.c:2169
 msgid "Inherit from the active transaction"
 msgstr "Mantot no aktīvās transakcijas"
 
-#: ../src/dsp_account.c:1714
+#: ../src/dsp_account.c:2170
 msgid "_Edit..."
 msgstr "R_ediģēt..."
 
-#: ../src/dsp_account.c:1714
+#: ../src/dsp_account.c:2170
 msgid "Edit the active transaction"
 msgstr "Rediģēt aktīvo transakciju"
 
-#: ../src/dsp_account.c:1715 ../src/ui-archive.c:839
-#: ../src/ui-transaction.c:1170
+#: ../src/dsp_account.c:2172
+msgid "_None"
+msgstr ""
+
+#: ../src/dsp_account.c:2172
+msgid "Toggle none for selected transaction(s)"
+msgstr ""
+
+#: ../src/dsp_account.c:2173
+msgid "_Cleared"
+msgstr ""
+
+#: ../src/dsp_account.c:2173
+msgid "Toggle cleared for selected transaction(s)"
+msgstr ""
+
+#: ../src/dsp_account.c:2174
 msgid "_Reconciled"
 msgstr "Saskaņots"
 
-#: ../src/dsp_account.c:1715
-msgid "Toggle reconciled status of active transactions"
-msgstr "Pārslēgt saskaņojuma statusu aktīvajām transakcijām"
+#: ../src/dsp_account.c:2174
+msgid "Toggle reconciled for selected transaction(s)"
+msgstr ""
 
-#: ../src/dsp_account.c:1716
-msgid "_Remove..."
-msgstr "_Dzēst..."
+#: ../src/dsp_account.c:2176
+msgid "_Multiple Edit..."
+msgstr ""
 
-#: ../src/dsp_account.c:1716
-msgid "Remove the active transactions"
-msgstr "Dzēst aktīvās transakcijas"
+#: ../src/dsp_account.c:2176
+msgid "Edit multiple transaction"
+msgstr ""
 
-#: ../src/dsp_account.c:1717
+#: ../src/dsp_account.c:2177
 msgid "Create template..."
 msgstr "Izveidot šablonu..."
 
-#: ../src/dsp_account.c:1719
-msgid "Auto. Assignments"
-msgstr "Automātiskie uzdevumi"
+#: ../src/dsp_account.c:2177
+msgid "Create template"
+msgstr ""
 
-#: ../src/dsp_account.c:1719
-msgid "Run auto assignments"
-msgstr "Izpildīt automātiskos uzdevumus"
+#: ../src/dsp_account.c:2178
+msgid "_Delete..."
+msgstr ""
 
-#: ../src/dsp_account.c:1720 ../src/dsp_mainwindow.c:172
+#: ../src/dsp_account.c:2178
+msgid "Delete selected transaction(s)"
+msgstr ""
+
+#: ../src/dsp_account.c:2180
+msgid "Auto. assignments"
+msgstr ""
+
+#: ../src/dsp_account.c:2180
+msgid "Run automatic assignments"
+msgstr ""
+
+#: ../src/dsp_account.c:2181
 msgid "Export QIF..."
 msgstr ""
 
-#: ../src/dsp_account.c:1720 ../src/ui-dialogs.c:140
+#: ../src/dsp_account.c:2181 ../src/ui-dialogs.c:431
 msgid "Export as QIF"
 msgstr "Eksportēt kā QIF"
 
-#: ../src/dsp_account.c:1721
+#: ../src/dsp_account.c:2182
 msgid "Export CSV..."
 msgstr "Eksportēt CSV..."
 
-#: ../src/dsp_account.c:1721 ../src/rep_stats.c:71 ../src/rep_time.c:69
-#: ../src/ui-dialogs.c:190
+#: ../src/dsp_account.c:2182 ../src/rep_budget.c:84 ../src/rep_stats.c:72
+#: ../src/rep_time.c:73 ../src/rep_vehicle.c:67 ../src/ui-dialogs.c:481
 msgid "Export as CSV"
 msgstr "Eksportēt kā CSV"
 
-#: ../src/dsp_account.c:1852 ../src/dsp_mainwindow.c:2443
+#: ../src/dsp_account.c:2184
+msgid "Check internal xfer..."
+msgstr ""
+
+#: ../src/dsp_account.c:2317 ../src/dsp_mainwindow.c:2574
 msgid "Add"
 msgstr "Pievienot"
 
-#: ../src/dsp_account.c:1855
+#: ../src/dsp_account.c:2320
 msgid "Inherit"
 msgstr "Mantot"
 
-#: ../src/dsp_account.c:1858
+#: ../src/dsp_account.c:2323
 msgid "Edit"
 msgstr "Rediģēt"
 
-#: ../src/dsp_account.c:1861 ../src/rep_stats.c:68
+#: ../src/dsp_account.c:2326 ../src/rep_stats.c:69
 msgid "Filter"
 msgstr "Filtrs"
 
-#: ../src/dsp_account.c:1864
-msgid "Reconcile"
-msgstr ""
-
-#: ../src/dsp_account.c:1916
-msgid "Future:"
-msgstr "Nākotnē:"
-
-#: ../src/dsp_account.c:1922
-msgid "Today:"
-msgstr "Šodien:"
-
-#: ../src/dsp_account.c:1928
+#. balances area
+#: ../src/dsp_account.c:2377
 msgid "Bank:"
 msgstr "Bankā:"
 
-#: ../src/dsp_account.c:1951 ../src/rep_balance.c:896 ../src/rep_budget.c:1168
-#: ../src/rep_stats.c:1497 ../src/rep_time.c:1341 ../src/rep_vehicle.c:636
+#: ../src/dsp_account.c:2383
+msgid "Today:"
+msgstr "Šodien:"
+
+#: ../src/dsp_account.c:2389
+msgid "Future:"
+msgstr "Nākotnē:"
+
+#: ../src/dsp_account.c:2415 ../src/rep_balance.c:874 ../src/rep_budget.c:1125
+#: ../src/rep_stats.c:1553 ../src/rep_time.c:1442 ../src/rep_vehicle.c:748
 msgid "_Range:"
 msgstr "Perio_ds"
 
-#: ../src/dsp_account.c:1956 ../src/ui-account.c:1244
-#: ../src/ui-assist-start.c:332
+#: ../src/dsp_account.c:2420 ../src/ui-account.c:1275
+#: ../src/ui-assist-start.c:376
 msgid "_Type:"
 msgstr "_Veids:"
 
-#: ../src/dsp_account.c:1961
+#: ../src/dsp_account.c:2425 ../src/ui-archive.c:975
+#: ../src/ui-transaction.c:1014
 msgid "_Status:"
 msgstr ""
 
-#: ../src/dsp_account.c:1966
-msgid "Reset _Filter"
+#: ../src/dsp_account.c:2430
+msgid "Reset _filters"
 msgstr ""
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp_account.c:1971 ../src/rep_balance.c:875 ../src/rep_budget.c:1147
-#: ../src/rep_stats.c:1468 ../src/rep_time.c:1319 ../src/rep_vehicle.c:622
-msgid "_Minor currency"
-msgstr "_Otra valūta"
+#: ../src/dsp_account.c:2435 ../src/rep_balance.c:853 ../src/rep_budget.c:1112
+#: ../src/rep_stats.c:1524 ../src/rep_time.c:1420 ../src/rep_vehicle.c:735
+msgid "Euro _minor"
+msgstr ""
 
-#. name, stock id, label
-#: ../src/dsp_mainwindow.c:147
+#. header
+#: ../src/dsp_mainwindow.c:148 ../src/dsp_mainwindow.c:2561
+#: ../src/list_operation.c:52 ../src/list_operation.c:1127
+#: ../src/list_operation.c:1382 ../src/rep_budget.c:70 ../src/rep_budget.c:400
+#: ../src/rep_budget.c:1503 ../src/rep_stats.c:141 ../src/rep_time.c:121
+#: ../src/ui-budget.c:243 ../src/ui-dialogs.c:234 ../src/ui-filter.c:1327
+#: ../src/ui-split.c:406
+msgid "Category"
+msgstr "Kategorijas"
+
+#: ../src/dsp_mainwindow.c:149 ../src/rep_budget.c:70 ../src/rep_stats.c:142
+msgid "Subcategory"
+msgstr "Apakškategorija"
+
+#. name, icon-name, label
+#: ../src/dsp_mainwindow.c:158
 msgid "_File"
 msgstr "_Fails"
 
-#: ../src/dsp_mainwindow.c:148
+#: ../src/dsp_mainwindow.c:159
+msgid "_Import"
+msgstr "_Importēt"
+
+#: ../src/dsp_mainwindow.c:160 ../src/ui-category.c:1985
+#: ../src/ui-currency.c:1535 ../src/ui-payee.c:1313
 msgid "_Edit"
 msgstr "R_ediģēt"
 
-#: ../src/dsp_mainwindow.c:149
+#: ../src/dsp_mainwindow.c:161
 msgid "_View"
 msgstr "_Skats"
 
-#: ../src/dsp_mainwindow.c:150
+#: ../src/dsp_mainwindow.c:162
 msgid "_Manage"
 msgstr "_Pārvaldīt"
 
-#: ../src/dsp_mainwindow.c:151
+#: ../src/dsp_mainwindow.c:163
 msgid "_Transactions"
 msgstr "_Transakcijas"
 
-#: ../src/dsp_mainwindow.c:152
+#: ../src/dsp_mainwindow.c:164
 msgid "_Reports"
 msgstr "_Atskaites"
 
-#: ../src/dsp_mainwindow.c:153
+#: ../src/dsp_mainwindow.c:166
 msgid "_Help"
 msgstr "_Palīdzība"
 
 #. { "Import"       , NULL, N_("Import") },
 #. { "Export"       , NULL, N_("Export to") },
-#. name, stock id, label, accelerator, tooltip
+#. name, icon-name, label, accelerator, tooltip
 #. FileMenu
-#: ../src/dsp_mainwindow.c:160
+#: ../src/dsp_mainwindow.c:173
 msgid "_New"
 msgstr "Jau_ns"
 
-#: ../src/dsp_mainwindow.c:160
+#: ../src/dsp_mainwindow.c:173
 msgid "Create a new file"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:161
+#: ../src/dsp_mainwindow.c:174
 msgid "_Open..."
 msgstr "_Atvērt..."
 
-#: ../src/dsp_mainwindow.c:161 ../src/dsp_mainwindow.c:2504
+#: ../src/dsp_mainwindow.c:174 ../src/dsp_mainwindow.c:2634
 msgid "Open a file"
 msgstr "Atvērt failu"
 
-#: ../src/dsp_mainwindow.c:162
+#: ../src/dsp_mainwindow.c:175 ../src/ui-dialogs.c:435 ../src/ui-dialogs.c:482
+#: ../src/ui-dialogs.c:543 ../src/ui-dialogs.c:666
 msgid "_Save"
 msgstr "_Saglabāt"
 
-#: ../src/dsp_mainwindow.c:162
+#: ../src/dsp_mainwindow.c:175
 msgid "Save the current file"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:163
-msgid "Save As..."
-msgstr "Saglabāt kā..."
+#: ../src/dsp_mainwindow.c:176
+msgid "Save _As..."
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:163
+#: ../src/dsp_mainwindow.c:176
 msgid "Save the current file with a different name"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:164
+#: ../src/dsp_mainwindow.c:177
 msgid "Revert"
 msgstr "Atgriezties"
 
-#: ../src/dsp_mainwindow.c:164
+#: ../src/dsp_mainwindow.c:177
 msgid "Revert to a saved version of this file"
 msgstr "Atgriezties uz šī faila saglabāto versiju"
 
-#: ../src/dsp_mainwindow.c:166
-msgid "_Properties..."
-msgstr "Ī_pašības..."
+#: ../src/dsp_mainwindow.c:179
+msgid "Properties..."
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:166
+#: ../src/dsp_mainwindow.c:179
 msgid "Configure the file"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:167
+#: ../src/dsp_mainwindow.c:180
 msgid "Close the current file"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:168
+#: ../src/dsp_mainwindow.c:181
 msgid "_Quit"
 msgstr "_Iziet"
 
-#: ../src/dsp_mainwindow.c:168
-msgid "Quit homebank"
-msgstr "Iziet no HomeBank"
-
-#. Exchange
-#: ../src/dsp_mainwindow.c:171
-msgid "Import QIF/OFX/CSV..."
+#: ../src/dsp_mainwindow.c:181
+msgid "Quit HomeBank"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:171
+#. Exchange
+#: ../src/dsp_mainwindow.c:184
+msgid "QIF file..."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:184 ../src/dsp_mainwindow.c:185
+#: ../src/dsp_mainwindow.c:186
 msgid "Open the import assistant"
 msgstr "Atvērt importēšanas palīgu"
 
-#: ../src/dsp_mainwindow.c:172
-msgid "Open the export to QIF assistant"
-msgstr "Atvērt QIF eksporta palīgu"
+#: ../src/dsp_mainwindow.c:185
+msgid "OFX/QFX file..."
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:173
-msgid "Anonymize..."
+#: ../src/dsp_mainwindow.c:186
+msgid "CSV file..."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:188
+msgid "Export QIF file..."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:188
+msgid "Export all account in a QIF file"
 msgstr ""
 
 #. EditMenu
-#: ../src/dsp_mainwindow.c:176
+#: ../src/dsp_mainwindow.c:191
 msgid "Preferences..."
 msgstr "Iestatījumi..."
 
-#: ../src/dsp_mainwindow.c:176
-msgid "Configure homebank"
-msgstr "Konfigurēt HomeBank"
+#: ../src/dsp_mainwindow.c:191
+msgid "Configure HomeBank"
+msgstr ""
 
 #. ManageMenu
-#. { "Currency"   , "hb-currency"  , N_("Currencies...") , NULL,    N_("Configure the currencies"), G_CALLBACK (ui_mainwindow_action_defcurrency) },
-#: ../src/dsp_mainwindow.c:180
+#: ../src/dsp_mainwindow.c:194
+msgid "Currencies..."
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:194
+msgid "Configure the currencies"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:195
 msgid "Acc_ounts..."
 msgstr "_Konti..."
 
-#: ../src/dsp_mainwindow.c:180
+#: ../src/dsp_mainwindow.c:195
 msgid "Configure the accounts"
 msgstr "Konfigurēt kontus"
 
-#: ../src/dsp_mainwindow.c:181
+#: ../src/dsp_mainwindow.c:196
 msgid "_Payees..."
 msgstr "_Darījumu partneri..."
 
-#: ../src/dsp_mainwindow.c:181
+#: ../src/dsp_mainwindow.c:196
 msgid "Configure the payees"
 msgstr "Konfigurēt darījumu partneru datus"
 
-#: ../src/dsp_mainwindow.c:182
+#: ../src/dsp_mainwindow.c:197
 msgid "Categories..."
 msgstr "Kategorijas..."
 
-#: ../src/dsp_mainwindow.c:182
+#: ../src/dsp_mainwindow.c:197
 msgid "Configure the categories"
 msgstr "Konfigurēt kategorijas"
 
-#: ../src/dsp_mainwindow.c:183
+#: ../src/dsp_mainwindow.c:198
 msgid "Scheduled/Template..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:183
+#: ../src/dsp_mainwindow.c:198
 msgid "Configure the scheduled/template transactions"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:184
+#: ../src/dsp_mainwindow.c:199
 msgid "Budget..."
 msgstr "Budžets..."
 
-#: ../src/dsp_mainwindow.c:184
+#: ../src/dsp_mainwindow.c:199
 msgid "Configure the budget"
 msgstr "Konfigurēt budžetu"
 
-#: ../src/dsp_mainwindow.c:185
+#: ../src/dsp_mainwindow.c:200
 msgid "Assignments..."
 msgstr "Uzdevumi..."
 
-#: ../src/dsp_mainwindow.c:185
+#: ../src/dsp_mainwindow.c:200
 msgid "Configure the automatic assignments"
 msgstr "Konfigurēt automātiskos uzdevumus"
 
-#. TransactionMenu
-#: ../src/dsp_mainwindow.c:188
+#. TxnMenu
+#: ../src/dsp_mainwindow.c:203
 msgid "Show..."
 msgstr "Rādīt..."
 
-#: ../src/dsp_mainwindow.c:188
+#: ../src/dsp_mainwindow.c:203
 msgid "Shows selected account transactions"
 msgstr "Rāda atlasītā konta transakcijas"
 
-#: ../src/dsp_mainwindow.c:189
+#: ../src/dsp_mainwindow.c:204
 msgid "Add..."
 msgstr "Pievienot..."
 
-#: ../src/dsp_mainwindow.c:189 ../src/ui-transaction.c:49
-msgid "Add transaction"
-msgstr "Pievienot transakciju"
+#: ../src/dsp_mainwindow.c:204
+msgid "Add transactions"
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:190
+#: ../src/dsp_mainwindow.c:205
 msgid "Set scheduler..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:190
+#: ../src/dsp_mainwindow.c:205
 msgid "Configure the transaction scheduler"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:191
-msgid "Process scheduled..."
+#: ../src/dsp_mainwindow.c:206
+msgid "Post scheduled"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:191
-msgid "Insert pending scheduled transactions"
+#: ../src/dsp_mainwindow.c:206 ../src/ui-pref.c:1776
+msgid "Post pending scheduled transactions"
 msgstr ""
 
 #. ReportMenu
-#: ../src/dsp_mainwindow.c:194
+#: ../src/dsp_mainwindow.c:209
 msgid "_Statistics..."
 msgstr "_Statistika..."
 
-#: ../src/dsp_mainwindow.c:194
+#: ../src/dsp_mainwindow.c:209
 msgid "Open the Statistics report"
 msgstr "Atvērt statistikas atskaiti"
 
-#: ../src/dsp_mainwindow.c:195
+#: ../src/dsp_mainwindow.c:210
 msgid "_Trend Time..."
 msgstr "_Tendences..."
 
-#: ../src/dsp_mainwindow.c:195
+#: ../src/dsp_mainwindow.c:210
 msgid "Open the Trend Time report"
 msgstr "Atvērt tendenču atskaiti"
 
-#: ../src/dsp_mainwindow.c:196
+#: ../src/dsp_mainwindow.c:211
 msgid "B_udget..."
 msgstr "B_udžets..."
 
-#: ../src/dsp_mainwindow.c:196
+#: ../src/dsp_mainwindow.c:211
 msgid "Open the Budget report"
 msgstr "Atvērt budžeta atskati"
 
-#: ../src/dsp_mainwindow.c:197
+#: ../src/dsp_mainwindow.c:212
 msgid "Balance..."
 msgstr "Bilance..."
 
-#: ../src/dsp_mainwindow.c:197
+#: ../src/dsp_mainwindow.c:212
 msgid "Open the Balance report"
 msgstr "Atvērt bilances atskaiti"
 
-#: ../src/dsp_mainwindow.c:198
+#: ../src/dsp_mainwindow.c:213
 msgid "_Vehicle cost..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:198
+#: ../src/dsp_mainwindow.c:213
 msgid "Open the Vehicle cost report"
 msgstr ""
 
-#. HelpMenu
-#: ../src/dsp_mainwindow.c:201
-msgid "_Contents"
-msgstr "_Saturs"
-
-#: ../src/dsp_mainwindow.c:201
-msgid "Documentation about HomeBank"
-msgstr "HomeBank dokumentācija"
-
-#: ../src/dsp_mainwindow.c:202
+#. Tools
+#: ../src/dsp_mainwindow.c:216
 msgid "Show welcome dialog..."
 msgstr "Rādīt sveiciena dialogu..."
 
-#: ../src/dsp_mainwindow.c:203
-msgid "Get Help Online..."
-msgstr "Iegūt palīdzību tiešsaistē..."
-
-#: ../src/dsp_mainwindow.c:203
-msgid "Connect to the LaunchPad website for online help"
-msgstr "Savienoties ar LaunchPad vietni, lai iegūtu palīdzību"
-
-#: ../src/dsp_mainwindow.c:204
-msgid "Translate this Application..."
-msgstr "Tulkot šo lietotni..."
-
-#: ../src/dsp_mainwindow.c:204
-msgid "Connect to the LaunchPad website to help translate this application"
-msgstr "Savienoties ar LaunchPad vietni, lai tulkotu šo lietotni"
-
-#: ../src/dsp_mainwindow.c:205
-msgid "Report a Problem..."
-msgstr "Ziņot par problēmu..."
-
-#: ../src/dsp_mainwindow.c:205
-msgid "Connect to the LaunchPad website to help fix problems"
-msgstr "Savienoties ar LaunchPad vietni, lai palīdzētu izlabot kļūdas"
-
-#: ../src/dsp_mainwindow.c:207
-msgid "_About"
-msgstr "P_ar"
-
-#: ../src/dsp_mainwindow.c:207
-msgid "About HomeBank"
-msgstr "Par HomeBank"
-
-#. name         , stockid, label, accelerator, tooltip, callback, is_active
-#: ../src/dsp_mainwindow.c:215
-msgid "_Toolbar"
-msgstr "_Rīkjosla"
-
-#: ../src/dsp_mainwindow.c:216
-msgid "_Top spending"
-msgstr ""
-
 #: ../src/dsp_mainwindow.c:217
-msgid "_Scheduled list"
+msgid "File statistics..."
 msgstr ""
 
 #: ../src/dsp_mainwindow.c:218
-msgid "Minor currency"
-msgstr "Otra valūta"
+msgid "Anonymize..."
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:342
+#. HelpMenu
+#: ../src/dsp_mainwindow.c:221
+msgid "_Contents"
+msgstr "_Saturs"
+
+#: ../src/dsp_mainwindow.c:221
+msgid "Documentation about HomeBank"
+msgstr "HomeBank dokumentācija"
+
+#: ../src/dsp_mainwindow.c:222
+msgid "Get Help Online..."
+msgstr "Iegūt palīdzību tiešsaistē..."
+
+#: ../src/dsp_mainwindow.c:222
+msgid "Connect to the LaunchPad website for online help"
+msgstr "Savienoties ar LaunchPad vietni, lai iegūtu palīdzību"
+
+#: ../src/dsp_mainwindow.c:223
+msgid "Translate this Application..."
+msgstr "Tulkot šo lietotni..."
+
+#: ../src/dsp_mainwindow.c:223
+msgid "Connect to the LaunchPad website to help translate this application"
+msgstr "Savienoties ar LaunchPad vietni, lai tulkotu šo lietotni"
+
+#: ../src/dsp_mainwindow.c:224
+msgid "Report a Problem..."
+msgstr "Ziņot par problēmu..."
+
+#: ../src/dsp_mainwindow.c:224
+msgid "Connect to the LaunchPad website to help fix problems"
+msgstr "Savienoties ar LaunchPad vietni, lai palīdzētu izlabot kļūdas"
+
+#: ../src/dsp_mainwindow.c:226
+msgid "_About"
+msgstr "P_ar"
+
+#: ../src/dsp_mainwindow.c:226
+msgid "About HomeBank"
+msgstr "Par HomeBank"
+
+#. name         , icon-name, label, accelerator, tooltip, callback, is_active
+#: ../src/dsp_mainwindow.c:234
+msgid "_Toolbar"
+msgstr "_Rīkjosla"
+
+#: ../src/dsp_mainwindow.c:235
+msgid "_Top spending"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:236
+msgid "_Scheduled list"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:237 ../src/ui-pref.c:92
+msgid "Euro minor"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:367
 #, c-format
-msgid "Revert to the previously saved file of '%s'?"
-msgstr "Ielādēt datus no iepriekš saglabātā faila \"%s\"?"
+msgid "Revert unsaved changes to file '%s'?"
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:348
+#: ../src/dsp_mainwindow.c:370
 msgid ""
 "- Changes made to the file will be permanently lost\n"
-"- File will be restored to the last save (.xhb~)"
+"- File will be reloaded from the last save (.xhb~)"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:547
-msgid "Anonymize the file ?"
+#: ../src/dsp_mainwindow.c:377
+msgid "_Revert"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:548
+#: ../src/dsp_mainwindow.c:565
+msgid "Are you sure you want to anonymize the file?"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:568
 msgid ""
-"Proceeding will changes name/memo to anonymous datas,\n"
-"please confirm."
+"Proceeding will anonymize any text, \n"
+"like 'account x', 'payee y', 'memo z', ..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:815
+#: ../src/dsp_mainwindow.c:575
+msgid "_Anonymize"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:863
 msgid "Welcome to HomeBank"
 msgstr "Laipni lūdzam HomeBank"
 
-#: ../src/dsp_mainwindow.c:842
+#: ../src/dsp_mainwindow.c:890
 msgid "What do you want to do:"
 msgstr "Ko vēlaties darīt:"
 
-#: ../src/dsp_mainwindow.c:846
+#: ../src/dsp_mainwindow.c:894
 msgid "Read HomeBank _Manual"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:850
+#: ../src/dsp_mainwindow.c:898
 msgid "Configure _Preferences"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:854
+#: ../src/dsp_mainwindow.c:902
 msgid "Create a _new file"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:858
+#: ../src/dsp_mainwindow.c:906
 msgid "_Open an existing file"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:862
+#: ../src/dsp_mainwindow.c:910
 msgid "Open the _example file"
 msgstr "Atvērt pi_emēra failu"
 
-#: ../src/dsp_mainwindow.c:1250 ../src/rep_stats.c:1012
-#: ../src/rep_stats.c:1032 ../src/ui-budget.c:123 ../src/ui-category.c:334
-#: ../src/ui-category.c:487
+#: ../src/dsp_mainwindow.c:1298 ../src/rep_stats.c:1025 ../src/rep_stats.c:1045
+#: ../src/ui-budget.c:131 ../src/ui-category.c:392 ../src/ui-category.c:594
 msgid "(no category)"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1271
+#: ../src/dsp_mainwindow.c:1319
 msgid "Other"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1473
+#: ../src/dsp_mainwindow.c:1562
 msgid "No transaction to add"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1475
+#: ../src/dsp_mainwindow.c:1564
 #, c-format
 msgid "transaction added: %d"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1478
+#: ../src/dsp_mainwindow.c:1567
 msgid "Check scheduled transactions result"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1557 ../src/dsp_mainwindow.c:1830
-#: ../src/rep_vehicle.c:716
+#: ../src/dsp_mainwindow.c:1684 ../src/dsp_mainwindow.c:1954
+#: ../src/rep_vehicle.c:846
 msgid "Total"
 msgstr "Kopā"
 
-#: ../src/dsp_mainwindow.c:1637
+#: ../src/dsp_mainwindow.c:1764 ../src/ui-currency.c:1160
 msgid "Unknow error"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1642
+#: ../src/dsp_mainwindow.c:1769 ../src/dsp_mainwindow.c:1844
 #, c-format
 msgid "I/O error for file '%s'."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1645
+#: ../src/dsp_mainwindow.c:1772
 #, c-format
 msgid "The file '%s' is not a valid HomeBank file."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1648
+#: ../src/dsp_mainwindow.c:1775
 #, c-format
 msgid ""
 "The file '%s' was saved with a higher version of HomeBank\n"
 "and cannot be loaded by the current version."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1653 ../src/dsp_mainwindow.c:1718
-#: ../src/dsp_mainwindow.c:2336
+#: ../src/dsp_mainwindow.c:1780 ../src/dsp_mainwindow.c:1847
+#: ../src/dsp_mainwindow.c:2465
 msgid "File error"
 msgstr "Faila kļūda"
 
-#: ../src/dsp_mainwindow.c:1715
-#, c-format
-msgid "I/O error for file %s."
-msgstr "Ievadizvades kļūda failam %s."
-
-#: ../src/dsp_mainwindow.c:1861
+#: ../src/dsp_mainwindow.c:1985
 msgid "Grand total"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2337
+#: ../src/dsp_mainwindow.c:2466
 #, c-format
 msgid "The file %s is not a valid HomeBank file."
 msgstr "Fails %s nav derīgs HomeBank fails."
 
-#: ../src/dsp_mainwindow.c:2418 ../src/dsp_mainwindow.c:2511
+#: ../src/dsp_mainwindow.c:2549 ../src/dsp_mainwindow.c:2638
 msgid "Open"
 msgstr "Atvērt"
 
-#: ../src/dsp_mainwindow.c:2424 ../src/list_operation.c:755
-#: ../src/list_operation.c:1001 ../src/list_upcoming.c:408
-#: ../src/rep_time.c:116 ../src/ui-account.c:1239 ../src/ui-filter.c:1391
+#: ../src/dsp_mainwindow.c:2555 ../src/list_operation.c:1032
+#: ../src/list_operation.c:1350 ../src/list_upcoming.c:420
+#: ../src/rep_time.c:121 ../src/ui-account.c:1271 ../src/ui-assist-import.c:60
+#: ../src/ui-dialogs.c:207 ../src/ui-filter.c:1340
 msgid "Account"
 msgstr "Konti"
 
-#: ../src/dsp_mainwindow.c:2427 ../src/list_operation.c:438
-#: ../src/list_operation.c:1061 ../src/list_upcoming.c:360
-#: ../src/rep_stats.c:142 ../src/rep_time.c:116 ../src/ui-assign.c:40
-#: ../src/ui-filter.c:1383 ../src/ui-pref.c:123 ../src/ui-pref.c:2513
+#: ../src/dsp_mainwindow.c:2558 ../src/list_operation.c:47
+#: ../src/list_operation.c:1067 ../src/list_operation.c:1379
+#: ../src/list_upcoming.c:362 ../src/rep_stats.c:143 ../src/rep_time.c:121
+#: ../src/ui-assign.c:40 ../src/ui-dialogs.c:225 ../src/ui-filter.c:1332
+#: ../src/ui-pref.c:131
 msgid "Payee"
 msgstr "Partneri"
 
-#: ../src/dsp_mainwindow.c:2430 ../src/list_operation.c:503
-#: ../src/list_operation.c:1072 ../src/rep_budget.c:109
-#: ../src/rep_budget.c:1486 ../src/rep_stats.c:140 ../src/rep_time.c:116
-#: ../src/ui-filter.c:1378 ../src/ui-pref.c:2518 ../src/ui-transaction.c:381
-msgid "Category"
-msgstr "Kategorijas"
-
 #. TRANSLATORS: an archive is stored transaction buffers (kind of bookmark to prefill manual insertion)
-#: ../src/dsp_mainwindow.c:2434
+#: ../src/dsp_mainwindow.c:2565
 msgid "Archive"
 msgstr "Arhīvs"
 
 #. column: Income
-#: ../src/dsp_mainwindow.c:2437 ../src/dsp_mainwindow.c:2449
-#: ../src/rep_budget.c:113 ../src/rep_budget.c:1501
+#: ../src/dsp_mainwindow.c:2568 ../src/dsp_mainwindow.c:2580
+#: ../src/rep_budget.c:74 ../src/rep_budget.c:400 ../src/rep_budget.c:881
+#: ../src/rep_budget.c:1518
 msgid "Budget"
 msgstr "Budžets"
 
-#: ../src/dsp_mainwindow.c:2440
+#: ../src/dsp_mainwindow.c:2571
 msgid "Show"
 msgstr "Rādīt"
 
-#: ../src/dsp_mainwindow.c:2446
+#: ../src/dsp_mainwindow.c:2577
 msgid "Statistics"
 msgstr "Statistika"
 
 #. column: Balance
-#: ../src/dsp_mainwindow.c:2452 ../src/list_operation.c:802
-#: ../src/rep_balance.c:1264 ../src/rep_stats.c:153 ../src/rep_stats.c:719
-#: ../src/rep_stats.c:1872 ../src/ui-pref.c:2520
+#: ../src/dsp_mainwindow.c:2583 ../src/list_operation.c:54
+#: ../src/list_operation.c:1145 ../src/rep_balance.c:1241
+#: ../src/rep_stats.c:154 ../src/rep_stats.c:705 ../src/rep_stats.c:1926
 msgid "Balance"
 msgstr "Bilance"
 
-#: ../src/dsp_mainwindow.c:2455 ../src/ui-hbfile.c:249
+#: ../src/dsp_mainwindow.c:2586 ../src/ui-hbfile.c:275
 msgid "Vehicle cost"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2506
+#: ../src/dsp_mainwindow.c:2631 ../src/ui-dialogs.c:476 ../src/ui-dialogs.c:538
+#: ../src/ui-dialogs.c:601
+msgid "_Open"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:2635
 msgid "Open a recently used file"
 msgstr "Atvērt nesen lietotu failu"
 
-#: ../src/dsp_mainwindow.c:2529
+#: ../src/dsp_mainwindow.c:2653
 msgid "Your accounts"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2560
+#: ../src/dsp_mainwindow.c:2685
 msgid "Where your money goes"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2577
-msgid "Top 5 spending"
+#: ../src/dsp_mainwindow.c:2704
+msgid "Top spending"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2626
+#: ../src/dsp_mainwindow.c:2757
 msgid "Scheduled transactions"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2632
+#: ../src/dsp_mainwindow.c:2764
 msgid "maximum post date"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2672
+#: ../src/dsp_mainwindow.c:2800
 msgid "Skip"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2678
+#: ../src/dsp_mainwindow.c:2804
+msgid "Edit & Post"
+msgstr ""
+
+#. TRANSLATORS: Posting a scheduled transaction is the action to materialize it into its target account.
+#. TRANSLATORS: Before that action the automated transaction occurrence is pending and not yet really existing.
+#: ../src/dsp_mainwindow.c:2810
 msgid "Post"
 msgstr ""
 
-#: ../src/hb-category.c:841
-msgid "invalid csv format"
-msgstr "nederīgs CSV formāts"
+#: ../src/hb-archive.c:163
+msgid "(new archive)"
+msgstr "(jauns arhīvs)"
+
+#: ../src/hb-category.c:979
+msgid "invalid CSV format"
+msgstr ""
 
 #: ../src/hb-filter.c:74
 #, c-format
 msgid "<i>from</i> %s <i>to</i> %s"
 msgstr "<i>no</i> %s <i>līdz</i> %s"
 
-#: ../src/hb-hbfile.c:389
+#: ../src/hb-hbfile.c:498
 msgid "Unknown"
 msgstr ""
 
-#: ../src/homebank.c:67
+#. TRANSLATORS: format a liter number with l/L as abbreviation
+#: ../src/hb-preferences.c:251
+#, c-format
+msgid "%.2f l"
+msgstr ""
+
+#. TRANSLATORS: kilometer per liter
+#: ../src/hb-preferences.c:254
+msgid "km/l"
+msgstr ""
+
+#. TRANSLATORS: miles per liter
+#: ../src/hb-preferences.c:257
+msgid "mi./l"
+msgstr ""
+
+#: ../src/homebank.c:69
 msgid "Output version information and exit"
 msgstr "Izvadīt versijas informāciju un iziet"
 
-#: ../src/homebank.c:70
+#: ../src/homebank.c:72
 msgid "[FILE]"
 msgstr "[FAILS]"
 
-#: ../src/homebank.c:305
+#: ../src/homebank.c:294
 msgid "Browser error."
 msgstr ""
 
-#: ../src/homebank.c:306
+#: ../src/homebank.c:295
 #, c-format
 msgid "Could not display the URL '%s'"
 msgstr "Neizdevās attēlot URL \"%s\""
 
-#: ../src/homebank.c:977 ../src/homebank.c:978
+#: ../src/homebank.c:900 ../src/homebank.c:901
 msgid "HomeBank options"
 msgstr "HomeBank opcijas"
 
-#: ../src/homebank.c:1126
+#: ../src/homebank.c:1030
 #, c-format
 msgid "Unable to open '%s', the file does not exist.\n"
 msgstr "Nevar atvērt \"%s\", fails neeksistē.\n"
 
-#: ../src/import.c:59
-msgid "HomeBank Import Assistant"
-msgstr "HomeBank importēšanas palīgs"
-
-#. file informations
-#: ../src/import.c:60 ../src/import.c:1953
-msgid "File to import"
-msgstr ""
-
-#: ../src/import.c:61
-msgid "File analysis results"
-msgstr ""
-
-#: ../src/import.c:62
-msgid "Adjust what to import"
-msgstr ""
-
-#: ../src/import.c:63
-msgid "Update your accounts"
-msgstr "Atjaunināt kontus"
-
-#: ../src/import.c:99 ../src/import.c:144
+#: ../src/hb-import-csv.c:249 ../src/hb-import.c:65
 #, c-format
 msgid "(account %d)"
 msgstr "(konts %d)"
 
-#: ../src/import.c:1244
-msgid "Change HomeBank account target"
-msgstr "Mainīt HomeBank konta mērķi"
+#: ../src/list_account.c:343 ../src/ui-assist-import.c:2079
+msgid "Accounts"
+msgstr ""
 
-#: ../src/import.c:1270
-msgid "new account"
-msgstr "jauns konts"
+#. Bank
+#: ../src/list_account.c:354 ../src/ui-account.c:40
+msgid "Bank"
+msgstr "Bankā"
 
-#: ../src/import.c:1273 ../src/ui-account.c:1312 ../src/ui-assist-start.c:321
-msgid "_Name:"
-msgstr "_Nosaukums:"
+#. Today
+#: ../src/list_account.c:358
+msgid "Today"
+msgstr "Šodien"
 
-#: ../src/import.c:1280
-msgid "existing account"
-msgstr "esošs konts"
+#. Future
+#: ../src/list_account.c:362
+msgid "Future"
+msgstr "Nākotnē"
 
-#: ../src/import.c:1283 ../src/rep_balance.c:856 ../src/ui-archive.c:782
+#. datas
+#. status
+#. date
+#: ../src/list_operation.c:46 ../src/list_operation.c:881 ../src/ui-pref.c:2180
+msgid "Info"
+msgstr "Informācija"
+
+#: ../src/list_operation.c:48 ../src/list_operation.c:1075
+#: ../src/list_operation.c:1370 ../src/list_upcoming.c:380
+#: ../src/ui-archive.c:226 ../src/ui-assign.c:39 ../src/ui-pref.c:130
+#: ../src/ui-split.c:410
+msgid "Memo"
+msgstr ""
+
+#. column: Amount
+#: ../src/list_operation.c:49 ../src/list_operation.c:1103
+#: ../src/list_operation.c:1373 ../src/rep_time.c:608 ../src/rep_time.c:1746
+#: ../src/rep_vehicle.c:222 ../src/rep_vehicle.c:1142 ../src/ui-filter.c:1317
+#: ../src/ui-split.c:414
+msgid "Amount"
+msgstr "Summa"
+
+#. column: Expense
+#: ../src/list_operation.c:50 ../src/list_operation.c:1111
+#: ../src/list_upcoming.c:392 ../src/rep_balance.c:1233 ../src/rep_budget.c:72
+#: ../src/rep_stats.c:152 ../src/rep_stats.c:1914 ../src/ui-category.c:38
+#: ../src/ui-filter.c:49
+msgid "Expense"
+msgstr "Izdevumi"
+
+#. column: Income
+#: ../src/list_operation.c:51 ../src/list_operation.c:1119
+#: ../src/list_upcoming.c:403 ../src/rep_balance.c:1237 ../src/rep_budget.c:72
+#: ../src/rep_stats.c:153 ../src/rep_stats.c:705 ../src/rep_stats.c:1920
+#: ../src/ui-category.c:39 ../src/ui-filter.c:50
+msgid "Income"
+msgstr "Ienākumi"
+
+#: ../src/list_operation.c:53 ../src/list_operation.c:1135
+msgid "Tags"
+msgstr "Birkas"
+
+#: ../src/list_operation.c:55 ../src/list_operation.c:1085
+#: ../src/ui-filter.c:1307
+msgid "Status"
+msgstr ""
+
+#: ../src/list_operation.c:478
+msgid "- split -"
+msgstr ""
+
+#. common (date + status + amount)
+#. label = gtk_label_new(_("General"));
+#. page = ui_flt_manage_page_general(&data);
+#. gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
+#. 
+#: ../src/list_operation.c:1044 ../src/list_operation.c:1361
+#: ../src/rep_balance.c:1222 ../src/rep_vehicle.c:218 ../src/rep_vehicle.c:1097
+#: ../src/ui-filter.c:1302 ../src/ui-pref.c:1480
+msgid "Date"
+msgstr "Datums"
+
+#. TRANSLATORS: title of list column to inform the scheduled transaction is Late
+#: ../src/list_upcoming.c:316
+msgid "Late"
+msgstr ""
+
+#: ../src/list_upcoming.c:348
+msgid "Next date"
+msgstr ""
+
+#: ../src/rep_balance.c:76 ../src/rep_budget.c:80 ../src/rep_stats.c:65
+#: ../src/rep_time.c:66
+msgid "List"
+msgstr "Saraksts"
+
+#: ../src/rep_balance.c:76 ../src/rep_budget.c:80 ../src/rep_stats.c:65
+#: ../src/rep_time.c:66
+msgid "View results as list"
+msgstr "Skatīt rezultātus kā sarakstu"
+
+#: ../src/rep_balance.c:77 ../src/rep_time.c:67
+msgid "Line"
+msgstr "Līnija"
+
+#: ../src/rep_balance.c:77 ../src/rep_time.c:67
+msgid "View results as lines"
+msgstr "Skatīt rezultātus kā līnijas"
+
+#. { "Column"  , ICONNAME_HB_VIEW_COLUMN, N_("Column") , NULL,    N_("View results as column"), G_CALLBACK (ui_reptime_action_viewcolumn) },
+#. { "Filter"  , ICONNAME_HB_FILTER    , N_("Filter") , NULL,   N_("Edit the filter"), G_CALLBACK (ui_reptime_action_filter) },
+#: ../src/rep_balance.c:78 ../src/rep_budget.c:82 ../src/rep_stats.c:70
+#: ../src/rep_time.c:71 ../src/rep_vehicle.c:65
+msgid "Refresh"
+msgstr "Atsvaidzināt"
+
+#: ../src/rep_balance.c:78 ../src/rep_budget.c:82 ../src/rep_stats.c:70
+#: ../src/rep_time.c:71 ../src/rep_vehicle.c:65
+msgid "Refresh results"
+msgstr "Atsvaidzināt rezultātus"
+
+#. name, icon-name
+#: ../src/rep_balance.c:85 ../src/rep_budget.c:91 ../src/rep_stats.c:79
+#: ../src/rep_time.c:79
+msgid "Detail"
+msgstr "Detaļas"
+
+#. label, accelerator
+#: ../src/rep_balance.c:86 ../src/rep_budget.c:92 ../src/rep_stats.c:80
+#: ../src/rep_time.c:80
+msgid "Toggle detail"
+msgstr "Pārslēgt detaļas"
+
+#. //TRANSLATORS: count of transaction in balancedrawn / count of total transaction under abalancedrawn amount threshold
+#: ../src/rep_balance.c:309
+#, c-format
+msgid "%d/%d under %s"
+msgstr "%d/%d zem %s"
+
+#: ../src/rep_balance.c:808
+msgid "Balance report"
+msgstr "Bilances atskaite"
+
+#: ../src/rep_balance.c:831 ../src/rep_budget.c:1093 ../src/rep_stats.c:1501
+#: ../src/rep_time.c:1368 ../src/rep_vehicle.c:723
+msgid "Display"
+msgstr ""
+
+#: ../src/rep_balance.c:835 ../src/rep_time.c:1379 ../src/ui-archive.c:942
+#: ../src/ui-assist-import.c:974 ../src/ui-transaction.c:979
 msgid "A_ccount:"
 msgstr "_Konts:"
 
-#: ../src/import.c:1342 ../src/ui-account.c:959 ../src/ui-account.c:1045
-#: ../src/ui-category.c:1150 ../src/ui-payee.c:724
+#: ../src/rep_balance.c:842 ../src/rep_time.c:1403
+msgid "Select _all"
+msgstr "Atlasīt _visu"
+
+#: ../src/rep_balance.c:847
+msgid "Each _day"
+msgstr "Katru _dienu"
+
+#: ../src/rep_balance.c:858 ../src/rep_stats.c:1530 ../src/rep_time.c:1425
+msgid "_Zoom X:"
+msgstr "_Mērogs:"
+
+#: ../src/rep_balance.c:870 ../src/rep_budget.c:1121 ../src/rep_stats.c:1549
+#: ../src/rep_time.c:1438 ../src/rep_vehicle.c:744
+msgid "Date filter"
+msgstr ""
+
+#: ../src/rep_balance.c:880 ../src/rep_budget.c:1131 ../src/rep_stats.c:1559
+#: ../src/rep_time.c:1448 ../src/rep_vehicle.c:754 ../src/ui-filter.c:960
+#: ../src/ui-filter.c:1073
+msgid "_From:"
+msgstr "_No:"
+
+#: ../src/rep_balance.c:886 ../src/rep_budget.c:1137 ../src/rep_stats.c:1565
+#: ../src/rep_time.c:1454 ../src/rep_vehicle.c:760 ../src/ui-filter.c:968
+#: ../src/ui-filter.c:1080
+msgid "_To:"
+msgstr "_Līdz:"
+
+#: ../src/rep_budget.c:72 ../src/rep_stats.c:151
+msgid "Exp. & Inc."
+msgstr "Izdevumi un ienākumi"
+
+#: ../src/rep_budget.c:74
+msgid "Spent & Budget"
+msgstr "Tērētais un budžets"
+
+#. column: Expense
+#: ../src/rep_budget.c:74 ../src/rep_budget.c:400 ../src/rep_budget.c:1514
+msgid "Spent"
+msgstr "Tērētais"
+
+#. column: Result
+#. header
+#: ../src/rep_budget.c:74 ../src/rep_budget.c:400 ../src/rep_budget.c:881
+#: ../src/rep_budget.c:1522 ../src/rep_stats.c:705 ../src/rep_stats.c:1903
+msgid "Result"
+msgstr "Rezultāts"
+
+#: ../src/rep_budget.c:81
+msgid "Stack"
+msgstr ""
+
+#: ../src/rep_budget.c:81
+msgid "View results as stack bars"
+msgstr ""
+
+#: ../src/rep_budget.c:84 ../src/rep_stats.c:72 ../src/rep_time.c:73
+#: ../src/rep_vehicle.c:67
+msgid "Export"
+msgstr "Eksportēt"
+
+#: ../src/rep_budget.c:828
+msgid " over"
+msgstr ""
+
+#: ../src/rep_budget.c:833
+msgid " left"
+msgstr ""
+
+#: ../src/rep_budget.c:835
+msgid " under"
+msgstr ""
+
+#. update stack chart
+#: ../src/rep_budget.c:875
+#, c-format
+msgid "Budget for %s"
+msgstr ""
+
+#: ../src/rep_budget.c:1068
+msgid "Budget report"
+msgstr "Budžeta atskaite"
+
+#: ../src/rep_budget.c:1097 ../src/rep_time.c:1372
+msgid "_For:"
+msgstr "Šķi_rot:"
+
+#: ../src/rep_budget.c:1105
+msgid "_Kind:"
+msgstr "_Veids:"
+
+#: ../src/rep_budget.c:1206
+msgid "Result:"
+msgstr ""
+
+#: ../src/rep_budget.c:1212
+msgid "Budget:"
+msgstr "Budžets:"
+
+#: ../src/rep_budget.c:1218
+msgid "Spent:"
+msgstr "Tērēts:"
+
+#: ../src/rep_budget.c:1336
+msgid "No account is defined to be part of the budget."
+msgstr ""
+
+#: ../src/rep_budget.c:1337
+msgid "You should include some accounts from the account dialog."
+msgstr ""
+
+#: ../src/rep_stats.c:66 ../src/ui-pref.c:2386
+msgid "Column"
+msgstr "Kolonna"
+
+#: ../src/rep_stats.c:66
+msgid "View results as column"
+msgstr ""
+
+#: ../src/rep_stats.c:67
+msgid "Donut"
+msgstr ""
+
+#: ../src/rep_stats.c:67
+msgid "View results as donut"
+msgstr ""
+
+#: ../src/rep_stats.c:69
+msgid "Edit the filter"
+msgstr "Rediģēt filtru"
+
+#. is_active
+#. name, icon-name
+#: ../src/rep_stats.c:85
+msgid "Legend"
+msgstr "Leģenda"
+
+#. label, accelerator
+#: ../src/rep_stats.c:86
+msgid "Toggle legend"
+msgstr "Pārslēgt leģendu"
+
+#. is_active
+#. name, icon-name
+#: ../src/rep_stats.c:91
+msgid "Rate"
+msgstr "Procenti"
+
+#. label, accelerator
+#: ../src/rep_stats.c:92
+msgid "Toggle rate"
+msgstr "Pārslēgt procentus"
+
+#: ../src/rep_stats.c:144
+msgid "Tag"
+msgstr "Birka"
+
+#: ../src/rep_stats.c:145 ../src/rep_time.c:125 ../src/ui-archive.c:53
+msgid "Month"
+msgstr "mēneši"
+
+#: ../src/rep_stats.c:146 ../src/rep_time.c:125 ../src/ui-archive.c:53
+msgid "Year"
+msgstr "gadi"
+
+#: ../src/rep_stats.c:163 ../src/ui-filter.c:91
+msgid "January"
+msgstr "Janvāris"
+
+#: ../src/rep_stats.c:164 ../src/ui-filter.c:92
+msgid "February"
+msgstr "Februāris"
+
+#: ../src/rep_stats.c:165 ../src/ui-filter.c:93
+msgid "March"
+msgstr "Marts"
+
+#: ../src/rep_stats.c:166 ../src/ui-filter.c:94
+msgid "April"
+msgstr "Aprīlis"
+
+#: ../src/rep_stats.c:167 ../src/rep_time.c:136 ../src/ui-filter.c:95
+msgid "May"
+msgstr "Maijs"
+
+#: ../src/rep_stats.c:168 ../src/ui-filter.c:96
+msgid "June"
+msgstr "Jūnijs"
+
+#: ../src/rep_stats.c:169 ../src/ui-filter.c:97
+msgid "July"
+msgstr "Jūlijs"
+
+#: ../src/rep_stats.c:170 ../src/ui-filter.c:98
+msgid "August"
+msgstr "Augusts"
+
+#: ../src/rep_stats.c:171 ../src/ui-filter.c:99
+msgid "September"
+msgstr "Septembris"
+
+#: ../src/rep_stats.c:172 ../src/ui-filter.c:100
+msgid "October"
+msgstr "Oktobris"
+
+#: ../src/rep_stats.c:173 ../src/ui-filter.c:101
+msgid "November"
+msgstr "Novembris"
+
+#: ../src/rep_stats.c:174 ../src/ui-filter.c:102
+msgid "December"
+msgstr "Decembris"
+
+#. set chart title
+#. //TRANSLATORS: example 'Expense by Category'
+#: ../src/rep_stats.c:607
+#, c-format
+msgid "%s by %s"
+msgstr ""
+
+#: ../src/rep_stats.c:705
+msgid "expense"
+msgstr "izdevumi"
+
+#: ../src/rep_stats.c:1057 ../src/ui-payee.c:279 ../src/ui-payee.c:484
+msgid "(no payee)"
+msgstr ""
+
+#: ../src/rep_stats.c:1478
+msgid "Statistics Report"
+msgstr "Statistikas atskaite"
+
+#: ../src/rep_stats.c:1505
+msgid "_View:"
+msgstr "Rā_dīt:"
+
+#: ../src/rep_stats.c:1512
+msgid "_By:"
+msgstr ""
+
+#: ../src/rep_stats.c:1519
+msgid "By _amount"
+msgstr "Kārtot pēc _summas"
+
+#: ../src/rep_stats.c:1642
+msgid "Balance:"
+msgstr "Bilance:"
+
+#: ../src/rep_stats.c:1648
+msgid "Income:"
+msgstr "Ienākumi:"
+
+#: ../src/rep_stats.c:1655
+msgid "Expense:"
+msgstr "Izdevumi:"
+
+#: ../src/rep_time.c:125 ../src/ui-archive.c:53
+msgid "Day"
+msgstr "dienas"
+
+#: ../src/rep_time.c:125 ../src/ui-archive.c:53
+msgid "Week"
+msgstr "nedēļas"
+
+#: ../src/rep_time.c:125
+msgid "Quarter"
+msgstr "Ceturksnis"
+
+#: ../src/rep_time.c:132
+msgid "Jan"
+msgstr "Jan"
+
+#: ../src/rep_time.c:133
+msgid "Feb"
+msgstr "Feb"
+
+#: ../src/rep_time.c:134
+msgid "Mar"
+msgstr "Mar"
+
+#: ../src/rep_time.c:135
+msgid "Apr"
+msgstr "Apr"
+
+#: ../src/rep_time.c:137
+msgid "Jun"
+msgstr "Jūn"
+
+#: ../src/rep_time.c:138
+msgid "Jul"
+msgstr "Jūl"
+
+#: ../src/rep_time.c:139
+msgid "Aug"
+msgstr "Aug"
+
+#: ../src/rep_time.c:140
+msgid "Sep"
+msgstr "Sep"
+
+#: ../src/rep_time.c:141
+msgid "Oct"
+msgstr "Okt"
+
+#: ../src/rep_time.c:142
+msgid "Nov"
+msgstr "Nov"
+
+#: ../src/rep_time.c:143
+msgid "Dec"
+msgstr "Dec"
+
+#. //TRANSLATORS: example 'Expense by Category'
+#: ../src/rep_time.c:568
+#, c-format
+msgid "%s Over Time"
+msgstr ""
+
+#. header
+#: ../src/rep_time.c:608 ../src/rep_time.c:1735
+msgid "Time slice"
+msgstr "Laika posms"
+
+#. //TRANSLATORS: count of transaction in balancedrawn / count of total transaction under abalancedrawn amount threshold
+#: ../src/rep_time.c:1031
+#, c-format
+msgid "Average: %s"
+msgstr ""
+
+#: ../src/rep_time.c:1345
+msgid "Trend Time Report"
+msgstr "Tendenču atskaite"
+
+#: ../src/rep_time.c:1408
+msgid "_Cumulate"
+msgstr "_Kumulāta"
+
+#: ../src/rep_time.c:1413
+msgid "_View by:"
+msgstr "_Skats:"
+
+#. 
+#. LST_CAR_DATE,
+#. LST_CAR_WORDING,
+#. LST_CAR_METER,
+#. LST_CAR_FUEL,
+#. LST_CAR_PRICE,
+#. LST_CAR_AMOUNT,
+#. LST_CAR_DIST,
+#. LST_CAR_100KM
+#. 
+#. 
+#. column: Wording
+#. 
+#. column = gtk_tree_view_column_new();
+#. gtk_tree_view_column_set_title(column, _("Wording"));
+#. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+#. renderer = gtk_cell_renderer_text_new();
+#. gtk_tree_view_column_pack_start(column, renderer, TRUE);
+#. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_WORDING);
+#. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
+#. 
+#. column: Meter
+#: ../src/rep_vehicle.c:219 ../src/rep_vehicle.c:1130
+msgid "Meter"
+msgstr "Nobraukums"
+
+#. column: Fuel load
+#: ../src/rep_vehicle.c:220 ../src/rep_vehicle.c:1134
+msgid "Fuel"
+msgstr "Degviela"
+
+#. column: Price by unit
+#: ../src/rep_vehicle.c:221 ../src/rep_vehicle.c:1138
+msgid "Price"
+msgstr "Cena"
+
+#. column: Distance done
+#: ../src/rep_vehicle.c:223 ../src/rep_vehicle.c:1146
+msgid "Dist."
+msgstr "Attālums"
+
+#: ../src/rep_vehicle.c:699
+msgid "Vehicle cost report"
+msgstr "Auto izmaksu atskaite"
+
+#: ../src/rep_vehicle.c:727
+msgid "Vehi_cle:"
+msgstr "Autom_ašīna"
+
+#: ../src/rep_vehicle.c:813
+msgid "Meter:"
+msgstr "Nobraukums:"
+
+#: ../src/rep_vehicle.c:817
+msgid "Consumption:"
+msgstr "Patēriņš:"
+
+#: ../src/rep_vehicle.c:821
+msgid "Fuel cost:"
+msgstr "Degvielas cena:"
+
+#: ../src/rep_vehicle.c:825
+msgid "Other cost:"
+msgstr "Citi izdevumi:"
+
+#: ../src/rep_vehicle.c:829
+msgid "Total cost:"
+msgstr "Kopējie izdevumi:"
+
+#: ../src/ui-account.c:39
+msgid "(no type)"
+msgstr ""
+
+#: ../src/ui-account.c:41 ../src/ui-widgets.c:800
+msgid "Cash"
+msgstr "Skaidra nauda"
+
+#: ../src/ui-account.c:42
+msgid "Asset"
+msgstr "Aktīvi"
+
+#: ../src/ui-account.c:43 ../src/ui-widgets.c:798
+msgid "Credit card"
+msgstr "Kredītkarte"
+
+#: ../src/ui-account.c:44
+msgid "Liability"
+msgstr "Pasīvi"
+
+#: ../src/ui-account.c:358 ../src/ui-assign.c:100 ../src/ui-currency.c:246
+#: ../src/ui-widgets.c:797
+msgid "(none)"
+msgstr "(nekas)"
+
+#: ../src/ui-account.c:514 ../src/ui-assign.c:249 ../src/ui-category.c:1015
+#: ../src/ui-currency.c:603 ../src/ui-payee.c:654 ../src/ui-pref.c:2375
+msgid "Visible"
+msgstr "Redzams"
+
+#: ../src/ui-account.c:945 ../src/ui-account.c:1052
+msgid "Account name"
+msgstr ""
+
+#: ../src/ui-account.c:951 ../src/ui-account.c:1058
+#: ../src/ui-assist-import.c:1034 ../src/ui-category.c:1375
+#: ../src/ui-payee.c:965
 msgid "Error"
 msgstr "Kļūda"
 
-#: ../src/import.c:1343 ../src/ui-account.c:1046
+#: ../src/ui-account.c:952
+#, c-format
+msgid ""
+"Cannot add an account '%s',\n"
+"this name already exists."
+msgstr ""
+
+#: ../src/ui-account.c:994
+#, c-format
+msgid "Cannot delete account '%s'"
+msgstr ""
+
+#: ../src/ui-account.c:998
+msgid ""
+"This account contains transactions and/or is part of internal transfers."
+msgstr ""
+
+#: ../src/ui-account.c:1009 ../src/ui-archive.c:316 ../src/ui-assign.c:545
+#: ../src/ui-category.c:1560 ../src/ui-currency.c:1299 ../src/ui-payee.c:1135
+#, c-format
+msgid "Are you sure you want to permanently delete '%s'?"
+msgstr ""
+
+#: ../src/ui-account.c:1011
+msgid "If you delete an account, it will be permanently lost."
+msgstr ""
+
+#: ../src/ui-account.c:1017 ../src/ui-account.c:1245 ../src/ui-archive.c:324
+#: ../src/ui-archive.c:1152 ../src/ui-assign.c:553 ../src/ui-assign.c:769
+#: ../src/ui-category.c:1124 ../src/ui-category.c:1572
+#: ../src/ui-category.c:1991 ../src/ui-currency.c:1307
+#: ../src/ui-currency.c:1539 ../src/ui-payee.c:745 ../src/ui-payee.c:1147
+#: ../src/ui-payee.c:1319
+msgid "_Delete"
+msgstr ""
+
+#: ../src/ui-account.c:1059 ../src/ui-assist-import.c:1035
 #, c-format
 msgid ""
 "Cannot rename this Account,\n"
@@ -876,43 +1674,426 @@ msgstr ""
 "no \"%s\" uz \"%s\",\n"
 "jo šis nosaukums jau eksistē."
 
-#: ../src/import.c:1391
+#: ../src/ui-account.c:1184
+msgid "Manage Accounts"
+msgstr "Pārvaldīt kontus"
+
+#: ../src/ui-account.c:1235
+msgid ""
+"Drag & drop to change the order\n"
+"Double-click to rename"
+msgstr ""
+
+#: ../src/ui-account.c:1241 ../src/ui-archive.c:1148 ../src/ui-assign.c:765
+#: ../src/ui-currency.c:1531 ../src/ui-transaction.c:1106
+msgid "_Add"
+msgstr ""
+
+#: ../src/ui-account.c:1262 ../src/ui-hbfile.c:222 ../src/ui-pref.c:86
+#: ../src/ui-pref.c:1350 ../src/ui-pref.c:1661
+msgid "General"
+msgstr "Vispārēji"
+
+#: ../src/ui-account.c:1282
+msgid "_Currency:"
+msgstr ""
+
+#: ../src/ui-account.c:1289
+msgid "Start _balance:"
+msgstr ""
+
+#: ../src/ui-account.c:1297
+msgid "Notes:"
+msgstr ""
+
+#: ../src/ui-account.c:1311
+msgid "this account was _closed"
+msgstr ""
+
+#: ../src/ui-account.c:1322
+msgid "Current check number"
+msgstr ""
+
+#: ../src/ui-account.c:1326
+msgid "Checkbook _1:"
+msgstr ""
+
+#: ../src/ui-account.c:1333
+msgid "Checkbook _2:"
+msgstr ""
+
+#: ../src/ui-account.c:1345 ../src/ui-budget.c:1189
+msgid "Options"
+msgstr ""
+
+#: ../src/ui-account.c:1354
+msgid "Institution"
+msgstr ""
+
+#: ../src/ui-account.c:1358 ../src/ui-assist-start.c:364
+#: ../src/ui-assist-import.c:962 ../src/ui-payee.c:896
+msgid "_Name:"
+msgstr "_Nosaukums:"
+
+#: ../src/ui-account.c:1366 ../src/ui-assist-start.c:384
+msgid "N_umber:"
+msgstr "N_umurs:"
+
+#: ../src/ui-account.c:1379
+msgid "Balance limits"
+msgstr ""
+
+#: ../src/ui-account.c:1385
+msgid "_Overdraft at:"
+msgstr ""
+
+#: ../src/ui-account.c:1397
+msgid "Report exclusion"
+msgstr ""
+
+#: ../src/ui-account.c:1401
+msgid "exclude from account _summary"
+msgstr ""
+
+#: ../src/ui-account.c:1406
+msgid "exclude from the _budget"
+msgstr ""
+
+#: ../src/ui-account.c:1411
+msgid "exclude from any _reports"
+msgstr ""
+
+#: ../src/ui-archive.c:47
+msgid "Scheduled"
+msgstr ""
+
+#: ../src/ui-archive.c:48
+msgid "Template"
+msgstr ""
+
+#: ../src/ui-archive.c:55
+msgid "Possible"
+msgstr ""
+
+#: ../src/ui-archive.c:55
+msgid "Before"
+msgstr ""
+
+#: ../src/ui-archive.c:55
+msgid "After"
+msgstr ""
+
+#: ../src/ui-archive.c:271
+#, c-format
+msgid "(template %d)"
+msgstr ""
+
+#: ../src/ui-archive.c:318
+msgid "If you delete a scheduled/template, it will be permanently lost."
+msgstr ""
+
+#: ../src/ui-archive.c:908 ../src/ui-transaction.c:939
+msgid "_Amount:"
+msgstr "_Summa:"
+
+#: ../src/ui-archive.c:916 ../src/ui-transaction.c:947
+msgid "Toggle amount sign"
+msgstr ""
+
+#: ../src/ui-archive.c:924 ../src/ui-split.c:362 ../src/ui-transaction.c:955
+msgid "Transaction splits"
+msgstr ""
+
+#: ../src/ui-archive.c:927 ../src/ui-assign.c:897
+msgid "Pay_ment:"
+msgstr "_Maksājums:"
+
+#: ../src/ui-archive.c:935 ../src/ui-transaction.c:966
+msgid "Of notebook _2"
+msgstr "No _2. grāmatiņas"
+
+#: ../src/ui-archive.c:950
+msgid "_To account:"
+msgstr "Uz kon_tu:"
+
+#: ../src/ui-archive.c:983 ../src/ui-filter.c:1020
+msgid "_Memo:"
+msgstr ""
+
+#: ../src/ui-archive.c:1007
+msgid "Scheduled insertion"
+msgstr ""
+
+#: ../src/ui-archive.c:1012
+msgid "_Activate"
+msgstr "_Aktivizēt"
+
+#: ../src/ui-archive.c:1017
+msgid "Next _date:"
+msgstr ""
+
+#: ../src/ui-archive.c:1025
+msgid "Ever_y:"
+msgstr "Ar per_iodu:"
+
+#: ../src/ui-archive.c:1041
+msgid "Week end:"
+msgstr ""
+
+#: ../src/ui-archive.c:1053
+msgid "_Stop after:"
+msgstr ""
+
+#: ../src/ui-archive.c:1061
+msgid "posts"
+msgstr ""
+
+#: ../src/ui-archive.c:1083
+msgid "Manage scheduled/template transactions"
+msgstr ""
+
+#: ../src/ui-assign.c:268 ../src/ui-filter.c:1322
+msgid "Text"
+msgstr ""
+
+#: ../src/ui-assign.c:517
+#, c-format
+msgid "(assignment %d)"
+msgstr "(uzdevums %d)"
+
+#: ../src/ui-assign.c:547
+msgid "If you delete an assignment, it will be permanently lost."
+msgstr ""
+
+#: ../src/ui-assign.c:693
+msgid "Disabled"
+msgstr ""
+
+#: ../src/ui-assign.c:694
+msgid "If empty"
+msgstr ""
+
+#: ../src/ui-assign.c:695
+msgid "Overwrite"
+msgstr ""
+
+#: ../src/ui-assign.c:714
+msgid "Manage Assignments"
+msgstr "Pārvaldīt uzdevumus"
+
+#: ../src/ui-assign.c:791
+msgid "Condition"
+msgstr ""
+
+#: ../src/ui-assign.c:795
+msgid "Search _in:"
+msgstr ""
+
+#. label = make_label_widget(_("Con_tains:"));
+#: ../src/ui-assign.c:803
+msgid "Fi_nd:"
+msgstr ""
+
+#: ../src/ui-assign.c:811
+msgid "Match _case"
+msgstr ""
+
+#: ../src/ui-assign.c:816
+msgid "Use _regular expressions"
+msgstr ""
+
+#: ../src/ui-assign.c:831
+msgid "Assign payee"
+msgstr ""
+
+#: ../src/ui-assign.c:860
+msgid "Assign category"
+msgstr ""
+
+#: ../src/ui-assign.c:888
+msgid "Assign payment"
+msgstr ""
+
+#: ../src/ui-assist-start.c:129
+#, c-format
+msgid "New HomeBank file (%d of %d)"
+msgstr ""
+
+#: ../src/ui-assist-start.c:160
+msgid "Not found"
+msgstr "Nav atrasts"
+
+#: ../src/ui-assist-start.c:252 ../src/ui-hbfile.c:226
+msgid "_Owner:"
+msgstr "_Īpašnieks:"
+
+#: ../src/ui-assist-start.c:260 ../src/ui-dialogs.c:363
+msgid "Currency:"
+msgstr ""
+
+#: ../src/ui-assist-start.c:276 ../src/ui-assist-import.c:1801
+#: ../src/ui-hbfile.c:191
+msgid "File properties"
+msgstr ""
+
+#: ../src/ui-assist-start.c:298
+msgid "System detection"
+msgstr ""
+
+#: ../src/ui-assist-start.c:302
+msgid "Languages:"
+msgstr "Valodas:"
+
+#: ../src/ui-assist-start.c:309
+msgid "Preset file:"
+msgstr "Iestatījumu fails:"
+
+#: ../src/ui-assist-start.c:327
+msgid "Initialize my categories with this file"
+msgstr "Inicializēt manas kategorijas ar šo failu"
+
+#: ../src/ui-assist-start.c:339
+msgid "Preset categories"
+msgstr "Gatavas kategorijas"
+
+#: ../src/ui-assist-start.c:360
+msgid "Informations"
+msgstr ""
+
+#: ../src/ui-assist-start.c:395
+msgid "Balances"
+msgstr ""
+
+#: ../src/ui-assist-start.c:399
+msgid "_Initial:"
+msgstr "_Sākotnējais:"
+
+#: ../src/ui-assist-start.c:406
+msgid "_Overdrawn at:"
+msgstr "_Pārtērēts:"
+
+#: ../src/ui-assist-start.c:415
+msgid "Create an account"
+msgstr "Izveidot kontu"
+
+#: ../src/ui-assist-start.c:425
+msgid "This is a confirmation page, press 'Apply' to apply changes"
+msgstr ""
+"Šī ir apstiprināšanas forma. Nospiediet \"Apply\", lai saglabātu izmaiņas."
+
+#: ../src/ui-assist-start.c:431 ../src/ui-assist-import.c:62
+msgid "Confirmation"
+msgstr "Apstiprinājums"
+
+#: ../src/ui-assist-import.c:56
+msgid "Welcome"
+msgstr ""
+
+#: ../src/ui-assist-import.c:57
+msgid "Select file"
+msgstr ""
+
+#: ../src/ui-assist-import.c:58
+msgid "Import"
+msgstr ""
+
+#: ../src/ui-assist-import.c:59
+msgid "Properties"
+msgstr ""
+
+#: ../src/ui-assist-import.c:61 ../src/ui-dialogs.c:216
+msgid "Transaction"
+msgstr ""
+
+#: ../src/ui-assist-import.c:132 ../src/ui-assist-import.c:958
+msgid "create new"
+msgstr ""
+
+#: ../src/ui-assist-import.c:134 ../src/ui-assist-import.c:970
+msgid "use existing"
+msgstr ""
+
+#: ../src/ui-assist-import.c:216
+msgid "Name in the file"
+msgstr ""
+
+#: ../src/ui-assist-import.c:224
+msgid "Action"
+msgstr "Darbība"
+
+#: ../src/ui-assist-import.c:232
+msgid "Name in HomeBank"
+msgstr ""
+
+#: ../src/ui-assist-import.c:597 ../src/ui-assist-import.c:843
+msgid "All seems all right here, your validation is optional!"
+msgstr ""
+
+#: ../src/ui-assist-import.c:610
+#, c-format
+msgid ""
+"No account information has been found into the file '%s'.\n"
+"Please select the appropriate action for account below."
+msgstr ""
+
+#: ../src/ui-assist-import.c:849
+msgid ""
+"Possible duplicate of existing transaction have been found, and disabled for "
+"import.\n"
+"Please check and choose the ones that have to be imported."
+msgstr ""
+
+#: ../src/ui-assist-import.c:936
+msgid "Change account action"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1083
 msgid "Please select a file..."
 msgstr "Lūdzu, norādiet failu..."
 
-#: ../src/import.c:1408
+#: ../src/ui-assist-import.c:1100
 msgid "QIF file recognised !"
 msgstr "QIF fails atpazīts!"
 
-#: ../src/import.c:1414
+#: ../src/ui-assist-import.c:1106
 msgid "OFX file recognised !"
 msgstr "QFX fails atpazīts!"
 
-#: ../src/import.c:1417
+#: ../src/ui-assist-import.c:1109
 msgid "** OFX support is disabled **"
 msgstr "** OFX atbalsts atslēgts **"
 
-#: ../src/import.c:1422
+#: ../src/ui-assist-import.c:1114
 msgid "CSV transaction file recognised !"
 msgstr ""
 
-#: ../src/import.c:1428
+#: ../src/ui-assist-import.c:1120
 msgid "Unknown/Invalid file..."
 msgstr "Nezināms/nederīgs fails..."
 
 #. file content detail
 #. TODO: difficult translation here
-#: ../src/import.c:1477
+#: ../src/ui-assist-import.c:1226
 #, c-format
 msgid "account: %d - transaction: %d - payee: %d - categorie: %d"
-msgstr "konti: %d | transakcijas: %d | darījumu partneri: %d | kategorijas: %d"
+msgstr ""
+"konti: %d | transakcijas: %d | darījumu partneri: %d | kategorijas: %d"
 
-#: ../src/import.c:1691
+#: ../src/ui-assist-import.c:1347
+msgid "Some date convertion failed"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1348
 #, c-format
-msgid "HomeBank Import Assistant - (%d of %d)"
-msgstr "HomeBank importēšanas palīgs - (%d no %d)"
+msgid "Reload using date order: '%s' ?"
+msgstr ""
 
-#: ../src/import.c:1791
+#: ../src/ui-assist-import.c:1563
+#, c-format
+msgid "Import assistant (%d of %d)"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1617
 msgid ""
 "Welcome to the HomeBank Import Assistant.\n"
 "\n"
@@ -923,7 +2104,7 @@ msgid ""
 "of this assistant."
 msgstr ""
 
-#: ../src/import.c:1803
+#: ../src/ui-assist-import.c:1629
 msgid ""
 "HomeBank can import files in the following formats:\n"
 "- QIF\n"
@@ -935,80 +2116,85 @@ msgstr ""
 "- OFX/QFX (ja HomeBank kompilēta ar attiecīgo norādi)\n"
 "- CSV (HomeBank specifisks formāts, skatiet dokumentāciju)\n"
 
-#: ../src/import.c:1858
+#: ../src/ui-assist-import.c:1669
 msgid "Known files"
 msgstr ""
 
-#: ../src/import.c:1868 ../src/ui-dialogs.c:149
+#: ../src/ui-assist-import.c:1680 ../src/ui-dialogs.c:440
 msgid "QIF files"
 msgstr "QIF fails"
 
-#: ../src/import.c:1874
+#: ../src/ui-assist-import.c:1688
 msgid "OFX/QFX files"
 msgstr "OFX/QFX faili"
 
-#: ../src/import.c:1880 ../src/ui-dialogs.c:207
+#: ../src/ui-assist-import.c:1696 ../src/ui-dialogs.c:498
 msgid "CSV files"
 msgstr "CSV fails"
 
-#: ../src/import.c:1885 ../src/ui-dialogs.c:150 ../src/ui-dialogs.c:208
-#: ../src/ui-dialogs.c:263
+#: ../src/ui-assist-import.c:1704 ../src/ui-dialogs.c:441
+#: ../src/ui-dialogs.c:499 ../src/ui-dialogs.c:554
 msgid "All files"
 msgstr "Visi faili"
 
-#: ../src/import.c:1967
-msgid "Path:"
+#: ../src/ui-assist-import.c:1768
+msgid "A general error occured, and this file cannot be loaded."
 msgstr ""
 
-#: ../src/import.c:1974
+#: ../src/ui-assist-import.c:1805
 msgid "Name:"
 msgstr ""
 
-#: ../src/import.c:1981
+#: ../src/ui-assist-import.c:1812
+msgid "Path:"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1819
 msgid "Encoding:"
 msgstr ""
 
-#: ../src/import.c:1988
+#: ../src/ui-assist-import.c:1826
+msgid "Date format:"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1838
+msgid "File content"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1842
 msgid "Content:"
 msgstr "Faila saturs:"
 
-#: ../src/import.c:2000
-msgid "Import options"
+#: ../src/ui-assist-import.c:1908
+msgid "Choose the action for accounts"
 msgstr ""
 
-#: ../src/import.c:2007 ../src/ui-pref.c:1317
-msgid "Date order:"
+#: ../src/ui-assist-import.c:1924
+msgid "Change _action"
 msgstr ""
 
-#: ../src/import.c:2015
-msgid "Load the file again"
+#: ../src/ui-assist-import.c:1978
+msgid "Choose transactions to import"
 msgstr ""
 
-#: ../src/import.c:2044
-msgid ""
-"Some date conversion errors were encountered during the load of the file.\n"
-"Please try to change the date order format and load the file again."
+#: ../src/ui-assist-import.c:1992
+msgid "Detail of existing transaction (possible duplicate)"
 msgstr ""
 
-#: ../src/import.c:2093
-msgid "Edit account to import"
-msgstr ""
-
-#. duplicate section
-#: ../src/import.c:2125
-msgid "Detail of duplicate transactions"
-msgstr ""
-
-#: ../src/import.c:2157
+#: ../src/ui-assist-import.c:2014
 msgid "Date _tolerance:"
 msgstr "Datuma _tolerance:"
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days of date tolerance
-#: ../src/import.c:2164
+#: ../src/ui-assist-import.c:2022
 msgid "days"
 msgstr "dienas"
 
-#: ../src/import.c:2181
+#: ../src/ui-assist-import.c:2025
+msgid "_Refresh"
+msgstr ""
+
+#: ../src/ui-assist-import.c:2035
 msgid ""
 "The match is done in order: by account, amount and date.\n"
 "A date tolerance of 0 day means an exact match"
@@ -1016,997 +2202,124 @@ msgstr ""
 "Sakritību meklē secībā: konts, summa, datums.\n"
 "Datuma tolerance \"0 dienas\" nozīmē precīzu sakritību"
 
-#. account selection
-#: ../src/import.c:2220
-msgid "Account to import"
-msgstr ""
-
-#. transaction selection
-#: ../src/import.c:2225
-msgid "Transaction to import"
-msgstr ""
-
-#: ../src/import.c:2270
+#: ../src/ui-assist-import.c:2068
 msgid "Click \"Apply\" to update your accounts.\n"
 msgstr "Spiediet \"Pielietot\", lai atjauninātu savus kontus.\n"
 
-#: ../src/import.c:2281 ../src/list_account.c:359
-msgid "Accounts"
-msgstr ""
-
-#: ../src/import.c:2293
+#: ../src/ui-assist-import.c:2091
 msgid "to update"
 msgstr "lai atjauninātu"
 
-#: ../src/import.c:2301
+#: ../src/ui-assist-import.c:2099
 msgid "to create"
 msgstr "lai izveidotu"
 
-#: ../src/import.c:2305 ../src/ui-pref.c:89
+#: ../src/ui-assist-import.c:2103 ../src/ui-pref.c:88
 msgid "Transactions"
 msgstr ""
 
-#: ../src/import.c:2314
+#: ../src/ui-assist-import.c:2112
 msgid "to import"
 msgstr "importēt"
 
-#: ../src/import.c:2322
+#: ../src/ui-assist-import.c:2120
 msgid "to reject"
 msgstr "noraidīt"
 
-#: ../src/import.c:2330
+#: ../src/ui-assist-import.c:2128
 msgid "auto-assigned"
 msgstr "automātiski piešķirts"
 
-#: ../src/import.c:2525
-msgid "Create new"
-msgstr ""
-
-#: ../src/import.c:2527
-msgid "Import into"
-msgstr "Importēt"
-
-#: ../src/import.c:2609
-msgid "Imported name"
-msgstr "Importētais nosaukums"
-
-#: ../src/import.c:2617
-msgid "Action"
-msgstr "Darbība"
-
-#: ../src/import.c:2625
-msgid "HomeBank name"
-msgstr "HomeBank nosaukums"
-
-#: ../src/list_account.c:342 ../src/list_operation.c:728
-#: ../src/ui-filter.c:1358
-msgid "Status"
-msgstr ""
-
-#. Bank
-#: ../src/list_account.c:376 ../src/ui-account.c:39
-msgid "Bank"
-msgstr "Bankā"
-
-#. Today
-#: ../src/list_account.c:381
-msgid "Today"
-msgstr "Šodien"
-
-#. Future
-#: ../src/list_account.c:386
-msgid "Future"
-msgstr "Nākotnē"
-
-#: ../src/list_operation.c:387
-msgid "- split -"
-msgstr ""
-
-#. datas
-#. status
-#. date
-#: ../src/list_operation.c:412 ../src/list_operation.c:1045
-#: ../src/ui-pref.c:2386 ../src/ui-pref.c:2512
-msgid "Info"
-msgstr "Informācija"
-
-#: ../src/list_operation.c:457 ../src/list_operation.c:1023
-#: ../src/list_upcoming.c:372 ../src/ui-assign.c:39 ../src/ui-pref.c:122
-#: ../src/ui-pref.c:2514 ../src/ui-transaction.c:385
-msgid "Memo"
-msgstr ""
-
-#: ../src/list_operation.c:522 ../src/ui-pref.c:2519
-msgid "Tags"
-msgstr "Birkas"
-
-#. common (date + status + amount)
-#. label = gtk_label_new(_("General"));
-#. page = ui_flt_manage_page_general(&data);
-#. gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
-#.
-#: ../src/list_operation.c:767 ../src/list_operation.c:1012
-#: ../src/rep_balance.c:1246 ../src/rep_vehicle.c:968 ../src/ui-filter.c:1353
-msgid "Date"
-msgstr "Datums"
-
-#. column: Amount
-#: ../src/list_operation.c:785 ../src/list_operation.c:1033
-#: ../src/rep_time.c:581 ../src/rep_time.c:1638 ../src/rep_vehicle.c:1012
-#: ../src/ui-filter.c:1368 ../src/ui-pref.c:2515 ../src/ui-transaction.c:389
-msgid "Amount"
-msgstr "Summa"
-
-#. column: Expense
-#: ../src/list_operation.c:788 ../src/list_upcoming.c:384
-#: ../src/rep_balance.c:1256 ../src/rep_budget.c:111 ../src/rep_stats.c:151
-#: ../src/rep_stats.c:1860 ../src/ui-filter.c:49 ../src/ui-pref.c:2516
-msgid "Expense"
-msgstr "Izdevumi"
-
-#. column: Income
-#: ../src/list_operation.c:791 ../src/list_upcoming.c:396
-#: ../src/rep_balance.c:1260 ../src/rep_budget.c:111 ../src/rep_stats.c:152
-#: ../src/rep_stats.c:719 ../src/rep_stats.c:1866 ../src/ui-filter.c:50
-#: ../src/ui-pref.c:2517
-msgid "Income"
-msgstr "Ienākumi"
-
-#: ../src/list_upcoming.c:316
-msgid "Late"
-msgstr ""
-
-#: ../src/list_upcoming.c:349
-msgid "Next date"
-msgstr ""
-
-#: ../src/rep_balance.c:121 ../src/rep_budget.c:119 ../src/rep_stats.c:64
-#: ../src/rep_time.c:63
-msgid "List"
-msgstr "Saraksts"
-
-#: ../src/rep_balance.c:121 ../src/rep_budget.c:119 ../src/rep_stats.c:64
-#: ../src/rep_time.c:63
-msgid "View results as list"
-msgstr "Skatīt rezultātus kā sarakstu"
-
-#: ../src/rep_balance.c:122 ../src/rep_time.c:64
-msgid "Line"
-msgstr "Līnija"
-
-#: ../src/rep_balance.c:122 ../src/rep_time.c:64
-msgid "View results as lines"
-msgstr "Skatīt rezultātus kā līnijas"
-
-#. { "Filter"  , "hb-filter"    , N_("Filter") , NULL,   N_("Edit the filter"), G_CALLBACK (ui_reptime_action_filter) },
-#: ../src/rep_balance.c:123 ../src/rep_budget.c:121 ../src/rep_stats.c:69
-#: ../src/rep_time.c:67
-msgid "Refresh"
-msgstr "Atsvaidzināt"
-
-#: ../src/rep_balance.c:123 ../src/rep_budget.c:121 ../src/rep_stats.c:69
-#: ../src/rep_time.c:67
-msgid "Refresh results"
-msgstr "Atsvaidzināt rezultātus"
-
-#. name, stock id
-#: ../src/rep_balance.c:130 ../src/rep_budget.c:128 ../src/rep_stats.c:78
-#: ../src/rep_time.c:75
-msgid "Detail"
-msgstr "Detaļas"
-
-#. label, accelerator
-#: ../src/rep_balance.c:131 ../src/rep_budget.c:129 ../src/rep_stats.c:79
-#: ../src/rep_time.c:76
-msgid "Toggle detail"
-msgstr "Pārslēgt detaļas"
-
-#. DB( g_print(" acc key = %d\n", acckey) );
-#. acc = da_acc_get(acckey);
-#. hb_strfmon(buf, 127, data->minimum, selectall ? GLOBALS->kcur : acc->kcur);
-#. //TRANSLATORS: count of transaction in balancedrawn / count of total transaction under abalancedrawn amount threshold
-#: ../src/rep_balance.c:357
-#, c-format
-msgid "%d/%d under %s"
-msgstr "%d/%d zem %s"
-
-#: ../src/rep_balance.c:825
-msgid "Balance report"
-msgstr "Bilances atskaite"
-
-#: ../src/rep_balance.c:851 ../src/rep_budget.c:1120 ../src/rep_stats.c:1444
-#: ../src/rep_time.c:1255 ../src/rep_vehicle.c:609
-msgid "Display"
-msgstr ""
-
-#: ../src/rep_balance.c:864 ../src/rep_time.c:1302
-msgid "Select _all"
-msgstr "Atlasīt _visu"
-
-#: ../src/rep_balance.c:869
-msgid "Each _day"
-msgstr "Katru _dienu"
-
-#: ../src/rep_balance.c:880 ../src/rep_budget.c:1152 ../src/rep_stats.c:1474
-#: ../src/rep_time.c:1324
-msgid "_Zoom X:"
-msgstr "_Mērogs:"
-
-#: ../src/rep_balance.c:891 ../src/rep_budget.c:1163 ../src/rep_stats.c:1492
-#: ../src/rep_time.c:1336 ../src/rep_vehicle.c:631
-msgid "Date filter"
-msgstr ""
-
-#: ../src/rep_balance.c:902 ../src/rep_budget.c:1174 ../src/rep_stats.c:1503
-#: ../src/rep_time.c:1347 ../src/rep_vehicle.c:642 ../src/ui-filter.c:968
-#: ../src/ui-filter.c:1101
-msgid "_From:"
-msgstr "_No:"
-
-#: ../src/rep_balance.c:908 ../src/rep_budget.c:1180 ../src/rep_stats.c:1509
-#: ../src/rep_time.c:1353 ../src/rep_vehicle.c:648 ../src/ui-filter.c:976
-#: ../src/ui-filter.c:1108
-msgid "_To:"
-msgstr "_Līdz:"
-
-#: ../src/rep_budget.c:109 ../src/rep_stats.c:141
-msgid "Subcategory"
-msgstr "Apakškategorija"
-
-#: ../src/rep_budget.c:111 ../src/rep_stats.c:150
-msgid "Exp. & Inc."
-msgstr "Izdevumi un ienākumi"
-
-#: ../src/rep_budget.c:113
-msgid "Spent & Budget"
-msgstr "Tērētais un budžets"
-
-#. column: Expense
-#: ../src/rep_budget.c:113 ../src/rep_budget.c:1497
-msgid "Spent"
-msgstr "Tērētais"
-
-#. column: Result
-#. header
-#: ../src/rep_budget.c:113 ../src/rep_budget.c:1505 ../src/rep_stats.c:719
-#: ../src/rep_stats.c:1849
-msgid "Result"
-msgstr "Rezultāts"
-
-#: ../src/rep_budget.c:120 ../src/rep_stats.c:65
-msgid "Bar"
-msgstr "Joslas"
-
-#: ../src/rep_budget.c:120 ../src/rep_stats.c:65
-msgid "View results as bars"
-msgstr "Skatīt rezultātu joslu diagrammā"
-
-#. is_active
-#. name, stock id
-#: ../src/rep_budget.c:134 ../src/rep_stats.c:84
-msgid "Legend"
-msgstr "Leģenda"
-
-#. label, accelerator
-#: ../src/rep_budget.c:135 ../src/rep_stats.c:85
-msgid "Toggle legend"
-msgstr "Pārslēgt leģendu"
-
-#: ../src/rep_budget.c:1094
-msgid "Budget report"
-msgstr "Budžeta atskaite"
-
-#: ../src/rep_budget.c:1125 ../src/rep_time.c:1260
-msgid "_For:"
-msgstr "Šķi_rot:"
-
-#: ../src/rep_budget.c:1133
-msgid "_Kind:"
-msgstr "_Veids:"
-
-#: ../src/rep_budget.c:1140 ../src/rep_stats.c:1449
-msgid "_View:"
-msgstr "Rā_dīt:"
-
-#: ../src/rep_budget.c:1249
-msgid "Result:"
-msgstr ""
-
-#: ../src/rep_budget.c:1255
-msgid "Budget:"
-msgstr "Budžets:"
-
-#: ../src/rep_budget.c:1261
-msgid "Spent:"
-msgstr "Tērēts:"
-
-#: ../src/rep_budget.c:1379
-msgid "No account is defined to be part of the budget."
-msgstr ""
-
-#: ../src/rep_budget.c:1380
-msgid "You should include some accounts from the account dialog."
-msgstr ""
-
-#: ../src/rep_stats.c:66
-msgid "Pie"
-msgstr "Pīrāga"
-
-#: ../src/rep_stats.c:66
-msgid "View results as pies"
-msgstr "Skatīt rezultātus pīrāga diagrammās"
-
-#: ../src/rep_stats.c:68
-msgid "Edit the filter"
-msgstr "Rediģēt filtru"
-
-#: ../src/rep_stats.c:71 ../src/rep_time.c:69
-msgid "Export"
-msgstr "Eksportēt"
-
-#. is_active
-#. name, stock id
-#: ../src/rep_stats.c:90
-msgid "Rate"
-msgstr "Procenti"
-
-#. label, accelerator
-#: ../src/rep_stats.c:91
-msgid "Toggle rate"
-msgstr "Pārslēgt procentus"
-
-#: ../src/rep_stats.c:143
-msgid "Tag"
-msgstr "Birka"
-
-#: ../src/rep_stats.c:144 ../src/rep_time.c:120 ../src/ui-archive.c:46
-msgid "Month"
-msgstr "mēneši"
-
-#: ../src/rep_stats.c:145 ../src/rep_time.c:120 ../src/ui-archive.c:46
-msgid "Year"
-msgstr "gadi"
-
-#: ../src/rep_stats.c:162 ../src/ui-filter.c:88
-msgid "January"
-msgstr "Janvāris"
-
-#: ../src/rep_stats.c:163 ../src/ui-filter.c:89
-msgid "February"
-msgstr "Februāris"
-
-#: ../src/rep_stats.c:164 ../src/ui-filter.c:90
-msgid "March"
-msgstr "Marts"
-
-#: ../src/rep_stats.c:165 ../src/ui-filter.c:91
-msgid "April"
-msgstr "Aprīlis"
-
-#: ../src/rep_stats.c:166 ../src/rep_time.c:131 ../src/ui-filter.c:92
-msgid "May"
-msgstr "Maijs"
-
-#: ../src/rep_stats.c:167 ../src/ui-filter.c:93
-msgid "June"
-msgstr "Jūnijs"
-
-#: ../src/rep_stats.c:168 ../src/ui-filter.c:94
-msgid "July"
-msgstr "Jūlijs"
-
-#: ../src/rep_stats.c:169 ../src/ui-filter.c:95
-msgid "August"
-msgstr "Augusts"
-
-#: ../src/rep_stats.c:170 ../src/ui-filter.c:96
-msgid "September"
-msgstr "Septembris"
-
-#: ../src/rep_stats.c:171 ../src/ui-filter.c:97
-msgid "October"
-msgstr "Oktobris"
-
-#: ../src/rep_stats.c:172 ../src/ui-filter.c:98
-msgid "November"
-msgstr "Novembris"
-
-#: ../src/rep_stats.c:173 ../src/ui-filter.c:99
-msgid "December"
-msgstr "Decembris"
-
-#. set chart title
-#. //TRANSLATORS: example 'Expense by Category'
-#: ../src/rep_stats.c:615
-#, c-format
-msgid "%s by %s"
-msgstr ""
-
-#: ../src/rep_stats.c:719
-msgid "expense"
-msgstr "izdevumi"
-
-#: ../src/rep_stats.c:1044 ../src/ui-payee.c:271 ../src/ui-payee.c:408
-msgid "(no payee)"
-msgstr ""
-
-#: ../src/rep_stats.c:1418
-msgid "Statistics Report"
-msgstr "Statistikas atskaite"
-
-#: ../src/rep_stats.c:1456
-msgid "_By:"
-msgstr ""
-
-#: ../src/rep_stats.c:1463
-msgid "By _amount"
-msgstr "Kārtot pēc _summas"
-
-#: ../src/rep_stats.c:1586
-msgid "Balance:"
-msgstr "Bilance:"
-
-#: ../src/rep_stats.c:1592
-msgid "Income:"
-msgstr "Ienākumi:"
-
-#: ../src/rep_stats.c:1599
-msgid "Expense:"
-msgstr "Izdevumi:"
-
-#: ../src/rep_time.c:120 ../src/ui-archive.c:46
-msgid "Day"
-msgstr "dienas"
-
-#: ../src/rep_time.c:120 ../src/ui-archive.c:46
-msgid "Week"
-msgstr "nedēļas"
-
-#: ../src/rep_time.c:120
-msgid "Quarter"
-msgstr "Ceturksnis"
-
-#: ../src/rep_time.c:127
-msgid "Jan"
-msgstr "Jan"
-
-#: ../src/rep_time.c:128
-msgid "Feb"
-msgstr "Feb"
-
-#: ../src/rep_time.c:129
-msgid "Mar"
-msgstr "Mar"
-
-#: ../src/rep_time.c:130
-msgid "Apr"
-msgstr "Apr"
-
-#: ../src/rep_time.c:132
-msgid "Jun"
-msgstr "Jūn"
-
-#: ../src/rep_time.c:133
-msgid "Jul"
-msgstr "Jūl"
-
-#: ../src/rep_time.c:134
-msgid "Aug"
-msgstr "Aug"
-
-#: ../src/rep_time.c:135
-msgid "Sep"
-msgstr "Sep"
-
-#: ../src/rep_time.c:136
-msgid "Oct"
-msgstr "Okt"
-
-#: ../src/rep_time.c:137
-msgid "Nov"
-msgstr "Nov"
-
-#: ../src/rep_time.c:138
-msgid "Dec"
-msgstr "Dec"
-
-#. //TRANSLATORS: example 'Expense by Category'
-#: ../src/rep_time.c:548
-#, c-format
-msgid "%s Over Time"
-msgstr ""
-
-#. header
-#: ../src/rep_time.c:581 ../src/rep_time.c:1627
-msgid "Time slice"
-msgstr "Laika posms"
-
-#: ../src/rep_time.c:1229
-msgid "Trend Time Report"
-msgstr "Tendenču atskaite"
-
-#: ../src/rep_time.c:1277
-msgid "_Account:"
-msgstr "_Konts:"
-
-#: ../src/rep_time.c:1286 ../src/ui-archive.c:823 ../src/ui-assign.c:769
-#: ../src/ui-hbfile.c:254 ../src/ui-transaction.c:1146
-msgid "_Category:"
-msgstr "_Kategorija:"
-
-#: ../src/rep_time.c:1295 ../src/ui-archive.c:816 ../src/ui-assign.c:783
-#: ../src/ui-transaction.c:1138
-msgid "_Payee:"
-msgstr "D_arījuma partneris:"
-
-#: ../src/rep_time.c:1307
-msgid "_Cumulate"
-msgstr "_Kumulāta"
-
-#: ../src/rep_time.c:1312
-msgid "_View by:"
-msgstr "_Skats:"
-
-#: ../src/rep_vehicle.c:582
-msgid "Vehicle cost report"
-msgstr "Auto izmaksu atskaite"
-
-#: ../src/rep_vehicle.c:614
-msgid "Vehi_cle:"
-msgstr "Autom_ašīna"
-
-#: ../src/rep_vehicle.c:683
-msgid "Meter:"
-msgstr "Nobraukums:"
-
-#: ../src/rep_vehicle.c:687
-msgid "Consumption:"
-msgstr "Patēriņš:"
-
-#: ../src/rep_vehicle.c:691
-msgid "Fuel cost:"
-msgstr "Degvielas cena:"
-
-#: ../src/rep_vehicle.c:695
-msgid "Other cost:"
-msgstr "Citi izdevumi:"
-
-#: ../src/rep_vehicle.c:699
-msgid "Total cost:"
-msgstr "Kopējie izdevumi:"
-
-#.
-#. LST_CAR_DATE,
-#. LST_CAR_WORDING,
-#. LST_CAR_METER,
-#. LST_CAR_FUEL,
-#. LST_CAR_PRICE,
-#. LST_CAR_AMOUNT,
-#. LST_CAR_DIST,
-#. LST_CAR_100KM
-#.
-#.
-#. column: Wording
-#.
-#. column = gtk_tree_view_column_new();
-#. gtk_tree_view_column_set_title(column, _("Wording"));
-#. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
-#. renderer = gtk_cell_renderer_text_new();
-#. gtk_tree_view_column_pack_start(column, renderer, TRUE);
-#. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_WORDING);
-#. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#.
-#. column: Meter
-#: ../src/rep_vehicle.c:1000
-msgid "Meter"
-msgstr "Nobraukums"
-
-#. column: Fuel load
-#: ../src/rep_vehicle.c:1004
-msgid "Fuel"
-msgstr "Degviela"
-
-#. column: Price by unit
-#: ../src/rep_vehicle.c:1008
-msgid "Price"
-msgstr "Cena"
-
-#. column: Distance done
-#: ../src/rep_vehicle.c:1016
-msgid "Dist."
-msgstr "Attālums"
-
-#: ../src/ui-account.c:38
-msgid "(no type)"
-msgstr ""
-
-#: ../src/ui-account.c:40 ../src/ui-widgets.c:755
-msgid "Cash"
-msgstr "Skaidra nauda"
-
-#: ../src/ui-account.c:41
-msgid "Asset"
-msgstr "Aktīvi"
-
-#: ../src/ui-account.c:42 ../src/ui-widgets.c:753
-msgid "Credit card"
-msgstr "Kredītkarte"
-
-#: ../src/ui-account.c:43
-msgid "Liability"
-msgstr "Pasīvi"
-
-#: ../src/ui-account.c:366 ../src/ui-assign.c:115 ../src/ui-widgets.c:752
-msgid "(none)"
-msgstr "(nekas)"
-
-#: ../src/ui-account.c:524 ../src/ui-assign.c:266 ../src/ui-payee.c:538
-#: ../src/ui-pref.c:2643
-msgid "Visible"
-msgstr "Redzams"
-
-#: ../src/ui-account.c:953 ../src/ui-account.c:1039
-msgid "Account name"
-msgstr ""
-
-#: ../src/ui-account.c:960
-#, c-format
-msgid ""
-"Cannot add an account '%s',\n"
-"this name already exists."
-msgstr ""
-
-#: ../src/ui-account.c:1001
-msgid "Remove not allowed"
-msgstr "Dzēst nevar"
-
-#: ../src/ui-account.c:1002
-msgid "This account is used and cannot be removed."
-msgstr "Šis konts tiek izmantots un nevar tikt dzēsts."
-
-#: ../src/ui-account.c:1170
-msgid "Manage Accounts"
-msgstr "Pārvaldīt kontus"
-
-#: ../src/ui-account.c:1209
-msgid ""
-"Drag & drop to change the order\n"
-"Double-click to rename"
-msgstr ""
-
-#.
-#. label = make_label(_("Default currency"), 0.0, 0.5);
-#. gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
-#. gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 3, row, row+1);
-#.
-#. row++;
-#. label = make_label(_("Code:"), 0, 0.5);
-#. //----------------------------------------- l, r, t, b
-#. gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
-#. widget = make_label(NULL, 0.0, 0.0);
-#. data->LB_default = widget;
-#. gtk_table_attach (GTK_TABLE (table), widget, 2, 3, row, row+1, (GtkAttachOptions) (GTK_FILL|GTK_EXPAND), (GtkAttachOptions) (0), 0, 0);
-#.
-#.
-#.
-#. row++;
-#. widget = gtk_button_new_with_mnemonic (_("_Change"));
-#. data->BT_default = widget;
-#. gtk_table_attach (GTK_TABLE (table), widget, 2, 3, row, row+1, (GtkAttachOptions) (GTK_FILL|GTK_EXPAND), (GtkAttachOptions) (0), 0, 0);
-#.
-#.
-#. row++;
-#.
-#: ../src/ui-account.c:1235 ../src/ui-hbfile.c:203 ../src/ui-pref.c:87
-#: ../src/ui-pref.c:1507 ../src/ui-pref.c:1894
-msgid "General"
-msgstr "Vispārēji"
-
-#: ../src/ui-account.c:1260
-msgid "Start _balance:"
-msgstr ""
-
-#: ../src/ui-account.c:1269
-msgid "this account was _closed"
-msgstr ""
-
-#: ../src/ui-account.c:1275
-msgid "Current check number"
-msgstr ""
-
-#: ../src/ui-account.c:1280
-msgid "Checkbook _1:"
-msgstr ""
-
-#: ../src/ui-account.c:1287
-msgid "Checkbook _2:"
-msgstr ""
-
-#: ../src/ui-account.c:1302 ../src/ui-budget.c:968
-msgid "Options"
-msgstr ""
-
-#: ../src/ui-account.c:1307
-msgid "Institution"
-msgstr ""
-
-#: ../src/ui-account.c:1319 ../src/ui-assist-start.c:339
-msgid "N_umber:"
-msgstr "N_umurs:"
-
-#: ../src/ui-account.c:1326
-msgid "Limits"
-msgstr ""
-
-#: ../src/ui-account.c:1333
-msgid "_Min. balance:"
-msgstr ""
-
-#: ../src/ui-account.c:1340
-msgid "Report exclusion"
-msgstr ""
-
-#: ../src/ui-account.c:1345
-msgid "exclude from account _summary"
-msgstr ""
-
-#: ../src/ui-account.c:1350
-msgid "exclude from the _budget"
-msgstr ""
-
-#: ../src/ui-account.c:1355
-msgid "exclude from any _reports"
-msgstr ""
-
-#: ../src/ui-archive.c:48
-msgid "Possible"
-msgstr ""
-
-#: ../src/ui-archive.c:48
-msgid "Before"
-msgstr ""
-
-#: ../src/ui-archive.c:48
-msgid "After"
-msgstr ""
-
-#: ../src/ui-archive.c:195
-#, c-format
-msgid "(archive %d)"
-msgstr "(arhīvs %d)"
-
-#: ../src/ui-archive.c:746
-msgid "Transaction detail"
-msgstr ""
-
-#: ../src/ui-archive.c:751 ../src/ui-transaction.c:1067
-msgid "_Amount:"
-msgstr "_Summa:"
-
-#: ../src/ui-archive.c:759 ../src/ui-transaction.c:1076
-msgid "Toggle amount sign"
-msgstr ""
-
-#: ../src/ui-archive.c:768
-msgid "Pay_ment:"
-msgstr "_Maksājums:"
-
-#: ../src/ui-archive.c:775 ../src/ui-transaction.c:1097
-msgid "Of notebook _2"
-msgstr "No _2. grāmatiņas"
-
-#: ../src/ui-archive.c:789
-msgid "_To account:"
-msgstr "Uz kon_tu:"
-
-#: ../src/ui-archive.c:830 ../src/ui-filter.c:1040
-msgid "_Memo:"
-msgstr ""
-
-#: ../src/ui-archive.c:844 ../src/ui-transaction.c:1175
-msgid "Re_mind"
-msgstr ""
-
-#: ../src/ui-archive.c:863
-msgid "Scheduled insertion"
-msgstr ""
-
-#: ../src/ui-archive.c:868
-msgid "_Activate"
-msgstr "_Aktivizēt"
-
-#: ../src/ui-archive.c:873
-msgid "Next _date:"
-msgstr ""
-
-#: ../src/ui-archive.c:880
-msgid "Ever_y:"
-msgstr "Ar per_iodu:"
-
-#: ../src/ui-archive.c:895
-msgid "Week end:"
-msgstr ""
-
-#: ../src/ui-archive.c:906
-msgid "_Stop after:"
-msgstr ""
-
-#: ../src/ui-archive.c:914
-msgid "posts"
-msgstr ""
-
-#: ../src/ui-archive.c:929
-msgid "Manage scheduled/template transactions"
-msgstr ""
-
-#: ../src/ui-assign.c:509
-#, c-format
-msgid "(assignment %d)"
-msgstr "(uzdevums %d)"
-
-#: ../src/ui-assign.c:668
-msgid "Manage Assignments"
-msgstr "Pārvaldīt uzdevumus"
-
-#: ../src/ui-assign.c:737
-msgid "Condition"
-msgstr ""
-
-#: ../src/ui-assign.c:742
-msgid "_Field:"
-msgstr ""
-
-#: ../src/ui-assign.c:749
-msgid "Con_tains:"
-msgstr ""
-
-#: ../src/ui-assign.c:756 ../src/ui-filter.c:1036
-msgid "Case _sensitive"
-msgstr "Reģistrjūtīg_s"
-
-#: ../src/ui-assign.c:764
-msgid "Assignments"
-msgstr ""
-
-#: ../src/ui-assign.c:779 ../src/ui-transaction.c:1152
-msgid ""
-"Autocompletion and direct seizure\n"
-"is available for Category"
-msgstr "Pieejama automātiskā pabeigšana un tiešā sagrābšana"
-
-#: ../src/ui-assign.c:793 ../src/ui-transaction.c:1143
-msgid ""
-"Autocompletion and direct seizure\n"
-"is available for Payee"
-msgstr "Pieejama automātiskā pabeigšana un tiešā sagrābšana"
-
-#: ../src/ui-assist-start.c:122
-#, c-format
-msgid "New HomeBank file (%d of %d)"
-msgstr ""
-
-#: ../src/ui-assist-start.c:153
-msgid "Not found"
-msgstr "Nav atrasts"
-
-#: ../src/ui-assist-start.c:196
-msgid "Owner:"
-msgstr "Īpašnieks:"
-
-#: ../src/ui-assist-start.c:208
-msgid "File properties"
-msgstr ""
-
-#: ../src/ui-assist-start.c:237
-msgid "System detection"
-msgstr ""
-
-#: ../src/ui-assist-start.c:246
-msgid "Languages:"
-msgstr "Valodas:"
-
-#: ../src/ui-assist-start.c:253
-msgid "Preset file:"
-msgstr "Iestatījumu fails:"
-
-#: ../src/ui-assist-start.c:271
-msgid "Initialize my categories with this file"
-msgstr "Inicializēt manas kategorijas ar šo failu"
-
-#: ../src/ui-assist-start.c:283
-msgid "Preset categories"
-msgstr "Gatavas kategorijas"
-
-#: ../src/ui-assist-start.c:312
-msgid "Informations"
-msgstr ""
-
-#: ../src/ui-assist-start.c:351
-msgid "Balances"
-msgstr ""
-
-#: ../src/ui-assist-start.c:356
-msgid "_Initial:"
-msgstr "_Sākotnējais:"
-
-#: ../src/ui-assist-start.c:368
-msgid "_Overdrawn at:"
-msgstr "_Pārtērēts:"
-
-#: ../src/ui-assist-start.c:385
-msgid "Create an account"
-msgstr "Izveidot kontu"
-
-#: ../src/ui-assist-start.c:402
-msgid "This is a confirmation page, press 'Apply' to apply changes"
-msgstr ""
-"Šī ir apstiprināšanas forma. Nospiediet \"Apply\", lai saglabātu izmaiņas."
-
-#: ../src/ui-assist-start.c:408
-msgid "Confirmation"
-msgstr "Apstiprinājums"
-
-#: ../src/ui-budget.c:438 ../src/ui-category.c:938
+#: ../src/ui-budget.c:508 ../src/ui-category.c:1164
 msgid "File format error"
 msgstr "Faila formatēšanas kļūda"
 
-#: ../src/ui-budget.c:439
+#: ../src/ui-budget.c:509 ../src/ui-category.c:1165
 msgid ""
-"The csv file must contains the exact numbers of column,\n"
-"separated by a semi-colon, read the help for more details."
+"The CSV file must contains the exact numbers of column,\n"
+"separated by a semi-colon, please see the help for more details."
 msgstr ""
-"CSV failam jāsatur precīzs ar semikolu atdalītu kolonnu skaits.\n"
-"Lai iegūtu vairāk informācijas, ieskatieties HomeBank rokasgrāmatā."
 
-#: ../src/ui-budget.c:852
+#: ../src/ui-budget.c:693
+msgid "Are you sure you want to clear input?"
+msgstr ""
+
+#: ../src/ui-budget.c:695
+msgid "If you proceed, every amount will be set to 0."
+msgstr ""
+
+#: ../src/ui-budget.c:701
+msgid "_Clear"
+msgstr ""
+
+#: ../src/ui-budget.c:993
 msgid "Manage Budget"
 msgstr "Pārvaldīt budžetu"
 
-#: ../src/ui-budget.c:912
+#: ../src/ui-budget.c:1036 ../src/ui-category.c:1862 ../src/ui-payee.c:1259
+msgid "_Import CSV"
+msgstr ""
+
+#: ../src/ui-budget.c:1040 ../src/ui-category.c:1866 ../src/ui-payee.c:1263
+msgid "E_xport CSV"
+msgstr ""
+
+#: ../src/ui-budget.c:1099 ../src/ui-category.c:1970
+msgid "Expand all"
+msgstr ""
+
+#: ../src/ui-budget.c:1103 ../src/ui-category.c:1974
+msgid "Collapse all"
+msgstr ""
+
+#: ../src/ui-budget.c:1125
 msgid "Budget for each month"
 msgstr ""
 
-#: ../src/ui-budget.c:921
+#: ../src/ui-budget.c:1130
 msgid "is the same"
 msgstr "ir fiksēts"
 
-#: ../src/ui-budget.c:932
+#: ../src/ui-budget.c:1142
 msgid "_Clear input"
 msgstr ""
 
-#: ../src/ui-budget.c:944
+#: ../src/ui-budget.c:1156
 msgid "is different"
 msgstr "atšķiras pa mēnešiem"
 
-#: ../src/ui-budget.c:973
+#: ../src/ui-budget.c:1194
 msgid "_Force monitoring this category"
 msgstr "_Monitorēt šo kategoriju"
 
-#: ../src/ui-budget.c:984 ../src/ui-category.c:1633 ../src/ui-payee.c:1034
-msgid "_Import"
-msgstr "_Importēt"
-
-#: ../src/ui-budget.c:988 ../src/ui-category.c:1637 ../src/ui-payee.c:1038
-msgid "E_xport"
-msgstr "E_ksportēt"
-
-#: ../src/ui-category.c:939
-msgid ""
-"The csv file must contains the exact numbers of column,\n"
-"separated by a semi-colon, please see the help for more details."
+#: ../src/ui-category.c:1032 ../src/ui-currency.c:618 ../src/ui-currency.c:1107
+#: ../src/ui-payee.c:671
+msgid "Name"
 msgstr ""
-"CSV failam jāsatur precīzs ar semikolu atdalītu kolonnu skaits.\n"
-"Lai iegūtu vairāk informācijas, lūdzu, ieskatieties HomeBank rokasgrāmatā."
 
-#: ../src/ui-category.c:1079 ../src/ui-payee.c:676
-msgid "Modify..."
-msgstr "Mainīt..."
+#: ../src/ui-category.c:1044 ../src/ui-payee.c:687
+msgid "Usage"
+msgstr ""
 
-#: ../src/ui-category.c:1103
+#: ../src/ui-category.c:1122
+msgid "Delete unused categories"
+msgstr ""
+
+#: ../src/ui-category.c:1123
+msgid ""
+"Are you sure you want to permanently\n"
+"delete unused categories?"
+msgstr ""
+
+#: ../src/ui-category.c:1301 ../src/ui-payee.c:868
+msgid "Edit..."
+msgstr ""
+
+#: ../src/ui-category.c:1325
 msgid "_Income"
 msgstr "_Ienākumi"
 
-#: ../src/ui-category.c:1151
+#: ../src/ui-category.c:1376
 #, c-format
 msgid ""
 "Cannot rename this Category,\n"
@@ -2017,103 +2330,219 @@ msgstr ""
 "no \"%s\" uz \"%s\",\n"
 "jo šis nosaukums jau eksistē."
 
-#: ../src/ui-category.c:1215 ../src/ui-payee.c:777
-msgid "Move to..."
-msgstr "Pārvietot uz..."
-
-#: ../src/ui-category.c:1253
-msgid "Move this category to another one ?"
-msgstr "Pārvietot šo kategoriju uz citu?"
-
-#: ../src/ui-category.c:1254 ../src/ui-payee.c:818
+#: ../src/ui-category.c:1441
 #, c-format
-msgid ""
-"This will replace '%s' by '%s',\n"
-"and then remove '%s'"
-msgstr ""
-"Tas aizvietos '%s' ar '%s',\n"
-"un tad dzēsīs '%s'"
-
-#: ../src/ui-category.c:1318
-msgid "Remove a category ?"
-msgstr "Dzēst kategoriju?"
-
-#: ../src/ui-category.c:1319
-#, c-format
-msgid ""
-"If you remove '%s', archive and transaction referencing this category\n"
-"will set place to 'no category'"
+msgid "Merge category '%s'"
 msgstr ""
 
-#: ../src/ui-category.c:1537
+#: ../src/ui-category.c:1453 ../src/ui-payee.c:1033
+msgid "Merge"
+msgstr ""
+
+#: ../src/ui-category.c:1462
+msgid ""
+"Transactions assigned to this category,\n"
+"will be moved to the category selected below."
+msgstr ""
+
+#: ../src/ui-category.c:1472
+#, c-format
+msgid "_Delete the category '%s'"
+msgstr ""
+
+#: ../src/ui-category.c:1564
+msgid ""
+"This category is used.\n"
+"Any transaction using that category will be set to (no category)"
+msgstr ""
+
+#: ../src/ui-category.c:1813
 msgid "Manage Categories"
 msgstr "Pārvaldīt kategorijas"
 
-#: ../src/ui-category.c:1575
-msgid "I_ncome"
-msgstr "Ie_nākumi"
+#: ../src/ui-category.c:1873 ../src/ui-payee.c:1270
+msgid "_Delete unused"
+msgstr ""
 
-#: ../src/ui-category.c:1626 ../src/ui-payee.c:1027
-msgid "_Move"
-msgstr "_Pārvietot"
+#: ../src/ui-category.c:1893
+msgid "new category"
+msgstr ""
 
-#: ../src/ui-dialogs.c:184
+#: ../src/ui-category.c:1906
+msgid "new subcategory"
+msgstr ""
+
+#: ../src/ui-category.c:1988 ../src/ui-payee.c:1316
+msgid "_Merge"
+msgstr ""
+
+#: ../src/ui-currency.c:370 ../src/ui-currency.c:377
+msgid "Base currency"
+msgstr ""
+
+#: ../src/ui-currency.c:629
+msgid "Symbol"
+msgstr ""
+
+#: ../src/ui-currency.c:641 ../src/ui-currency.c:817 ../src/ui-pref.c:1392
+msgid "Exchange rate"
+msgstr ""
+
+#: ../src/ui-currency.c:653
+msgid "Last modfied"
+msgstr ""
+
+#: ../src/ui-currency.c:772
+msgid "Edit currency"
+msgstr ""
+
+#: ../src/ui-currency.c:803 ../src/ui-pref.c:1365
+msgid "Currency"
+msgstr ""
+
+#: ../src/ui-currency.c:836 ../src/ui-pref.c:1410
+msgid "Format"
+msgstr ""
+
+#: ../src/ui-currency.c:845 ../src/ui-pref.c:1419 ../src/ui-pref.c:1489
+msgid "_Customize"
+msgstr ""
+
+#: ../src/ui-currency.c:854 ../src/ui-pref.c:1428
+msgid "_Symbol:"
+msgstr ""
+
+#: ../src/ui-currency.c:861 ../src/ui-pref.c:1435
+msgid "Is pre_fix"
+msgstr ""
+
+#: ../src/ui-currency.c:866 ../src/ui-pref.c:1440
+msgid "_Decimal char:"
+msgstr ""
+
+#: ../src/ui-currency.c:873 ../src/ui-pref.c:1447
+msgid "_Frac digits:"
+msgstr "Cipari _aiz komata:"
+
+#: ../src/ui-currency.c:880 ../src/ui-pref.c:1454
+msgid "_Grouping char:"
+msgstr ""
+
+#: ../src/ui-currency.c:1040
+msgid "Select base currency"
+msgstr ""
+
+#: ../src/ui-currency.c:1040
+msgid "Select currency"
+msgstr ""
+
+#: ../src/ui-currency.c:1112
+msgid "ISO Code"
+msgstr ""
+
+#: ../src/ui-currency.c:1168
+msgid "Update online error"
+msgstr ""
+
+#: ../src/ui-currency.c:1301
+msgid "If you delete a currency, it will be permanently lost."
+msgstr ""
+
+#: ../src/ui-currency.c:1345
+msgid "Change the base currency"
+msgstr ""
+
+#: ../src/ui-currency.c:1346
+msgid ""
+"If you proceed, rates of other currencies\n"
+"will be set to 0, don't forget to update it"
+msgstr ""
+
+#: ../src/ui-currency.c:1461
+msgid "Currencies"
+msgstr ""
+
+#: ../src/ui-currency.c:1511
+msgid "Update online"
+msgstr ""
+
+#: ../src/ui-currency.c:1543
+msgid "Set as base"
+msgstr ""
+
+#: ../src/ui-dialogs.c:176
+msgid "File statistics"
+msgstr ""
+
+#: ../src/ui-dialogs.c:243
+msgid "Assignment"
+msgstr ""
+
+#: ../src/ui-dialogs.c:324
+msgid "Upgrade"
+msgstr ""
+
+#: ../src/ui-dialogs.c:349
+msgid "Select a base currency"
+msgstr ""
+
+#: ../src/ui-dialogs.c:358
+msgid ""
+"Starting v5.1, HomeBank can manage several currencies\n"
+"if the currency below is not correct, please change it:"
+msgstr ""
+
+#: ../src/ui-dialogs.c:475
 msgid "Import from CSV"
 msgstr "Importēt no CSV"
 
-#: ../src/ui-dialogs.c:246
-msgid "Open homebank file"
-msgstr "Atvērt HomeBank failu"
+#: ../src/ui-dialogs.c:537
+msgid "Open HomeBank file"
+msgstr ""
 
-#: ../src/ui-dialogs.c:251
-msgid "Save homebank file as"
-msgstr "Saglabāt HomeBank failu kā"
+#: ../src/ui-dialogs.c:542
+msgid "Save HomeBank file as"
+msgstr ""
 
-#: ../src/ui-dialogs.c:262
+#: ../src/ui-dialogs.c:553
 msgid "HomeBank files"
 msgstr "HomeBank faili"
 
-#: ../src/ui-dialogs.c:364
-msgid ""
-"Do you want to save the changes\n"
-"in the current file ?"
+#: ../src/ui-dialogs.c:655
+msgid "Save changes to the file before closing?"
 msgstr ""
-"Vai vēlaties saglabāt izmaiņas\n"
-"pašreizējā failā ?"
 
-#: ../src/ui-dialogs.c:368
+#: ../src/ui-dialogs.c:659
 #, c-format
 msgid ""
-"If you do not save, some changes will be\n"
-"definitively lost: %d."
+"If you don't save, changes will be permanently lost.\n"
+"Number of changes: %d."
 msgstr ""
-"Ja nesaglabāsiet, dažas izmaiņas\n"
-"noteikti tiks zaudētas: %d."
 
-#: ../src/ui-dialogs.c:373
-msgid "Do _not save"
-msgstr "_Nesaglabāt"
+#: ../src/ui-dialogs.c:664
+msgid "Close _without saving"
+msgstr ""
 
-#: ../src/ui-dialogs.c:476
+#: ../src/ui-dialogs.c:748
 msgid "Select among possible transactions..."
 msgstr ""
 
-#: ../src/ui-dialogs.c:479
-msgid ""
-"HomeBank has found some transaction that may be the associated transaction "
-"for the internal transfer."
-msgstr ""
-
-#: ../src/ui-dialogs.c:491
+#: ../src/ui-dialogs.c:784
 msgid "Select an action:"
 msgstr ""
 
-#: ../src/ui-dialogs.c:496
+#: ../src/ui-dialogs.c:788
 msgid "create a new transaction"
 msgstr ""
 
-#: ../src/ui-dialogs.c:499
+#: ../src/ui-dialogs.c:791
 msgid "select an existing transaction"
+msgstr ""
+
+#: ../src/ui-dialogs.c:796
+msgid ""
+"HomeBank has found some transaction that may be the associated transaction "
+"for the internal transfer."
 msgstr ""
 
 #: ../src/ui-filter.c:52
@@ -2128,178 +2557,206 @@ msgstr ""
 msgid "Unreconciled"
 msgstr ""
 
-#: ../src/ui-filter.c:60
+#: ../src/ui-filter.c:59
+msgid "Uncleared"
+msgstr ""
+
+#: ../src/ui-filter.c:60 ../src/ui-transaction.c:59
+msgid "Reconciled"
+msgstr ""
+
+#: ../src/ui-filter.c:61 ../src/ui-transaction.c:58
+msgid "Cleared"
+msgstr ""
+
+#: ../src/ui-filter.c:63
 msgid "Any Status"
 msgstr ""
 
-#: ../src/ui-filter.c:65
-msgid "This Month"
-msgstr ""
-
-#: ../src/ui-filter.c:66
-msgid "Last Month"
-msgstr ""
-
-#: ../src/ui-filter.c:67
-msgid "This Quarter"
-msgstr ""
-
 #: ../src/ui-filter.c:68
-msgid "Last Quarter"
+msgid "This month"
 msgstr ""
 
 #: ../src/ui-filter.c:69
-msgid "This Year"
+msgid "Last month"
 msgstr ""
 
 #: ../src/ui-filter.c:70
-msgid "Last Year"
+msgid "This quarter"
+msgstr ""
+
+#: ../src/ui-filter.c:71
+msgid "Last quarter"
 msgstr ""
 
 #: ../src/ui-filter.c:72
-msgid "Last 30 days"
-msgstr "Pēdējās 30 dienas"
-
-#: ../src/ui-filter.c:73
-msgid "Last 60 days"
+msgid "This year"
 msgstr ""
 
-#: ../src/ui-filter.c:74
-msgid "Last 90 days"
+#: ../src/ui-filter.c:73
+msgid "Last year"
 msgstr ""
 
 #: ../src/ui-filter.c:75
+msgid "Last 30 days"
+msgstr "Pēdējās 30 dienas"
+
+#: ../src/ui-filter.c:76
+msgid "Last 60 days"
+msgstr ""
+
+#: ../src/ui-filter.c:77
+msgid "Last 90 days"
+msgstr ""
+
+#: ../src/ui-filter.c:78
 msgid "Last 12 months"
 msgstr "Pēdējie 12 mēneši"
 
-#: ../src/ui-filter.c:77
+#: ../src/ui-filter.c:80
 msgid "Other..."
 msgstr ""
 
-#: ../src/ui-filter.c:79
+#: ../src/ui-filter.c:82
 msgid "All date"
 msgstr "Visi datumi"
 
-#: ../src/ui-filter.c:87
+#: ../src/ui-filter.c:90
 msgid "All month"
 msgstr "Visi mēneši"
 
-#: ../src/ui-filter.c:745 ../src/ui-filter.c:794 ../src/ui-filter.c:843
-#: ../src/ui-filter.c:960 ../src/ui-filter.c:1027 ../src/ui-filter.c:1092
-#: ../src/ui-filter.c:1150 ../src/ui-filter.c:1219
+#: ../src/ui-filter.c:750 ../src/ui-filter.c:799 ../src/ui-filter.c:848
+#: ../src/ui-filter.c:953 ../src/ui-filter.c:1007 ../src/ui-filter.c:1064
+#: ../src/ui-filter.c:1110 ../src/ui-filter.c:1170
 msgid "_Option:"
 msgstr "_Darbība:"
 
-#: ../src/ui-filter.c:766 ../src/ui-filter.c:815 ../src/ui-filter.c:864
+#: ../src/ui-filter.c:771 ../src/ui-filter.c:820 ../src/ui-filter.c:869
 msgid "All"
 msgstr "Viss"
 
-#: ../src/ui-filter.c:770 ../src/ui-filter.c:819 ../src/ui-filter.c:868
+#: ../src/ui-filter.c:775 ../src/ui-filter.c:824 ../src/ui-filter.c:873
+#: ../src/ui-pref.c:106 ../src/ui-transaction.c:57
 msgid "None"
 msgstr "Nekas"
 
-#: ../src/ui-filter.c:774 ../src/ui-filter.c:823 ../src/ui-filter.c:872
+#: ../src/ui-filter.c:779 ../src/ui-filter.c:828 ../src/ui-filter.c:877
 msgid "Invert"
 msgstr "Invertēt"
 
-#: ../src/ui-filter.c:950
+#: ../src/ui-filter.c:949
 msgid "Filter Date"
 msgstr ""
 
-#: ../src/ui-filter.c:984
+#: ../src/ui-filter.c:976
 msgid "_Month:"
 msgstr "_Mēnesis:"
 
-#: ../src/ui-filter.c:990
+#: ../src/ui-filter.c:982
 msgid "_Year:"
 msgstr "_Gads:"
 
-#: ../src/ui-filter.c:1018
+#: ../src/ui-filter.c:1003
 msgid "Filter Text"
 msgstr ""
 
-#: ../src/ui-filter.c:1046 ../src/ui-transaction.c:1102
-msgid "_Info:"
-msgstr "_Informācija:"
+#: ../src/ui-filter.c:1016
+msgid "Case _sensitive"
+msgstr "Reģistrjūtīg_s"
 
-#: ../src/ui-filter.c:1053
+#: ../src/ui-filter.c:1035
 msgid "_Tag:"
 msgstr "_Birka:"
 
-#: ../src/ui-filter.c:1083
+#: ../src/ui-filter.c:1060
 msgid "Filter Amount"
 msgstr ""
 
-#: ../src/ui-filter.c:1141
+#: ../src/ui-filter.c:1106
 msgid "Filter Status"
 msgstr ""
 
-#: ../src/ui-filter.c:1161
+#: ../src/ui-filter.c:1121
 msgid "reconciled"
 msgstr ""
 
-#: ../src/ui-filter.c:1165
-msgid "remind"
-msgstr "atgādināt"
+#: ../src/ui-filter.c:1125
+msgid "cleared"
+msgstr ""
 
-#: ../src/ui-filter.c:1170
+#: ../src/ui-filter.c:1130
 msgid "Force:"
 msgstr "Turklāt:"
 
-#: ../src/ui-filter.c:1176
+#: ../src/ui-filter.c:1136
 msgid "display 'Added'"
 msgstr "rādīt visas pievienotās"
 
-#: ../src/ui-filter.c:1180
+#: ../src/ui-filter.c:1140
 msgid "display 'Edited'"
 msgstr "rādīt visas rediģētās"
 
-#: ../src/ui-filter.c:1209
+#: ../src/ui-filter.c:1144
+msgid "display 'Remind'"
+msgstr ""
+
+#: ../src/ui-filter.c:1165
 msgid "Filter Payment"
 msgstr ""
 
-#: ../src/ui-filter.c:1314
+#: ../src/ui-filter.c:1265
 msgid "Edit Filter"
 msgstr "Rediģēt filtru"
 
-#: ../src/ui-filter.c:1363
-msgid "Paymode"
+#. clear button
+#: ../src/ui-filter.c:1268 ../src/ui-pref.c:1998
+msgid "_Reset"
 msgstr ""
 
-#: ../src/ui-filter.c:1373
-msgid "Text"
+#: ../src/ui-filter.c:1312
+msgid "Payment"
 msgstr ""
 
-#: ../src/ui-hbfile.c:171
-msgid "HomeBank file properties"
-msgstr ""
-
-#: ../src/ui-hbfile.c:208
-msgid "_Owner:"
-msgstr "_Īpašnieks:"
-
-#: ../src/ui-hbfile.c:216
+#: ../src/ui-hbfile.c:239
 msgid "Scheduled transaction"
 msgstr ""
 
-#: ../src/ui-hbfile.c:221
+#: ../src/ui-hbfile.c:243
 msgid "add until"
 msgstr ""
 
-#: ../src/ui-hbfile.c:230
+#: ../src/ui-hbfile.c:251
 msgid "of each month (excluded)"
 msgstr ""
 
-#: ../src/ui-hbfile.c:234
+#: ../src/ui-hbfile.c:256
 msgid "add"
 msgstr ""
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
-#: ../src/ui-hbfile.c:244
+#: ../src/ui-hbfile.c:265 ../src/ui-pref.c:1592
 msgid "days in advance the current date"
 msgstr ""
 
-#: ../src/ui-payee.c:725
+#: ../src/ui-payee.c:705
+msgid "Default category"
+msgstr ""
+
+#: ../src/ui-payee.c:743
+msgid "Delete unused payee"
+msgstr ""
+
+#: ../src/ui-payee.c:744
+msgid ""
+"Are you sure you want to\n"
+"permanently delete unused payee?"
+msgstr ""
+
+#: ../src/ui-payee.c:909
+msgid "Default"
+msgstr ""
+
+#: ../src/ui-payee.c:966
 #, c-format
 msgid ""
 "Cannot rename this Payee,\n"
@@ -2310,222 +2767,214 @@ msgstr ""
 "no \"%s\" uz \"%s\",\n"
 "jo tāds nosaukums jau eksistē."
 
-#: ../src/ui-payee.c:817
-msgid "Move this payee to another one ?"
-msgstr "Pārvietot šo darījumu partneri uz citu?"
-
-#: ../src/ui-payee.c:879
-msgid "Remove a payee ?"
-msgstr "Dzēst darījumu partneri?"
-
-#: ../src/ui-payee.c:880
+#: ../src/ui-payee.c:1021
 #, c-format
-msgid ""
-"If you remove '%s', archive and transaction referencing this payee\n"
-"will set place to 'no payee'"
+msgid "Merge payee '%s'"
 msgstr ""
 
-#: ../src/ui-payee.c:964
+#: ../src/ui-payee.c:1042
+msgid ""
+"Transactions assigned to this payee,\n"
+"will be moved to the payee selected below."
+msgstr ""
+
+#: ../src/ui-payee.c:1052
+#, c-format
+msgid "_Delete the payee '%s'"
+msgstr ""
+
+#: ../src/ui-payee.c:1139
+msgid ""
+"This payee is used.\n"
+"Any transaction using that payee will be set to (no payee)"
+msgstr ""
+
+#: ../src/ui-payee.c:1219
 msgid "Manage Payees"
 msgstr "Pārvaldīt darījumu partnerus"
 
-#: ../src/ui-pref.c:88
+#: ../src/ui-payee.c:1289
+msgid "new payee"
+msgstr ""
+
+#: ../src/ui-pref.c:87
 msgid "Interface"
 msgstr "Saskarne"
 
-#: ../src/ui-pref.c:90
+#: ../src/ui-pref.c:89
 msgid "Display format"
 msgstr "Attēlošanas formāts"
 
-#: ../src/ui-pref.c:91
+#: ../src/ui-pref.c:90
 msgid "Import/Export"
 msgstr ""
 
-#: ../src/ui-pref.c:92
+#: ../src/ui-pref.c:91
 msgid "Report"
 msgstr ""
 
-#: ../src/ui-pref.c:93
-msgid "Euro minor"
-msgstr ""
-
-#: ../src/ui-pref.c:98
+#: ../src/ui-pref.c:97
 msgid "System defaults"
 msgstr "Sistēmas noklusētie"
 
-#: ../src/ui-pref.c:99
+#: ../src/ui-pref.c:98
 msgid "Icons only"
 msgstr "Tikai ikonas"
 
-#: ../src/ui-pref.c:100
+#: ../src/ui-pref.c:99
 msgid "Text only"
 msgstr "Tikai teksts"
 
-#: ../src/ui-pref.c:101
+#: ../src/ui-pref.c:100
 msgid "Text under icons"
 msgstr "Teksts zem ikonām"
 
-#: ../src/ui-pref.c:102
+#: ../src/ui-pref.c:101
 msgid "Text beside icons"
 msgstr "Teksts blakus ikonām"
 
+#: ../src/ui-pref.c:107
+msgid "Horizontal"
+msgstr ""
+
 #: ../src/ui-pref.c:108
-msgid "Tango light"
-msgstr "Tango gaišs"
+msgid "Vertical"
+msgstr ""
 
 #: ../src/ui-pref.c:109
-msgid "Tango medium"
-msgstr "Tango vidējs"
-
-#: ../src/ui-pref.c:110
-msgid "Tango dark"
-msgstr "Tango tumšs"
-
-#: ../src/ui-pref.c:115
-msgid "m-d-y"
+msgid "Both"
 msgstr ""
 
 #: ../src/ui-pref.c:116
+msgid "Tango light"
+msgstr "Tango gaišs"
+
+#: ../src/ui-pref.c:117
+msgid "Tango medium"
+msgstr "Tango vidējs"
+
+#: ../src/ui-pref.c:118
+msgid "Tango dark"
+msgstr "Tango tumšs"
+
+#: ../src/ui-pref.c:123
+msgid "m-d-y"
+msgstr ""
+
+#: ../src/ui-pref.c:124
 msgid "d-m-y"
 msgstr ""
 
-#: ../src/ui-pref.c:117
+#: ../src/ui-pref.c:125
 msgid "y-m-d"
 msgstr ""
 
-#: ../src/ui-pref.c:128
+#: ../src/ui-pref.c:136
 msgid "Ignore"
 msgstr "Ignorēt"
 
-#: ../src/ui-pref.c:129
+#: ../src/ui-pref.c:137
 msgid "Append to Info"
 msgstr ""
 
-#: ../src/ui-pref.c:130
+#: ../src/ui-pref.c:138
 msgid "Append to Memo"
 msgstr ""
 
-#: ../src/ui-pref.c:503
+#: ../src/ui-pref.c:504
 msgid "System Language"
 msgstr ""
 
-#: ../src/ui-pref.c:728
+#: ../src/ui-pref.c:629
 msgid "Choose a default HomeBank files folder"
 msgstr ""
 
-#: ../src/ui-pref.c:733
+#: ../src/ui-pref.c:634
 msgid "Choose a default import folder"
 msgstr ""
 
-#: ../src/ui-pref.c:738
+#: ../src/ui-pref.c:639
 msgid "Choose a default export folder"
 msgstr ""
 
-#: ../src/ui-pref.c:1312 ../src/ui-pref.c:1673
+#: ../src/ui-pref.c:1122
 msgid "Date options"
 msgstr ""
 
-#: ../src/ui-pref.c:1327
+#: ../src/ui-pref.c:1126
+msgid "Date order:"
+msgstr ""
+
+#: ../src/ui-pref.c:1141
 msgid "OFX/QFX options"
 msgstr ""
 
-#: ../src/ui-pref.c:1332
+#: ../src/ui-pref.c:1145
 msgid "_Memo field:"
 msgstr ""
 
-#: ../src/ui-pref.c:1342 ../src/ui-pref.c:2050
+#: ../src/ui-pref.c:1160 ../src/ui-pref.c:1830
 msgid "Files folder"
 msgstr ""
 
-#: ../src/ui-pref.c:1348
+#: ../src/ui-pref.c:1164
 msgid "_Import:"
 msgstr "_Importēt:"
 
-#: ../src/ui-pref.c:1364
+#: ../src/ui-pref.c:1183
 msgid "_Export:"
 msgstr "_Eksportēt:"
 
-#: ../src/ui-pref.c:1403
+#: ../src/ui-pref.c:1254
 msgid "Initial filter"
 msgstr ""
 
-#: ../src/ui-pref.c:1408 ../src/ui-pref.c:1821 ../src/ui-pref.c:2041
+#: ../src/ui-pref.c:1258 ../src/ui-pref.c:1575 ../src/ui-pref.c:1818
 msgid "Date _range:"
 msgstr ""
 
-#: ../src/ui-pref.c:1418
+#: ../src/ui-pref.c:1272
 msgid "Charts options"
 msgstr ""
 
-#: ../src/ui-pref.c:1423
-msgid "Color Scheme:"
+#: ../src/ui-pref.c:1276
+msgid "Color scheme:"
 msgstr ""
 
-#: ../src/ui-pref.c:1433
+#: ../src/ui-pref.c:1298
 msgid "Statistics options"
 msgstr ""
 
-#: ../src/ui-pref.c:1438
+#: ../src/ui-pref.c:1302
 msgid "Show by _amount"
 msgstr "Kārtot pēc _summas"
 
-#: ../src/ui-pref.c:1443
+#: ../src/ui-pref.c:1307
 msgid "Show _rate column"
 msgstr "Rādīt p_rocentu kolonnu"
 
-#: ../src/ui-pref.c:1448 ../src/ui-pref.c:1458
+#: ../src/ui-pref.c:1312 ../src/ui-pref.c:1326
 msgid "Show _details"
 msgstr "Rādīt _detaļas"
 
-#: ../src/ui-pref.c:1453
+#: ../src/ui-pref.c:1322
 msgid "Budget options"
 msgstr ""
 
-#: ../src/ui-pref.c:1512
+#: ../src/ui-pref.c:1354
 msgid "_Enable"
 msgstr "I_eslēgt"
 
-#: ../src/ui-pref.c:1517
-msgid "Fill from:"
-msgstr "Gatavie iestatījumi:"
+#. row++;
+#: ../src/ui-pref.c:1375 ../src/ui-pref.c:1709
+msgid "_Preset:"
+msgstr "_Komplekts:"
 
-#: ../src/ui-pref.c:1526
-msgid "Country:"
-msgstr "Valsts:"
-
-#: ../src/ui-pref.c:1535
-msgid "Value:"
-msgstr "Vērtība:"
-
-#: ../src/ui-pref.c:1544
-msgid "Numbers format"
+#: ../src/ui-pref.c:1498
+msgid "_Format:"
 msgstr ""
 
-#: ../src/ui-pref.c:1549 ../src/ui-pref.c:1717
-msgid "Symbol:"
-msgstr ""
-
-#: ../src/ui-pref.c:1556 ../src/ui-pref.c:1724
-msgid "Is prefix"
-msgstr ""
-
-#: ../src/ui-pref.c:1561 ../src/ui-pref.c:1729
-msgid "Decimal char:"
-msgstr "Decimālā rakstzīme:"
-
-#: ../src/ui-pref.c:1568 ../src/ui-pref.c:1736
-msgid "Grouping char:"
-msgstr "Grupēšanas rakstzīme:"
-
-#: ../src/ui-pref.c:1575 ../src/ui-pref.c:1743
-msgid "_Frac digits:"
-msgstr "Cipari _aiz komata:"
-
-#: ../src/ui-pref.c:1678
-msgid "_Date format:"
-msgstr "_Datuma formāts:"
-
-#: ../src/ui-pref.c:1687
+#: ../src/ui-pref.c:1511
 msgid ""
 "%a locale's abbreviated weekday name.\n"
 "%A locale's full weekday name. \n"
@@ -2545,183 +2994,208 @@ msgid ""
 "%Y year with century as a decimal number. \n"
 msgstr ""
 
-#: ../src/ui-pref.c:1712
-msgid "Numbers options"
-msgstr ""
-
-#: ../src/ui-pref.c:1777
+#: ../src/ui-pref.c:1538
 msgid "Measurement units"
 msgstr ""
 
-#: ../src/ui-pref.c:1787
+#: ../src/ui-pref.c:1542
 msgid "Use _miles for meter"
 msgstr ""
 
-#: ../src/ui-pref.c:1792
-msgid "Use _galons for fuel"
+#: ../src/ui-pref.c:1547
+msgid "Use _gallon for fuel"
 msgstr ""
 
-#: ../src/ui-pref.c:1816
+#: ../src/ui-pref.c:1571
 msgid "Transaction window"
 msgstr ""
 
-#: ../src/ui-pref.c:1829
+#: ../src/ui-pref.c:1583
+msgid "_Show:"
+msgstr ""
+
+#: ../src/ui-pref.c:1596
 msgid "Hide reconciled transactions"
 msgstr ""
 
-#: ../src/ui-pref.c:1835
+#: ../src/ui-pref.c:1601
+msgid "Always show remind transactions"
+msgstr ""
+
+#: ../src/ui-pref.c:1611
 msgid "Multiple add"
 msgstr ""
 
-#: ../src/ui-pref.c:1840
+#: ../src/ui-pref.c:1615
 msgid "Keep the last date"
 msgstr ""
 
-#: ../src/ui-pref.c:1846
+#: ../src/ui-pref.c:1625
 msgid "Column list"
 msgstr ""
 
-#: ../src/ui-pref.c:1857
+#: ../src/ui-pref.c:1638
 msgid "Drag & drop to change the order"
 msgstr "Velciet, lai mainītu secību"
 
-#: ../src/ui-pref.c:1882
-msgid "Language"
-msgstr ""
-
-#: ../src/ui-pref.c:1887
+#: ../src/ui-pref.c:1665
 msgid "_Language:"
 msgstr ""
 
-#: ../src/ui-pref.c:1899
+#: ../src/ui-pref.c:1672
 msgid "_Toolbar:"
 msgstr "_Rīkjosla:"
 
-#: ../src/ui-pref.c:1922
-msgid "Treeview"
+#. widget = gtk_check_button_new_with_mnemonic (_("Enable rows in alternating colors"));
+#. data->CM_ruleshint = widget;
+#: ../src/ui-pref.c:1682
+msgid "_Grid line:"
 msgstr ""
 
-#: ../src/ui-pref.c:1927
-msgid "Show rules hint"
-msgstr "Iekrāsot rindas"
-
-#: ../src/ui-pref.c:1933
+#: ../src/ui-pref.c:1694
 msgid "Amount colors"
 msgstr ""
 
-#: ../src/ui-pref.c:1938
+#: ../src/ui-pref.c:1698
 msgid "Uses custom colors"
 msgstr "Izmanto savas krāsas"
 
-#: ../src/ui-pref.c:1943
-msgid "_Preset:"
-msgstr "_Komplekts:"
-
-#: ../src/ui-pref.c:1952
+#: ../src/ui-pref.c:1718
 msgid "_Expense:"
 msgstr "Izd_evumi:"
 
-#: ../src/ui-pref.c:1962
+#: ../src/ui-pref.c:1728
 msgid "_Income:"
 msgstr "_Ienākumi:"
 
-#: ../src/ui-pref.c:1969
+#: ../src/ui-pref.c:1735
 msgid "_Warning:"
 msgstr "_Brīdinājums:"
 
-#: ../src/ui-pref.c:1996
+#: ../src/ui-pref.c:1762
 msgid "Program start"
 msgstr ""
 
-#: ../src/ui-pref.c:2001
-msgid "Load last opened file"
-msgstr "Ielādēt pēdējo atvērto failu"
-
-#: ../src/ui-pref.c:2006
-msgid "Post pending scheduled transactions"
-msgstr ""
-
-#: ../src/ui-pref.c:2011
+#: ../src/ui-pref.c:1766
 msgid "Show splash screen"
 msgstr ""
 
-#: ../src/ui-pref.c:2017
+#: ../src/ui-pref.c:1771
+msgid "Load last opened file"
+msgstr "Ielādēt pēdējo atvērto failu"
+
+#: ../src/ui-pref.c:1781
+msgid "Update currencies online"
+msgstr ""
+
+#: ../src/ui-pref.c:1791
 msgid "Fiscal year"
 msgstr ""
 
 #. TRANSLATORS: (fiscal year) starts on
-#: ../src/ui-pref.c:2023
+#: ../src/ui-pref.c:1796
 msgid "Starts _on:"
 msgstr ""
 
-#: ../src/ui-pref.c:2036
+#: ../src/ui-pref.c:1814
 msgid "Main window reports"
 msgstr ""
 
-#: ../src/ui-pref.c:2055
+#: ../src/ui-pref.c:1834
 msgid "_Default:"
 msgstr ""
 
-#: ../src/ui-pref.c:2159
-msgid "Clear every preferences ?"
+#: ../src/ui-pref.c:1939
+msgid "Reset all preferences"
 msgstr ""
 
-#: ../src/ui-pref.c:2160
+#: ../src/ui-pref.c:1940
 msgid ""
-"This will revert the preferences\n"
-"to its default values"
+"Do you really want to reset all\n"
+"preferences to default values?"
 msgstr ""
 
-#: ../src/ui-pref.c:2179
+#: ../src/ui-pref.c:1941
+msgid "Reset"
+msgstr ""
+
+#: ../src/ui-pref.c:1959
 msgid "Preferences"
 msgstr "Iestatījumi"
 
-#: ../src/ui-pref.c:2387
+#: ../src/ui-pref.c:2181
 msgid ""
 "You will have to restart HomeBank\n"
 "for the language change to take effect."
 msgstr ""
 
-#: ../src/ui-pref.c:2654
-msgid "Column"
-msgstr "Kolonna"
-
-#: ../src/ui-transaction.c:50
-msgid "Inherit transaction"
-msgstr "Mantot transakciju"
-
-#: ../src/ui-transaction.c:51
-msgid "Modify transaction"
-msgstr "Mainīt transakciju"
-
-#: ../src/ui-transaction.c:334
-msgid "Transaction split"
+#: ../src/ui-split.c:374
+msgid "_Remove"
 msgstr ""
 
 #. sum button must appear only when new split add
 #. #1258821
 #. if(data.splittype == TXN_SPLIT_NEW)
-#: ../src/ui-transaction.c:354
+#: ../src/ui-split.c:379
 msgid "Sum"
 msgstr ""
 
-#: ../src/ui-transaction.c:439
+#: ../src/ui-split.c:464
 msgid "Sum of splits:"
 msgstr ""
 
-#: ../src/ui-transaction.c:451
+#: ../src/ui-split.c:475
 msgid "Unassigned:"
 msgstr ""
 
-#: ../src/ui-transaction.c:465
+#: ../src/ui-split.c:490
 msgid "Transaction amount:"
 msgstr ""
 
-#: ../src/ui-transaction.c:1059
+#: ../src/ui-transaction.c:50
+msgid "Add transaction"
+msgstr "Pievienot transakciju"
+
+#: ../src/ui-transaction.c:51
+msgid "Inherit transaction"
+msgstr "Mantot transakciju"
+
+#: ../src/ui-transaction.c:52
+msgid "Modify transaction"
+msgstr "Mainīt transakciju"
+
+#: ../src/ui-transaction.c:60
+msgid "Remind"
+msgstr ""
+
+#: ../src/ui-transaction.c:558
+msgid "From acc_ount:"
+msgstr ""
+
+#: ../src/ui-transaction.c:562 ../src/ui-transaction.c:987
+msgid "To acc_ount:"
+msgstr ""
+
+#: ../src/ui-transaction.c:642
+msgid ""
+"Do you want to break the internal transfer ?\n"
+"\n"
+"Proceeding will delete the target transaction."
+msgstr ""
+
+#: ../src/ui-transaction.c:870 ../src/ui-widgets.c:273
+msgid "Search..."
+msgstr ""
+
+#: ../src/ui-transaction.c:906
+msgid "Show _scheduled"
+msgstr ""
+
+#: ../src/ui-transaction.c:930
 msgid "_Date:"
 msgstr "_Datums:"
 
-#: ../src/ui-transaction.c:1064
+#: ../src/ui-transaction.c:936
 msgid ""
 "Date accepted here are:\n"
 "day,\n"
@@ -2732,82 +3206,73 @@ msgstr ""
 "diena, diena/mēnesis, mēnesis/diena,\n"
 "vai pilns pieraksts pēc jūsu lokāles"
 
-#: ../src/ui-transaction.c:1087
-msgid "Category split"
+#: ../src/ui-transaction.c:1002 ../src/ui-transaction.c:1011
+msgid ""
+"Autocompletion and direct seizure\n"
+"is available"
 msgstr ""
 
-#: ../src/ui-transaction.c:1090
-msgid "Pa_yment:"
+#: ../src/ui-transaction.c:1105
+msgid "_Add & keep"
 msgstr ""
 
-#: ../src/ui-transaction.c:1109
-msgid "Acc_ount:"
+#: ../src/ui-transaction.c:1113
+msgid "_Post"
 msgstr ""
 
-#: ../src/ui-transaction.c:1116
-msgid "To acc_ount:"
+#: ../src/ui-transaction.c:1157
+msgid "Use a _template"
 msgstr ""
 
-#: ../src/ui-transaction.c:1155
-msgid "M_emo:"
+#: ../src/ui-transaction.c:1201
+msgid "Warning: amount and category sign don't match"
 msgstr ""
 
-#: ../src/ui-transaction.c:1163
-msgid "Ta_gs:"
-msgstr ""
-
-#: ../src/ui-transaction.c:1275
-msgid "Fill in with a template"
-msgstr ""
-
-#: ../src/ui-transaction.c:1281
-msgid "_Template:"
-msgstr ""
-
-#: ../src/ui-widgets.c:754
+#: ../src/ui-widgets.c:799
 msgid "Check"
 msgstr "Čeks"
 
-#: ../src/ui-widgets.c:756
+#: ../src/ui-widgets.c:801
 msgid "Transfer"
 msgstr "Pārskaitījums"
 
-#: ../src/ui-widgets.c:757
+#: ../src/ui-widgets.c:802
 msgid "Internal transfer"
 msgstr "Iekšējais pārvedums"
 
-#: ../src/ui-widgets.c:758
+#: ../src/ui-widgets.c:803
 msgid "Debit card"
 msgstr "Debetkarte"
 
-#: ../src/ui-widgets.c:759
+#: ../src/ui-widgets.c:804
 msgid "Standing order"
 msgstr "Regulārais maksājums"
 
-#: ../src/ui-widgets.c:760
+#: ../src/ui-widgets.c:805
 msgid "Electronic payment"
 msgstr "Elektroniskais maksājums"
 
-#: ../src/ui-widgets.c:761
+#: ../src/ui-widgets.c:806
 msgid "Deposit"
 msgstr "Depozīts"
 
-#: ../src/ui-widgets.c:762
+#. TRANSLATORS: Financial institution fee
+#: ../src/ui-widgets.c:808
 msgid "FI fee"
 msgstr "Komisijas maksa"
 
-#: ../src/ui-widgets.c:763
+#: ../src/ui-widgets.c:809
 msgid "Direct Debit"
 msgstr ""
 
-#: ../src/ui-widgets.c:892
+#: ../src/ui-widgets.c:937
 msgid "Inactive"
 msgstr "Neaktīvs"
 
-#: ../src/ui-widgets.c:893
+#: ../src/ui-widgets.c:938
 msgid "Include"
 msgstr "Iekļaut"
 
-#: ../src/ui-widgets.c:894
+#: ../src/ui-widgets.c:939
 msgid "Exclude"
 msgstr "Izslēgt"

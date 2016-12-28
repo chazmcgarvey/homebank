@@ -1,8 +1,8 @@
-homebank (4.6.2-1) unstable; urgency=medium
+homebank (5.1.2-1) unstable; urgency=medium
 
   * debian/control: changed description (Closes: #734503, #639536)
     (LP: #155059)
   * homebank-data: now includes example files. (Closes: #692517, #649436)
     (LP: #835606)
 
- -- NetBit73 <netbit73@gmail.com>  Sat, 10 Feb 2014 19:23:10 +0100
+ -- HomeBank <homebank@free.fr>  Sat, 10 Oct 2016 11:25:00 +0100

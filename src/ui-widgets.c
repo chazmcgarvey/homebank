@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -42,6 +42,12 @@ extern struct HomeBank *GLOBALS;
 
 
 extern gchar *CYA_FLT_RANGE[];
+
+
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
 
 
 void
@@ -175,6 +181,15 @@ void hb_widget_visible(GtkWidget *widget, gboolean visible)
 }
 
 
+void ui_label_set_integer(GtkLabel *label, gint value)
+{
+gchar buf[16];
+
+	g_snprintf(buf, 16, "%d", value);
+	gtk_label_set_text (label, buf);
+}
+
+
 void ui_gtk_entry_set_text(GtkWidget *widget, gchar *text)
 {
 	DB( g_print(" set text to '%s'\n", text) );
@@ -185,17 +200,53 @@ void ui_gtk_entry_set_text(GtkWidget *widget, gchar *text)
 		gtk_entry_set_text(GTK_ENTRY(widget), "");
 }
 
+void ui_gtk_entry_replace_text(GtkWidget *widget, gchar **storage)
+{
+const gchar *text;
 
-/*
-**
-*/
+	DB( g_print(" storage is '%p' at '%p'\n", *storage, storage) );
+
+	/* free any previous string */
+	if( *storage != NULL )
+	{
+		g_free(*storage);
+	}
+
+	*storage = NULL;
+	text = gtk_entry_get_text(GTK_ENTRY(widget));
+	*storage = g_strdup(text);
+}
+
+
+GtkWidget *make_label_group(gchar *str)
+{
+GtkWidget *label = gtk_label_new (str);
+
+	gtk_widget_set_valign (label, GTK_ALIGN_CENTER);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
+	gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
+	return label;
+}
+
+
+GtkWidget *make_label_widget(char *str)
+{
+GtkWidget *label = gtk_label_new_with_mnemonic (str);
+
+	gtk_widget_set_valign (label, GTK_ALIGN_CENTER);
+	gtk_widget_set_halign (label, GTK_ALIGN_END);
+	return label;
+}
+
+
 GtkWidget *make_label(char *str, gfloat xalign, gfloat yalign)
 {
-GtkWidget *label;
+GtkWidget *label = gtk_label_new_with_mnemonic (str);
 
-	label = gtk_label_new_with_mnemonic (str);
+	//todo: deprecated in 3.14
 	gtk_misc_set_alignment (GTK_MISC (label), xalign, yalign);
-
+	//gtk_label_set_xalign(GTK_LABEL(label), xalign);
+	//gtk_label_set_yalign(GTK_LABEL(label), yalign);
 	return label;
 }
 
@@ -210,12 +261,23 @@ GtkWidget *entry;
 	entry = gtk_entry_new ();
 	gtk_editable_set_editable (GTK_EDITABLE(entry), FALSE);
 	g_object_set(entry, "xalign", xalign, NULL);
-
-	//entry = gtk_label_new(NULL);
-	//gtk_misc_set_padding (entry, 4, 2);
-	//gtk_misc_set_alignment(entry, xalign, 0.5);
 	return entry;
 }
+
+
+GtkWidget *make_search(GtkWidget *label)
+{
+GtkWidget *search;
+
+	search = gtk_search_entry_new();
+	gtk_entry_set_placeholder_text(GTK_ENTRY(search), _("Search...") );
+
+	if(label)
+		gtk_label_set_mnemonic_widget (GTK_LABEL(label), search);
+
+	return search;
+}
+
 
 
 /*
@@ -232,6 +294,24 @@ GtkWidget *entry;
 
 	return entry;
 }
+
+
+GtkWidget *make_image_button(gchar *icon_name, gchar *tooltip_text)
+{
+GtkWidget *button, *image;
+
+	//todo 3.10 use gtk_button_new_from_icon_name 
+
+	button = gtk_button_new();
+	image = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
+	g_object_set (button, "image", image, NULL);
+	if(tooltip_text != NULL)
+		gtk_widget_set_tooltip_text(button, tooltip_text);
+
+	return button;
+}
+
+
 
 /*
 **
@@ -332,7 +412,7 @@ const gchar *numtext;
 		gtk_editable_insert_text (editable, result, count, position);
 		g_signal_handlers_unblock_by_func (G_OBJECT (editable), G_CALLBACK (hb_amount_insert_text_handler), data);
 	}
-	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert_text");
+	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
 
 	g_free (result);
 }
@@ -345,14 +425,15 @@ GtkWidget *make_amount(GtkWidget *label)
 GtkWidget *spinner;
 GtkAdjustment *adj;
 
-	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -G_MAXINT32, G_MAXINT32, 0.01, 1.0, 0.0);
+	//adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -G_MAXDOUBLE, G_MAXDOUBLE, 0.01, 1.0, 0.0);
+	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -8589934588, 8589934588, 0.01, 1.0, 0.0);
 	spinner = gtk_spin_button_new (adj, 1.0, 2);
 	g_object_set(spinner, "xalign", 1.0, NULL);
 
 	if(label)
 		gtk_label_set_mnemonic_widget (GTK_LABEL(label), spinner);
 
-	g_signal_connect(G_OBJECT(spinner), "insert_text",
+	g_signal_connect(G_OBJECT(spinner), "insert-text",
 			 G_CALLBACK(hb_amount_insert_text_handler),
 			 NULL);
 
@@ -360,12 +441,12 @@ GtkAdjustment *adj;
 }
 
 
-GtkWidget *make_euro(GtkWidget *label)
+GtkWidget *make_exchange_rate(GtkWidget *label)
 {
 GtkWidget *spinner;
 GtkAdjustment *adj;
 
-	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -G_MAXINT32, G_MAXINT32, 0.01, 1.0, 0.0);
+	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, 0.0, 99999, 0.01, 1.0, 0.0);
 	spinner = gtk_spin_button_new (adj, 1.0, 6);
 	//gtk_spin_button_set_wrap (GTK_SPIN_BUTTON (spinner), TRUE);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinner), TRUE);
@@ -404,7 +485,7 @@ GtkWidget *make_scale(GtkWidget *label)
 {
 GtkWidget *scale;
 
-	scale = gtk_hscale_new_with_range(GTK_CHART_MINBARW, GTK_CHART_MAXBARW, 1.0);
+	scale = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, GTK_CHART_MINBARW, GTK_CHART_MAXBARW, 1.0);
 	gtk_scale_set_draw_value(GTK_SCALE(scale), FALSE);
 	gtk_range_set_value(GTK_RANGE(scale), GTK_CHART_BARW);
 
@@ -549,39 +630,48 @@ guint i;
 	return combobox;
 }
 
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 /*
 **
 */
-GtkWidget *make_radio(GtkWidget *label, gchar **items, GtkOrientation orientation)
+GtkWidget *make_radio(gchar **items, gboolean buttonstyle, GtkOrientation orientation)
 {
 GtkWidget *box, *button;
-//GSList *group;
 guint i;
 
-	if(orientation == GTK_ORIENTATION_HORIZONTAL)
-		box = gtk_hbox_new(FALSE, 0);
-	else
-		box = gtk_vbox_new (FALSE, 0);
+	box = gtk_box_new (orientation, 0);
 
     button = gtk_radio_button_new_with_label (NULL, _(items[0]));
+	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), !buttonstyle);
     gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
 	for (i = 1; items[i] != NULL; i++)
 	{
 		button = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (button), _(items[i]));
+		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), !buttonstyle);
 	    gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
 	}
+
+	if(buttonstyle)
+	{
+		gtk_style_context_add_class (gtk_widget_get_style_context (box), GTK_STYLE_CLASS_LINKED);
+		gtk_style_context_add_class (gtk_widget_get_style_context (box), GTK_STYLE_CLASS_RAISED);
+	}
+	
 	return box;
 }
 
 
 gint radio_get_active (GtkContainer *container)
 {
-GList *list;
+GList *lchild, *list;
 GtkWidget *radio;
 gint i, retval = 0;
 
-	list = gtk_container_get_children (container);
+	if(!GTK_IS_CONTAINER(container))
+		return -1;
+
+	lchild = list = gtk_container_get_children (container);
 	for(i=0;list != NULL;i++)
 	{
 		radio = list->data;
@@ -595,174 +685,46 @@ gint i, retval = 0;
 		}
 		list = g_list_next(list);
 	}
+	g_list_free(lchild);
+	
 	return retval;
 }
+
+GtkWidget *radio_get_nth_widget (GtkContainer *container, gint nth)
+{
+GList *lchild, *list;
+GtkWidget *radio;
+
+	if(!GTK_IS_CONTAINER(container))
+		return NULL;
+
+	lchild = list = gtk_container_get_children (container);
+	radio = g_list_nth_data (list, nth);
+	g_list_free(lchild);
+	return radio;   //may return NULL
+}
+
 
 
 void radio_set_active (GtkContainer *container, gint active)
 {
-GList *list;
+GList *lchild, *list;
 GtkWidget *radio;
 
 	if(!GTK_IS_CONTAINER(container))
 		return;
 
-	list = gtk_container_get_children (container);
+	lchild = list = gtk_container_get_children (container);
 	radio = g_list_nth_data (list, active);
 	if(radio != NULL && GTK_IS_TOGGLE_BUTTON(radio))
 	{
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio), TRUE);
 	}
+	g_list_free(lchild);
 }
-
-
-/*
-**
-*/
-guint make_poparchive_populate(GtkComboBox *combobox, GList *srclist)
-{
-GtkTreeModel *model;
-GtkTreeIter  iter;
-GList *list;
-gint i;
-
-	//insert all glist item into treeview
-	model  = gtk_combo_box_get_model(combobox);
-	gtk_list_store_clear(GTK_LIST_STORE(model));
-
-	gtk_list_store_append (GTK_LIST_STORE(model), &iter);
-	gtk_list_store_set (GTK_LIST_STORE(model), &iter, 0, "----", -1);
-
-	i=0;
-	list = g_list_first(srclist);
-	while (list != NULL)
-	{
-	Archive *entry = list->data;
-
-		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
-		gtk_list_store_set (GTK_LIST_STORE(model), &iter, 0, entry->wording, -1);
-
-		//DB( g_print(" populate_treeview: %d %08x\n", i, list->data) );
-
-		i++; list = g_list_next(list);
-	}
-
-	return i;
-}
-
-
-GtkWidget *make_poparchive(GtkWidget *label)
-{
-GtkListStore *store;
-GtkWidget *combobox;
-GtkCellRenderer    *renderer;
-
-	//store
-	store = gtk_list_store_new (1, G_TYPE_STRING);
-	combobox = gtk_combo_box_new_with_model (GTK_TREE_MODEL(store));
-	g_object_unref(store);
-	renderer = gtk_cell_renderer_text_new ();
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combobox), renderer, TRUE);
-	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combobox), renderer, "text", 0, NULL);
-
-	if(label)
-		gtk_label_set_mnemonic_widget (GTK_LABEL(label), combobox);
-
-	return combobox;
-}
-
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
-/**
- * free_combobox_icons:
- *
- * generic function to free combobox icons
- *
- */
-static void free_combobox_icons(GdkPixbuf **storage, guint max)
-{
-guint i;
-
-	for(i=0;i<max;i++)
-	{
-		if(storage[i] != NULL)
-			g_object_unref(storage[i]);
-	}
-}
-
-/**
- * load_combobox_icons:
- *
- * generic function to load combobox icons
- *
- */
-static void load_combobox_icons(gchar **filenames, GdkPixbuf **storage, guint max)
-{
-//GError        *error = NULL;
-GtkWidget *cellview;
-guint i;
-
-	cellview = gtk_cell_view_new ();
-
-	for(i=0;i<max;i++)
-	{
-		storage[i] = gtk_widget_render_icon (cellview, filenames[i], GTK_ICON_SIZE_BUTTON, NULL);
-		#if MYDEBUG == 1
-		if( !storage[i] )
-			g_print("cannot found a private stock %s\n", filenames[i]);
-		#endif
-	}
-
-	gtk_widget_destroy (cellview);
-}
-
-
-
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
-enum
-{
-	LST_PAYMODE_PIXBUF,
-	LST_PAYMODE_LABEL,
-	NUM_LST_PAYMODE
-};
-
-GdkPixbuf *paymode_icons[NUM_PAYMODE_MAX];
-
-char *paymode_pixbuf_names[NUM_PAYMODE_MAX] =
-{
-	"pm-none",
-	"pm-ccard",
-	"pm-check",
-	"pm-cash" ,
-	"pm-transfer",
-	"pm-intransfer",
-	"pm-dcard",
-	"pm-standingorder",
-	"pm-epayment",
-	"pm-deposit",
-	"pm-fifee",
-	"pm-directdebit"
-};
-
-char *paymode_label_names[NUM_PAYMODE_MAX] =
-{
-	N_("(none)"),
-	N_("Credit card"),
-	N_("Check"),
-	N_("Cash"),
-	N_("Transfer"),
-	N_("Internal transfer"),
-	N_("Debit card"),
-	N_("Standing order"),
-	N_("Electronic payment"),
-	N_("Deposit"),
-	N_("FI fee"),
-	N_("Direct Debit")
-};
-
 
 /*
 id  ofx  			english                           french
@@ -804,57 +766,125 @@ OFX_DIRECTDEBIT 	Merchant initiated debit
 OFX_OTHER 	Somer other type of transaction 
 */
 
-
-void load_paymode_icons(void)
+enum
 {
-	load_combobox_icons(paymode_pixbuf_names, paymode_icons, NUM_PAYMODE_MAX);
-}
+	LST_PAYMODE_ICONNAME,
+	LST_PAYMODE_LABEL,
+	NUM_LST_PAYMODE
+};
 
-
-void free_paymode_icons(void)
+char *paymode_iconnames[NUM_PAYMODE_MAX] =
 {
-	free_combobox_icons(paymode_icons, NUM_PAYMODE_MAX);
+	"pm-none",
+	"pm-ccard",
+	"pm-check",
+	"pm-cash" ,
+	"pm-transfer",
+	"pm-intransfer",
+	"pm-dcard",
+	"pm-standingorder",
+	"pm-epayment",
+	"pm-deposit",
+	"pm-fifee",
+	"pm-directdebit"
+};
+
+char *paymode_label_names[NUM_PAYMODE_MAX] =
+{
+	N_("(none)"),
+	N_("Credit card"),
+	N_("Check"),
+	N_("Cash"),
+	N_("Transfer"),
+	N_("Internal transfer"),
+	N_("Debit card"),
+	N_("Standing order"),
+	N_("Electronic payment"),
+	N_("Deposit"),
+	//TRANSLATORS: Financial institution fee
+	N_("FI fee"),
+	N_("Direct Debit")
+};
+
+/* nota: used in ui-filter */
+gchar *get_paymode_icon_name(gint index)
+{
+	if(index >= NUM_PAYMODE_MAX)
+		return NULL;
+
+	return paymode_iconnames[index];
 }
 
 
 /*
 ** Make a paymode combobox widget
 */
-GtkWidget *make_paymode(GtkWidget *label)
+
+static void
+paymode_set_sensitive (GtkCellLayout   *cell_layout,
+	       GtkCellRenderer *cell,
+	       GtkTreeModel    *tree_model,
+	       GtkTreeIter     *iter,
+	       gpointer         data)
 {
-GtkListStore  *store;
-GtkTreeIter    iter;
+  GtkTreePath *path;
+  gint *indices;
+  gboolean sensitive;
+
+  path = gtk_tree_model_get_path (tree_model, iter);
+  indices = gtk_tree_path_get_indices (path);
+  sensitive = (indices[0] == PAYMODE_INTXFER) ? FALSE : TRUE;  
+  gtk_tree_path_free (path);
+  
+
+  g_object_set (cell, "sensitive", sensitive, NULL);
+}
+
+
+
+static GtkWidget *make_paymode_internal(GtkWidget *label, gboolean intxfer)
+{
+GtkListStore *store;
+GtkTreeIter iter;
 GtkWidget *combobox;
-GtkCellRenderer    *renderer;
+GtkCellRenderer *renderer, *r1, *r2;
 guint i;
 
-	//store
 	store = gtk_list_store_new (
 		NUM_LST_PAYMODE,
-		GDK_TYPE_PIXBUF,
+		G_TYPE_STRING,
 		G_TYPE_STRING
 		);
 
-	//combobox
 	combobox = gtk_combo_box_new_with_model(GTK_TREE_MODEL(store));
 
-	//column 1
-	renderer = gtk_cell_renderer_pixbuf_new();
+	renderer = r1 = gtk_cell_renderer_pixbuf_new();
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer, FALSE);
-	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT(combobox), renderer, "pixbuf", LST_PAYMODE_PIXBUF);
+	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT(combobox), renderer, "icon-name", LST_PAYMODE_ICONNAME);
 
-	renderer = gtk_cell_renderer_text_new();
+	renderer = r2 = gtk_cell_renderer_text_new();
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer, FALSE);
 	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT(combobox), renderer, "text", LST_PAYMODE_LABEL);
 
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), 0);
+
+	if( intxfer == FALSE )
+	{
+		gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (combobox),
+						r1,
+						paymode_set_sensitive,
+						NULL, NULL);
+		gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (combobox),
+						r2,
+						paymode_set_sensitive,
+						NULL, NULL);
+	}
 
 	//populate our combobox model
 	for(i=0;i<NUM_PAYMODE_MAX;i++)
 	{
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter,
-			LST_PAYMODE_PIXBUF, paymode_icons[i],
+			LST_PAYMODE_ICONNAME, paymode_iconnames[i],
 			LST_PAYMODE_LABEL, _(paymode_label_names[i]),
 			-1);
 	}
@@ -867,20 +897,32 @@ guint i;
 	return combobox;
 }
 
+
+
+
+GtkWidget *make_paymode(GtkWidget *label)
+{
+	return make_paymode_internal(label, TRUE);
+}
+
+GtkWidget *make_paymode_nointxfer(GtkWidget *label)
+{
+	return make_paymode_internal(label, FALSE);
+}
+
+
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 #define NUM_NAINEX_MAX 3
 
 enum
 {
-	LST_NAINEX_PIXBUF,
+	LST_NAINEX_ICONNAME,
 	LST_NAINEX_LABEL,
 	NUM_LST_NAINEX
 };
 
-GdkPixbuf *nainex_icons[NUM_NAINEX_MAX];
-
-char *nainex_pixbuf_names[NUM_NAINEX_MAX] =
+char *nainex_iconnames[NUM_NAINEX_MAX] =
 {
 	"flt-inactive",
 	"flt-include",
@@ -893,17 +935,6 @@ char *nainex_label_names[NUM_NAINEX_MAX] =
 	N_("Include"),
 	N_("Exclude")
 };
-
-void load_nainex_icons(void)
-{
-	load_combobox_icons(nainex_pixbuf_names, nainex_icons, NUM_NAINEX_MAX);
-}
-
-
-void free_nainex_icons(void)
-{
-	free_combobox_icons(nainex_icons, NUM_NAINEX_MAX);
-}
 
 
 /*
@@ -920,7 +951,7 @@ guint i;
 	//store
 	store = gtk_list_store_new (
 		NUM_LST_NAINEX,
-		GDK_TYPE_PIXBUF,
+		G_TYPE_STRING,
 		G_TYPE_STRING
 		);
 
@@ -930,7 +961,7 @@ guint i;
 	//column 1
 	renderer = gtk_cell_renderer_pixbuf_new();
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer, FALSE);
-	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT(combobox), renderer, "pixbuf", LST_NAINEX_PIXBUF);
+	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT(combobox), renderer, "icon-name", LST_NAINEX_ICONNAME);
 
 	renderer = gtk_cell_renderer_text_new();
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer, FALSE);
@@ -943,7 +974,7 @@ guint i;
 	{
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter,
-			LST_NAINEX_PIXBUF, nainex_icons[i],
+			LST_NAINEX_ICONNAME, nainex_iconnames[i],
 			LST_NAINEX_LABEL, _(nainex_label_names[i]),
 			-1);
 	}
