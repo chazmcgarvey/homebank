@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -19,6 +19,7 @@
 
 #include "homebank.h"
 #include "hb-archive.h"
+#include "hb-split.h"
 
 #include "ext.h"
 #include "refcount.h"
@@ -54,6 +55,9 @@ Archive *new_item = rc_dup(src_item, sizeof(Archive));
 	{
 		//duplicate the string
 		new_item->wording = g_strdup(src_item->wording);
+		
+		if( da_splits_clone(src_item->splits, new_item->splits) > 0)
+			new_item->flags |= OF_SPLIT; //Flag that Splits are active
 	}
 	return new_item;
 }
@@ -65,6 +69,9 @@ void da_archive_free(Archive *item)
 		if(item->wording != NULL)
 			g_free(item->wording);
 
+		da_splits_free(item->splits);
+		//item->flags &= ~(OF_SPLIT); //Flag that Splits are cleared		
+		
 		rc_free(item);
 	}
 }
@@ -110,27 +117,31 @@ Payee *pay;
 	{
 		g_warning("arc consistency: fixed invalid cat %d", item->kcat);
 		item->kcat = 0;
+		GLOBALS->changes_count++;
 	}
-
+	
+	split_cat_consistency(item->splits);
+	
 	// check payee exists
 	pay = da_pay_get(item->kpay);
 	if(pay == NULL)
 	{
 		g_warning("arc consistency: fixed invalid pay %d", item->kpay);
 		item->kpay = 0;
+		GLOBALS->changes_count++;
 	}
 
 	// reset dst acc for non xfer transaction
 	if( item->paymode != PAYMODE_INTXFER )
 		item->kxferacc = 0;
 
-	// remove automation if dst_acc not exists
+	// delete automation if dst_acc not exists
 	if(item->paymode == PAYMODE_INTXFER)
 	{
 		acc = da_acc_get(item->kxferacc);
 		if(acc == NULL)
 		{
-			item->flags &= ~(OF_AUTO);	//remove flag
+			item->flags &= ~(OF_AUTO);	//delete flag
 		}
 	}
 
@@ -138,11 +149,38 @@ Payee *pay;
 
 /* = = = = = = = = = = = = = = = = = = = = */
 
+Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn)
+{
+	//fill it
+	arc->amount		= txn->amount;
+	arc->kacc		= txn->kacc;
+	arc->kxferacc	= txn->kxferacc;
+	arc->paymode		= txn->paymode;
+	arc->flags			= txn->flags	& (OF_INCOME);
+	arc->status		= txn->status;
+	arc->kpay			= txn->kpay;
+	arc->kcat		= txn->kcat;
+	if(txn->wording != NULL)
+		arc->wording 		= g_strdup(txn->wording);
+	else
+		arc->wording 		= g_strdup(_("(new archive)"));
+
+	if( da_splits_clone(txn->splits, arc->splits) > 0)
+		arc->flags |= OF_SPLIT; //Flag that Splits are active
+	
+	return arc;
+}
+
+
+
+
 static guint32 _sched_date_get_next_post(Archive *arc, guint32 nextdate)
 {
 GDate *tmpdate;
 guint32 nextpostdate = nextdate;
-	
+
+	DB( g_print("\n[scheduled] _sched_date_get_next_post\n") );
+
 	tmpdate = g_date_new_julian(nextpostdate);
 	switch(arc->unit)
 	{
@@ -164,17 +202,6 @@ guint32 nextpostdate = nextdate;
 	nextpostdate = g_date_get_julian(tmpdate);
 	g_date_free(tmpdate);
 	
-	/* check limit, update and maybe break */
-	if(arc->flags & OF_LIMIT)
-	{
-		arc->limit--;
-		if(arc->limit <= 0)
-		{
-			arc->flags ^= (OF_LIMIT | OF_AUTO);	// invert flags
-			nextpostdate = 0;
-		}
-	}
-
 	return nextpostdate;
 }
 
@@ -183,7 +210,7 @@ gboolean scheduled_is_postable(Archive *arc)
 {
 gdouble value;
 
-	value = arrondi(arc->amount, 2);
+	value = hb_amount_round(arc->amount, 2);
 	if( (arc->flags & OF_AUTO) && (arc->kacc > 0) && (value != 0.0) )
 		return TRUE;
 
@@ -197,6 +224,9 @@ GDate *tmpdate;
 GDateWeekday wday;
 guint32 finalpostdate;
 gint shift;
+
+	DB( g_print("\n[scheduled] scheduled_get_postdate\n") );
+
 
 	finalpostdate = postdate;
 	
@@ -235,24 +265,58 @@ gint shift;
 }
 
 
-
-
-
 guint32 scheduled_get_latepost_count(Archive *arc, guint32 jrefdate)
 {
-guint32 nbpost = 0;
-guint32 curdate = arc->nextdate;
-	
-	while(curdate <= jrefdate)
+guint32 curdate = jrefdate - arc->nextdate;
+guint32 nblate = 0;
+
+	/*
+	switch(arc->unit)
 	{
-		curdate = _sched_date_get_next_post(arc, curdate);
-		nbpost++;
-		// break at 11 max (to display +10)
-		if(nbpost >= 11)
+		case AUTO_UNIT_DAY:
+			nbpost = (curdate / arc->every);
+			g_print("debug d: %d => %f\n", curdate, nbpost);
+			break;
+
+		case AUTO_UNIT_WEEK:
+			nbpost = (curdate / ( 7 * arc->every));
+			g_print("debug w: %d => %f\n", curdate, nbpost);
+			break;
+
+		case AUTO_UNIT_MONTH:
+			//approximate is sufficient
+			nbpost = (curdate / (( 365.2425 / 12) * arc->every));
+			g_print("debug m: %d => %f\n", curdate, nbpost);
+			break;
+
+		case AUTO_UNIT_YEAR:
+			//approximate is sufficient
+			nbpost = (curdate / ( 365.2425 * arc->every));
+			g_print("debug y: %d => %f\n", curdate, nbpost);
 			break;
 	}
 
-	return nbpost;
+	nblate = floor(nbpost);
+
+	if(arc->flags & OF_LIMIT)
+		nblate = MIN(nblate, arc->limit);
+	
+	nblate = MIN(nblate, 11);
+	*/
+	
+
+	// pre 5.1 way
+	curdate = arc->nextdate;
+	while(curdate <= jrefdate)
+	{
+		curdate = _sched_date_get_next_post(arc, curdate);
+		nblate++;
+		// break if over limit or at 11 max (to display +10)
+		if(nblate >= arc->limit || nblate >= 11)
+			break;
+	}
+
+	return nblate;
 }
 
 
@@ -260,6 +324,19 @@ guint32 curdate = arc->nextdate;
 guint32 scheduled_date_advance(Archive *arc)
 {
 	arc->nextdate = _sched_date_get_next_post(arc, arc->nextdate);
+	
+	//#1556289
+	/* check limit, update and maybe break */
+	if(arc->flags & OF_LIMIT)
+	{
+		arc->limit--;
+		if(arc->limit <= 0)
+		{
+			arc->flags ^= (OF_LIMIT | OF_AUTO);	// invert flags
+			arc->nextdate = 0;
+		}
+	}
+	
 	return arc->nextdate;
 }
 

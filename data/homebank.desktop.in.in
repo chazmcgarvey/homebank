@@ -1,10 +1,12 @@
 [Desktop Entry]
 _Name=HomeBank
-_Comment=Free, easy, personal accounting for everyone.
-Exec=homebank %F
+_GenericName=Personal finance
+_Comment=Free, easy, personal accounting for everyone
+_Keywords=finance;accounting;budget;personal;money;
+Exec=homebank %f
 Terminal=false
 StartupNotify=true
 Type=Application
 Icon=homebank
-Categories=GTK;Office;Finance;
+Categories=GNOME;GTK;Office;Finance;
 MimeType=application/x-homebank;

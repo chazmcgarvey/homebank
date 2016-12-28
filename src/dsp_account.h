@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -21,13 +21,35 @@
 #define __HB_DSPACCOUNT_H__
 
 
+
+struct ui_multipleedit_dialog_data
+{
+	GtkWidget	*window;
+
+	GtkWidget	*CM_date, *PO_date;
+	GtkWidget	*LB_mode, *CM_mode, *NU_mode;
+	GtkWidget	*CM_info, *ST_info;
+	GtkWidget	*LB_acc, *CM_acc, *PO_acc;
+	GtkWidget	*CM_pay, *PO_pay;
+	GtkWidget	*CM_cat, *PO_cat;
+	GtkWidget	*CM_tags, *ST_tags;
+	GtkWidget	*CM_memo, *ST_memo;
+	
+	GtkTreeView	*treeview;
+	gboolean	has_xfer;
+};
+
+
 enum
 {
 	ACTION_ACCOUNT_ADD,
 	ACTION_ACCOUNT_INHERIT,
 	ACTION_ACCOUNT_EDIT,
+	ACTION_ACCOUNT_MULTIEDIT,
+	ACTION_ACCOUNT_NONE,
+	ACTION_ACCOUNT_CLEAR,
 	ACTION_ACCOUNT_RECONCILE,
-	ACTION_ACCOUNT_REMOVE,
+	ACTION_ACCOUNT_DELETE,
 	ACTION_ACCOUNT_FILTER,
 	ACTION_ACCOUNT_CLOSE,
 	MAX_ACTION_ACCOUNT

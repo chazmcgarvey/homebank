@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -25,8 +25,8 @@ struct defhbfile_data
 	GtkWidget	*ST_owner;
 	GtkWidget	*PO_grp;
 	GtkWidget	*radio[2];
-	GtkWidget	*NU_weekday;
-	GtkWidget	*NU_nbdays;
+	GtkWidget	*LB_weekday, *NU_weekday;
+	GtkWidget	*LB_nbdays, *NU_nbdays;
 
 	gint		change;
 };

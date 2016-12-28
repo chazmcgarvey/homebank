@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+	<meta content="noindex" name="robots">
+	<title>Main window menu</title>
+	<link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+	<div class="dochead">
+		HomeBank User manual
+	</div>
+	<div class="title">
+		<h1>Account window menus</h1>
+		<p>The menu is the start of every actions on transactions.</p>
+		<ul class="toc">
+			<li><a href="#menu1">Account</a></li>
+			<li><a href="#menu2">Transaction</a></li>
+			<li><a href="#menu3">Actions</a></li>
+			<li><a href="#menu4">Tools</a></li>
+		</ul>
+	</div>
+	<div class="rounded content">
+		<h2><a id="menu1" name="menu1"></a>Account</h2>
+		<table class="widgetinfo">
+			<tr>
+				<th>Export QIF...</th>
+				<td>export transaction to a QIF file</td>
+			</tr>
+			<tr>
+				<th>Export CSV...</th>
+				<td>export transaction to a CSV file, see <a href="misc-csvformat.html">CSV file format</a></td>
+			</tr>
+			<tr>
+				<th>Close...</th>
+				<td>close the account window</td>
+			</tr>
+		</table>
+	</div>
+	<div class="rounded content">
+		<h2><a id="menu2" name="menu2"></a>Transaction</h2>
+		<table class="widgetinfo">
+			<tr>
+				<th>Add...</th>
+				<td>open the <a href="dlg-tran.html">transaction dialog</a> in Add mode</td>
+			</tr>
+			<tr>
+				<th>Inherit...</th>
+				<td>open the <a href="dlg-tran.html">transaction dialog</a> pre-fill it with the selected transaction</td>
+			</tr>
+			<tr>
+				<th>Edit...</th>
+				<td>open the <a href="dlg-tran.html">transaction dialog</a> in Edit mode</td>
+			</tr>
+			<tr>
+				<th>Status &gt; None</th>
+				<td>change the status to none<br>
+				=&gt; confirmation will be asked if already Reconciled</td>
+			</tr>
+			<tr>
+				<th>Status &gt; Cleared</th>
+				<td>toggle cleared state if possible<br>
+				=&gt; no effect on a Reconciled transaction</td>
+			</tr>
+			<tr>
+				<th>Status &gt; Reconciled</th>
+				<td>toggle reconciled state if possible<br>
+				=&gt; confirmation will be asked if already Reconciled</td>
+			</tr>
+			<tr>
+				<th>Create template...</th>
+				<td>create some template from the selected transaction(s)</td>
+			</tr>
+			<tr>
+				<th>Delete...</th>
+				<td>delete the selected transaction(s)</td>
+			</tr>
+		</table>
+	</div>
+	<div class="rounded content">
+		<h2><a id="menu4" name="menu4"></a>Tools</h2>
+		<table class="widgetinfo">
+			<tr>
+				<th>Filter...</th>
+				<td>open the <a href="dlg-filt.html">filter dialog</a></td>
+			</tr>
+			<tr>
+				<th>Auto. assignments</th>
+				<td>run automatic assignment rules on the current account, see <a href="use-auto_assign.html">automatic assignments</a></td>
+			</tr>
+			<tr>
+				<th>Check internal transfer...</th>
+				<td>run a consistency check on internal transfer for this account</td>
+			</tr>
+			<tr>
+				<th>Convert to euro...</th>
+				<td>After a confirmation, this will convert the account to euro major currency according the preferences currency set</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

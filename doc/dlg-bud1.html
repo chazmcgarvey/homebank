@@ -1,108 +1,74 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="noindex" name="robots">
   <title>Budget dialog</title>
   <link href="help.css" rel="stylesheet" type="text/css">
 </head>
-
 <body id="top">
   <div class="dochead">
     HomeBank User manual
   </div>
-
   <div class="title">
-
-  <h1>Budget dialog</h1>
-
-  <p>The budget dialog is the main interface to edit, modify and
-  manage your <a href="00-lexicon.html#budget">budget</a>.</p>
-   
-    <p>Please refer to the <a href="use-budget.html">using the budget
-  feature</a> for details on how using this feature.</p>
-
-
-  <h2>Dialog call</h2>
-
-  <ul>
-    <li>mainwindow-menu: Manage / Budget</li>
-
-    <li>mainwindow-toolbar.</li>
-  </ul>
-</div>
-
+    <h1>Budget dialog</h1>
+    <p>The budget dialog is the main interface to edit, modify and manage your <a href="00-lexicon.html#budget">budget</a>.</p>
+    <p>Please refer to the <a href="use-budget.html">using the budget feature</a> for details on how using this feature.</p>
+    <h2>Dialog call</h2>
+    <ul>
+      <li>main window menu: Manage / Budget</li>
+      <li>main window tool bar.</li>
+    </ul>
+  </div>
   <div class="rounded content">
-
-  <h2>Using budget dialog</h2>
-
-  <p><img class="gtkshot right" src="images/dlg-budget1.png"></p>
-
-  <h3><img src="images/1.png"> Categories list</h3>
-
-  <p>display the list of categories and subcategories of the
-  current wallet.<br>
-  bold categories signals a budgeted category.</p>
-
-  <h3><img src="images/2.png"> Budget for each month</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>is the same</th>
-
-      <td>category budget will be the same for every month: Jan
-      -&gt; Dec<br>
-      you can then fill the amount below</td>
-    </tr>
-
-    <tr>
-      <th>is different</th>
-
-      <td>category budget will be specific each month<br>
-      you can then fill the amount of each needed months</td>
-    </tr>
-
-    <tr>
-      <th>Jan to Dec</th>
-
-      <td>The amount for each month</td>
-    </tr>
-
-    <tr>
-      <th>Force monitoring this category</th>
-
-      <td>Force the active category to be displayed into the budget report, 
-		event if there is no amount</td>
-    </tr>
-
-  </table>
-
-  <h3><img src="images/3.png"> Buttons</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Clear</th>
-
-      <td>clear any budget for the selected category</td>
-    </tr>
-
-    <tr>
-      <th>Import</th>
-
-      <td>import the budget from a csv file.<br>
-      See <a href="misc-csvformat.html#bud">csv file format</a> for
-      details.</td>
-    </tr>
-
-    <tr>
-      <th>Export</th>
-
-      <td>export the budget to a csv file.<br>
-      See <a href="misc-csvformat.html#bud">csv file format</a> for
-      details.</td>
-    </tr>
-  </table>
+    <h2>Using budget dialog</h2>
+    <p><img class="gtkshot right" src="images/dlg-budget1.png"></p>
+    <h3><img src="images/1.png"> Category list</h3>
+    <p>display the list of categories and subcategories of the current wallet.</p>
+    <p>budgeted transaction are displayed bold and marked with a money-envelope icon: <img src="images/hb-ope-budget.png"></p>
+    <h3><img src="images/2.png"> Expense/Income switcher</h3>
+    <p>Toggle the category list with Expense/Income categories only</p>
+    <h3><img src="images/3.png"> Budget for each month</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>is the same</th>
+        <td>category budget will be the same for every month: Jan -&gt; Dec<br>
+        you can then fill the amount below</td>
+      </tr>
+      <tr>
+        <th>Clear input</th>
+        <td>clear any budget for the selected category</td>
+      </tr>
+      <tr>
+        <th>is different</th>
+        <td>category budget will be specific each month<br>
+        you can then fill the amount of each needed months</td>
+      </tr>
+      <tr>
+        <th>Jan to Dec</th>
+        <td>The amount for each month</td>
+      </tr>
+    </table>
+    <h3><img src="images/4.png"> Options</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Force monitoring this category</th>
+        <td>By default, if a transaction has no amount (0.00) it it not displayed into the budget report. This checkbox will change this and can manage such case.</td>
+      </tr>
+    </table>
+    <h3><img src="images/5.png"> Menu button</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Import</th>
+        <td>import the budget from a CSV file.<br>
+        See <a href="misc-csvformat.html#bud">CSV file format</a> for details.</td>
+      </tr>
+      <tr>
+        <th>Export</th>
+        <td>export the budget to a CSV file.<br>
+        See <a href="misc-csvformat.html#bud">CSV file format</a> for details.</td>
+      </tr>
+    </table>
   </div>
 </body>
 </html>

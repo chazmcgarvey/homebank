@@ -665,12 +665,23 @@ void
 transactions(const gchar* CLASS)
 	PPCODE:
 		PERL_UNUSED_ARG(CLASS);
-		GList* list = g_list_first(GLOBALS->ope_list);
-		for (; list; list = g_list_next(list)) {
-			GValue val = G_VALUE_INIT;
-			SV* sv = val_to_sv(EXT_TRANSACTION(&val, list->data));
-			mXPUSHs(sv);
+
+		GList* acc_list = g_hash_table_get_values(GLOBALS->h_acc);
+		GList* acc_link = g_list_first(acc_list);
+		for (; acc_link; acc_link = g_list_next(acc_link)) {
+			Account *acc = acc_link->data;
+
+			GList* txn_link = g_queue_peek_head_link(acc->txn_queue);
+			for (; txn_link; txn_link = g_list_next(txn_link)) {
+				Transaction* txn = txn_link->data;
+
+				GValue val = G_VALUE_INIT;
+				SV* sv = val_to_sv(EXT_TRANSACTION(&val, txn));
+				mXPUSHs(sv);
+			}
 		}
+
+		g_list_free(acc_list);
 
 void
 anonymize(void)
@@ -734,14 +745,6 @@ Account*
 new(void)
 	CODE:
 		RETVAL = da_acc_malloc();
-	OUTPUT:
-		RETVAL
-
-Account*
-clone(Account* SELF)
-	CODE:
-		RETVAL = da_acc_clone(SELF);
-		RETVAL->key = 0;
 	OUTPUT:
 		RETVAL
 
@@ -896,14 +899,12 @@ remove(Account* SELF)
 void
 transactions(Account* SELF)
 	PPCODE:
-		GList* list = g_list_first(GLOBALS->ope_list);
+		GList* list = g_queue_peek_head_link(SELF->txn_queue);
 		for (; list; list = g_list_next(list)) {
 			Transaction* txn = list->data;
-			if (txn->kacc == SELF->key) {
-				GValue val = G_VALUE_INIT;
-				SV* sv = val_to_sv(EXT_TRANSACTION(&val, txn));
-				mXPUSHs(sv);
-			}
+			GValue val = G_VALUE_INIT;
+			SV* sv = val_to_sv(EXT_TRANSACTION(&val, txn));
+			mXPUSHs(sv);
 		}
 
 GObject*
@@ -1003,7 +1004,7 @@ info(Transaction* SELF, ...)
 GObject*
 open(Transaction* SELF)
 	CODE:
-		RETVAL = G_OBJECT(create_deftransaction_window(NULL, TRANSACTION_EDIT_MODIFY));
+		RETVAL = G_OBJECT(create_deftransaction_window(NULL, TRANSACTION_EDIT_MODIFY, FALSE));
 		deftransaction_set_transaction(GTK_WIDGET(RETVAL), SELF);
 	OUTPUT:
 		RETVAL
@@ -1022,7 +1023,7 @@ pair_with(Transaction* SELF, Transaction* other, ...)
 				EXT_P2C_OBJECT("HomeBank::Transaction", sv, ptr, Transaction*);
 				list = g_list_append(list, ptr);
 			}
-			other = ui_dialog_transaction_xfer_select_child(list);
+			other = ui_dialog_transaction_xfer_select_child(SELF, list);
 		}
 		if (other) {
 			transaction_xfer_change_to_child(SELF, other);

@@ -5,6 +5,7 @@ hb-categories-en.csv \
 hb-categories-es.csv \
 hb-categories-fr.csv \
 hb-categories-it.csv \
+hb-categories-lt.csv \
 hb-categories-pt.csv \
 hb-categories-ro.csv \
 hb-categories-ru.csv \

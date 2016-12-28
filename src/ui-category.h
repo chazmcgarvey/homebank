@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -28,9 +28,34 @@ enum
 	NUM_LST_DEFCAT
 };
 
+#define LST_DEFCAT_SORT_NAME 1
+#define LST_DEFCAT_SORT_USED 2
+
+
+enum
+{
+	CAT_TYPE_ALL,
+	CAT_TYPE_EXPENSE,
+	CAT_TYPE_INCOME
+};
+
+
+enum
+{
+	LST_CMBCAT_DATAS,
+	LST_CMBCAT_FULLNAME,
+	LST_CMBCAT_SORTNAME,
+	LST_CMBCAT_NAME,
+	LST_CMBCAT_SUBCAT,
+	NUM_LST_CMBCAT
+};
+
+
 gchar *ui_cat_comboboxentry_get_name(GtkComboBox *entry_box);
 guint32 ui_cat_comboboxentry_get_key(GtkComboBox *entry_box);
 guint32 ui_cat_comboboxentry_get_key_add_new(GtkComboBox *entry_box);
+Category *ui_cat_comboboxentry_get(GtkComboBox *entry_box);
+
 gboolean ui_cat_comboboxentry_set_active(GtkComboBox *entry_box, guint32 key);
 void ui_cat_comboboxentry_add(GtkComboBox *entry_box, Category *pay);
 void ui_cat_comboboxentry_populate(GtkComboBox *entry_box, GHashTable *hash);
@@ -44,8 +69,8 @@ Category *ui_cat_listview_get_selected(GtkTreeView *treeview);
 Category *ui_cat_listview_get_selected_parent(GtkTreeView *treeview, GtkTreeIter *parent);
 gboolean ui_cat_listview_remove (GtkTreeModel *liststore, guint32 key);
 void ui_cat_listview_remove_selected(GtkTreeView *treeview);
-void ui_cat_listview_populate(GtkWidget *view);
-GtkWidget *ui_cat_listview_new(gboolean withtoggle);
+void ui_cat_listview_populate(GtkWidget *view, gint type);
+GtkWidget *ui_cat_listview_new(gboolean withtoggle, gboolean withcount);
 
 /* = = = = = = = = = = */
 
@@ -59,15 +84,17 @@ struct ui_cat_manage_dialog_data
 	GtkWidget	*LV_cat;
 	GtkWidget	*ST_name1, *ST_name2;
 
-	GtkWidget	*BT_add1, *BT_add2;
+	//GtkWidget	*BT_add1, *BT_add2;
 
-	GtkWidget	*CM_type;
+	//GtkWidget	*CM_type;
+	GtkWidget	*RA_type;
 
-	GtkWidget	*BT_mov;
-	GtkWidget	*BT_mod;
-	GtkWidget	*BT_rem;
-
-	GtkWidget	*BT_import, *BT_export;
+	GtkWidget	*BT_edit;
+	GtkWidget	*BT_merge;
+	GtkWidget	*BT_delete;
+	
+	GtkWidget	*BT_expand;
+	GtkWidget	*BT_collapse;
 
 	GtkWidget	*LA_category;
 
@@ -77,6 +104,7 @@ struct catPopContext
 {
 	GtkTreeModel *model;
 	guint	except_key;
+	gint	type;
 };
 
 GtkWidget *ui_cat_manage_dialog (void);

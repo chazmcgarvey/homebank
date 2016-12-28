@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -140,9 +140,9 @@ guint32 *new_key;
 /**
  * da_pay_remove:
  *
- * remove an payee from the GHashTable
+ * delete an payee from the GHashTable
  *
- * Return value: TRUE if the key was found and removed
+ * Return value: TRUE if the key was found and deleted
  *
  */
 gboolean
@@ -305,33 +305,75 @@ da_pay_debug_list(void)
 #endif
 
 
-
-
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-
-
-
-gboolean
-payee_is_used(guint32 key)
+void 
+payee_delete_unused(void)
 {
-GList *lrul, *list;
-
-	list = g_list_first(GLOBALS->ope_list);
+GList *lpay, *list;
+	
+	lpay = list = g_hash_table_get_values(GLOBALS->h_pay);
 	while (list != NULL)
 	{
-	Transaction *entry = list->data;
-		if( key == entry->kpay )
-			return TRUE;
+	Payee *entry = list->data;
+
+		if(entry->usage_count <= 0 && entry->key > 0)
+			da_pay_remove (entry->key);
 		list = g_list_next(list);
 	}
+	g_list_free(lpay);
+}
+
+
+void 
+payee_fill_usage(void)
+{
+GList *lpay;
+GList *lst_acc, *lnk_acc;
+GList *lnk_txn;
+GList *lrul, *list;
+
+	lpay = list = g_hash_table_get_values(GLOBALS->h_pay);
+	while (list != NULL)
+	{
+	Payee *entry = list->data;
+		entry->usage_count = 0;
+		list = g_list_next(list);
+	}
+	g_list_free(lpay);
+
+
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
+	{
+	Account *acc = lnk_acc->data;
+
+		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
+		while (lnk_txn != NULL)
+		{
+		Transaction *txn = lnk_txn->data;
+		Payee *pay = da_pay_get (txn->kpay);
+			
+			if(pay)
+				pay->usage_count++;
+
+			lnk_txn = g_list_next(lnk_txn);
+		}
+
+		lnk_acc = g_list_next(lnk_acc);
+	}
+	g_list_free(lst_acc);
+
 
 	list = g_list_first(GLOBALS->arc_list);
 	while (list != NULL)
 	{
 	Archive *entry = list->data;
-		if( key == entry->kpay )
-			return TRUE;
+	Payee *pay = da_pay_get (entry->kpay);
+		
+		if(pay)
+			pay->usage_count++;
 		list = g_list_next(list);
 	}
 
@@ -339,33 +381,47 @@ GList *lrul, *list;
 	while (list != NULL)
 	{
 	Assign *entry = list->data;
+	Payee *pay = da_pay_get (entry->kpay);
 
-		if( key == entry->kpay)
-			return TRUE;
+		if(pay)
+			pay->usage_count++;
+
 		list = g_list_next(list);
 	}
 	g_list_free(lrul);
 
-
-	return FALSE;
 }
+
 
 void
 payee_move(guint32 key1, guint32 key2)
 {
+GList *lst_acc, *lnk_acc;
+GList *lnk_txn;
 GList *lrul, *list;
 
-	list = g_list_first(GLOBALS->ope_list);
-	while (list != NULL)
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
 	{
-	Transaction *entry = list->data;
-		if(entry->kpay == key1)
+	Account *acc = lnk_acc->data;
+
+		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
+		while (lnk_txn != NULL)
 		{
-			entry->kpay = key2;
-			entry->flags |= OF_CHANGED;
+		Transaction *txn = lnk_txn->data;
+	
+			if(txn->kpay == key1)
+			{
+				txn->kpay = key2;
+				txn->flags |= OF_CHANGED;
+			}
+			lnk_txn = g_list_next(lnk_txn);
 		}
-		list = g_list_next(list);
+		lnk_acc = g_list_next(lnk_acc);
 	}
+	g_list_free(lst_acc);
+
 
 	list = g_list_first(GLOBALS->arc_list);
 	while (list != NULL)

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,7 +20,76 @@
 #ifndef __HOMEBANK_REPBALANCE_H__
 #define __HOMEBANK_REPBALANCE_H__
 
+enum {
+	HID_REPBALANCE_MINDATE,
+	HID_REPBALANCE_MAXDATE,
+	HID_REPBALANCE_RANGE,
+	MAX_REPBALANCE_HID
+};
+
+
+/* list stat */
+enum
+{
+	LST_OVER_OVER,
+	LST_OVER_DATE,
+	LST_OVER_DATESTR,
+	LST_OVER_EXPENSE,
+	LST_OVER_INCOME,
+	LST_OVER_BALANCE,
+	NUM_LST_OVER
+};
+
+struct repbalance_data
+{
+	GList		*ope_list;
+	Filter		*filter;
+
+	guint32		accnum;
+	gdouble		minimum;
+
+	gboolean	detail;
+
+	gdouble		*tmp_income;
+	gdouble		*tmp_expense;
+	guint		n_result;
+	guint		nbbalance, nbope;
+
+
+	GtkWidget	*window;
+
+	GtkUIManager	*ui;
+	GtkActionGroup *actions;
+
+	GtkWidget	*TB_bar;
+
+	GtkWidget	*TX_info;
+	GtkWidget	*TX_daterange;
+	GtkWidget	*CM_minor;
+	GtkWidget	*LV_report;
+	GtkWidget	*PO_acc;
+	GtkWidget	*CM_selectall;
+	GtkWidget	*CM_eachday;
+	GtkWidget	*RG_zoomx, *LB_zoomx;
+
+	GtkWidget	*PO_mindate, *PO_maxdate;
+
+	GtkWidget	*CY_range;
+	GtkWidget	*GR_result;
+
+	GtkWidget	*RE_line;
+
+	GtkWidget	*GR_detail;
+	GtkWidget	*LV_detail;
+
+
+	gulong		handler_id[MAX_REPBALANCE_HID];
+
+
+};
+
 
 GtkWidget *repbalance_window_new(gint32 accnum);
+
 
 #endif

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -16,6 +16,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+
+//nota: this file should be renamed hb-utils
 
 #include "homebank.h"
 #include "hb-misc.h"
@@ -34,39 +37,33 @@ extern struct Preferences *PREFS;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-static gdouble fint(gdouble amount)
-{
-gdouble fi;
+static const double fac[7] = { 1, 10, 100, 1000, 10000, 100000, 1000000 };
 
-	modf(amount, &fi);
-	return(fi);
+double hb_amount_round(const double x, unsigned int digits)
+{
+	digits = MAX(digits, 6);
+    return floor((x * fac[digits]) + 0.5) / fac[digits];
 }
 
-static unsigned dix_puissance_n(unsigned n)
+
+// used to convert from national to euro currency
+// used in hb_account.c :: only when convert account to euro
+// round option is to 0.5 case so 1.32 is 1.3, but 1.35 is 1.4
+
+gdouble hb_amount_to_euro(gdouble amount)
 {
-    unsigned i, retval = 1;
-
-    for(i = 0; i < n; i++)
-        retval *= 10;
-
-    return retval;
+	return hb_amount_round((amount / PREFS->euro_value), 2);
+	//return hb_amount_round((amount * PREFS->euro_value), PREFS.minor_cur->frac_digits);
 }
 
-double arrondi(const double x, unsigned n)
-{
-    unsigned N = dix_puissance_n(n);
-    return floor((x * N) + 0.5) / N;
-}
 
-// new for v4.5
-
-/*
+/* new >5.1 currency fct
+*
  *	convert an amount in base currency
  *
  */
-gdouble to_base_amount(gdouble value, guint32 kcur)
+gdouble hb_amount_base(gdouble value, guint32 kcur)
 {
-/*
 gdouble newvalue;
 Currency *cur;
 
@@ -74,80 +71,11 @@ Currency *cur;
 		return value;
 
 	cur = da_cur_get(kcur);
-	if(cur == NULL)
+	if(cur == NULL || cur->rate == 0.0)
 		return 0;
-	newvalue = value * cur->rate;
-	return newvalue;
-*/
-	return value;
-}
 
-
-/* new currency fct
-static gint real_mystrfmoncurr(gchar *outstr, gint outlen, gchar *buf1, Currency *cur)
-{
-gint size = 0;
-gchar groupbuf[G_ASCII_DTOSTR_BUF_SIZE];
-gchar **str_array;
-guint i, length;
-gchar *monstr;
-
-	str_array = g_strsplit(buf1, ".", 2);
-	monstr = NULL;
-
-	length = strlen(str_array[0]);
-
-	if( cur->grouping_char == NULL || !strlen(cur->grouping_char) )
-	{
-		monstr = g_strjoinv(cur->decimal_char, str_array);
-	}
-	else
-	{
-	gchar *s = str_array[0];
-	gchar *d = groupbuf;
-
-		i = 0;
-		// avoid the - for negative amount
-		if( *s == '-')
-		{
-			*d++ = *s++;
-			length--;
-		}
-
-		// do the grouping
-		do
-		{
-			if( i!=0 && (length % 3) == 0 )
-			{
-			gchar *gc = cur->grouping_char;
-
-				while( *gc )
-					*d++ = *gc++;
-			}
-
-			*d++ = *s;
-			length--;
-			i++;
-		}
-		while (length && *s++ != '\0');
-		*d = 0;
-
-		monstr = g_strjoin(cur->decimal_char, groupbuf, str_array[1], NULL);
-
-	}
-
-	//debug
-	//g_print("**\nmystrfmon %.2f\n 0=%s\n 1=%s\n [%d]\n", value, str_array[0], str_array[1], length );
-	//g_print(" => %s :: %s\n", monstr, groupbuf);
-
-	g_strfreev(str_array);
-
-	// insert our formated number with symbol
-	g_snprintf(outstr, outlen, cur->monfmt, monstr);
-
-	g_free(monstr);
-
-	return size;
+	newvalue = value / cur->rate;
+	return hb_amount_round(newvalue, cur->frac_digits);
 }
 
 
@@ -156,184 +84,208 @@ static Currency *hb_strfmon_check(gchar *outstr, guint32 kcur)
 Currency *cur = da_cur_get(kcur);
 
 	if(cur == NULL)
-		g_stpcpy(outstr, "error");
+		g_stpcpy(outstr, "nan");
 	return cur;
 }
 
 
-void hb_strfmon(gchar *outstr, gint outlen, gdouble value, guint32 kcur)
+gchar *hb_str_rate(gchar *outstr, gint outlen, gdouble rate)
 {
-gchar formatd_buf[G_ASCII_DTOSTR_BUF_SIZE];
+gint count, i;
+gchar *p;
+	
+	count = g_snprintf(outstr, outlen, "%.6f", rate);
+	//remove trailing 0 and decimal point
+	p = &outstr[count-1];
+	for(i=count;i>0;i--)
+	{
+		if(*p == '0')
+			*p = '\0';
+		else
+			break;
+		p--;
+	}
+	if(*p == '.' || *p == ',')
+		*p = '\0';
+
+	return outstr;
+}
+
+/* this function copy a number 99999.99 at s into d and count
+ * number of digits for integer part and decimal part
+ */
+static gchar * _strfnumcopycount(gchar *s, gchar *d, gchar *decchar, gint *plen, gint *pnbint, gint *pnbdec)
+{
+gint len=0, nbint=0, nbdec=0;
+
+	// sign part
+	if(*s == '-') {
+		*d++ = *s++;
+		len++;
+	}
+	// integer part
+	while(*s != 0 && *s != '.') {
+		*d++ = *s++;
+		nbint++;
+		len++;
+	}
+	// decimal separator
+	if(*s == '.') {
+		d = g_stpcpy(d, decchar);
+		len++;
+		s++;
+	}
+	// decimal part
+	while(*s != 0) {
+		*d++ = *s++;
+		nbdec++;
+		len++;
+	}
+	// end string | fill external count
+	*d = 0;
+	*plen = len;
+	*pnbint = nbint;
+	*pnbdec = nbdec;
+
+	return d;
+}
+
+//todo: used only in ui_prefs.c
+gchar *hb_str_formatd(gchar *outstr, gint outlen, gchar *buf1, Currency *cur, gboolean showsymbol)
+{
+gint len, nbd, nbi;
+gchar *s, *d, *tmp;
+
+	d = tmp = outstr;
+	if(showsymbol && cur->sym_prefix)
+	{
+		d = g_stpcpy (d, cur->symbol);
+		*d++ = ' ';
+		tmp = d;
+	}
+	
+	d = _strfnumcopycount(buf1, d, cur->decimal_char, &len, &nbi, &nbd);
+
+	if( cur->grouping_char != NULL && strlen(cur->grouping_char) > 0 )
+	{
+	gint i, grpcnt;
+
+		s = buf1;
+		d = tmp;
+		if(*s == '-')
+			*d++ = *s++;
+
+		grpcnt = 4 - nbi;
+		for(i=0;i<nbi;i++)
+		{
+			*d++ = *s++;
+			if( !(grpcnt % 3) && i<(nbi-1))
+			{
+				d = g_stpcpy(d, cur->grouping_char);
+			}
+			grpcnt++;
+		}
+
+		if(nbd > 0)
+		{
+			d = g_stpcpy(d, cur->decimal_char);
+			d = g_stpcpy(d, s+1);
+		}
+		*d = 0;
+	}
+
+	if(showsymbol && !cur->sym_prefix)
+	{
+		*d++ = ' ';
+		d = g_stpcpy (d, cur->symbol);
+	}
+
+	*d = 0;
+	
+	return d;
+}
+
+
+void hb_strfmon(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor)
+{
+gchar formatd_buf[outlen];
 Currency *cur;
 gdouble monval;
 
-	cur = hb_strfmon_check(outstr, kcur);
-	if(cur != NULL)
+	if(minor == FALSE)
 	{
-		monval = arrondi(value, cur->frac_digits);
-		g_ascii_formatd(formatd_buf, G_ASCII_DTOSTR_BUF_SIZE-1, cur->format, monval);
-		real_mystrfmoncurr(outstr, outlen, formatd_buf, cur);
-	}
-}
-
-
-void hb_strfmon_int(gchar *outstr, gint outlen, gdouble value, guint32 kcur)
-{
-gchar formatd_buf[G_ASCII_DTOSTR_BUF_SIZE];
-Currency *cur;
-gdouble monval;
-
-	cur = hb_strfmon_check(outstr, kcur);
-	if(cur != NULL)
-	{
-		monval = arrondi(value, cur->frac_digits);
-		g_ascii_formatd(formatd_buf, sizeof (formatd_buf), "%0.f", monval);
-		real_mystrfmoncurr(outstr, outlen, formatd_buf, cur);
-	}
-}
-
-//todo: remove this
-// test for currecny choose dialog
-void mystrfmoncurrcurr(gchar *outstr, gint outlen, gdouble value, Currency *cur)
-{
-gchar formatd_buf[G_ASCII_DTOSTR_BUF_SIZE];
-gdouble monval;
-
-	monval = arrondi(value, cur->frac_digits);
-	g_ascii_formatd(formatd_buf, G_ASCII_DTOSTR_BUF_SIZE-1, cur->format, monval);
-	real_mystrfmoncurr(outstr, outlen, formatd_buf, cur);
-}
-*/
-
-
-	
-
-/* obsolete before currencies */
-gint real_mystrfmon(gchar *outstr, gint outlen, gchar *buf1, struct CurrencyFmt *cur)
-{
-gint size = 0;
-gchar groupbuf[G_ASCII_DTOSTR_BUF_SIZE];
-gchar **str_array;
-guint i, length;
-gchar *monstr;
-
-	str_array = g_strsplit(buf1, ".", 2);
-	monstr = NULL;
-
-	length = strlen(str_array[0]);
-	
-	if( cur->grouping_char == NULL || !strlen(cur->grouping_char) )
-	{
-		monstr = g_strjoinv(cur->decimal_char, str_array);
+		cur = hb_strfmon_check(outstr, kcur);
+		if(cur != NULL)
+		{
+			monval = hb_amount_round(value, cur->frac_digits);
+			g_ascii_formatd(formatd_buf, outlen, cur->format, monval);
+			hb_str_formatd(outstr, outlen, formatd_buf, cur, TRUE);
+		}
 	}
 	else
 	{
-	gchar *s = str_array[0];
-	gchar *d = groupbuf;
-
-		i = 0;
-		// avoid the - for negative amount
-		if( *s == '-')
-		{
-			*d++ = *s++;
-			length--;
-		}
-		
-		// do the grouping
-		do
-		{
-			if( i!=0 && (length % 3) == 0 )
-			{
-			gchar *gc = cur->grouping_char;
-			
-				while( *gc )
-					*d++ = *gc++;
-			}
-		
-			*d++ = *s;
-			length--;
-			i++;	
-		}
-		while (length && *s++ != '\0');
-		*d = 0;
-
-		monstr = g_strjoin(cur->decimal_char, groupbuf, str_array[1], NULL);
-
+		cur = &PREFS->minor_cur;
+		monval = hb_amount_to_euro(value);
+		g_ascii_formatd(formatd_buf, outlen, cur->format, monval);
+		hb_str_formatd(outstr, outlen, formatd_buf, cur, TRUE);
 	}
 
-	//debug
-	//g_print("**\nmystrfmon %.2f\n 0=%s\n 1=%s\n [%d]\n", value, str_array[0], str_array[1], length );
-	//g_print(" => %s :: %s\n", monstr, groupbuf);
-
-	g_strfreev(str_array);
-
-	// insert our formated number with symbol
-	g_snprintf(outstr, outlen, cur->monfmt, monstr);
-
-	g_free(monstr);
-	
-	return size;
 }
 
-
-gint mystrfmon(gchar *outstr, gint outlen, gdouble value, gboolean minor)
+void hb_strfmon_int(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor)
 {
-struct CurrencyFmt *cur;
-gchar formatd_buf[G_ASCII_DTOSTR_BUF_SIZE];
+gchar formatd_buf[outlen];
+Currency *cur;
 gdouble monval;
-gint size;
 
-	cur = minor ? &PREFS->minor_cur : &PREFS->base_cur;
-
-	monval = arrondi(value, cur->frac_digits);
-
-	if(minor == TRUE)
+	if(minor == FALSE)
 	{
-		monval = (value * PREFS->euro_value);
-		monval += (monval > 0.0) ? 0.005 : -0.005;
-		monval = (fint(monval * 100) / 100);
+		cur = hb_strfmon_check(outstr, kcur);
+		if(cur != NULL)
+		{
+			monval = hb_amount_round(value, cur->frac_digits);
+			g_ascii_formatd(formatd_buf, outlen, "%0.f", monval);
+			hb_str_formatd(outstr, outlen, formatd_buf, cur, TRUE);
+		}
+	}
+	else
+	{
+		cur = &PREFS->minor_cur;
+		monval = hb_amount_to_euro(value);
+		g_ascii_formatd(formatd_buf, outlen, cur->format, monval);
+		hb_str_formatd(outstr, outlen, formatd_buf, cur, TRUE);
 	}
 
-	//DB( g_print("fmt = %s\n", cur->format) );
-
-	g_ascii_formatd(formatd_buf, sizeof (formatd_buf), cur->format, monval);
-
-	size = real_mystrfmon(outstr, outlen, formatd_buf, cur);
-
-	return size;
 }
 
 
-
-
-
-gint mystrfmon_int(gchar *outstr, gint outlen, gdouble value, gboolean minor)
+void hb_strfnum(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor)
 {
-struct CurrencyFmt *cur;
-gchar formatd_buf[G_ASCII_DTOSTR_BUF_SIZE];
-gdouble monval = value;
-gint size;
+gchar formatd_buf[outlen];
+Currency *cur;
+gdouble monval;
 
-	cur = minor ? &PREFS->minor_cur : &PREFS->base_cur;
-
-	if(minor == TRUE)
+	if(minor == FALSE)
 	{
-		monval = (value * PREFS->euro_value);
-		monval += (monval > 0.0) ? 0.005 : -0.005;
-		monval = (fint(monval * 100) / 100);
+		cur = hb_strfmon_check(outstr, kcur);
+		if(cur != NULL)
+		{
+			monval = hb_amount_round(value, cur->frac_digits);
+			g_ascii_formatd(formatd_buf, outlen, "%0.f", monval);
+			hb_str_formatd(outstr, outlen, formatd_buf, cur, TRUE);
+		}
+	}
+	else
+	{
+		cur = &PREFS->minor_cur;
+		monval = hb_amount_to_euro(value);
+		g_ascii_formatd(formatd_buf, outlen, "%0.f", monval);
+		hb_str_formatd(outstr, outlen, formatd_buf, cur, TRUE);
 	}
 
-	g_ascii_formatd(formatd_buf, sizeof (formatd_buf), "%0.f", monval);
-
-	size = real_mystrfmon(outstr, outlen, formatd_buf, cur);
-
-	return size;
+	
 }
 
-
-
-
-/* end obsolete call */
 
 
 gchar *get_normal_color_amount(gdouble value)
@@ -341,7 +293,7 @@ gchar *get_normal_color_amount(gdouble value)
 gchar *color = NULL;
 
 	//fix: 400483
-	value = arrondi(value, 2);
+	value = hb_amount_round(value, 2);
 
 	if(value != 0.0 && PREFS->custom_colors == TRUE)
 	{
@@ -356,7 +308,7 @@ gchar *get_minimum_color_amount(gdouble value, gdouble minvalue)
 gchar *color = NULL;
 
 	//fix: 400483
-	value = arrondi(value, 2);
+	value = hb_amount_round(value, 2);
 	if(value != 0.0 && PREFS->custom_colors == TRUE)
 	{
 		color = (value > 0.0) ? PREFS->color_inc : PREFS->color_exp;
@@ -366,11 +318,11 @@ gchar *color = NULL;
 	return color;
 }
 
-void hb_label_set_amount(GtkLabel *label, gdouble value, gboolean minor)
+void hb_label_set_amount(GtkLabel *label, gdouble value, guint32 kcur, gboolean minor)
 {
 gchar strbuffer[G_ASCII_DTOSTR_BUF_SIZE];
 
-	mystrfmon(strbuffer, G_ASCII_DTOSTR_BUF_SIZE-1, value, minor);
+	hb_strfmon(strbuffer, G_ASCII_DTOSTR_BUF_SIZE-1, value, kcur, minor);
 	gtk_label_set_text(GTK_LABEL(label), strbuffer);
 
 }
@@ -379,13 +331,13 @@ gchar strbuffer[G_ASCII_DTOSTR_BUF_SIZE];
 /*
 ** format/color and set a label text with a amount value
 */
-void hb_label_set_colvalue(GtkLabel *label, gdouble value, gboolean minor)
+void hb_label_set_colvalue(GtkLabel *label, gdouble value, guint32 kcur, gboolean minor)
 {
 gchar strbuffer[G_ASCII_DTOSTR_BUF_SIZE];
 gchar *markuptxt;
 gchar *color = NULL;
 
-	mystrfmon(strbuffer, G_ASCII_DTOSTR_BUF_SIZE-1, value, minor);
+	hb_strfmon(strbuffer, G_ASCII_DTOSTR_BUF_SIZE-1, value, kcur, minor);
 
 	if(value != 0.0 && PREFS->custom_colors == TRUE)
 	{
@@ -406,127 +358,31 @@ gchar *color = NULL;
 
 }
 
-/*
-void hb_label_set_colvaluecurr(GtkLabel *label, gdouble value, guint32 currkey)
-{
-gchar strbuffer[G_ASCII_DTOSTR_BUF_SIZE];
-gchar *markuptxt;
-gchar *color = NULL;
-
-	hb_strfmon(strbuffer, G_ASCII_DTOSTR_BUF_SIZE-1, value, currkey);
-
-	if(value != 0.0 && PREFS->custom_colors == TRUE)
-	{
-		color = get_normal_color_amount(value);
-
-		if(color)
-		{
-			markuptxt = g_strdup_printf("<span color='%s'>%s</span>", color, strbuffer);
-			gtk_label_set_markup(GTK_LABEL(label), markuptxt);
-			g_free(markuptxt);
-			return;
-		}
-	}
-
-	gtk_label_set_text(GTK_LABEL(label), strbuffer);
-
-}
-*/
 
 
-/*
-void get_range_minmax(guint32 refdate, gint range, guint32 *mindate, guint32 *maxdate)
-{
-GDate *date;
-guint month, year, qnum;
-
-	if(refdate > *maxdate)
-		refdate = *maxdate;
-
-	date  = g_date_new_julian(refdate);
-	month = g_date_get_month(date);
-	year  = g_date_get_year(date);
-	qnum  = ((month-1)/3)+1;
-
-	DB( g_print("m=%d, y=%d, qnum=%d\n", month, year, qnum) );
-
-	switch( range )
-	{
-		case 0:		// this month
-			g_date_set_day(date, 1);
-			*mindate = g_date_get_julian(date);
-			g_date_add_days(date, g_date_get_days_in_month(month, year)-1);
-			*maxdate = g_date_get_julian(date);
-			break;
-	
-		case 1:		// last month
-			g_date_set_day(date, 1);
-			g_date_subtract_months(date, 1);
-			*mindate = g_date_get_julian(date);
-			month = g_date_get_month(date);
-			year = g_date_get_year(date);
-			g_date_add_days(date, g_date_get_days_in_month(month, year)-1);
-			*maxdate = g_date_get_julian(date);
-			break;
-
-		case 2:		// this quarter
-			g_date_set_day(date, 1);
-			g_date_set_month(date, (qnum-1)*3+1);
-			*mindate = g_date_get_julian(date);
-			g_date_add_months(date, 3);
-			g_date_subtract_days(date, 1);
-			*maxdate = g_date_get_julian(date);
-			break;
-			
-		case 3:		// last quarter
-			g_date_set_day(date, 1);
-			g_date_set_month(date, (qnum-1)*3+1);
-			g_date_subtract_months(date, 3);
-			*mindate = g_date_get_julian(date);
-			g_date_add_months(date, 3);
-			g_date_subtract_days(date, 1);
-			*maxdate = g_date_get_julian(date);
-			break;
-			
-		case 4:		// this year
-			g_date_set_dmy(date, 1, 1, year);
-			*mindate = g_date_get_julian(date);
-			g_date_set_dmy(date, 31, 12, year);
-			*maxdate = g_date_get_julian(date);
-			break;
-		
-		// separator
-	
-		case 6:		// last 30 days
-			*mindate = refdate - 30;
-			*maxdate = refdate;
-			break;
-
-		case 7:		// last 60 days
-			*mindate = refdate - 60;
-			*maxdate = refdate;
-			break;
-
-		case 8:		// last 90 days
-			*mindate = refdate - 90;
-			*maxdate = refdate;
-			break;
-	
-		case 9:		// last 12 months
-			g_date_subtract_months(date, 12);
-			*mindate = g_date_get_julian(date);
-			*maxdate = refdate;
-			break;
-
-
-	}
-	g_date_free(date);
-}
-*/
 
 /*
 ** String utility
 */
+
+gint hb_string_compare(gchar *s1, gchar *s2)
+{
+gint retval = 0;
+
+    if (s1 == NULL || s2 == NULL)
+    {
+		if (s1 == NULL && s2 == NULL)
+			goto end;
+
+		retval = (s1 == NULL) ? -1 : 1;
+    }
+    else
+    {
+        retval = strcasecmp(s1, s2);
+    }
+end:
+	return retval;
+}
 
 
 /*
@@ -575,6 +431,37 @@ gchar *p = str;
 		}
 	}
 }
+
+
+void hb_string_replace_char(gchar c, gchar *str)
+{
+gchar *s = str;
+gchar *d = str;
+
+	if(str)
+	{
+		while( *s )
+		{
+			if( *s != c )
+			{
+				*d++ = *s;
+			}
+			s++;
+		}
+		*d = 0;
+	}
+}
+
+
+/*static void strip_extra_spaces(char* str) {
+  int i,x;
+  for(i=x=1; str[i]; ++i)
+    if(!isspace(str[i]) || (i>0 && !isspace(str[i-1])))
+      str[x++] = str[i];
+  str[x] = '\0';
+}*/
+
+
 
 gchar*
 hb_strdup_nobrackets (const gchar *str)
@@ -647,11 +534,13 @@ GDate *date;
 gint n1, n2, n3, d, m, y;
 guint32 julian = 0;
 
-	DB( g_print("hb_date_get_julian: %s, %d\n", string, datefmt) );
+	DB( g_print("\n[utils] hb_date_get_julian\n") );
 	
+	DB( g_print(" - '%s' dateorder=%d\n", string, datefmt) );	
+
 	if( hb_date_parser_get_nums(string, &n1, &n2, &n3) )
 	{
-		DB( g_print("-> %d %d %d\n", n1, n2, n3) );
+		DB( g_print(" - '%d' '%d' '%d'\n", n1, n2, n3) );
 
 		switch(datefmt)
 		{
@@ -682,18 +571,18 @@ guint32 julian = 0;
 				y += 1900;
 		}
 
-		DB( g_print("-> %d %d %d\n", d, m, y) );
-
 		if(d <= 31 && m <= 12)
 		{
-			date = g_date_new();
-			g_date_set_dmy(date, d, m, y);
-			if( g_date_valid (date) )
+			if( g_date_valid_dmy(d, m, y) )
 			{
+				date = g_date_new_dmy(d, m, y);
 				julian = g_date_get_julian (date);
+				g_date_free(date);
 			}
-			g_date_free(date);
 		}
+
+		DB( g_print(" > %d %d %d julian=%d\n", d, m, y, julian) );
+
 	}
 
 	return julian;
@@ -703,54 +592,39 @@ guint32 julian = 0;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
 
 
-gchar *hb_filename_new_with_extention(gchar *filename, const gchar *extension)
+gchar *hb_util_filename_new_with_extension(gchar *filename, const gchar *extension)
 {
-gchar *dirname;
-gchar *basename;
-gchar *newbasename;
+gchar *lastdot, *fwe;
 gchar *newfilename;
-gchar **str_array;
 
-	dirname  = g_path_get_dirname (filename);
-	basename = g_path_get_basename(filename);
-	str_array = g_strsplit(basename, ".", 0);
-	newbasename = g_strdup_printf("%s.%s", str_array[0], extension);
-	newfilename = g_build_filename(dirname, newbasename, NULL);
+	DB( g_print("\n[util] filename with extension\n") );
 
-	g_strfreev(str_array);
-	g_free(basename);
-	g_free(dirname);
-	g_free(newbasename);
+	DB( g_print(" - orig: '%s' => '%s'\n", filename, extension) );
+
+	//duplicate without extensions
+	lastdot = g_strrstr(filename, ".");
+	if(lastdot != NULL)
+	{
+		fwe = g_strndup(filename, strlen(filename) - strlen(lastdot));
+		DB( g_print(" - fwe: '%s'\n", fwe) );
+		newfilename = g_strdup_printf("%s.%s", fwe, extension);
+		g_free(fwe);
+	}
+	else
+	{
+		newfilename = g_strdup_printf("%s.%s", filename, extension);
+	}
+
+	DB( g_print(" - new: '%s'\n", newfilename) );
 
 	return newfilename;
 }
 
 
-/* file backup, qif export */
-
-
-/*gchar *homebank_filename_without_extention(gchar *path)
-{
-gchar *basename;
-gchar *newname;
-gchar **str_array;
-
-	basename = g_path_get_basename(path);
-
-	str_array = g_strsplit(basename, ".", 0);
-
-	newname = g_strdup(str_array[0]);
-
-	g_strfreev(str_array);
-	g_free(basename);
-
-	return newname;
-}*/
-
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
 
 
-static gboolean hb_string_isdate(gchar *str)
+gboolean hb_string_isdate(gchar *str)
 {
 gint d, m, y;
 
@@ -758,7 +632,7 @@ gint d, m, y;
 }
 
 
-static gboolean hb_string_isdigit(gchar *str)
+gboolean hb_string_isdigit(gchar *str)
 {
 gboolean valid = TRUE;
 	while(*str && valid)
@@ -767,7 +641,7 @@ gboolean valid = TRUE;
 }
 
 /*
-static gboolean hb_string_isprint(gchar *str)
+gboolean hb_string_isprint(gchar *str)
 {
 gboolean valid = TRUE;
 	while(*str && valid)
@@ -778,7 +652,7 @@ gboolean valid = TRUE;
 
 
 
-static gboolean hb_string_isprint(gchar *str)
+gboolean hb_string_isprint(gchar *str)
 {
 gboolean valid = TRUE;
 gchar *p;
@@ -798,77 +672,44 @@ gunichar c;
 }
 
 
-gboolean hb_string_csv_valid(gchar *str, guint nbcolumns, gint *csvtype)
+gchar *hb_sprint_date(gchar *outstr, guint32 julian)
 {
-gchar **str_array;
-gboolean valid = TRUE;
-guint i;
-extern int errno;
+GDate date;
 
-#if MYDEBUG == 1
-gchar *type[5] = { "string", "date", "int", "double" };
-gint lasttype;
-#endif
-
-	DB( g_print("\n** hb_string_csv_valid: init %d\n", valid) );
-
-	hb_string_strip_crlf(str);
-	str_array = g_strsplit (str, ";", 0);
-
-	DB( g_print(" -> length %d, nbcolumns %d\n", g_strv_length( str_array ), nbcolumns) );
-
-	if( g_strv_length( str_array ) != nbcolumns )
+	g_date_clear(&date, 1);
+	g_date_set_julian (&date, julian);
+	switch(PREFS->dtex_datefmt)
 	{
-		valid = FALSE;
-		goto csvend;
-	}
-
-	for(i=0;i<nbcolumns;i++)
-	{
-#if MYDEBUG == 1
-		lasttype = csvtype[i];
-#endif
-
-		if(valid == FALSE)
+		case PRF_DATEFMT_MDY:
 		{
-			DB( g_print(" -> fail on column %d, type: %s\n", i, type[lasttype]) );
+			g_sprintf(outstr, "%02d/%02d/%04d",
+				g_date_get_month(&date),
+				g_date_get_day(&date),
+				g_date_get_year(&date)
+				);
+		}
+		break;
+		case PRF_DATEFMT_DMY:
+		{
+			g_sprintf(outstr, "%02d/%02d/%04d",
+				g_date_get_day(&date),
+				g_date_get_month(&date),
+				g_date_get_year(&date)
+				);
+		}	
+		default:
+			g_sprintf(outstr, "%04d/%02d/%02d",
+				g_date_get_year(&date),
+				g_date_get_month(&date),
+				g_date_get_day(&date)
+				);
 			break;
-		}
-
-		DB( g_print(" -> control column %d, type: %d, valid: %d '%s'\n", i, lasttype, valid, str_array[i]) );
-
-		switch( csvtype[i] )
-		{
-			case CSV_DATE:
-				valid = hb_string_isdate(str_array[i]);
-				break;
-			case CSV_STRING:
-				valid = hb_string_isprint(str_array[i]);
-				break;
-			case CSV_INT:
-				valid = hb_string_isdigit(str_array[i]);
-				break;
-			case CSV_DOUBLE	:
-				g_ascii_strtod(str_array[i], NULL);
-				//todo : see this errno
-				if( errno )
-				{
-					DB( g_print("errno: %d\n", errno) );
-					valid = FALSE;
-				}
-				break;
-		}
 	}
-
-csvend:
-	g_strfreev (str_array);
-
-	DB( g_print(" --> return %d\n", valid) );
-
-	return valid;
+	return outstr;
 }
 
 
+//used only in DB() macro !!
 void hb_print_date(guint32 jdate, gchar *label)
 {
 gchar buffer1[128];

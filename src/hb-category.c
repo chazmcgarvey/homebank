@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -120,7 +120,7 @@ da_cat_length(void)
  *
  * GRFunc to get the max id
  *
- * Return value: TRUE if the key/value must be removed
+ * Return value: TRUE if the key/value must be deleted
  *
  */
 static gboolean
@@ -136,9 +136,9 @@ da_cat_remove_grfunc(gpointer key, Category *cat, guint32 *remkey)
 /**
  * da_cat_remove:
  *
- * remove a category from the GHashTable
+ * delete a category from the GHashTable
  *
- * Return value: TRUE if the key was found and removed
+ * Return value: TRUE if the key was found and deleted
  *
  */
 guint
@@ -259,7 +259,7 @@ da_cat_get_fullname(Category *cat)
 {
 Category *parent;
 
-	if( cat->parent == 0)
+	if( cat->parent == 0 )
 		return g_strdup(cat->name);
 	else
 	{
@@ -539,12 +539,30 @@ void da_cat_consistency(Category *item)
 {
 gboolean isIncome;
 
+	if((item->flags & GF_SUB) && item->key > 0)
+	{
+		//check for existing parent
+		if( da_cat_get(item->parent) == NULL )
+		{
+		Category *parent = da_cat_append_ifnew_by_fullname ("orphaned", FALSE);
+
+			item->parent = parent->key;
+			
+			g_warning("category consistency: fixed missing parent %d", item->parent);
+		}
+	}
+
 	// ensure type equal for categories and its children
 	if(!(item->flags & GF_SUB) && item->key > 0)
 	{
 		isIncome = (item->flags & GF_INCOME) ? TRUE : FALSE;
-		category_change_type(item, isIncome);
+		if( category_change_type(item, isIncome) > 0 )
+		{
+			g_warning("category consistency: fixed type for child");
+			GLOBALS->changes_count++;
+		}
 	}
+	
 	g_strstrip(item->name);
 }
 
@@ -582,88 +600,181 @@ da_cat_debug_list(void)
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-gboolean
-category_is_used(guint32 key)
+guint32 category_report_id(guint32 key, gboolean subcat)
 {
-GList *lrul, *list;
-guint i, nbsplit;
+Category *catentry = da_cat_get(key);
+guint32 retval = 0;
 
-	list = g_list_first(GLOBALS->ope_list);
+	if(catentry)
+	{
+		if(subcat == FALSE)
+		{
+			retval = (catentry->flags & GF_SUB) ? catentry->parent : catentry->key;
+		}
+		else
+		{
+			retval = catentry->key;
+		}
+	}
+	return retval;
+}
+
+
+void 
+category_delete_unused(void)
+{
+GList *lcat, *list;
+	
+	lcat = list = g_hash_table_get_values(GLOBALS->h_cat);
 	while (list != NULL)
 	{
-	Transaction *entry = list->data;
-		if( key == entry->kcat )
-			return TRUE;
+	Category *entry = list->data;
 
-		// check split category #1340142
-		nbsplit = da_transaction_splits_count(entry);
-		for(i=0;i<nbsplit;i++)
-		{
-		Split *split = entry->splits[i];
-
-			if( key == split->kcat )
-				return TRUE;
-		}
+		if(entry->usage_count <= 0 && entry->key > 0)
+			da_cat_remove (entry->key);
 
 		list = g_list_next(list);
 	}
+	g_list_free(lcat);
+}
+
+
+static void 
+category_fill_usage_count(guint32 kcat)
+{
+Category *cat = da_cat_get (kcat);
+Category *parent;
+
+	if(cat)
+	{
+		cat->usage_count++;
+		if( cat->parent > 0 )
+		{
+			parent = da_cat_get(cat->parent);
+			if( parent )
+			{
+				parent->usage_count++;
+			}
+		}
+	}
+}
+
+
+void
+category_fill_usage(void)
+{
+GList *lcat;
+GList *lst_acc, *lnk_acc;
+GList *lnk_txn;
+GList *lpay, *lrul, *list;
+
+	lcat = list = g_hash_table_get_values(GLOBALS->h_cat);
+	while (list != NULL)
+	{
+	Category *entry = list->data;
+		entry->usage_count = 0;
+		list = g_list_next(list);
+	}
+	g_list_free(lcat);
+
+
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
+	{
+	Account *acc = lnk_acc->data;
+
+		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
+		while (lnk_txn != NULL)
+		{
+		Transaction *txn = lnk_txn->data;
+
+			category_fill_usage_count(txn->kcat);		
+			lnk_txn = g_list_next(lnk_txn);
+		}
+		lnk_acc = g_list_next(lnk_acc);
+	}
+	g_list_free(lst_acc);
+
+	lpay = list = g_hash_table_get_values(GLOBALS->h_pay);
+	while (list != NULL)
+	{
+	Payee *entry = list->data;
+
+		category_fill_usage_count(entry->kcat);
+		list = g_list_next(list);
+	}
+	g_list_free(lpay);
+
 
 	list = g_list_first(GLOBALS->arc_list);
 	while (list != NULL)
 	{
 	Archive *entry = list->data;
-		if( key == entry->kcat )
-			return TRUE;
+
+		category_fill_usage_count(entry->kcat);
 		list = g_list_next(list);
 	}
 
-	//todo: add budget use here
-	
+
 	lrul = list = g_hash_table_get_values(GLOBALS->h_rul);
 	while (list != NULL)
 	{
 	Assign *entry = list->data;
 
-		if( key == entry->kcat)
-			return TRUE;
+		category_fill_usage_count(entry->kcat);
 		list = g_list_next(list);
 	}
 	g_list_free(lrul);
 
-	return FALSE;
 }
+
 
 void
 category_move(guint32 key1, guint32 key2)
 {
+GList *lst_acc, *lnk_acc;
+GList *lnk_txn;
 GList *lrul, *list;
 guint i, nbsplit;
 
-	list = g_list_first(GLOBALS->ope_list);
-	while (list != NULL)
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
 	{
-	Transaction *entry = list->data;
-		if(entry->kcat == key1)
-		{
-			entry->kcat = key2;
-			entry->flags |= OF_CHANGED;
-		}
+	Account *acc = lnk_acc->data;
 
-		// move split category #1340142
-		nbsplit = da_transaction_splits_count(entry);
-		for(i=0;i<nbsplit;i++)
+		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
+		while (lnk_txn != NULL)
 		{
-		Split *split = entry->splits[i];
-
-			if( split->kcat == key1 )
+		Transaction *txn = lnk_txn->data;
+		
+			if(txn->kcat == key1)
 			{
-				split->kcat = key2;
-				entry->flags |= OF_CHANGED;
+				txn->kcat = key2;
+				txn->flags |= OF_CHANGED;
 			}
-		}
 
-		list = g_list_next(list);
+			// move split category #1340142
+			nbsplit = da_splits_count(txn->splits);
+			for(i=0;i<nbsplit;i++)
+			{
+			Split *split = txn->splits[i];
+
+				if( split->kcat == key1 )
+				{
+					split->kcat = key2;
+					txn->flags |= OF_CHANGED;
+				}
+			}
+
+			lnk_txn = g_list_next(lnk_txn);
+		}
+		
+		lnk_acc = g_list_next(lnk_acc);
 	}
+	g_list_free(lst_acc);
+
 
 	list = g_list_first(GLOBALS->arc_list);
 	while (list != NULL)
@@ -868,7 +979,7 @@ const gchar *encoding;
 
 					if( g_strv_length (str_array) != 3 )
 					{
-						*error = _("invalid csv format");
+						*error = _("invalid CSV format");
 						retval = FALSE;
 						DB( g_print(" + error %s\n", *error) );
 					}
@@ -984,13 +1095,31 @@ GList *lcat, *list;
 	return retval;
 }
 
+gint category_type_get(Category *item)
+{
+	if( (item->flags & (GF_INCOME)) )
+		return 1;
+	return -1;
+}
+
+
+
+static gint category_change_type_eval(Category *item, gboolean isIncome)
+{
+	if( (item->flags & (GF_INCOME)) && !isIncome )
+		return 1;
+	return 0;
+}
+
 
 gint category_change_type(Category *item, gboolean isIncome)
 {
-gint changes = 1;
+gint changes = 0;
 GList *lcat, *list;
 
-	item->flags &= ~(GF_INCOME);	//remove flag
+	changes += category_change_type_eval(item, isIncome);
+	
+	item->flags &= ~(GF_INCOME);	//delete flag
 	if(isIncome == TRUE)
 		item->flags |= GF_INCOME;
 
@@ -1002,10 +1131,10 @@ GList *lcat, *list;
 
 		if(child->parent == item->key)
 		{
-			child->flags &= ~(GF_INCOME);	//remove flag
+			changes += category_change_type_eval(child, isIncome);
+			child->flags &= ~(GF_INCOME);	//delete flag
 			if(isIncome == TRUE)
 				child->flags |= GF_INCOME;
-			changes++;
 		}
 		list = g_list_next(list);
 	}

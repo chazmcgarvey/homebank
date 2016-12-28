@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -55,9 +55,17 @@ enum
 
 struct ui_repdist_data
 {
-	GtkWidget	*window;
+	GQueue		*txn_queue;
+	Filter		*filter;
 
-	gint	busy;
+	gboolean	detail;
+	gboolean	legend;
+	gboolean	rate;
+	gdouble		total_expense;
+	gdouble		total_income;
+	gdouble		total_balance;
+
+	GtkWidget	*window;
 
 	GtkUIManager	*ui;
 	GtkActionGroup *actions;
@@ -68,7 +76,7 @@ struct ui_repdist_data
 	GtkWidget	*CM_minor;
 	GtkWidget	*CY_by;
 	GtkWidget	*CY_view;
-	GtkWidget	*RG_zoomx;
+	GtkWidget	*RG_zoomx, *LB_zoomx;
 	GtkWidget	*LV_report;
 	GtkWidget	*CM_byamount;
 
@@ -85,17 +93,9 @@ struct ui_repdist_data
 	GtkWidget	*GR_detail;
 	GtkWidget	*LV_detail;
 
-	gdouble		total_expense;
-	gdouble		total_income;
-	gdouble		total_balance;
 
-	gboolean	detail;
-	gboolean	legend;
-	gboolean	rate;
 
 	gulong		handler_id[MAX_REPDIST_HID];
-
-	Filter		*filter;
 
 };
 

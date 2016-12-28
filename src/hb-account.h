@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -30,28 +30,32 @@ struct _account
 	guint32		key;
 	gushort		flags;
 	gushort		type;
-	guint32		pos;		//position in list
-	//guint32		kcur;
+	guint32		pos;		//display position
+	guint32		kcur;
 	gchar		*name;
 	gchar		*number;
 	gchar		*bankname;
 	gdouble		initial;
+	gdouble		warning;
 	gdouble		minimum;
 	guint32		cheque1;
 	guint32		cheque2;
-	//note ?
+	gchar	    *notes;
 
 	/* unsaved datas */
+	GQueue		*txn_queue;
+	GtkWindow	*window;	//dsp_account window opened
+
 	gdouble     bal_bank;	//bank balance (reconciled transaction)
 	gdouble     bal_today;	//today balance (every transaction until today)
 	gdouble     bal_future;	//future balance (every transaction)
-	GtkWindow	*window;	//dsp_account window opened
+
 	gboolean	filter;		//true if selected into filter
 
 	// import datas
 	gboolean	imported;
-	guint32		imp_key;
-	gchar		*imp_name;
+	guint32		imp_key;	// 0 create new / x to map to existing
+	gchar		*imp_name;  // name in the file
 };
 
 // 0 is free
@@ -68,14 +72,14 @@ enum
 {
 	ACC_TYPE_NONE       = 0,
 	ACC_TYPE_BANK       = 1,	//Banque
-	ACC_TYPE_CASH       = 2,	//Espèce
+	ACC_TYPE_CASH       = 2,	//EspÃ¨ce
 	ACC_TYPE_ASSET      = 3,	//Actif (avoir)
-	ACC_TYPE_CREDITCARD = 4,	//Carte crédit
+	ACC_TYPE_CREDITCARD = 4,	//Carte crÃ©dit
 	ACC_TYPE_LIABILITY  = 5,	//Passif (dettes)
 //	ACC_TYPE_STOCK      = 6,	//Actions
 //	ACC_TYPE_MUTUALFUND = 7,	//Fond de placement
 //	ACC_TYPE_INCOME     = 8,	//Revenus
-//	ACC_TYPE_EXPENSE    = 9,	//Dépenses
+//	ACC_TYPE_EXPENSE    = 9,	//DÃ©penses
 //	ACC_TYPE_EQUITY     = 10,	//Capitaux propres
 //	ACC_TYPE_,
 	ACC_TYPE_MAXVALUE
@@ -83,7 +87,6 @@ enum
 
 
 
-Account *da_acc_clone(Account *src_item);
 Account *da_acc_malloc(void);
 void da_acc_free(Account *item);
 Account *da_acc_malloc(void);
@@ -104,12 +107,14 @@ void da_acc_consistency(Account *item);
 
 
 gboolean account_is_used(guint32 key);
-void account_move(guint32 key1, guint32 key2);
 gboolean account_exists(gchar *name);
 gboolean account_rename(Account *item, gchar *newname);
+void account_set_currency(Account *item, guint32 kcur);
 void account_compute_balances(void);
 gboolean account_balances_add(Transaction *trn);
 gboolean account_balances_sub(Transaction *trn);
 
 GList *account_glist_sorted(gint column);
+
+void account_convert_euro(Account *acc);
 #endif

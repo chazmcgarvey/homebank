@@ -54,8 +54,6 @@ sub new {
     #$self->cool_beans(123);
     #print $self->cool_beans, "\n";
 
-    $self->create_menuitem;
-
     $self;
 }
 
@@ -64,7 +62,7 @@ sub on_create_main_window {
     my $window = shift;
 
     if (!$window) {
-        require Gtk2;
+        require Gtk3;
         $window = HomeBank->main_window;
     }
 
@@ -74,29 +72,27 @@ sub on_create_main_window {
     print $window->get_title, "\n";
 
     HomeBank->hook("my_hook", $window);
-
-    $self->create_menuitem;
 }
 
 my $test_win;
 
 sub on_test {
     my $self = shift;
-    require Gtk2;
+    require Gtk3;
 
-    my $window = Gtk2::Window->new('toplevel');
+    my $window = Gtk3::Window->new('toplevel');
     use Devel::Peek;
     Dump($window);
     print Dumper($window);
     $window->set_title("Hello World");
-    #$window->signal_connect(delete_event => sub { Gtk2->main_quit });
+    #$window->signal_connect(delete_event => sub { Gtk3->main_quit });
     $window->signal_connect(delete_event => sub { undef $test_win });
 
-    my $button = Gtk2::Button->new('Click Me!');
+    my $button = Gtk3::Button->new('Click Me!');
     Dump($button);
     print Dumper($button);
     $button->signal_connect(clicked => sub {
-            print "Hello Gtk2-Perl: $counter (perl plugin: $self)\n";
+            print "Hello Gtk3-Perl: $counter (perl plugin: $self)\n";
             $counter++;
             #if ($temp->is_inserted) {
                 #print "$temp is inserted\n";
@@ -130,7 +126,7 @@ sub on_enter_main_loop {
     $temp = HomeBank::Account->get(7);
     print "retained account: ", $temp->name, "\n";
 
-    #require Gtk2;
+    #require Gtk3;
     #
     my $txn = HomeBank::Transaction->new;
     $txn->amount(12.3456);
@@ -221,13 +217,6 @@ sub on_unhandled {
     #HomeBank->warn($hook, 'Hook not handled.');
 }
 
-sub on_main_window_disposal {
-    my $self = shift;
-    print "main window disposed so forgetting about merge id et al.\n";
-    delete $self->{merge_id};
-    delete $self->{action_group};
-}
-
 sub DESTROY {
     my $self = shift;
     print "DESTROYING HELLO WORLD!!!!!!\n";
@@ -235,42 +224,6 @@ sub DESTROY {
         print "there is a test_win...\n";
     }
     $test_win->destroy if $test_win;
-
-    $self->destroy_menuitem;
-}
-
-sub destroy_menuitem {
-    my $self = shift;
-
-    return unless $self->{merge_id};
-
-    my $ui_manager = HomeBank->main_ui_manager;
-    $ui_manager->remove_action_group($self->{action_group});
-    $ui_manager->remove_ui($self->{merge_id});
-}
-
-sub create_menuitem {
-    my $self = shift;
-
-    return if $self->{merge_id};
-
-    require Gtk2;
-
-    my $ui_manager = HomeBank->main_ui_manager;
-    print Dumper($ui_manager);
-    return unless $ui_manager;
-
-    $self->{merge_id} = $ui_manager->new_merge_id;
-    $self->{action_group} = Gtk2::ActionGroup->new('HelloActionGroup');
-
-    my $action = Gtk2::Action->new(name => 'HelloPlugin', label => 'Booyah!', stock_id => 'prf-plugins', tooltip => 'blaaaargh');
-    $action->signal_connect(activate => sub { print "hello!!!!!!!!\n" });
-    $self->{action_group}->add_action($action);
-
-    $ui_manager->insert_action_group($self->{action_group}, -1);
-    $ui_manager->add_ui($self->{merge_id}, 'ui/MenuBar/PluginMenu', 'HelloPlugin', 'HelloPlugin', 'auto', '');
-    #$self->{merge_id} = $ui_manager->new_merge_id;
-    $ui_manager->add_ui($self->{merge_id}, 'ui/ToolBar', 'HelloPluginTool', 'HelloPlugin', 'auto', '');
 }
 
 sub EXECUTE {

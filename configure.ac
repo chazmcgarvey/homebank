@@ -2,7 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.52)
-AC_INIT([homebank], [4.6.3])
+AC_INIT([homebank], [5.1.2])
+#AC_INIT([homebank], [x.x-rc])
 
 AM_CONFIG_HEADER(config.h)
 
@@ -25,19 +26,26 @@ AC_PROG_INSTALL
 AC_PROG_INTLTOOL
 
 # Checks for libraries.
-PKG_CHECK_MODULES(DEPS, gtk+-2.0 >= 2.24 glib-2.0 >= 2.28 gmodule-2.0 >= 2.28)
+PKG_CHECK_MODULES(DEPS, gtk+-3.0 >= 3.12 glib-2.0 >= 2.39 gmodule-2.0 >= 2.39)
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 AC_CHECK_LIB(m, pow)
 
+PKG_CHECK_MODULES(LIBSOUP, [libsoup-2.4 >= 2.26])
+AC_SUBST(LIBSOUP_CFLAGS)
+AC_SUBST(LIBSOUP_LIBS)
+
 # general usage flags
 CFLAGS="${CFLAGS} -Wall -Wmissing-prototypes"
+
+# disable deprecated warnings
+CFLAGS="${CFLAGS} -Wno-deprecated-declarations"
 
 # extended flags
 #CFLAGS="${CFLAGS} -Wextra -Wno-unused-parameter"
 
-#valgrind flags
-#CFLAGS="${CFLAGS} -g -O0"
+# profiling valgrind/gprof flags
+#CFLAGS="${CFLAGS} -g -O0 -pg"
 
 # pre-relase # 2 - error as warning for 
 #CFLAGS="${CFLAGS} -Werror"
@@ -123,7 +131,7 @@ AC_C_VOLATILE
 AC_CHECK_FUNCS([floor localeconv memset modf pow setlocale sqrt strcasecmp strtoul])
 
 # International support
-ALL_LINGUAS="af ar ast be bg br ca cs cy da de el en_AU en_CA en_GB es et eu fa fi fr ga gl he hr hu id is it ja ka ko lt lv mr ms nb nds nl oc pl pt_BR pt pt_PT ro ru si sk sl sr sv tr uk vi zh_CN zh_TW" 
+ALL_LINGUAS="af ar ast be bg br ca cs cy da de el en_AU en_CA en_GB es et eu fa fi fr gl he hr hu id is it ja ko lt lv mr ms nb nds nl oc pl pt_BR pt pt_PT ro ru si sk sl sr sv tr uk vi zh_CN zh_TW" 
 
 AM_GLIB_GNU_GETTEXT
 
@@ -136,11 +144,13 @@ Makefile
 src/Makefile 
 data/homebank.desktop.in
 data/Makefile
-data/icons/Makefile
 data/datas/Makefile
 images/Makefile
 mime/Makefile
-po/Makefile.in 
+pixmaps/Makefile
+themes/Makefile
+themes/hicolor/Makefile
+po/Makefile.in
 doc/Makefile
 doc/images/Makefile
 plugins/Makefile

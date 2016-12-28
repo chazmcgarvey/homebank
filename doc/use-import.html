@@ -1,171 +1,96 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=utf-8">
-
-  <title>Using the import external files feature</title>
-  <link rel="stylesheet" href="help.css" type="text/css">
-
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Using the import files feature</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
 </head>
-
 <body id="top">
   <div class="dochead">
     HomeBank User manual
   </div>
-
   <div class="title">
-  
-  <h1>Using the Import external files feature</h1>
-
-  <p>HomeBank is able to import files downloaded from your bank institution,
-  and also files exported from some various other personal accounting
-  software, like Money, Quicken, GnuCash, via the <a href="#format">supported file format</a></p>
-
- 
- <ul class="toc">
-    <li>Step 1: <a href="#step1">Open the import assistant dialog</a></li>
-
-    <li>Step 2: <a href="#step2">Select a file to import</a></li>
-
-    <li>Step 3: <a href="#step3">File analysis result</a></li>
-
-    <li>Step 4: <a href="#step4">Adjust what to import</a></li>
-    
-    <li>Step 5: <a href="#step5">Update your accounts</a></li>
-  </ul>
-</div>
-
+    <h1>Using the Import files feature</h1>
+    <p>HomeBank is able to import files downloaded from your Bank institution, and also files coming from various personal accounting software, like Money, Quicken, GnuCash, in the <a href="#format">supported file format</a>.</p>
+    <ul class="toc">
+      <li>Step 1: <a href="#step1">Open the import assistant dialog</a></li>
+      <li>Step 2: <a href="#step2">Select a file to import</a></li>
+      <li>Step 3: <a href="#step3">Adjust what to import</a></li>
+      <li>Step 4: <a href="#step4">Confirmation</a></li>
+    </ul>
+  </div>
   <div class="rounded content">
-  <h3 id="step1">Step 1: Open the import assistant dialog</h3>
-
-  <p>From the <em>main window</em>:</p>
-
-  <ul>
-    <li>Select the File/Import... menu</li>
-
-    <li>The import assistant will open and will then guide you through the different steps
-  for importing a file</li>
-  </ul>
-
-  <div class="clear"></div>
-
- </div>
-
+    <h3 id="step1">Step 1: Open the import assistant dialog</h3>
+    <p>From the <em>main window</em>:</p>
+    <ul>
+      <li>Select the File/Import... menu</li>
+      <li>The import assistant will open and then will guide you through the different steps for importing a file</li>
+    </ul>
+    <div class="clear"></div>
+  </div>
   <div class="rounded content">
-
-  <h3 name="step2">Step 2: Select a file to import</h3>
-
-  <p>In this page, you will select a single file to import. As default, HomeBank will filter the file on every known formats,
-  you can filter on a precise format if you want.</p>
-
-  
-<p>When you have not selected a file, or the file is not supported:<br>  
-  <img class="gtkshot" src="images/use-import2a.png"></p>
-
-  <p>When the file is supported:<br>
-  <img class="gtkshot" src="images/use-import2b.png"></p>
-
- </div>
-
+    <h3>Step 2: Select a file to import</h3>
+    <p>Here you select a single file to import. HomeBank will position the filter to the format you just chosen from the menu.</p>
+    <table>
+      <tr>
+        <td>
+          <p>When you have not selected a file, or the file is not supported:<br>
+          <img class="gtkshot" src="images/use-import2a.png"></p>
+        </td>
+        <td></td>
+        <td>
+          <p>When the file is supported:<br>
+          <img class="gtkshot" src="images/use-import2b.png"></p>
+        </td>
+      </tr>
+    </table>
+  </div>
   <div class="rounded content">
-
-  <h3 id="step3">Step 3: File analysis result</h3>
-
-	<img class="gtkshot left" src="images/use-import3.png">
-	
-  <p>In this page, you will see a summary of the file currently in the import process
-  with a count of accounts, transactions, payees and categories.</p>
-  
-  <p>When you import a QIF/CSV file, you will be able to change the default date order here
-  if the load failed on this. he default date order can be configured into the preferences dialog.</p>
-
-
-
-  <div class="clear"></div>
-
- </div>
-
- 
+    <h3 id="step3">Step 3: Adjust what to import</h3>
+    <p>The following steps will only be displayed when you need to validate or confirm an action or a configuration.</p>
+    <h4>File properties</h4>
+    <p>This step is never showed, until you use the back button, as HomeBank will go to the step you need to change or check things</p><img class="gtkshot left" src="images/use-import3.png">
+    <p>A summary of the file currently in the import process is showed with a count of accounts, transactions, payees and categories.</p>
+    <p>When you import a QIF/CSV file, HomeBank will try to import date with the format order configured into the preferences, and it will try to detect it otherwise. If something went wrong with the date, please adjust the preferences settings to match the file date format order you usually import.</p>
+    <div class="clear"></div>
+    <h4>Account to import</h4><img class="gtkshot left" src="images/use-import4.png">
+    <p>Here you will control the accounts and how to import it.</p>
+    <p>Depending on the file format, HomeBank will try to match the account by its number or its name.</p>
+    <p>For QIF: the match will be done by the account name</p>
+    <p>For OFX: by account number, HomeBank try to find the OFX number as a substring of an account number.</p>
+    <p>For CSV: a default account will be created.</p>
+    <p>However, for some QIF files, or any CSV files, there is no information that will permit to identify the account to import, so you will need to manage this manually.</p>
+    <div class="clear"></div>
+    <h4>Transactions to import</h4><img class="gtkshot left" src="images/use-import5.png">
+    <p>Here you will control the transactions to be imported.</p>
+    <p>HomeBank will detect if a transaction in the current import file already exists into the target account, and if so will disable it for import and show a warning icon.</p>
+    <p><strong>Detail of existing transaction</strong> section will show the transaction suspected to already exists and them let you choose what to do.</p>
+    <p>You can also change the detection parameters and refresh that list.</p>
+    <p>The detection of existing transaction is done in the following order, according to the date tolerance (default is 0 days).</p>
+    <ul>
+      <li>same account</li>
+      <li>same amount</li>
+      <li>same date (with the configured tolerance)</li>
+    </ul>
+    <div class="clear"></div>
+  </div>
   <div class="rounded content">
-  <h3 id="step4">Step 4: Adjust what to import</h3>
-
-
-  <h4>Account to import</h4>
-  <img class="gtkshot left" src="images/use-import4a.png">
-
-  <p>In this section, you control the accounts to be imported.</p>
-
-  <p>Depending the file format, HomeBank will try to match the account by its number or its name.</p>
-  
-  <p>For QIF: the match will be done by the account name</p>
-  
-  <p>For OFX: by account number, HomeBank try to find the OFX number as a substring of an account number.</p>
-
-  <p>For CSV: a default account will be created, change this manually if required.</p>
-  
-  
-  <P>However, for some QIF files, or any CSV files, there is no information that will permit to identify the 
-  account to import, so you will to manage this manually.</p>
-
-  <div class="clear"></div>
-
-  <h4>Transactions to import</h4>
-
-  <img class="gtkshot left" src="images/use-import4b.png">
-
-  <p>In this section, you control the transactions to be imported.</p>
-
-  <p>HomeBank will detect if a transaction you currently want to import
-  already exists, and if so will not check the import box for that transaction
-  and you also have a warning icon.</p>
-  
-  <p>If some transaction are suspected to have duplicates, you will be able to view the
-  duplicates in the "Detail of duplicate transaction" for each transaction you select.</p>
-    
-  <p>Once you unfold this section, you can also change some detection parameters and refresh.</p>
-
-  <p>  The detection is done in the following order: account, amount, and date
-  according to the defined tolerance (default is 0 days).</p>
-
-  <div class="clear"></div>
- </div>
-
+    <h3 id="step4">Step 4: Confirmation</h3>
+    <p><img class="gtkshot left" src="images/use-import6.png"></p>
+    <p>At last show the synthesis of what is to be imported and requires a last confirmation.</p>
+    <p>The number of accounts to update / create.</p>
+    <p>The number of transaction to be imported, rejected and the one for which automatic assignment was done for payee and/or category.</p>
+    <div class="clear"></div>
+  </div>
   <div class="rounded content">
-
-  <h3 id="step5">Step 5: Update your accounts</h3>
-
-<p><img class="gtkshot left" src="images/use-import5.png"></p>
-
-  <p>This last step will show the synthesis of what is to be imported.</p>
-
-  <p>The number of accounts to update / create.</p>
-  
-	<p>The number of transaction to be imported, rejected and the one for which
-  automatic assignment was done for payee and/or category.</p>
-
-
-  <div class="clear"></div>
-
-</div>  
-  
-
-
-  <div class="rounded content">
-  <h3 id="format">Supported file formats</h3>
-
-  <ul>
-    <li>QIF - Quicken Interchange Format</li>
-
-    <li>QFX - Quicken Financial Exchange</li>
-
-    <li>OFX - Open Financial Exchange</li>
-
-    <li>CSV - Comma-Separated Value - (specific format rules, <a href=
-    "misc-csvformat.html">detailed here</a>)</li>
-  </ul>
-
- 
-   </div>
+    <h3 id="format">Supported file formats</h3>
+    <ul>
+      <li>QIF - Quicken Interchange Format</li>
+      <li>QFX - Quicken Financial Exchange</li>
+      <li>OFX - Open Financial Exchange</li>
+      <li>CSV - Comma-Separated Value - (specific format rules, <a href="misc-csvformat.html">detailed here</a>)</li>
+    </ul>
+  </div>
 </body>
 </html>

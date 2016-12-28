@@ -3,7 +3,7 @@
 ACLOCAL_AMFLAGS	= -I m4
 
 #SUBDIRS = src
-SUBDIRS = src data images mime po doc plugins
+SUBDIRS = src data images mime pixmaps themes po doc plugins
 
 
 # don't forget to do a 'make check' 

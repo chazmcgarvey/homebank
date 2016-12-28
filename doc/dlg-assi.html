@@ -1,96 +1,76 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="CONTENT-TYPE" content=
-  "text/html; charset=utf-8">
-
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
   <title>Assignment dialog</title>
-  <link rel="stylesheet" href="help.css" type="text/css">
+  <link href="help.css" rel="stylesheet" type="text/css">
 </head>
-
 <body id="top">
   <div class="dochead">
     HomeBank User manual
   </div>
-
   <div class="title">
-
-  <h1>Assignments dialog</h1>
-
-  <p>The assignments dialog is used to add, edit and manage the
-  <a href="00-lexicon.html#assignment">assignment</a> rules of the current wallet.</p>
-
-  <p>Please refer to the <a href="use-auto_assign.html">Using the Automatic assignment feature</a> 
-  for details on how using this feature.</p>
-
-  <h2>Dialog call</h2>
-
-  <ul>
-    <li>mainwindow-menu: Manage / Assignments...</li>
-
-    <li>mainwindow-toolbar.</li>
-  </ul>
-</div>
-
+    <h1>Assignments dialog</h1>
+    <p>The assignments dialog is used to add, edit and manage the <a href="00-lexicon.html#assignment">assignment</a> rules of the current wallet.</p>
+    <p>Please refer to the <a href="use-auto_assign.html">Using the Automatic assignment feature</a> for details on how using this feature.</p>
+    <h2>Dialog call</h2>
+    <ul>
+      <li>main window menu: Manage / Assignments...</li>
+      <li>main window tool bar.</li>
+    </ul>
+  </div>
   <div class="rounded content">
-
-  <h2>Using assignments dialog</h2>
-
-  <p><img class="gtkshot right" src="images/dlg-assign1.png"></p>
-
-  <h3><img src="images/1.png"> Assignment list</h3>
-
-  <p>display the actual list of assignments in the wallet. It is
-  always sorted in alphabetic order.</p>
-
-  <h3><img src="images/2.png"> Buttons</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Remove</th>
-
-      <td>remove the active assignment.</td>
-    </tr>
-
-    <tr>
-      <th>Add</th>
-
-      <td>add a new empty assignment.</td>
-    </tr>
-  </table>
-
-  <h3><img src="images/3.png"> Search in memo</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Contains the text</th>
-
-      <td>define the text to search into the memo</td>
-    </tr>
-    <tr>
-      <th>Case sensitive</th>
-
-      <td>set the search to be sensible to case of characters</td>
-    </tr>
-  </table>
-
-  <h3><img src="images/4.png"> Automatic assignments</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Payee</th>
-
-      <td>the payee to assign</td>
-    </tr>
-
-    <tr>
-      <th>Category</th>
-
-      <td>the category to assign</td>
-    </tr>
-  </table>
-  
+    <h2>Using assignments dialog</h2>
+    <p><img class="gtkshot right" src="images/dlg-assign1.png"></p>
+    <h3><img src="images/1.png"> Assignment list</h3>
+    <p>display the actual list of assignments in the wallet. It is always sorted in alphabetic order.</p>
+    <h3><img src="images/2.png"> Buttons</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Add</th>
+        <td>add a new empty assignment.</td>
+      </tr>
+      <tr>
+        <th>Delete</th>
+        <td>delete the active assignment.</td>
+      </tr>
+    </table>
+    <h3><img src="images/3.png"> Condition</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Search in Memo/Payee</th>
+        <td>set in what field to search</td>
+      </tr>
+      <tr>
+        <th>Find</th>
+        <td>set the text to search</td>
+      </tr>
+      <tr>
+        <th>Match case</th>
+        <td>set the search to consider uppercase and lowercase different, otherwise the same</td>
+      </tr>
+      <tr>
+        <th>Use regular expression</th>
+        <td>set the find fields to be interpreted as a regular expression</td>
+      </tr>
+    </table>
+    <h3><img src="images/4.png"> Assign xxxxxx</h3>
+    <p>[Disabled|If empty|Overwrite] controls in what case do the assignment</p>
+    <table class="widgetinfo">
+      <tr>
+        <th>Payee</th>
+        <td>the payee to optionally assign</td>
+      </tr>
+      <tr>
+        <th>Category</th>
+        <td>the category to optionally assign</td>
+      </tr>
+      <tr>
+        <th>Payment</th>
+        <td>the payment to optionally assign</td>
+      </tr>
+    </table>
   </div>
 </body>
 </html>

@@ -1,112 +1,83 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="noindex" name="robots">
   <title>Scheduled/Template transactions dialog</title>
-  <link rel="stylesheet" href="help.css" type="text/css">
+  <link href="help.css" rel="stylesheet" type="text/css">
 </head>
-
 <body id="top">
   <div class="dochead">
     HomeBank User manual
   </div>
-
   <div class="title">
-
-  <h1>Scheduled/Template transactions dialog</h1>
-
-  <p>The Scheduled/Template transactions dialog is used to add,
-  edit and manage the <a href=
-  "00-lexicon.html#scheduled">scheduled</a> / <a href=
-  "00-lexicon.html#template">template</a> of the current wallet.</p>
-
-  <h2>Dialog call</h2>
-
-  <ul>
-    <li>mainwindow-menu: Manage / Scheduled/Template...</li>
-
-    <li>mainwindow-toolbar.</li>
-  </ul>
-</div>
-
+    <h1>Scheduled/Template transactions dialog</h1>
+    <p>The Scheduled/Template transactions dialog is used to add, edit and manage the <a href="00-lexicon.html#scheduled">scheduled</a> / <a href="00-lexicon.html#template">template</a> of the current wallet.</p>
+    <h2>Dialog call</h2>
+    <ul>
+      <li>main window menu: Manage / Scheduled/Template...</li>
+      <li>main window tool bar.</li>
+    </ul>
+  </div>
   <div class="rounded content">
-
-  <h2>Using Scheduled/Template transactions dialog</h2>
-
-  <p><img class="gtkshot right" src="images/dlg-template1.png"></p>
-
-  <h3><img src="images/1.png"> Template list</h3>
-
-  <p>display the actual list of Scheduled/Template transactions in
-  the wallet. It is always sorted in alphabetic order.</p>
-
-  <h3><img src="images/2.png"> Buttons</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Remove</th>
-
-      <td>remove the active template.</td>
-    </tr>
-
-    <tr>
-      <th>Add</th>
-
-      <td>add a new empty template.</td>
-    </tr>
-  </table>
-
-  <h3><img src="images/3.png"> Transaction details</h3>
-
-  <p>Please refer to <a href="dlg-tran.html">transaction dialog</a>
-  for these fields.</p>
-
-  <h3><img src="images/4.png"> Scheduled insertion</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Activate</th>
-
-      <td>set this template to be scheduled</td>
-    </tr>
-
-    <tr>
-      <th>Limit to</th>
-
-      <td>limit the insertion to a finished count</td>
-    </tr>
-
-    <tr>
-      <th>times</th>
-
-      <td>number of insertion to limit to</td>
-    </tr>
-
-    <tr>
-      <th>Every</th>
-
-      <td>set the insertion interval</td>
-    </tr>
-
-    <tr>
-      <th>Units</th>
-
-      <td>set the unit of the insertion interval: day, week, month,
-      year</td>
-    </tr>
-
-    <tr>
-      <th>Next on</th>
-
-      <td>specify the date of the next insertion, when you first
-      edit you should set it manually, then it is updated
-      automatically. You can of course adjust it later if
-      needed.</td>
-    </tr>
-  </table>
-  
+    <h2>Using Scheduled/Template transactions dialog</h2>
+    <p><img class="gtkshot right" src="images/dlg-template1.png"></p>
+    <h3><img src="images/1.png"> Scheduled/Template switcher</h3>
+    <p>Toggle the list to show only Scheduled or Template</p>
+    <h3><img src="images/2.png"> Scheduled/Template list</h3>
+    <p>display the actual list of Scheduled/Template transactions in the wallet. It is always sorted in alphabetic order.</p>
+    <p>scheduled transaction are marked with a calendar icon: <img src="images/hb-ope-auto.png"></p>
+    <h3><img src="images/3.png"> Buttons</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Add</th>
+        <td>add a new empty template.</td>
+      </tr>
+      <tr>
+        <th>Delete</th>
+        <td>delete the active template.</td>
+      </tr>
+    </table>
+    <h3><img src="images/4.png"> Transaction details</h3>
+    <p>Please refer to <a href="dlg-tran.html">transaction dialog</a> for these fields.</p>
+    <h3><img src="images/5.png"> Scheduled insertion</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Activate</th>
+        <td>set this template to be scheduled</td>
+      </tr>
+      <tr>
+        <th>Next date</th>
+        <td>specify the date of the next insertion, when you first edit you should set it manually, then it is updated automatically. You can of course adjust it later if needed.</td>
+      </tr>
+      <tr>
+        <th>Every</th>
+        <td>
+          set the insertion interval to every xx:
+          <ul>
+            <li>Day</li>
+            <li>Week</li>
+            <li>Month</li>
+            <li>Year</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Week-end</th>
+        <td>
+          define how to manage the post date when it occurs on a weekend:
+          <ul>
+            <li>Possible : don't care</li>
+            <li>Before : move to first day before</li>
+            <li>After : move to first day after</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Stop after xx posts</th>
+        <td>limit the insertion to a finished count</td>
+      </tr>
+    </table>
   </div>
 </body>
 </html>

@@ -1,15 +1,19 @@
 # List of source files containing translatable strings.
 
 data/homebank.desktop.in.in
+data/homebank.appdata.xml.in
 
 # Main application
 src/dsp_account.c
 src/dsp_mainwindow.c
+src/hb-archive.c
 src/hb-category.c
 src/hb-filter.c
 src/hb-hbfile.c
+src/hb-preferences.c
 src/homebank.c
-src/import.c
+src/hb-import-csv.c
+src/hb-import.c
 src/list_account.c
 src/list_operation.c
 src/list_topspending.c
@@ -23,12 +27,15 @@ src/ui-account.c
 src/ui-archive.c
 src/ui-assign.c
 src/ui-assist-start.c
+src/ui-assist-import.c
 src/ui-budget.c
 src/ui-category.c
+src/ui-currency.c
 src/ui-dialogs.c
 src/ui-filter.c
 src/ui-hbfile.c
 src/ui-payee.c
 src/ui-pref.c
+src/ui-split.c
 src/ui-transaction.c
 src/ui-widgets.c
