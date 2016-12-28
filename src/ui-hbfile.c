@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -119,6 +119,27 @@ struct defhbfile_data *data;
 
 }
 
+static void defhbfile_toggle(GtkRadioButton *radiobutton, gpointer user_data)
+{
+struct defhbfile_data *data;
+gboolean sensitive;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(radiobutton), GTK_TYPE_WINDOW)), "inst_data");
+
+	DB( g_print("\n(defhbfile_data) toggle\n") );
+
+	sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->radio[0])); 
+
+	DB( g_print(" -> radio[0]=%d %s\n", sensitive, sensitive ? "add until" : "add every x") );
+	
+	gtk_widget_set_sensitive (data->LB_nbdays, !sensitive);
+	gtk_widget_set_sensitive (data->LB_weekday, sensitive);
+
+	gtk_widget_set_sensitive (data->NU_nbdays, !sensitive);
+	gtk_widget_set_sensitive (data->NU_weekday, sensitive);
+
+}
+
 
 /*
 **
@@ -163,17 +184,16 @@ static void defhbfile_setup(struct defhbfile_data *data)
 GtkWidget *create_defhbfile_dialog (void)
 {
 struct defhbfile_data data;
-GtkWidget *dialog, *content_area, *hbox, *vbox, *table;
-GtkWidget *label, *widget, *entry, *combo, *spinner;
-GtkWidget *alignment;
-gint row;
+GtkWidget *dialog, *content_area, *content_grid, *group_grid;
+GtkWidget *label, *widget;
+gint crow, row;
 
-	dialog = gtk_dialog_new_with_buttons (_("HomeBank file properties"),
+	dialog = gtk_dialog_new_with_buttons (_("File properties"),
 				GTK_WINDOW(GLOBALS->mainwindow),
 				0,
-				GTK_STOCK_CANCEL,
+				_("_Cancel"),
 				GTK_RESPONSE_REJECT,
-				GTK_STOCK_OK,
+				_("_OK"),
 				GTK_RESPONSE_ACCEPT,
 				NULL);
 
@@ -181,86 +201,94 @@ gint row;
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)&data);
 	DB( g_print("(defaccount) dialog=%p, inst_data=%p\n", dialog, &data) );
 
-	gtk_window_set_icon_name(GTK_WINDOW (dialog), GTK_STOCK_PROPERTIES);
+	gtk_window_set_icon_name(GTK_WINDOW (dialog), ICONNAME_PROPERTIES);
 	gtk_window_set_resizable(GTK_WINDOW (dialog), FALSE);
 
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER(vbox), HB_MAINBOX_SPACING);
-	gtk_box_pack_start (GTK_BOX (content_area), vbox, TRUE, TRUE, 0);
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));	// return a vbox
 
-    table = gtk_table_new (6, 3, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (table), HB_TABROW_SPACING);
-	gtk_table_set_col_spacings (GTK_TABLE (table), HB_TABCOL_SPACING);
+	content_grid = gtk_grid_new();
+	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+	gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_MEDIUM);
+	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
 
-	//			gtk_alignment_new(xalign, yalign, xscale, yscale)
-	alignment = gtk_alignment_new(0.5, 0.0, 1.0, 0.0);
-	gtk_container_add(GTK_CONTAINER(alignment), table);
-	gtk_container_add (GTK_CONTAINER (vbox), alignment);
+	crow = 0;
+	// group :: General
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	
+	label = make_label_group(_("General"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
-// part 1
-	row = 0;
-	label = make_label(_("General"), 0.0, 0.5);
-	gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
-	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 3, row, row+1);
+	row = 1;
+	label = make_label_widget(_("_Owner:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = make_string(label);
+	data.ST_owner = widget;
+	gtk_widget_set_hexpand(widget, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
-	row++;
-	label = make_label(_("_Owner:"), 0, 0.5);
-	gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
-	entry = make_string(label);
-	data.ST_owner = entry;
-	gtk_table_attach (GTK_TABLE (table), entry, 2, 3, row, row+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (0), 0, 0);
+	// group :: Scheduled transaction
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	
+	label = make_label_group(_("Scheduled transaction"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 4, 1);
 
-// frame 2
-	row++;
-	label = make_label(_("Scheduled transaction"), 0.0, 0.5);
-	gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
-	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 3, row, row+1);
-
-	row++;
+	row = 1;
 	widget = gtk_radio_button_new_with_label (NULL, _("add until"));
 	data.radio[0] = widget;
-	gtk_table_attach (GTK_TABLE (table), widget, 1, 2, row, row+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
-	hbox = gtk_hbox_new(FALSE, HB_BOX_SPACING);
-	gtk_table_attach (GTK_TABLE (table), hbox, 2, 3, row, row+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (0), 0, 0);
-	spinner = make_numeric(NULL, 1, 28);
-	data.NU_weekday = spinner;
-	gtk_box_pack_start (GTK_BOX (hbox), spinner, FALSE, FALSE, 0);
-	label = make_label(_("of each month (excluded)"), 1, 0.5);
-    gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	widget = make_numeric(NULL, 1, 28);
+	data.NU_weekday = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
+	label = make_label(_("of each month (excluded)"), 0.0, 0.5);
+	data.LB_weekday = label;
+	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
+	
 	row++;
 	widget = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON (data.radio[0]), _("add"));
 	data.radio[1] = widget;
-	gtk_table_attach (GTK_TABLE (table), widget, 1, 2, row, row+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
-	hbox = gtk_hbox_new(FALSE, HB_BOX_SPACING);
-	gtk_table_attach (GTK_TABLE (table), hbox, 2, 3, row, row+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (0), 0, 0);
-	spinner = make_numeric(NULL, 0, 366);
-	data.NU_nbdays = spinner;
-    gtk_box_pack_start (GTK_BOX (hbox), spinner, FALSE, FALSE, 0);
+	widget = make_numeric(NULL, 0, 366);
+	data.NU_nbdays = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
 	//TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
-	label = make_label(_("days in advance the current date"), 1, 0.5);
-    gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	label = make_label(_("days in advance the current date"), 0.0, 0.5);
+	data.LB_nbdays = label;
+	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
 
-// frame 3
-	row++;
-	label = make_label(_("Vehicle cost"), 0.0, 0.5);
-	gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
-	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 3, row, row+1);
+	// group :: Scheduled transaction
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	
+	label = make_label_group(_("Vehicle cost"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
-	row++;
-	label = make_label(_("_Category:"), 0, 0.5);
-	gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
-	combo = ui_cat_comboboxentry_new(label);
-	data.PO_grp = combo;
-	gtk_table_attach (GTK_TABLE (table), combo, 2, 3, row, row+1, (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), (GtkAttachOptions) (0), 0, 0);
+	row = 1;
+	label = make_label_widget(_("_Category:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = ui_cat_comboboxentry_new(label);
+	data.PO_grp = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 
 	//connect all our signals
 	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
 
+	g_signal_connect (data.radio[0], "toggled", G_CALLBACK (defhbfile_toggle), NULL);
+
+	
 	//setup, init and show window
 	defhbfile_setup(&data);
 	//defhbfile_update(data.LV_arc, NULL);

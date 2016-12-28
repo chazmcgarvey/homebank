@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -40,22 +40,27 @@ struct ui_bud_manage_data
 	gint		change;
 	Category	*lastcatitem;
 
-
 	GtkWidget	*window;
 
-	GtkWidget	*spinner[13];	//0 index is for All
 	GtkWidget	*LV_cat;
-	GtkWidget	*CM_type[2];
+	GtkWidget   *BT_expand;
+	GtkWidget   *BT_collapse;
 
+	GtkWidget	*RA_type;
+	GtkWidget   *label_budget;
+	GtkWidget	*CM_type[2];
+	GtkWidget	*label[13];	//0 index is for All (not displayed)
+	GtkWidget	*spinner[13];	//0 index is for All
+	GtkWidget   *label_options;
 	GtkWidget	*CM_force;
 
 	GtkWidget	*BT_clear;
-	GtkWidget	*BT_import, *BT_export;
 
 	Category	*cat;
 
 	gulong		handler_id[MAX_HID_BUDGET];
 };
+
 
 
 

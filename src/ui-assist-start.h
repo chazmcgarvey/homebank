@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -23,9 +23,11 @@
 
 struct assist_start_data
 {
-	GtkWidget	*assistant;
+	GtkWidget	*window;
 	//GtkWidget	*pages[NUM_PAGE];
 	GtkWidget	*ST_owner;
+	GtkWidget   *LB_currency;
+	GtkWidget   *BT_change;
 
 	GtkWidget	*TX_lang;
 	GtkWidget	*TX_file;
@@ -38,7 +40,8 @@ struct assist_start_data
 	GtkWidget	*ST_initial;
 	GtkWidget	*ST_minimum;
 
-	gchar *pathfilename;
+	Currency4217 *curfmt;
+	gchar	   *pathfilename;
 };
 
 

@@ -1,159 +1,116 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="noindex" name="robots">
   <title>Accounts dialog</title>
-  <link rel="stylesheet" href="help.css" type="text/css">
+  <link href="help.css" rel="stylesheet" type="text/css">
 </head>
-
 <body id="top">
   <div class="dochead">
     HomeBank User manual
   </div>
-
   <div class="title">
-
-  <h1>Accounts dialog</h1>
-
-  <p>The accounts dialog is used to add, edit and manage the
-  <a href="00-lexicon.html#accounts">accounts</a> of the current
-  wallet.</p>
-
-  <h2>Dialog call</h2>
-
-  <ul>
-    <li>mainwindow-menu: Manage / Accounts</li>
-
-    <li>mainwindow-toolbar.</li>
-  </ul>
-</div>
-
+    <h1>Accounts dialog</h1>
+    <p>The accounts dialog is used to add, edit and manage the <a href="00-lexicon.html#accounts">accounts</a> of the current wallet.</p>
+    <h2>Dialog call</h2>
+    <ul>
+      <li>main window menu: Manage / Accounts</li>
+      <li>main window tool bar.</li>
+    </ul>
+  </div>
   <div class="rounded content">
-
-  <h2>Using accounts dialog</h2>
-
-  <p><img class="gtkshot right" src="images/dlg-account1.png"></p>
-
-  <h3><img src="images/1.png"> Account list</h3>
-
-  <p>display the actual list of accounts in the wallet. The account
-  at the top of the list will be the one to be displayed when
-  opening your wallet. You can easily change the accounts order
-  using Drag&amp;Drop process.</p>
-
-  <h3><img src="images/2.png"> Buttons</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Remove</th>
-
-      <td>remove the active account. This is only possible if the
-      account has no transactions.</td>
-    </tr>
-
-    <tr>
-      <th>Add</th>
-
-      <td>add a new empty account.</td>
-    </tr>
-  </table>
-
-  <h3><img src="images/3.png"> Informations</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Name</th>
-
-      <td>specify a name that identify the account.</td>
-    </tr>
-
-    <tr>
-      <th>Type</th>
-
-      <td>specify the type of the account</td>
-    </tr>
-
-    <tr>
-      <th>Number</th>
-
-      <td>specify the bank account number itself.</td>
-    </tr>
-
-    <tr>
-      <th>Bank name</th>
-
-      <td>specify the bank name where the account is
-      registered.</td>
-    </tr>
-
-    <tr>
-      <th>This account was closed</th>
-
-      <td>specify the bank account is closed.</td>
-    </tr>
-  </table>
-
-  <h3><img src="images/4.png"> Usage options</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Exclude from account summary</th>
-
-      <td>the account will must not be used into the account
-      summary list of the main window.</td>
-    </tr>
-
-    <tr>
-      <th>Exclude from the budget</th>
-
-      <td>the account will not be used for the budget datas.</td>
-    </tr>
-
-    <tr>
-      <th>Exclude from any reports</th>
-
-      <td>the account will not be used for any report datas.</td>
-    </tr>
-  </table>
-
-  <h3><img src="images/5.png"> Balances</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Initial</th>
-
-      <td>specify the initial balance amount, i.e the balance
-      before the first transaction.</td>
-    </tr>
-
-    <tr>
-      <th>Minimum</th>
-
-      <td>specify the balance threshold, if you have an authorized
-      balance, this will be used in the <a href=
-      "05over.html">Balance</a> report window.</td>
-    </tr>
-  </table>
-
-  <h3><img src="images/6.png"> Current cheque number</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Checkbook 1</th>
-
-      <td>specify the next cheque number of pad1 to be used (this
-      is auto updated later when you add some transactions).</td>
-    </tr>
-
-    <tr>
-      <th>Checkbook 2</th>
-
-      <td>some of the above but for a second cheque pad (for a
-      joined account)</td>
-    </tr>
-  </table>
+    <h2>Using accounts dialog</h2>
+    <p class="right"><img class="gtkshot right" src="images/dlg-account1.png"><br>
+    <img class="gtkshot right" src="images/dlg-account2.png"></p>
+    <h3><img src="images/1.png"> Account list</h3>
+    <p>display the actual list of accounts in the wallet. The account at the top of the list will be the one to be displayed when opening your wallet. You can easily change the accounts order using Drag&amp;Drop process.</p>
+    <h3><img src="images/2.png"> Buttons</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Add</th>
+        <td>add a new empty account.</td>
+      </tr>
+      <tr>
+        <th>Delete</th>
+        <td>delete the active account. This is only possible if the account has no transactions.</td>
+      </tr>
+    </table><br>
+    <h2>General</h2>
+    <h3><img src="images/3.png"> Account</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Type</th>
+        <td>specify the type of the account</td>
+      </tr>
+      <tr>
+        <th>Currency</th>
+        <td>
+          specify the currency of the account<br>
+          <p><img src="images/warn.png">&nbsp;<span class="warning">If the account you change contains internal xfer, any target account will change of currency as well</span></p>
+        </td>
+      </tr>
+      <tr>
+        <th>Start balance</th>
+        <td>specify the initial balance amount, i.e the balance before the first transaction.</td>
+      </tr>
+      <tr>
+        <th>Notes</th>
+        <td>optional notes you may want to add</td>
+      </tr>
+      <tr>
+        <th>This account was closed</th>
+        <td>specify the bank account is closed.<br>
+        Please also note that closed account are no more considered for reports.</td>
+      </tr>
+    </table>
+    <h3><img src="images/4.png"> Current cheque number</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Checkbook 1</th>
+        <td>specify the next cheque number of first pad to be used (this is auto updated later when you add some transactions).</td>
+      </tr>
+      <tr>
+        <th>Checkbook 2</th>
+        <td>some of the above but for a second cheque pad (for a joined account)</td>
+      </tr>
+    </table><br>
+    <h2>Options</h2>
+    <h3><img src="images/5.png"> Institution</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Name</th>
+        <td>specify the bank name where the account is registered.</td>
+      </tr>
+      <tr>
+        <th>Number</th>
+        <td>specify the bank account number itself.</td>
+      </tr>
+    </table>
+    <h3><img src="images/6.png"> Limits</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Overdraft at</th>
+        <td>
+          specify the balance threshold, if you have an authorized balance, this will be used in the <a href="05over.html">Balance</a> report window.
+        </td>
+      </tr>
+    </table>
+    <h3><img src="images/7.png"> Report exclusion</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Exclude from account summary</th>
+        <td>the account will must not be used into the account summary list of the main window.</td>
+      </tr>
+      <tr>
+        <th>Exclude from the budget</th>
+        <td>the account will not be used for the budget data.</td>
+      </tr>
+      <tr>
+        <th>Exclude from any reports</th>
+        <td>the account will not be used for any report data.</td>
+      </tr>
+    </table>
   </div>
 </body>
 </html>

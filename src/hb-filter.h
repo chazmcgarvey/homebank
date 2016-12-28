@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -71,8 +71,11 @@ enum
 {
 	FLT_STATUS_UNCATEGORIZED = 0,
 	FLT_STATUS_UNRECONCILED = 1,
-	// 2 separator
-	FLT_STATUS_ALL = 3
+	FLT_STATUS_UNCLEARED = 2,
+	FLT_STATUS_RECONCILED = 3,
+	FLT_STATUS_CLEARED = 4,
+	// 5 separator
+	FLT_STATUS_ALL = 6
 };
 
 
@@ -97,9 +100,10 @@ struct _filter
 
 	gshort		option[FILTER_MAX];
 	gboolean	reconciled;
-	gboolean	reminded;
+	gboolean	cleared;
 	gboolean	forceadd;
 	gboolean	forcechg;
+	gboolean	forceremind;
 	gboolean	paymode[NUM_PAYMODE_MAX];
 	gdouble		minamount, maxamount;
 	gboolean	exact;
@@ -114,8 +118,9 @@ Filter *da_filter_malloc(void);
 void da_filter_free(Filter *flt);
 
 void filter_default_all_set(Filter *flt);
-void filter_preset_daterange_set(Filter *flt, gint range);
+void filter_preset_daterange_set(Filter *flt, gint range, guint32 kacc);
 void filter_preset_type_set(Filter *flt, gint value);
+void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays);
 void filter_preset_status_set(Filter *flt, gint value);
 gchar *filter_daterange_text_get(Filter *flt);
 gboolean filter_txn_search_match(gchar *needle, Transaction *txn, gint flags);

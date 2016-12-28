@@ -1,78 +1,43 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=utf-8">
-
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
   <title>Automatic assignment</title>
-  <link rel="stylesheet" href="help.css" type="text/css">
-
+  <link href="help.css" rel="stylesheet" type="text/css">
 </head>
-
 <body id="top">
-
   <div class="dochead">
     HomeBank User manual
   </div>
-
   <div class="title">
-  <h1>Using the Automatic assignment feature</h1>
-
-  <p>The automatic assignment features allows you to setup a Payee and/or a Category
-  automatically to the transactions if the memo field contains a specific text.</p>
-
-  <ul class="toc">
-    <li>Step 1: <a href="#create">Create assignment rules</a></li>
-
-    <li>Step 2: <a href="#trigger">Trigger the assignment</a></li>
-
-  </ul>
-
-</div>
-
+    <h1>Using the Automatic assignment feature</h1>
+    <p>Automatic assignment will allow you to automatically set a Payee and/or a Category to a transaction based on a string contained in the Memo or Payee. The assignment is applied after each file import so that you gain some time with assignment of Category and this permit to ensure the right Payee is set as well.</p>
+    <ul class="toc">
+      <li>Step 1: <a href="#create">Create assignment rules</a></li>
+      <li>Step 2: <a href="#trigger">Trigger the assignment</a></li>
+    </ul>
+  </div>
   <div class="rounded content">
- 
-  <h3><a name="create"></a>Step 1: Create assignment rules</h3>
-
-  <p>Open the <a href="dlg-assi.html">assignment dialog</a> from either the 
-  mainwindow menu or the toolbar.</p>
-
-  <p><img src="images/use-assignment1.png" class="gtkshot"></p>
-  
-  <p>Then create an assignment rule:</p>
-
-  <ul>
-    <li>click the Add button</li>
-
-    <li>fill in the text to search into the memo field</li>
-
-    <li>optionally check the case sensitive checkbox</li>
-
-    <li>select the Payee and/or Category to assign</li>
-  </ul>
-
-
- <p>HomeBank will assign the Payee and/or the Category of a transaction if
- it is empty.</p>
- 
-</div>
-
+    <h3><a id="create" name="create"></a>Step 1: Create assignment rules</h3>
+    <p>Open the <a href="dlg-assi.html">assignment dialog</a> from either the main-window menu or the tool-bar.</p>
+    <p><img class="gtkshot" src="images/use-assignment1.png"></p>
+    <p>Then create an assignment rule:</p>
+    <ul class="step">
+      <li>click the Add button</li>
+      <li>fill in the text to search into the Memo/Payee field</li>
+      <li>optionally check the case sensitive check-box</li>
+      <li>select the Payee and/or Category to assign</li>
+    </ul>
+    <p>HomeBank will assign the Payee and/or the Category of a transaction if it is empty.</p>
+  </div>
   <div class="rounded content">
- 
-  <h3><a name="trigger"></a>Step 2: Trigger the assignment</h3>
-
-<p>The assignment rules will occurs:</p>
-
-  <ul>
-    <li>You trigger it manually from the Account window menu Actions/Auto. assignment or the toolbar</li>
-
-    <li>After a file import into HomeBank using the import assistant</li>
-
-  </ul>
-
-</div>
-
-
- 
+    <h3><a id="trigger" name="trigger"></a>Step 2: Trigger the assignment</h3>
+    <p>The assignment rules will occurs:</p>
+    <ul>
+      <li>You trigger it manually from the Account window menu Actions/Auto. assignment or the tool-bar</li>
+      <li>After a file import into HomeBank using the import assistant</li>
+    </ul>
+  </div>
 </body>
 </html>

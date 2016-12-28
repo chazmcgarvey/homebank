@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -17,36 +17,53 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __GTK_DATEENTRY_H__
-#define __GTK_DATEENTRY_H__
+#ifndef __GTK_DATE_ENTRY_H__
+#define __GTK_DATE_ENTRY_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
-
-#define GTK_TYPE_DATE_ENTRY            (gtk_dateentry_get_type ())
+#define GTK_TYPE_DATE_ENTRY            (gtk_date_entry_get_type ())
 #define GTK_DATE_ENTRY(obj)			   (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_DATE_ENTRY, GtkDateEntry))
 #define GTK_DATE_ENTRY_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_DATE_ENTRY, GtkDateEntryClass)
 #define GTK_IS_DATE_ENTRY(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_DATE_ENTRY))
 #define GTK_IS_DATE_ENTRY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_DATE_ENTRY))
 #define GTK_DATE_ENTRY_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_DATE_ENTRY, GtkDateEntryClass))
 
-
 typedef struct _GtkDateEntry		GtkDateEntry;
 typedef struct _GtkDateEntryClass	GtkDateEntryClass;
+typedef struct _GtkDateEntryPrivate	GtkDateEntryPrivate;
 
-/* you should access only the entry and list fields directly */
+
 struct _GtkDateEntry
 {
-	/*< private >*/
-	GtkHBox hbox;
+	GtkBox box;
 
-	/*< public >*/
+	/*< private >*/
+	GtkDateEntryPrivate *priv;
+};
+
+
+struct _GtkDateEntryClass
+{
+	GtkBoxClass parent_class;
+
+	/* signals */
+	void     (* changed)          (GtkDateEntry *dateentry);
+
+	/* Padding for future expansion */
+	void (*_gtk_reserved0) (void);
+	void (*_gtk_reserved1) (void);
+	void (*_gtk_reserved2) (void);
+	void (*_gtk_reserved3) (void);
+};
+
+
+struct _GtkDateEntryPrivate
+{
 	GtkWidget *entry;
+    GtkWidget *button;
     GtkWidget *arrow;
-	GtkWidget *popup;
-	GtkWidget *popwin;
+	GtkWidget *popup_window;
 	GtkWidget *frame;
 	GtkWidget *calendar;
 
@@ -54,35 +71,25 @@ struct _GtkDateEntry
 	guint32	lastdate;
 
 	GDate	mindate, maxdate;
+	GdkDevice   *device;
+	gboolean	has_grab;
+	gboolean    popup_in_progress;
 
+	GdkDevice *grab_pointer;
+	GdkDevice *grab_keyboard;
 };
 
-struct _GtkDateEntryClass
-{
-	GtkHBoxClass parent_class;
 
-  /* signals */
-  void     (* changed)          (GtkDateEntry *dateentry);
+GType		gtk_date_entry_get_type(void) G_GNUC_CONST;
 
-  /* Padding for future expansion */
-  void (*_gtk_reserved1) (void);
-  void (*_gtk_reserved2) (void);
-  void (*_gtk_reserved3) (void);
-  void (*_gtk_reserved4) (void);
-};
+GtkWidget	*gtk_date_entry_new(void);
 
-GType		gtk_dateentry_get_type(void);
+guint32		gtk_date_entry_get_date(GtkDateEntry * dateentry);
+void		gtk_date_entry_set_date(GtkDateEntry * dateentry, guint32 julian_days);
+void		gtk_date_entry_set_mindate(GtkDateEntry * dateentry, guint32 julian_days);
+void		gtk_date_entry_set_maxdate(GtkDateEntry * dateentry, guint32 julian_days);
 
-GtkWidget	*gtk_dateentry_new(void);
-
-guint32		gtk_dateentry_get_date(GtkDateEntry * dateentry);
-void		gtk_dateentry_set_date(GtkDateEntry * dateentry, guint32 julian_days);
-void		gtk_dateentry_set_mindate(GtkDateEntry * dateentry, guint32 julian_days);
-void		gtk_dateentry_set_maxdate(GtkDateEntry * dateentry, guint32 julian_days);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* __GTK_DATE_ENTRY_H__ */
 

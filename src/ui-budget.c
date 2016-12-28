@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -23,6 +23,7 @@
 #include "ui-category.h"
 #include "ui-budget.h"
 
+extern gchar *CYA_CAT_TYPE[];
 
 /****************************************************************************/
 /* Debug macros                                                             */
@@ -37,7 +38,7 @@
 
 /* our global datas */
 extern struct HomeBank *GLOBALS;
-
+extern struct Preferences *PREFS;
 
 
 
@@ -92,6 +93,24 @@ Category *entry1, *entry2;
     return retval;
 }
 
+
+/*
+**
+*/
+static void ui_bud_listview_icon_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+Category *item;
+gchar *iconname = NULL;
+
+	// get the transaction
+	gtk_tree_model_get(model, iter, LST_DEFCAT_DATAS, &item, -1);
+
+	iconname = ( item->flags & GF_BUDGET ) ? ICONNAME_HB_OPE_BUDGET : NULL;
+
+	g_object_set(renderer, "icon-name", iconname, NULL);
+}
+
+
 /*
 ** draw some text from the stored data structure
 */
@@ -144,13 +163,54 @@ type = (entry->flags & GF_INCOME) ? '+' : '-';
 	g_free(string);
 }
 
+
+static gboolean ui_bud_listview_search_equal_func (GtkTreeModel *model,
+                               gint column,
+                               const gchar *key,
+                               GtkTreeIter *iter,
+                               gpointer search_data)
+{
+  gboolean retval = TRUE;
+  gchar *normalized_string;
+  gchar *normalized_key;
+  gchar *case_normalized_string = NULL;
+  gchar *case_normalized_key = NULL;
+  Category *item;
+	
+  //gtk_tree_model_get_value (model, iter, column, &value);
+  gtk_tree_model_get(model, iter, LST_DEFCAT_DATAS, &item, -1);
+
+  if(item !=  NULL)
+  {
+	  normalized_string = g_utf8_normalize (item->name, -1, G_NORMALIZE_ALL);
+	  normalized_key = g_utf8_normalize (key, -1, G_NORMALIZE_ALL);
+
+	  if (normalized_string && normalized_key)
+		{
+		  case_normalized_string = g_utf8_casefold (normalized_string, -1);
+		  case_normalized_key = g_utf8_casefold (normalized_key, -1);
+
+		  if (strncmp (case_normalized_key, case_normalized_string, strlen (case_normalized_key)) == 0)
+		    retval = FALSE;
+		}
+
+	  g_free (normalized_key);
+	  g_free (normalized_string);
+	  g_free (case_normalized_key);
+	  g_free (case_normalized_string);
+  }
+  return retval;
+}
+
+
+
 /*
 **
 */
 static GtkWidget *ui_bud_listview_new(void)
 {
 GtkTreeStore *store;
-GtkWidget *view;
+GtkWidget *treeview;
 GtkCellRenderer    *renderer;
 GtkTreeViewColumn  *column;
 
@@ -169,21 +229,42 @@ GtkTreeViewColumn  *column;
 
 
 	//treeview
-	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(store);
 
 	/* column 1 */
-	column = gtk_tree_view_column_new();
 	renderer = gtk_cell_renderer_text_new ();
+	g_object_set(renderer, 
+		"ellipsize", PANGO_ELLIPSIZE_END,
+	    "ellipsize-set", TRUE,
+	    NULL);	
+
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(column, _("Category"));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_bud_listview_cell_data_function_text, GINT_TO_POINTER(1), NULL);
+	gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DEFACC_NAME);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+	gtk_tree_view_column_set_resizable(column, TRUE);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
-	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(view), FALSE);
-	//gtk_tree_view_set_reorderable (GTK_TREE_VIEW(view), TRUE);
+	/* icon column */
+	column = gtk_tree_view_column_new();
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_bud_listview_icon_cell_data_function, NULL, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
-	return(view);
+	
+	gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(treeview), ui_bud_listview_search_equal_func, NULL, NULL);
+
+	
+	//gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(treeview), FALSE);
+	//gtk_tree_view_set_reorderable (GTK_TREE_VIEW(treeview), TRUE);
+
+	return(treeview);
 }
 
 
@@ -374,7 +455,7 @@ const gchar *encoding;
 
 							data->change++;
 
-							tmpitem->flags &= ~(GF_CUSTOM);		//remove flag
+							tmpitem->flags &= ~(GF_CUSTOM);		//delete flag
 							if( *str_array[1] == '*' )
 							{
 								tmpitem->budget[0] = g_ascii_strtod(str_array[3], NULL);
@@ -394,7 +475,7 @@ const gchar *encoding;
 
 							// if any value,set the flag to visual indicator
 							budget = FALSE;
-							tmpitem->flags &= ~(GF_BUDGET);		//remove flag
+							tmpitem->flags &= ~(GF_BUDGET);		//delete flag
 							for(i=0;i<=12;i++)
 							{
 								if(tmpitem->budget[i])
@@ -425,7 +506,7 @@ const gchar *encoding;
 			{
 				ui_dialog_msg_infoerror(GTK_WINDOW(data->window), GTK_MESSAGE_ERROR,
 					_("File format error"),
-					_("The csv file must contains the exact numbers of column,\nseparated by a semi-colon, read the help for more details.")
+					_("The CSV file must contains the exact numbers of column,\nseparated by a semi-colon, please see the help for more details.")
 					);
 			}
 
@@ -436,9 +517,7 @@ const gchar *encoding;
 	}
 }
 
-/*
-**
-*/
+
 static void ui_bud_manage_save_csv( GtkWidget *widget, gpointer user_data)
 {
 struct ui_bud_manage_data *data = user_data;
@@ -527,13 +606,29 @@ GIOChannel *io;
 }
 
 
+static void ui_bud_manage_expand_all(GtkWidget *widget, gpointer user_data)
+{
+struct ui_bud_manage_data *data;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	DB( g_print("\n(ui_bud_manage) expand all (data=%x)\n", (guint)data) );
+
+	gtk_tree_view_expand_all(GTK_TREE_VIEW(data->LV_cat));
+
+}
 
 
+static void ui_bud_manage_collapse_all(GtkWidget *widget, gpointer user_data)
+{
+struct ui_bud_manage_data *data;
 
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	DB( g_print("\n(ui_bud_manage) collapse all (data=%x)\n", (guint)data) );
 
-/*
-**
-*/
+	gtk_tree_view_collapse_all(GTK_TREE_VIEW(data->LV_cat));
+
+}
+
 static void ui_bud_manage_update(GtkWidget *treeview, gpointer user_data)
 {
 struct ui_bud_manage_data *data;
@@ -548,13 +643,18 @@ gint i;
 	name = FALSE;
 	if(data->cat != NULL)
 	{
-		name = data->cat->name == NULL ? FALSE : TRUE;
+		name = data->cat->key == 0 ? FALSE : TRUE;
 	}
 	
 	sensitive = name;
+
+	gtk_widget_set_sensitive(data->label_budget, sensitive);
 	gtk_widget_set_sensitive(data->CM_type[0], sensitive);
 	gtk_widget_set_sensitive(data->CM_type[1], sensitive);
 
+	gtk_widget_set_sensitive(data->label_options, sensitive);
+	gtk_widget_set_sensitive(data->CM_force, sensitive);
+	
 	gtk_widget_set_sensitive(data->BT_clear, sensitive);
 
 #if MYDEBUG == 1
@@ -571,47 +671,60 @@ gint i;
 	sensitive = name == FALSE ? FALSE : custom;
 	for(i=0;i<12;i++)
 	{
+		gtk_widget_set_sensitive(data->label[i+1], sensitive);
 		gtk_widget_set_sensitive(data->spinner[i+1], sensitive);
 	}
 
 }
 
-/*
-**
-*/
+
 static void ui_bud_manage_clear(GtkWidget *widget, gpointer user_data)
 {
 struct ui_bud_manage_data *data;
-gint i;
+gchar *title;
+gchar *secondtext;
+gint result, i;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(widget), GTK_TYPE_WINDOW)), "inst_data");
 
 	DB( g_print("(ui_bud_manage) clear\n") );
 
-	//g_signal_handler_block(data->CM_type[0], data->handler_id[HID_CUSTOM]);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_type[0]), TRUE);
-	//g_signal_handler_unblock(data->CM_type[0], data->handler_id[HID_CUSTOM]);
 
-	for(i=0;i<=12;i++)
+	title = _("Are you sure you want to clear input?");
+
+	secondtext = _("If you proceed, every amount will be set to 0.");
+	
+	result = ui_dialog_msg_confirm_alert(
+			GTK_WINDOW(data->window),
+			title,
+			secondtext,
+			_("_Clear")
+		);
+
+	if( result == GTK_RESPONSE_OK )
 	{
-		//g_signal_handler_block(data->spinner[i], data->spinner_hid[i]);
+		//g_signal_handler_block(data->CM_type[0], data->handler_id[HID_CUSTOM]);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_type[0]), TRUE);
+		//g_signal_handler_unblock(data->CM_type[0], data->handler_id[HID_CUSTOM]);
 
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->spinner[i]), 0);
-		data->cat->budget[i] = 0;
+		for(i=0;i<=12;i++)
+		{
+			//g_signal_handler_block(data->spinner[i], data->spinner_hid[i]);
 
-		//g_signal_handler_unblock(data->spinner[i], data->spinner_hid[i]);
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->spinner[i]), 0);
+			data->cat->budget[i] = 0;
+
+			//g_signal_handler_unblock(data->spinner[i], data->spinner_hid[i]);
+		}
+
+		data->cat->flags &= ~(GF_BUDGET);	//delete flag
+
+		gtk_widget_queue_draw (data->LV_cat);
 	}
-
-	data->cat->flags &= ~(GF_BUDGET);	//remove flag
-
-	gtk_widget_queue_draw (data->LV_cat);
-
+		
 }
 
 
-/*
-**
-*/
 static void ui_bud_manage_set(GtkWidget *widget, gpointer user_data)
 {
 struct ui_bud_manage_data *data;
@@ -645,9 +758,40 @@ gint i;
 
 }
 
-/*
-**
-*/
+static gboolean ui_bud_manage_has_budget(GtkSpinButton *spinbutton, gpointer user_data)
+{
+struct ui_bud_manage_data *data;
+gint i;
+Category *item;
+gboolean retval;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(spinbutton), GTK_TYPE_WINDOW)), "inst_data");
+
+	DB( g_print("(ui_bud_manage) has budget\n") );
+
+	retval = FALSE;
+	
+	item = data->cat;
+
+	if( item != NULL )
+	{
+		item->flags &= ~(GF_BUDGET);	//delete flag
+		for(i=0;i<=12;i++)
+		{
+			gtk_spin_button_update(GTK_SPIN_BUTTON(data->spinner[i]));
+			if( gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->spinner[i])) )
+			{
+				retval = TRUE;
+				item->flags |= GF_BUDGET;
+				break;
+			}
+		}
+		
+	}
+	return retval;
+}
+
+
 static void ui_bud_manage_getlast(struct ui_bud_manage_data *data)
 {
 gboolean budget, change;
@@ -673,7 +817,7 @@ gdouble oldvalue;
 		// if any value,set the flag to visual indicator
 		budget = FALSE;
 		change = FALSE;
-		item->flags &= ~(GF_BUDGET);	//remove flag
+		item->flags &= ~(GF_BUDGET);	//delete flag
 		for(i=0;i<=12;i++)
 		{
 			gtk_spin_button_update(GTK_SPIN_BUTTON(data->spinner[i]));
@@ -691,7 +835,7 @@ gdouble oldvalue;
 			}
 		}
 
-		item->flags &= ~(GF_FORCED);	//remove flag
+		item->flags &= ~(GF_FORCED);	//delete flag
 		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_force));
 		if(active == 1)
 			item->flags |= GF_FORCED;
@@ -710,11 +854,6 @@ gdouble oldvalue;
 }
 
 
-
-
-/*
-**
-*/
 static void ui_bud_manage_selection_change(GtkWidget *treeview, gpointer user_data)
 {
 struct ui_bud_manage_data *data;
@@ -772,45 +911,46 @@ static void ui_bud_manage_toggle(GtkRadioButton *radiobutton, gpointer user_data
 	ui_bud_manage_update(GTK_WIDGET(radiobutton), NULL);
 }
 
-/*
-**
-*/
+
 void ui_bud_manage_selection(GtkTreeSelection *treeselection, gpointer user_data)
 {
 	ui_bud_manage_selection_change(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), NULL);
 }
 
-/*
-**
-*/
+
 static gboolean ui_bud_manage_cleanup(struct ui_bud_manage_data *data, gint result)
 {
 gboolean doupdate = FALSE;
 
 	DB( g_print("(ui_bud_manage) cleanup\n") );
 
+	if(data->lastcatitem != NULL)
+	{
+		DB( g_print(" -> should do a get for last selected (%s)\n", data->lastcatitem->name) );
+		ui_bud_manage_getlast(data);
+	}
 
-		if(data->lastcatitem != NULL)
-		{
-			DB( g_print(" -> should do a get for last selected (%s)\n", data->lastcatitem->name) );
-			ui_bud_manage_getlast(data);
-		}
+	//do_application_specific_something ();
+	DB( g_print(" accept\n") );
 
-
-		//do_application_specific_something ();
-		DB( g_print(" accept\n") );
-
-		GLOBALS->changes_count += data->change;
+	GLOBALS->changes_count += data->change;
 
 	DB( g_print(" free tmp_list\n") );
 
 	return doupdate;
 }
 
+static void ui_bud_manage_populate_listview(struct ui_bud_manage_data *data)
+{
+gint type;
 
-/*
-**
-*/
+	type = radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
+
+	ui_cat_listview_populate(data->LV_cat, type);
+	gtk_tree_view_expand_all (GTK_TREE_VIEW(data->LV_cat));
+}
+
+
 static void ui_bud_manage_setup(struct ui_bud_manage_data *data)
 {
 
@@ -821,193 +961,270 @@ static void ui_bud_manage_setup(struct ui_bud_manage_data *data)
 	data->cat = NULL;
 	data->lastcatitem = NULL;
 
-	ui_cat_listview_populate(data->LV_cat);
-	gtk_tree_view_expand_all (GTK_TREE_VIEW(data->LV_cat));
+	ui_bud_manage_populate_listview(data);
+	
+}
+
+
+static void ui_bud_manage_type_changed_cb (GtkToggleButton *button, gpointer user_data)
+{
+	ui_bud_manage_populate_listview(user_data);
+	//g_print(" toggle type=%d\n", gtk_toggle_button_get_active(button));
 }
 
 
 
-// the window creation
+
+
 GtkWidget *ui_bud_manage_dialog (void)
 {
 struct ui_bud_manage_data data;
-GtkWidget *window, *content, *bbox, *mainbox, *treeview, *scrollwin, *vbox, *radio, *table, *label, *widget;
-GtkWidget *spinner;
-GtkWidget *alignment, *hpaned;
-guint i, row;
+GtkWidget *dialog, *content_area;
+GtkWidget *content_grid, *group_grid, *table, *scrollwin, *label;
+GtkWidget *treeview, *hpaned, *bbox, *vbox, *hbox;
+GtkWidget *menu, *menuitem, *widget, *image, *tbar;
+GtkToolItem *toolitem;
+guint i;
+gint w, h;
+gint crow, row;
 
 	memset(&data, 0, sizeof(struct ui_bud_manage_data));
 
-      window = gtk_dialog_new_with_buttons (_("Manage Budget"),
+	dialog = gtk_dialog_new_with_buttons (_("Manage Budget"),
 					    GTK_WINDOW(GLOBALS->mainwindow),
 					    0,
-					    GTK_STOCK_CLOSE,
+					    _("_Close"),
 					    GTK_RESPONSE_ACCEPT,
 					    NULL);
 
-	data.window = window;
+	data.window = dialog;
 
-	//homebank_window_set_icon_from_file(GTK_WINDOW (window), "budget.svg");
-	gtk_window_set_icon_name(GTK_WINDOW (window), HB_STOCK_BUDGET);
+	gtk_window_set_icon_name(GTK_WINDOW (dialog), ICONNAME_HB_BUDGET);
 
+	//set a nice dialog size
+	gtk_window_get_size(GTK_WINDOW(GLOBALS->mainwindow), &w, &h);
+	gtk_window_set_default_size (GTK_WINDOW(dialog), -1, h/PHI);
+
+	
 	//store our window private data
-	g_object_set_data(G_OBJECT(window), "inst_data", (gpointer)&data);
-	DB( g_print("(ui_bud_manage) window=%p, inst_data=%p\n", window, &data) );
-
+	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)&data);
+	DB( g_print("(ui_bud_manage) window=%p, inst_data=%p\n", dialog, &data) );
 
 	//window contents
-	content = gtk_dialog_get_content_area(GTK_DIALOG (window));
-	mainbox = gtk_hbox_new (FALSE, HB_BOX_SPACING);
-	gtk_box_pack_start (GTK_BOX (content), mainbox, TRUE, TRUE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER(mainbox), HB_MAINBOX_SPACING);
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));	 	// return a vbox
 
-	hpaned = gtk_hpaned_new();
-	gtk_box_pack_start (GTK_BOX (mainbox), hpaned, TRUE, TRUE, 0);
+  //our table
+	table = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_MEDIUM);
+	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
+	g_object_set(table, "margin", SPACING_MEDIUM, NULL);
+	gtk_box_pack_start (GTK_BOX (content_area), table, TRUE, TRUE, 0);
+
+	crow = 0;
+	bbox = make_radio(CYA_CAT_TYPE, TRUE, GTK_ORIENTATION_HORIZONTAL);
+	data.RA_type = bbox;
+	gtk_widget_set_halign (bbox, GTK_ALIGN_CENTER);
+	gtk_grid_attach (GTK_GRID (table), bbox, 0, crow, 1, 1);
+
+	widget = radio_get_nth_widget(GTK_CONTAINER(bbox), 1);
+	if(widget)
+		g_signal_connect (widget, "toggled", G_CALLBACK (ui_bud_manage_type_changed_cb), &data);
+
+	menu = gtk_menu_new ();
+	gtk_widget_set_halign (menu, GTK_ALIGN_END);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Import CSV"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_bud_manage_load_csv), &data);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("E_xport CSV"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_bud_manage_save_csv), &data);
+	
+	gtk_widget_show_all (menu);
+	
+	widget = gtk_menu_button_new();
+	image = gtk_image_new_from_icon_name (ICONNAME_HB_BUTTON_MENU, GTK_ICON_SIZE_MENU);
+
+	//gchar *thename;
+	//gtk_image_get_icon_name(image, &thename, NULL);
+	//g_print("the name is %s\n", thename);
+
+	g_object_set (widget, "image", image, "popup", GTK_MENU(menu),  NULL);
+
+	gtk_widget_set_hexpand (widget, FALSE);
+	gtk_widget_set_halign (widget, GTK_ALIGN_END);
+	gtk_grid_attach (GTK_GRID (table), widget, 0, crow++, 1, 1);
+
+
+
+	crow++;
+	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
+	//gtk_container_set_border_width (GTK_CONTAINER(hpaned), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (table), hpaned, 0, crow++, 1, 1);
 
 	/* left area */
-	vbox = gtk_vbox_new (FALSE, HB_BOX_SPACING);
-	//gtk_box_pack_start (GTK_BOX (mainbox), vbox, FALSE, FALSE, 0);
-	gtk_paned_pack1 (GTK_PANED(hpaned), vbox, FALSE, FALSE);
-
-	//listview
+	//list
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_margin_right(vbox, SPACING_SMALL);
+	gtk_paned_pack1 (GTK_PANED(hpaned), vbox, TRUE, FALSE);
+	
 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
     gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
  	treeview = (GtkWidget *)ui_bud_listview_new();
  	data.LV_cat = treeview;
 	gtk_widget_set_size_request(treeview, HB_MINWIDTH_LIST, -1);
 	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
+	gtk_box_pack_start (GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0);
 
+	//list toolbar
+	tbar = gtk_toolbar_new();
+	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
+	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
+
+	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
+
+	toolitem = gtk_separator_tool_item_new ();
+	gtk_tool_item_set_expand (toolitem, TRUE);
+	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	
+		widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
+		data.BT_expand = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+		widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
+		data.BT_collapse = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+	
 	/* right area */
-	vbox = gtk_vbox_new (FALSE, HB_BOX_SPACING);
-	//gtk_box_pack_start (GTK_BOX (mainbox), vbox, TRUE, TRUE, 0);
-	gtk_paned_pack2 (GTK_PANED(hpaned), vbox, FALSE, FALSE);
+	content_grid = gtk_grid_new();
+	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+	//gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_MEDIUM);
+	gtk_widget_set_margin_left(content_grid, SPACING_SMALL);
+	gtk_paned_pack2 (GTK_PANED(hpaned), content_grid, FALSE, FALSE);
+
+	crow = 0;
 
 	
-	table = gtk_table_new (12, 5, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (table), HB_TABROW_SPACING);
-	gtk_table_set_col_spacings (GTK_TABLE (table), HB_TABCOL_SPACING);
-
-	//			gtk_alignment_new(xalign, yalign, xscale, yscale)
-	alignment = gtk_alignment_new(0.5, 0.0, 1.0, 0.0);
-	gtk_container_add(GTK_CONTAINER(alignment), table);
-	gtk_container_add (GTK_CONTAINER (vbox), alignment);
-
+	// group :: General
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
 	
-    //gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
-
-	row = 0;
-	label = make_label(_("Budget for each month"), 0.0, 0.5);
-	gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
-	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 5, row, row+1);
-
-	row++;
-	label = make_label("", 0.0, 0.5);
-	gtk_misc_set_padding (GTK_MISC (label), HB_BOX_SPACING, 0);
-	gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1, (GtkAttachOptions) (GTK_FILL), (GtkAttachOptions) (0), 0, 0);
-
-	radio = gtk_radio_button_new_with_label (NULL, _("is the same"));
-	data.CM_type[0] = radio;
- 	gtk_table_attach_defaults (GTK_TABLE (table), radio, 1, 5, row, row+1);
+	label = make_label_group(_("Budget for each month"));
+	data.label_budget = label;
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+	
+	row = 1;
+	widget = gtk_radio_button_new_with_label (NULL, _("is the same"));
+	data.CM_type[0] = widget;
+	gtk_widget_set_hexpand (widget, TRUE);
+ 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
 
 	row++;
-    //label = make_label(_("Each"), 1.0, 0.5);
-	//gtk_table_attach_defaults (GTK_TABLE (table), label, 1, 2, row, row+1);
-	spinner = make_amount(label);
-	data.spinner[0] = spinner;
-	gtk_table_attach_defaults (GTK_TABLE (table), spinner, 2, 3, row, row+1);
+	widget = make_amount(label);
+	data.spinner[0] = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
+	g_signal_connect (G_OBJECT (data.spinner[0]), "value-changed", G_CALLBACK (ui_bud_manage_has_budget), NULL);
+	
 	widget =  gtk_button_new_with_mnemonic (_("_Clear input"));
 	data.BT_clear = widget;
-	gtk_table_attach_defaults (GTK_TABLE (table), widget, 4, 5, row, row+1);
+	gtk_widget_set_hexpand (widget, TRUE);
+	gtk_widget_set_halign(widget, GTK_ALIGN_START);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 4, row, 1, 1);
 
 	
 	// propagate button
  	/*row++;
 	button = gtk_button_new_with_label(_("Propagate"));
-	gtk_table_attach_defaults (GTK_TABLE (table), button, 1, 2, row, row+1);
+	gtk_grid_attach (GTK_GRID (group_grid), button, 1, 2, row, row+1);
 	*/
 
  	row++;
-    radio = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON (radio), _("is different"));
-	data.CM_type[1] = radio;
-	gtk_table_attach_defaults (GTK_TABLE (table), radio, 1, 5, row, row+1);
+    widget = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON (data.CM_type[0]), _("is different"));
+	data.CM_type[1] = widget;
+	gtk_widget_set_hexpand (widget, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
 
+	row++;
 	for(i=0;i<12;i++)
 	{
-	gint col;
+	gint l, t;
+		
+		l = ((i<6) ? 1 : 3);
+		t = row + ((i<6) ? i : i-6);
 
-		col = ((i<6) ? 1 : 3);
-		row = 4 + ((i<6) ? i : i-6);
-		//col = 0;
-		//row = 5 + i;
+		label = make_label_widget(months[i]);
+		data.label[i+1] = label;
+		gtk_grid_attach (GTK_GRID (group_grid), label, l, t, 1, 1);
 
-		label = make_label(months[i], 0, 0.5);
-		gtk_table_attach_defaults (GTK_TABLE (table), label, col, col+1, row, row+1);
+		widget = make_amount(label);
+		data.spinner[i+1] = widget;
+		gtk_widget_set_hexpand (widget, TRUE);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, l+1, t, 1, 1);
 
-		spinner = make_amount(label);
-		data.spinner[i+1] = spinner;
-		gtk_table_attach_defaults (GTK_TABLE (table), spinner, col+1, col+2, row, row+1);
-
-		DB( g_print("(ui_bud_manage) %s, col=%d, row=%d", months[i], col, row) );
+		g_signal_connect (G_OBJECT (data.spinner[i+1]), "value-changed", G_CALLBACK (ui_bud_manage_has_budget), NULL);
+		
+		//DB( g_print("(ui_bud_manage) %s, col=%d, row=%d", months[i], col, row) );
 	}
 
-	row++;
-	label = make_label(_("Options"), 0.0, 0.5);
-	gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
-	gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 5, row, row+1);
+	// group :: Options
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
 
-	row++;
+	label = make_label_group(_("Options"));
+	data.label_options = label;
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row = 1;
 	widget = gtk_check_button_new_with_mnemonic (_("_Force monitoring this category"));
 	data.CM_force = widget;
-	gtk_table_attach_defaults (GTK_TABLE (table), widget, 1, 5, row, row+1);
-
-
-	// button box
-	bbox = gtk_hbox_new (FALSE, HB_BOX_SPACING);
-	gtk_box_pack_start (GTK_BOX (vbox), bbox, FALSE, FALSE, 0);
-	//gtk_button_box_set_layout (GTK_BUTTON_BOX (bbox), GTK_BUTTONBOX_END);
-	gtk_box_set_spacing (GTK_BOX (bbox), HB_BOX_SPACING);
-
-	data.BT_import = gtk_button_new_with_mnemonic(_("_Import"));
-	//data.BT_import = gtk_button_new_from_stock(GTK_STOCK_OPEN);
-	gtk_box_pack_start (GTK_BOX (bbox), data.BT_import, FALSE, FALSE, 0);
-
-	data.BT_export = gtk_button_new_with_mnemonic(_("E_xport"));
-	//data.BT_export = gtk_button_new_from_stock(GTK_STOCK_SAVE);
-	gtk_box_pack_start (GTK_BOX (bbox), data.BT_export, FALSE, FALSE, 0);
+	gtk_widget_set_hexpand (widget, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
 
 
 	//connect all our signals
-    g_signal_connect (window, "destroy",
-			G_CALLBACK (gtk_widget_destroyed), &window);
+    g_signal_connect (dialog, "destroy",
+			G_CALLBACK (gtk_widget_destroyed), &dialog);
 
 
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data.LV_cat)), "changed", G_CALLBACK (ui_bud_manage_selection), NULL);
 	//g_signal_connect (GTK_TREE_VIEW(data.LV_cat), "row-activated", G_CALLBACK (ui_bud_manage_onRowActivated), NULL);
 
+	g_signal_connect (G_OBJECT (data.BT_expand), "clicked", G_CALLBACK (ui_bud_manage_expand_all), NULL);
+	g_signal_connect (G_OBJECT (data.BT_collapse), "clicked", G_CALLBACK (ui_bud_manage_collapse_all), NULL);
+
 	data.handler_id[HID_CUSTOM] = g_signal_connect (data.CM_type[0], "toggled", G_CALLBACK (ui_bud_manage_toggle), NULL);
 
-
 	g_signal_connect (G_OBJECT (data.BT_clear), "clicked", G_CALLBACK (ui_bud_manage_clear), NULL);
-
-	g_signal_connect (G_OBJECT (data.BT_import), "clicked", G_CALLBACK (ui_bud_manage_load_csv), NULL);
-	g_signal_connect (G_OBJECT (data.BT_export), "clicked", G_CALLBACK (ui_bud_manage_save_csv), NULL);
 
 	//data.custom = FALSE;
 	//gtk_widget_set_sensitive(data.table, FALSE);
 
 	//setup, init and show window
 	ui_bud_manage_setup(&data);
-	ui_bud_manage_update(window, NULL);
+	ui_bud_manage_update(dialog, NULL);
 
 
 
-	gtk_widget_show_all (window);
+	gtk_widget_show_all (dialog);
 
 	//result
-	gint result = gtk_dialog_run (GTK_DIALOG (window));
+	gint result = gtk_dialog_run (GTK_DIALOG (dialog));
   switch (result)
     {
       case GTK_RESPONSE_ACCEPT:
@@ -1020,7 +1237,7 @@ guint i, row;
 
 	// cleanup and destroy
 	ui_bud_manage_cleanup(&data, result);
-	gtk_widget_destroy (window);
+	gtk_widget_destroy (dialog);
 
 	return NULL;
 }

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -19,6 +19,8 @@
 
 #ifndef __HB_PREFERENCES_H__
 #define __HB_PREFERENCES_H__
+
+#include "hb-currency.h"
 
 #define DEFAULT_FORMAT_DATE			"%x"
 
@@ -42,18 +44,6 @@
 /*
 ** Preference datas
 */
-struct CurrencyFmt
-{
-	//gchar		*prefix_symbol;		/* max symbol is 3 digits in unicode */
-	//gchar		*suffix_symbol;		/* but mostly is 1 digit, and most are prefix ~100  */
-	gchar	    *symbol;
-	gboolean	is_prefix;
-	gchar		*decimal_char;	
-	gchar		*grouping_char;	
-	gshort		frac_digits;
-	gchar		format[8];			/* hold decimal format: '%.xf' */
-	gchar		monfmt[32];			/* hold monetary format: 'prefix %s suffix' */ 
-};
 
 struct WinGeometry
 {
@@ -67,82 +57,67 @@ struct Preferences
 	gboolean	showsplash;
 	gboolean	loadlast;
 	gboolean	appendscheduled;
-
-	gchar	   *language;
-	
-	gchar		*path_hbfile;
-	gchar		*path_import;
-	gchar		*path_export;
-
-	gboolean	heritdate;
-	gboolean	hidereconciled;
-	gint		date_range_wal;
-	gint		date_range_txn;
-	gint		date_range_rep;
-
+	gboolean	do_update_currency;
 	gshort		fisc_year_day;
 	gshort		fisc_year_month;
-	
+	gint		date_range_wal;
+	gchar		*path_hbfile;
+
 	//interface
+	gchar		*language;
 	gshort		toolbar_style;
+	//gboolean	rules_hint;
+	gshort		grid_lines;
 	gboolean	custom_colors;
 	gchar		*color_exp;
 	gchar		*color_inc;
 	gchar		*color_warn;
-	gboolean	rules_hint;
+
+	//transactions
+	gint		date_range_txn;
+	gint		date_future_nbdays;
+	gboolean	hidereconciled;
+	gboolean    showremind;
+	gboolean	heritdate;
+	gint 		lst_ope_columns[NUM_LST_DSPOPE+1];
+	gint 		lst_ope_col_size[NUM_LST_DSPOPE+1];
+	gint		lst_ope_sort_id;	// -- implicit --
+	gint		lst_ope_sort_order; // -- implicit --
 
 	//display format
 	gchar		*date_format;
+	gchar	    IntCurrSymbol[8];
+	gboolean	vehicle_unit_ismile;	// true if unit is mile, default Km
+	gboolean	vehicle_unit_isgal;		// true if unit is gallon, default Liter
 
-	struct	CurrencyFmt base_cur;
-
-	//gshort	num_nbdecimal;
-	//gboolean	num_separator;
-	//gboolean	imperial_unit;
-
-	//help system
-	//gboolean	show_tooltips;
-	//gboolean	show_help_button;
-	//gboolean	show_tipofday;
-	//gchar		*path_navigator;
-
-	//currency
-	//gchar		*curr_default;
-	
-	//euro zone
-	gboolean	euro_active;
-	gint		euro_country;
-	gdouble		euro_value;
-
-	struct	CurrencyFmt minor_cur;
-
-	//gshort	euro_nbdec;
-	//gboolean	euro_thsep;
-	//gchar		*euro_symbol;
+	//data exchange options
+	gboolean	dtex_nointro;
+	gint		dtex_datefmt;
+	gint		dtex_ofxname;
+	gint		dtex_ofxmemo;
+	gboolean	dtex_qifmemo;
+	gboolean	dtex_qifswap;
+	gchar		*path_import;
+	gchar		*path_export;
 
 	//report options
+	gint		date_range_rep;
+	gint		report_color_scheme;
 	gboolean	stat_byamount;
 	gboolean	stat_showrate;
 	gboolean	stat_showdetail;
 	gboolean	budg_showdetail;
-	gint		report_color_scheme;
 
-	//data exchange options
-	gint		dtex_ofxmemo;
-	gint		dtex_datefmt;
+	//euro zone
+	gboolean	euro_active;
+	gint		euro_country;
+	gdouble		euro_value;
+	Currency	minor_cur;
 
 	//chart options
-	gboolean	chart_legend;
+	//gboolean	chart_legend;
 
-
-	
-	/* internal : not saved*/
-
-	gint 	lst_ope_columns[NUM_LST_DSPOPE+1];
-	gint	lst_ope_sort_id;
-	gint	lst_ope_sort_order;
-
-	/* windows size an position */
+	/* windows/dialogs size an position */
 	struct WinGeometry	wal_wg;
 	struct WinGeometry	acc_wg;
 	struct WinGeometry	sta_wg;
@@ -150,6 +125,8 @@ struct Preferences
 	struct WinGeometry	ove_wg;
 	struct WinGeometry	bud_wg;
 	struct WinGeometry	cst_wg;
+
+	struct WinGeometry	txn_wg;
 
 	gboolean	wal_toolbar;
 	gboolean	wal_spending;
@@ -159,8 +136,6 @@ struct Preferences
 	gint		wal_hpaned;
 
 	//vehiclecost units (mile/gal or km/liters)
-	gboolean	vehicle_unit_ismile;	// true is unit is mile, default Km
-	gboolean	vehicle_unit_isgal;		// true is unit is gallon, default Liter
 	
 	gchar	   *vehicle_unit_dist;
 	gchar	   *vehicle_unit_vol;

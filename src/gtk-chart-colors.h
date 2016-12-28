@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -26,25 +26,31 @@
 #define COLTO16(col8) ( (col8 | col8<<8 ) )
 #define COLTOOVER(col8) ( (col8 + MASKCOL) / 2 )
 
-
+#define AREA_ALPHA .33
 #define OVER_ALPHA .15
 #define OVER_COLOR (MASKCOL * OVER_ALPHA)
 #define COLTOCAIRO(col8) 	 ( (col8 / 255.0) )
 #define COLTOCAIROOVER(col8) ( ((col8 * (1 - OVER_ALPHA)) + OVER_COLOR ) / 255.0 )
 
-/* new stuff */
-#define CHART_FONT_SIZE_NORMAL  10
-#define CHART_FONT_SIZE_TITLE   18
-#define CHART_FONT_SIZE_PERIOD  11
-
-
 //typedef struct _rgbcol RgbCol;
-	
+typedef struct _ColorScheme  GtkColorScheme;
+
 struct rgbcol
 {
 	guint8	r, g, b;
 };
 
+
+struct _ColorScheme
+{
+	struct rgbcol		*colors;
+	gint	nb_cols;
+	gint	cs_red;
+	gint	cs_green;
+	gint	cs_blue;
+	gint	cs_yellow;
+	gint	cs_orange;
+};
 
 
 enum {
@@ -68,6 +74,13 @@ enum colmap
 	CHART_COLMAP_ANALYTICS,
 };
 
+enum {
+	CHART_FONT_SIZE_TITLE,
+	CHART_FONT_SIZE_SUBTITLE,
+	CHART_FONT_SIZE_NORMAL
+};
+
+
 extern char *chart_colors[];
 
 extern struct rgbcol global_colors[];
@@ -87,8 +100,12 @@ extern int office2013_nbcolors;
 extern int sap_nbcolors;
 extern int homebank_nbcolors;
 
+void chart_color_global_default(void);
+
 void cairo_user_set_rgbcol(cairo_t *cr, struct rgbcol *col);
 void cairo_user_set_rgbacol(cairo_t *cr, struct rgbcol *col, double alpha);
 void cairo_user_set_rgbcol_over(cairo_t *cr, struct rgbcol *col, gboolean over);
+
+void colorscheme_init(GtkColorScheme *scheme, gint index);
 
 #endif /* __GTK_COLORS_H__ */

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -34,12 +34,15 @@ struct defpref_data
 
 	GtkWidget	*CY_language;
 	GtkWidget	*CY_toolbar;
+
+	GtkWidget   *GR_colors;
 	GtkWidget	*CY_colors;
 	GtkWidget	*CM_custom_colors;
 	GtkWidget	*CP_exp_color;
 	GtkWidget	*CP_inc_color;
 	GtkWidget	*CP_warn_color;
-	GtkWidget	*CM_ruleshint;
+	//GtkWidget	*CM_ruleshint;
+	GtkWidget	*CY_gridlines;
 
 	GtkWidget	*LV_opecolumns;
 	GtkWidget	*BT_go_up;
@@ -57,36 +60,31 @@ struct defpref_data
 	GtkWidget	*CM_load_last;
 	GtkWidget	*CM_show_splash;
 	GtkWidget	*CM_append_scheduled;
+	GtkWidget   *CM_do_update_currency;
 	GtkWidget	*CM_herit_date;
 	GtkWidget	*CM_hide_reconciled;
-
-	//GtkWidget	*ST_path_navigator;
+	GtkWidget	*CM_show_remind;
 
 	GtkWidget	*ST_datefmt;
 	GtkWidget	*LB_date;
 
-	GtkWidget	*ST_num_symbol;
-	GtkWidget   *CM_num_isprefix;
-	GtkWidget	*ST_num_decimalchar;	
-	GtkWidget	*ST_num_groupingchar;	
-	GtkWidget	*NB_num_fracdigits;
-	GtkWidget	*LB_numberbase;
-
-	//GtkWidget	*NB_numnbdec;
-	//GtkWidget	*CM_numseparator;
-	//GtkWidget	*CM_imperial;
 	GtkWidget	*CM_unitismile;
 	GtkWidget	*CM_unitisgal;
 
 	GtkWidget	*CY_daterange_wal;
 	GtkWidget	*CY_daterange_txn;
+	GtkWidget   *ST_datefuture_nbdays;
 	GtkWidget	*CY_daterange_rep;
 	
-	/* currencies 
+	/* currencies */
 	GtkWidget	*LB_default;
-	GtkWidget	*BT_default; */
+	GtkWidget	*BT_default; 
 	
 	GtkWidget	*CM_euro_enable;
+	GtkWidget	*GRP_currency;
+	GtkWidget	*GRP_rate;
+	GtkWidget	*GRP_format;
+	 
 	GtkWidget	*CY_euro_preset;
 	GtkWidget	*ST_euro_country;
 	GtkWidget	*NB_euro_value;
@@ -109,11 +107,17 @@ struct defpref_data
 	GtkWidget	*CM_budg_showdetail;
 
 	GtkWidget	*CY_color_scheme;
+	GtkWidget   *DA_colors;
 
 	GtkWidget	*CM_chartlegend;
 
 	GtkWidget	*CY_dtex_datefmt;
+	GtkWidget	*CY_dtex_ofxname;
 	GtkWidget	*CY_dtex_ofxmemo;
+	GtkWidget	*CM_dtex_qifmemo;
+	GtkWidget	*CM_dtex_qifswap;
+
+	gint		country;
 
 };
 

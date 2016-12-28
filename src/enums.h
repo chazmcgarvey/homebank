@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -95,20 +95,21 @@ enum
 /* list display transaction (dsp_account) */
 enum
 {
-	LST_DSPOPE_DATAS,
-	LST_DSPOPE_STATUS,	/* fake column */
-	LST_DSPOPE_DATE,	/* fake column */
-	LST_DSPOPE_INFO,	/* fake column */
-	LST_DSPOPE_PAYEE,	/* fake column */
-	LST_DSPOPE_WORDING,	/* fake column */
-	LST_DSPOPE_AMOUNT,	/* fake column */
-	LST_DSPOPE_EXPENSE,	/* fake column */
-	LST_DSPOPE_INCOME,	/* fake column */
-	LST_DSPOPE_CATEGORY,	/* fake column */
-	LST_DSPOPE_TAGS,	/* fake column */
-	LST_DSPOPE_BALANCE,
+	LST_DSPOPE_DATAS,   /*  0 so columns id start at 1 */
+	LST_DSPOPE_STATUS,	/*  1 fake column */
+	LST_DSPOPE_DATE,	/*  2 fake column */
+	LST_DSPOPE_INFO,	/*  3 fake column */
+	LST_DSPOPE_PAYEE,	/*  4 fake column */
+	LST_DSPOPE_WORDING,	/*  5 fake column */
+	LST_DSPOPE_AMOUNT,	/*  6 fake column */
+	LST_DSPOPE_EXPENSE,	/*  7 fake column */
+	LST_DSPOPE_INCOME,	/*  8 fake column */
+	LST_DSPOPE_CATEGORY,/*  9 fake column */
+	LST_DSPOPE_TAGS,	/* 10 fake column */
+	LST_DSPOPE_BALANCE, /* 11 fake column */
+	LST_DSPOPE_CLR,     /* 12 fake column */
 	/* here we insert account column, only used for detail */
-	LST_DSPOPE_ACCOUNT,
+	LST_DSPOPE_ACCOUNT, /* 13 fake column : not stored */
 	NUM_LST_DSPOPE
 };
 
@@ -139,7 +140,8 @@ enum
 {
 	PRF_DATEFMT_MDY,
 	PRF_DATEFMT_DMY,
-	PRF_DATEFMT_YMD
+	PRF_DATEFMT_YMD,
+	NUM_PRF_DATEFMT
 };
 
 

@@ -1,174 +1,97 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-
+<!DOCTYPE html>
 <html>
 <head>
-  <meta name="generator" content="Bluefish 2.2.3" >
-  <meta http-equiv="CONTENT-TYPE" content=
-  "text/html; charset=utf-8">
-
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
   <title>Transactions dialog</title>
-  <link rel="stylesheet" href="help.css" type="text/css">
+  <link href="help.css" rel="stylesheet" type="text/css">
 </head>
-
 <body id="top">
   <div class="dochead">
     HomeBank User manual
   </div>
-
   <div class="title">
-
-  <h1>Transaction dialog</h1>
-
-  <p>The transaction dialog is used to add, edit and manage the
-  <a href="00-lexicon.html#transactions">transactions</a>.</p>
-  
- <p>Please refer to the <a href="use-tipsandtricks.html">tip & tricks</a> 
-  for additional informations.</p>
-
-
-  <h2>Dialog call</h2>
-
-  <ul>
-    <li>mainwindow-menu: Transaction / Add...</li>
-
-    <li>mainwindow-toolbar.</li>
-
-    <li>from the account window-menu: Transaction / Add... /
-    Inherit... / Edit...</li>
-
-    <li>from the account window transaction list: by double-click on
-    an transaction</li>
-  </ul>
-</div>
-
+    <h1>Transaction dialog</h1>
+    <p>The transaction dialog is used to add, edit and manage the <a href="00-lexicon.html#transactions">transactions</a>.</p>
+    <p>Please refer to the <a href="use-tipsandtricks.html">tip & tricks</a> for additional informations.</p>
+    <h2>Dialog call</h2>
+    <ul>
+      <li>main window menu: Transaction / Add...</li>
+      <li>main window tool-bar.</li>
+      <li>from the account window-menu: Transaction / Add... / Inherit... / Edit...</li>
+      <li>from the account window transaction list: by double-click on an transaction</li>
+    </ul>
+  </div>
   <div class="rounded content">
-
-  <h2>Using transaction dialog</h2>
-
-  <p><img class="gtkshot right" src=
-  "images/dlg-transaction1.png"></p>
-
-  <p>The 'Add' button enable to add an transaction and keep the
-  transaction dialog open to add more transactions.</p>
-
-  <h3><img src="images/1.png" width="12" height="12" border="0"> Transaction details</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Date</th>
-
-      <td>date of the transaction (dd.mm.yy).<br>
-      - use shift key + arrow up/down to increase/decrease
-      date.<br>
-      - the right side button popup a full calendar</td>
-    </tr>
-
-    <tr>
-      <th>Amount</th>
-
-      <td>amount of the transaction<br>
-      - the right side +/- button toggle between
-      income/expense</td>
-    </tr>
-
-    <tr>
-      <th>Payment</th>
-
-      <td>
-        payment for the transaction. It will be displayed as small
-        icons.
-      </td>
-    </tr>
-
-    <tr>
-      <th>Of notebook 2<br>
-      To account</th>
-
-      <td>these fields appears depending on the payment
-      selected:<br>
-      for cheque: select the 2nd cheque notebook for internal
-      transfer: select the destination account</td>
-    </tr>
-
-    <tr>
-      <th>Info</th>
-
-      <td>additional informations such as real date or value
-      date, cheque numbers, other numbers related to the transaction.<br>
-      this field is automatically filled for cheque numbers.</td>
-    </tr>
-
-    <tr>
-      <th>Account</th>
-
-      <td>account the transaction should be attached to.</td>
-    </tr>
-	</table>
-
-  <h3><img src="images/2.png" width="12" height="12" border="0"> Transaction details</h3>
-
-  <table class="widgetinfo">
-    <tr>
-      <th>Payee</th>
-
-      <td>payee of the transaction, see <a href=
-      "00-lexicon.html#payee">payee definition</a> for further
-      details.</td>
-    </tr>
-
-    <tr>
-      <th>Category</th>
-
-      <td>category of the transaction, see <a href=
-      "00-lexicon.html#category">category definition</a> for further
-      details.</td>
-    </tr>
-
-    <tr>
-      <th>Memo</th>
-
-      <td>memo of transaction.<br>
-      and optionally vehicle cost data's, see <a href=
-      "use-vehiclecost.html">vehicle cost</a>.</td>
-    </tr>
-
-    <tr>
-      <th>Tags</th>
-
-      <td>tags of the transaction, see <a href=
-      "00-lexicon.html#tags">tag definition</a> for further
-      details.</td>
-    </tr>
-
-    <tr>
-      <th>Reconciled</th>
-
-      <td>when the transaction has been checked with your bank
-      statement, you can mark transaction as 'validated'.<br>
-      the amount will be then integrated in the bank balance.</td>
-    </tr>
-
-    <tr>
-      <th>Remind</th>
-
-      <td>when you are in add mode, if you set this option, an
-      transaction of the opposite amount will be inserted also
-      (marked in the list with an '!'), this is very useful when
-      you lent money and don't want to forget about it. The remind
-      transaction are never computed into the balances and are
-      always displayed. an transaction can be a transparent
-      reminder when this is checked. See <a href=
-      "00-lexicon.html#remind">remind definition</a>.</td>
-    </tr>
-  </table>
-
-  <h3><img src="images/3.png" name="graphics7" align="bottom"
-  width="12" height="12" border="0" id="graphics7"> Fill in with
-  template</h3>
-
-  <p>Select a source <a href="00-lexicon.html#template">template definition</a>
-  to fill in the transaction dialog fields.</p>
-  
+    <h2>Using transaction dialog</h2>
+    <p class="gtkshot right"><img src="images/dlg-transaction1.png"><br>
+    <img align="right" src="images/dlg-transaction2.png"></p>
+    <p>The 'Add' button enable to add an transaction and keep the transaction dialog open to add more transactions.</p>
+    <h3><img align="bottom" border="0" height="12" id="graphics7" name="graphics7" src="images/1.png" width="12"> Use a template</h3>
+    <p>Select a source <a href="00-lexicon.html#template">template definition</a> to fill in the transaction dialog fields.</p>
+    <h3><img border="0" height="12" src="images/2.png" width="12"> Transaction details</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Date</th>
+        <td>date of the transaction (dd.mm.yy).<br>
+        - use shift key + arrow up/down to increase/decrease date.<br>
+        - the right side button pop-up a full calendar</td>
+      </tr>
+      <tr>
+        <th>Amount</th>
+        <td>amount of the transaction<br>
+        - the right side +/- button toggle between income/expense</td>
+      </tr>
+      <tr>
+        <th>Payment</th>
+        <td>payment for the transaction. It will be displayed as small icons. See the lexicon for <a href="00-lexicon.html#payment">payment</a> detail<br></td>
+      </tr>
+      <tr>
+        <th>Of notebook 2<br>
+        To account</th>
+        <td>these fields appears depending on the payment selected:<br>
+        for cheque: select the 2nd cheque notebook for internal transfer: select the destination account</td>
+      </tr>
+      <tr>
+        <th>Info</th>
+        <td>additional informations such as real date or value date, cheque numbers, other numbers related to the transaction.<br>
+        this field is automatically filled for cheque numbers.</td>
+      </tr>
+      <tr>
+        <th>Account</th>
+        <td>account the transaction should be attached to.</td>
+      </tr>
+      <tr>
+        <th>Payee</th>
+        <td>payee of the transaction, see <a href="00-lexicon.html#payee">payee definition</a> for further details.</td>
+      </tr>
+      <tr>
+        <th>Category</th>
+        <td>category of the transaction, see <a href="00-lexicon.html#category">category definition</a> for further details.</td>
+      </tr>
+      <tr>
+        <th>Memo</th>
+        <td>memo of transaction.<br>
+        and optionally vehicle cost data's, see <a href="use-vehiclecost.html">vehicle cost</a>.</td>
+      </tr>
+      <tr>
+        <th>Tags</th>
+        <td>tags of the transaction, see <a href="00-lexicon.html#tags">tag definition</a> for further details.</td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td>
+          The different status a transaction can have:
+          <ul>
+            <li>None</li>
+            <li><a href="00-lexicon.html#txncleared">Cleared</a></li>
+            <li><a href="00-lexicon.html#txnreconciled">Reconciled</a></li>
+            <li><a href="00-lexicon.html#txnremind">Remind</a><br>
+            when you are in add mode, if you set this option, a transaction of the opposite amount will be inserted also (marked in the list with an '!'), this is very useful when you lent money and don't want to forget about it. The remind transaction are never computed into the balances and are always displayed.</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
   </div>
 </body>
 </html>

@@ -21,6 +21,10 @@ homebank_SOURCES =  \
 	enums.h \
 	gtk-chart.c \
 	gtk-chart.h \
+	gtk-chart-colors.c \
+	gtk-chart-colors.h \
+	gtk-chart-stack.c \
+	gtk-chart-stack.h \
 	gtk-dateentry.c \
 	gtk-dateentry.h \
 	hb-account.c \
@@ -31,6 +35,8 @@ homebank_SOURCES =  \
 	hb-assign.h \
 	hb-category.c \
 	hb-category.h \
+	hb-currency.c \
+	hb-currency.h \
 	hb-encoding.c \
 	hb-encoding.h \
 	hb-export.c \
@@ -41,6 +47,9 @@ homebank_SOURCES =  \
 	hb-hbfile.h \
 	hb-import.c \
 	hb-import.h \
+	hb-import-ofx.c \
+	hb-import-qif.c \
+	hb-import-csv.c \
 	hb-misc.c \
 	hb-misc.h \
 	hb-payee.c \
@@ -51,16 +60,14 @@ homebank_SOURCES =  \
 	hb-report.h \
 	hb-tag.c \
 	hb-tag.h \
+	hb-split.c \
+	hb-split.h \
 	hb-transaction.c \
 	hb-transaction.h \
 	hb-xml.c \
 	hb-xml.h \
 	homebank.c \
 	homebank.h \
-	imp_qif.c \
-	imp_qif.h \
-	import.c \
-	import.h \
 	language.c \
 	language.h \
 	list_account.c \
@@ -87,12 +94,16 @@ homebank_SOURCES =  \
 	ui-archive.h \
 	ui-assign.c \
 	ui-assign.h \
+	ui-assist-import.c \
+	ui-assist-import.h \
 	ui-assist-start.c \
 	ui-assist-start.h \
 	ui-budget.c \
 	ui-budget.h \
 	ui-category.c \
 	ui-category.h \
+	ui-currency.c \
+	ui-currency.h \
 	ui-dialogs.c \
 	ui-dialogs.h \
 	ui-filter.c \
@@ -103,16 +114,18 @@ homebank_SOURCES =  \
 	ui-payee.h \
 	ui-pref.c \
 	ui-pref.h \
+	ui-split.c \
+	ui-split.h \
 	ui-transaction.c \
 	ui-transaction.h \
 	ui-widgets.c \
-	ui-widgets.h \
-	gtk-chart-colors.c \
-	gtk-chart-colors.h 
+	ui-widgets.h
 
-homebank_LDADD = $(DEPS_LIBS)
+homebank_LDADD = $(DEPS_LIBS) \
+	$(LIBSOUP_LIBS)
 
 AM_CPPFLAGS = \
 	$(DEPS_CFLAGS) \
+	$(LIBSOUP_CFLAGS) \
 	$(common_defines)
 

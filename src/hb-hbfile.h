@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,6 +20,8 @@
 #ifndef __HB_HBFILE_H__
 #define __HB_HBFILE_H__
 
+GList *hbfile_transaction_get_all(guint32 kacc);
+GQueue *hbfile_transaction_get_partial(guint32 minjulian, guint32 maxjulian);
 
 gboolean hbfile_file_hasbackup(gchar *filepath);
 
@@ -31,6 +33,9 @@ void hbfile_setup(gboolean file_clear);
 
 void hbfile_anonymize(void);
 void hbfile_sanity_check(void);
+
+void hbfile_change_basecurrency(guint32 key);
+void hbfile_replace_basecurrency(Currency4217 *curfmt);
 
 #endif
 

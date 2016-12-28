@@ -1,0 +1,91 @@
+1;-;Grynųjų pinigų paėmimas
+1;-;Automobilis
+2;-;Įmoka už automobilį
+2;-;Kuras
+2;-;Eksploatavimo išlaidos
+1;-;Alimentai
+2;-;Sumokėtos palūkanos
+2;-;Paslaugų mokesčiai
+1;-;Paslaugų apmokėjimai
+2;-;Mobilusis telefono ryšys
+2;-;Fiksuotas (laidinis) telefono ryšys
+2;-;Elektra
+2;-;Šiukšlės ir perdirbimas
+2;-;Televizija (Kabelinė,Palydovinė)
+2;-;Sveikatos/sporto klubas
+2;-;Namo savininko/bendrijos mokesčiai
+2;-;Gamtinės dujos/degalai
+2;-;Nuoma
+2;-;Vanduo ir nuotekos
+1;-;Labdara
+1;-;Rūbai
+1;-;Valgymai ne namie
+1;-;Išsilavinimas
+2;-;Knygos
+2;-;Mokesčiai
+2;-;Mokestis už mokslą
+1;-;Pramogos
+1;-;Maistas
+1;-;Dovanos
+1;-;Sveikatos priežiūra
+2;-;Dantys
+2;-;Akys
+2;-;Ligoninė
+2;-;Gydytojas
+2;-;Vaistai
+1;-;Hobi/Laisvalaikis
+2;-;Knygos ir žurnalai
+2;-;Kultūriniai renginiai
+2;-;Pasilinksminimai
+2;-;Filmų ir video nuoma
+2;-;Sporto renginiai
+2;-;Sporting//Sporto prekės
+2;-;Muzikos ir vaizdo įrašai
+2;-;Žaislai ir žaidimai
+1;-;Namų remontas
+1;-;Namų ūkis
+2;-;Namų apyvoka/baldai
+2;-;Namų valymas
+2;-;Kiemo paslaugos
+1;-;Draudimas
+2;-;Automobilis
+2;-;Sveikata
+2;-;Namų savininko/nuomininko
+2;-;Gyvybės
+2;-;Negrąžinti pinigai
+2;-;Apmokėti pinigai
+1;-;Naminių gyvūnų priežiūra
+2;-;Pašaras
+2;-;Maistas/Atsargos
+2;-;Veterinaras
+1;-;Mokesčiai
+2;-;Pajamų mokestis
+2;-;Verslo liudijimo mokestis
+2;-;Sveikatos draudimo mokestis
+2;-;Kiti mokesčiai
+2;-;Nekilnojamojo turto mokesčiai
+2;-;Pardavimo mokesčiai
+1;-;Kelionės/Atostogos
+2;-;Nakvynė/Apgyvendinimas
+2;-;Keliavimo išlaidos
+2;-;Dovanos/Suvenyrai
+1;+;Pajamos/pelnas
+1;+;Investavimo pajamos/palūkanos
+2;+;Kapitalo prieaugis
+2;+;Dividentai
+2;+;Palūkanos
+2;+;Neapmokestinamosios palūkanos
+2;+;Išmokos už vaikus
+2;+;Gautos dovanos
+2;+;Gauta paskola
+2;+;Loterija
+2;+;Grąžinti valstybės ir vietiniai mokesčiai
+2;+;Bedarbio pašalpa
+2;+;Socialinio draudimo išmokos
+1;+;Darbo užmokestis ir atlyginimas
+2;+;Premijos
+2;+;Komandiruotės
+2;+;Darbdavio atitikimas
+2;+;Darbo užmokestis "ant popieriaus"
+2;+;Darbo užmokestis "į rankas"
+2;+;Viršvalandžiai

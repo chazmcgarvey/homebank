@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2014 Maxime DOYEN
+ *  Copyright (C) 1995-2016 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,6 +20,17 @@
 #ifndef __HB_ARCHIVE_GTK_H__
 #define __HB_ARCHIVE_GTK_H__
 
+
+enum
+{
+	ARC_TYPE_ALL = 0,
+	ARC_TYPE_SCHEDULED,
+	ARC_TYPE_TEMPLATE
+};
+
+#define LST_DEFARC_SORT_MEMO  1
+#define LST_DEFARC_SORT_PAYEE 2
+
 enum {
 	HID_ARC_MEMO,
 	HID_ARC_VALID,
@@ -30,34 +41,39 @@ enum {
 
 struct ui_arc_manage_data
 {
+	GtkWidget	*window;
+
 	GList	*tmp_list;
 	gint	change;
 	//guint32	lastkey;
 	Archive		*lastarcitem;
 
 
+	GtkWidget	*RA_type;
 	GtkWidget	*LV_arc;
 
+	GtkWidget   *GR_txnleft;
 	GtkWidget	*PO_pay;
 	GtkWidget	*ST_word;
-	GtkWidget	*ST_amount, *BT_amount;	//, *BT_split;
-	GtkWidget	*CM_valid;
-	GtkWidget	*CM_remind;
+	GtkWidget	*ST_amount, *BT_split;
 	GtkWidget	*GR_cheque;
 	GtkWidget	*CM_cheque;
-
+	GtkWidget   *RA_status;
 	GtkWidget	*NU_mode;
 	GtkWidget	*PO_grp;
 	GtkWidget	*PO_acc;
 	GtkWidget	*LB_accto, *PO_accto;
 
+	GtkWidget   *LB_schedinsert;
 	GtkWidget	*CM_auto;
-	GtkWidget	*NB_every;
+	GtkWidget	*LB_next, *PO_next;
+	GtkWidget	*LB_every, *NB_every;
+	GtkWidget   *LB_weekend, *CY_weekend;
 	GtkWidget	*CY_unit;
-	GtkWidget	*PO_next;
 	GtkWidget	*CM_limit;
 	GtkWidget	*NB_limit;
-	GtkWidget   *CY_weekend;
+	GtkWidget	*LB_posts;
+	
 
 	GtkWidget	*BT_add, *BT_rem;
 
@@ -66,6 +82,6 @@ struct ui_arc_manage_data
 };
 
 
-GtkWidget *ui_arc_manage_dialog (void);
+GtkWidget *ui_arc_manage_dialog (Archive *ext_arc);
 
 #endif
