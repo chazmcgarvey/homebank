@@ -430,7 +430,7 @@ gint i;
 	PREFS->vehicle_unit_ismile = FALSE;
 	PREFS->vehicle_unit_isgal  = FALSE;
 
-	gchar** plugin_path = g_new0(gchar**, 4);
+	gchar** plugin_path = g_new0(gchar*, 4);
 	i = 0;
 	const gchar* env = g_getenv("HOMEBANK_PLUGINS");
 	if (env) {

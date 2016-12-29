@@ -133,7 +133,7 @@ gchar** ext_list_plugins()
 	g_hash_table_unref(hash);
 
 	guint len = g_list_length(list);
-	gchar** strv = g_new0(gchar**, len + 1);
+	gchar** strv = g_new0(gchar*, len + 1);
 	int i;
 	for (i = 0; i < len; ++i) {
 		strv[i] = g_list_nth_data(list, i);
