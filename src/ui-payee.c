@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -771,6 +771,7 @@ ui_pay_manage_dialog_load_csv( GtkWidget *widget, gpointer user_data)
 {
 struct ui_pay_manage_dialog_data *data = user_data;
 gchar *filename = NULL;
+gchar *error;
 
 	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(widget), GTK_TYPE_WINDOW)), "inst_data");
 
@@ -780,8 +781,13 @@ gchar *filename = NULL;
 	{
 		DB( g_print(" + filename is %s\n", filename) );
 
-		payee_load_csv(filename);
-		//todo: add error message
+		if( !payee_load_csv(filename, &error) )
+		{
+			ui_dialog_msg_infoerror(GTK_WINDOW(data->window), GTK_MESSAGE_ERROR,
+					_("File format error"),
+					_("The CSV file must contains the exact numbers of column,\nseparated by a semi-colon, please see the help for more details.")
+					);
+		}
 
 		g_free( filename );
 		ui_pay_listview_populate(data->LV_pay);
@@ -828,11 +834,12 @@ gchar *name;
 
 	name = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_name));
 
-	item = payee_append_if_new(name);
-	if( item )
+	if( payee_append_if_new(name, &item) )
 	{
-		ui_pay_listview_add(GTK_TREE_VIEW(data->LV_pay), item);
-		data->change++;
+		if( item ) {
+			ui_pay_listview_add(GTK_TREE_VIEW(data->LV_pay), item);
+			data->change++;
+		}
 	}
 
 	gtk_entry_set_text(GTK_ENTRY(data->ST_name), "");

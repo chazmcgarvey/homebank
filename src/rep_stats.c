@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -1582,7 +1582,7 @@ GError *error = NULL;
 	// data to action callbacks is set here (data)
 	gtk_action_group_add_actions (actions, entries, n_entries, data);
 
-     gtk_action_group_add_toggle_actions (actions,
+	gtk_action_group_add_toggle_actions (actions,
 					   toggle_entries, n_toggle_entries,
 					   data);
 

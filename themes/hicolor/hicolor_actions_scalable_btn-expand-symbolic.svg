@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg xmlns:osb="http://www.openswatchbook.org/uri/2009/osb" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" id="svg7384" height="16" width="16" version="1.1" inkscape:version="0.91 r13725" sodipodi:docname="hicolor_actions_scalable_btn-expand-symbolic.svg">
+  <defs id="defs12">
+    <linearGradient id="linearGradient5606" osb:paint="solid">
+      <stop id="stop5608" offset="0" style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+    <filter id="filter7554" style="color-interpolation-filters:sRGB">
+      <feBlend id="feBlend7556" in2="BackgroundImage" mode="darken" />
+    </filter>
+    <filter id="filter7554-5" style="color-interpolation-filters:sRGB">
+      <feBlend id="feBlend7556-6" in2="BackgroundImage" mode="darken" />
+    </filter>
+  </defs>
+  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1366" inkscape:window-height="734" id="namedview10" showgrid="true" inkscape:zoom="33.125" inkscape:cx="8" inkscape:cy="8" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="1" inkscape:current-layer="svg7384">
+    <inkscape:grid type="xygrid" id="grid3277" />
+  </sodipodi:namedview>
+  <metadata id="metadata90">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>HomeBank Symbolic Icon Theme</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <title id="title9167">HomeBank Symbolic Icon Theme</title>
+  <g id="g3300">
+    <path inkscape:connector-curvature="0" id="rect38609" d="m 2.0193441,1.0385841 c 4.3294264,0 8.6588529,0 12.9882789,0 0,0.6667334 0,1.3334667 0,2.0002 -4.329426,0 -8.6588525,0 -12.9882789,0 0,-0.6667333 0,-1.3334666 0,-2.0002 z" style="color:#bebebe;fill:#bebebe" />
+    <path inkscape:connector-curvature="0" id="rect38611" d="m 9.9240046,5.0083957 c 1.6943394,0 3.3886794,0 5.0830184,0 0,0.6667333 0,1.3334667 0,2.0002 -1.694339,0 -3.388679,0 -5.0830184,0 0,-0.6667333 0,-1.3334667 0,-2.0002 z" style="color:#bebebe;fill:#bebebe" />
+    <path inkscape:connector-curvature="0" id="rect38613" d="m 9.9541931,9.0687733 c 1.6943399,0 3.3886789,0 5.0830189,0 0,0.6667333 0,1.3334667 0,2.0001997 -1.69434,0 -3.388679,0 -5.0830189,0 0,-0.666733 0,-1.3334664 0,-2.0001997 z" style="color:#bebebe;fill:#bebebe" />
+    <g transform="translate(9.6529014,-1.6511731)" id="g3273">
+      <path inkscape:connector-curvature="0" id="path3613-6-6-9-5" d="m -0.668016,9.63366 c -0.0438085,0.609735 0.16938664,1.349768 -0.365404,1.802914 -1.0657494,1.065148 -2.1302761,2.13152 -3.196846,3.195846 -0.2964793,-0.0203 -0.6261772,0.0396 -0.9030413,-0.02805 -1.105133,-1.110318 -2.2209699,-2.21052 -3.3193288,-3.32724 C -8.7989302,10.798517 -8.6252521,10.181918 -8.667736,9.6324 -8.058,9.6762194 -7.3179633,9.4629683 -6.8648138,9.9977659 -6.1324645,10.730147 -5.4001153,11.462529 -4.667766,12.19491 -3.8515491,11.398416 -3.0723269,10.559387 -2.2321849,9.7903889 -1.7586213,9.5264921 -1.1846107,9.6679808 -0.668016,9.63366 Z" style="color:#000000;text-indent:0;text-transform:none;block-progression:tb;fill:#bebebe" />
+      <path inkscape:connector-curvature="0" id="path35770-1-5" d="m -5.668016,5.63366 c 0,2.3333333 0,4.666667 0,7 0.6666667,0 1.3333333,0 2,0 0,-2.333333 0,-4.6666667 0,-7 -0.6666667,0 -1.3333333,0 -2,0 z" style="color:#000000;text-indent:0;text-transform:none;block-progression:tb;fill:#bebebe" />
+    </g>
+    <path inkscape:connector-curvature="0" id="rect38611-6" d="m 9.9240046,13.037636 c 1.6943394,0 3.3886794,0 5.0830184,0 0,0.666733 0,1.333466 0,2.0002 -1.694339,0 -3.388679,0 -5.0830184,0 0,-0.666734 0,-1.333467 0,-2.0002 z" style="color:#bebebe;fill:#bebebe" />
+  </g>
+</svg>

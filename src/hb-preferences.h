@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -120,6 +120,7 @@ struct Preferences
 	/* windows/dialogs size an position */
 	struct WinGeometry	wal_wg;
 	struct WinGeometry	acc_wg;
+	
 	struct WinGeometry	sta_wg;
 	struct WinGeometry	tme_wg;
 	struct WinGeometry	ove_wg;
@@ -128,12 +129,20 @@ struct Preferences
 
 	struct WinGeometry	txn_wg;
 
+	// main window stuffs 
 	gboolean	wal_toolbar;
 	gboolean	wal_spending;
 	gboolean	wal_upcoming;
 
 	gint		wal_vpaned;
 	gint		wal_hpaned;
+
+	//home panel
+	gshort		pnl_acc_col_acc_width;
+	gshort		pnl_acc_show_by;
+	gshort		pnl_upc_col_pay_width;
+	gshort		pnl_upc_col_mem_width;
+	
 
 	//vehiclecost units (mile/gal or km/liters)
 	

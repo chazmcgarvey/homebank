@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -29,11 +29,14 @@ struct hbfile_data
 	GtkWidget	*vpaned;
 	GtkWidget	*hpaned;
 
+	/* panel: your account */
 	GtkWidget	*LV_acc;
+	GtkWidget   *BT_expandall;
+	GtkWidget   *BT_collapseall;
+	gboolean	showall;
 
 	GtkWidget	*GR_top;
 	GtkWidget	*LV_top;
-	GtkWidget	*TX_topamount;
 	gdouble		toptotal;
 	GtkWidget	*CY_range;
 	GtkWidget	*RE_pie;

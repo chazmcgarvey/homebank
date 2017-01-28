@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -60,9 +60,9 @@ GList *payee_glist_sorted(gint column);
 
 void payee_move(guint32 key1, guint32 key2);
 gboolean payee_rename(Payee *item, const gchar *newname);
-Payee *payee_append_if_new(gchar *name);
+gboolean payee_append_if_new(gchar *name, Payee **newpayee);
 
-void payee_load_csv(gchar *filename);
+gboolean payee_load_csv(gchar *filename, gchar **error);
 void payee_save_csv(gchar *filename);
 
 #endif

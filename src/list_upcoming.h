@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,7 +20,6 @@
 #ifndef __LIST_UPCOMING__H__
 #define __LIST_UPCOMING__H__
 
-GtkWidget *create_list_upcoming(void);
 
 enum
 {
@@ -35,5 +34,9 @@ enum
 	LST_DSPUPC_NB_LATE,
 	NUM_LST_DSPUPC
 };
+
+
+GtkWidget *create_list_upcoming(void);
+
 
 #endif

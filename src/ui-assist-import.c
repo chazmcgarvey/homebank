@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2016 Maxime DOYEN
+ *	Copyright (C) 1995-2017 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -707,11 +707,14 @@ GList *lxxx, *list;
 			//only persist user selected to new account
 			if( item->imp_key == 0)
 			{
-				//DB( g_print(" -> persist acc %x '%s'\n", item, item->name) );
+				DB( g_print(" -> persist acc %x '%s' k=%d, ik=%d\n", item, item->name, item->key, item->imp_key) );
 				item->imported = FALSE;
 				g_free(item->imp_name);
 				item->imp_name = NULL;
 			}
+			//else
+			//DB( g_print(" -> keep exist acc %x '%s' k=%d, ik=%d\n", item, item->name, item->key, item->imp_key) );
+			
 		}
 		list = g_list_next(list);
 	}
@@ -765,16 +768,24 @@ GList *lxxx, *list;
 		Account *acc;
 			
 			//DB(g_print("import %d to acc: %d\n", data->total, item->account)	);
+
 			//todo: here also test imp_key on account and change the key into the transaction
 			acc = da_acc_get(item->kacc);
-			if( acc != NULL)
+			if( (acc != NULL) && (acc->imp_key > 0) )
 			{
-				if( acc->imp_key > 0)
-				{
-					item->kacc = acc->imp_key;
-				}
+				item->kacc = acc->imp_key;
 			}
 
+			//#1653957 change also kxferacc
+			if( item->paymode == PAYMODE_INTXFER )
+			{
+				acc = da_acc_get(item->kxferacc);
+				if( (acc != NULL) && (acc->imp_key > 0) )
+				{
+					item->kxferacc = acc->imp_key;
+				}
+			}
+			
 			transaction_add(item, NULL, 0);
 		}
 

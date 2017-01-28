@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2016 Maxime DOYEN
+ *	Copyright (C) 1995-2017 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -230,9 +230,9 @@ account_qif_get_child_transfer(Transaction *src, GList *list)
 {
 Transaction *item;
 
-	DB( g_print("([qif] get_child_transfer\n") );
+	DB( g_print(" \n[qif] get_child_transfer\n") );
 
-	//DB( g_print(" search: %d %s %f %d=>%d\n", src->date, src->wording, src->amount, src->account, src->kxferacc) );
+	DB( g_print(" search: %d %s %f %d=>%d\n", src->date, src->wording, src->amount, src->kacc, src->kxferacc) );
 
 	list = g_list_first(list);
 	while (list != NULL)
@@ -245,7 +245,7 @@ Transaction *item;
 			    src->kxferacc == item->kacc &&
 			    ABS(src->amount) == ABS(item->amount) )
 			{
-				//DB( g_print(" found : %d %s %f %d=>%d\n", item->date, item->wording, item->amount, item->account, item->kxferacc) );
+				DB( g_print(" found : %d %s %f %d=>%d\n", item->date, item->wording, item->amount, item->kacc, item->kxferacc) );
 
 				return item;
 			}
@@ -253,7 +253,7 @@ Transaction *item;
 		list = g_list_next(list);
 	}
 
-	//DB( g_print(" not found...\n") );
+	DB( g_print(" not found...\n") );
 
 	return NULL;
 }
@@ -640,7 +640,7 @@ GList *list = NULL;
 	//isodate = hb_qif_parser_check_iso_date(&ctx);
 	//DB( g_print(" -> date is dd/mm/yy: %d\n", isodate) );
 
-	DB( g_print("\n\n -> transform to hb txn\n") );
+	DB( g_print("\n\n -> start transform all qif txn to hb txn\n") );
 
 	DB( g_print(" -> %d qif txn\n",  g_list_length(ctx.q_tra)) );
 
@@ -789,13 +789,11 @@ GList *list = NULL;
 		if( child != NULL)
 		{
 			//DB( g_print(" -> transaction already exist\n" ) );
-
 			da_transaction_free(newope);
 		}
 		else
 		{
 			//DB( g_print(" -> append trans. acc:'%s', memo:'%s', val:%.2f\n", item->account, item->memo, item->amount ) );
-
 			list = g_list_append(list, newope);
 		}
 
@@ -808,10 +806,6 @@ GList *list = NULL;
 	DB( g_print(" -> %d txn converted\n", g_list_length(list)) );
 	DB( g_print(" -> %d errors\n", ictx->cnt_err_date) );
 
-
-
-
 	return list;
 }
-
 
