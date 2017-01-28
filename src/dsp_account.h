@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -78,6 +78,7 @@ struct register_panel_data
 
 	GtkWidget   *ST_search;
 	
+	GtkWidget   *LB_name;
 	GtkWidget	*CM_minor;
 	GtkWidget	*TX_balance[3];
 

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -147,6 +147,7 @@ extern gchar *CYA_MONTHS[];
 
 typedef struct
 {
+	gshort		id;
 	gchar		*iso;
 	gchar		*name;
 	gdouble		value;
@@ -169,45 +170,38 @@ source:
 */
 static EuroParams euro_params[] =
 {
-//                           , rate     , symb  , prfx , dec, grp, frac
+//                                , rate     , symb  , prfx , dec, grp, frac
 // ---------------------------------------------------------------------
-	{ ""   , "--------"      , 1.0		, ""    , FALSE, ",", ".", 2  },
-	{ "ATS", "Austria"       , 13.7603	, "S"   , TRUE , ",", ".", 2  },	// -S 1.234.567,89
-	{ "BEF", "Belgium"       , 40.3399	, "BF"  , TRUE , ",", ".", 2  },	// BF 1.234.567,89 -
-	{ "FIM", "Finland"       , 5.94573	, "mk"  , FALSE, ",", " ", 2  },	// -1 234 567,89 mk
-	{ "FRF", "France"        , 6.55957	, "F"   , FALSE, ",", " ", 2  },	// -1 234 567,89 F
-	{ "DEM", "Germany"       , 1.95583	, "DM"  , FALSE, ",", ".", 2  },	// -1.234.567,89 DM
-	{ "GRD", "Greece"        , 340.750	, "d"   , TRUE , ".", ",", 2  },	// ??
-	{ "IEP", "Ireland"       , 0.787564 , "£"   , TRUE , ".", ",", 2  },	// -£1,234,567.89
-	{ "ITL", "Italy"         , 1936.27	, "L"   , TRUE , "" , ".", 0  },	// L -1.234.567
-	{ "LUF", "Luxembourg"    , 40.3399	, "LU"  , TRUE , ",", ".", 2  },	// LU 1.234.567,89 -
-	{ "NLG", "Netherlands"   , 2.20371	, "F"   , TRUE , ",", ".", 2  },	// F 1.234.567,89-
-	{ "PTE", "Portugal"      , 200.482	, "Esc.", FALSE, "$", ".", 2  },	// -1.234.567$89 Esc.
-	{ "ESP", "Spain"         , 166.386	, "Pts" , TRUE , "" , ".", 0  },	// -Pts 1.234.567
-/* 2007 */
-	{ "SIT", "Slovenia"      , 239.640	, "tol" , TRUE , ",", ".", 2  },	//
-/* 2008 */
-	{ "CYP", "Cyprus"        , 0.585274 , "£"   , TRUE , ",", "" , 2  },	//
-	{ "MTL", "Malta"         , 0.429300 , "Lm"  , TRUE , ",", "" , 2  },	//
-/* 2009 */
-	{ "SKK", "Slovaquia"     , 30.12600 , "Sk"  , FALSE, ",", " ", 2  },	//
-/* 2011 */
-	{ "EEK", "Estonia"       , 15.6466  , "kr"  , FALSE, ",", " ", 2  },	//
-/* 2014 */
-	{ "LVL", "Latvia"        , 0.702804 , "lat.", FALSE, ",", "" , 2  },	// jan. 2014
-/* 2016 */
-	{ "LTL", "Lithuania"     , 3.45280	, "Lt." , TRUE , ",", "" , 2  },	// jan. 2015
-
-/* future */
-	{ "BGN", "Bulgaria"      , 1.95583	, "лв." , TRUE , ",", " ", 2  },	// non-fixé - 2014 target for euro
-	{ "HUF", "Hungary"       , 261.51	, "Ft"  , TRUE , ",", " ", 2  },	// non-fixé - No current target for euro
-	{ "RON", "Romania"       , 3.5155	, "Leu" , FALSE, ",", ".", 2  },	// non-fixé - 2015 target for euro earliest
-	{ "CZK", "Czech republic", 28.36	, "Kč"  , FALSE, ",", " ", 2  },	// non-fixé - 2015 earliest
-	{ "HRK", "Croatia"       , 1.0000   , "kn"  , FALSE, "" , ".", 0  },	// non-fixé - 2015 target for euro earliest
-	{ "PLN", "Poland"        , 0.25     , "zł"  , FALSE, ",", "" , 2  },	// non-fixé - No current target for euro
-
+	{  0, ""   , "--------"       , 1.0		, ""    , FALSE, ",", ".", 2  },
+	{  1, "ATS", "Austria"        , 13.7603	, "S"   , TRUE , ",", ".", 2  },	// -S 1.234.567,89
+	{  2, "BEF", "Belgium"        , 40.3399	, "BF"  , TRUE , ",", ".", 2  },	// BF 1.234.567,89 -
+	{ 20, "BGN", "Bulgaria"       , 1.95583	, "лв." , TRUE , ",", " ", 2  },	// non-fixé - 2014 target for euro
+	{ 24, "HRK", "Croatia"        , 1.0000   , "kn"  , FALSE, "" , ".", 0  },	// non-fixé - 2015 target for euro earliest
+	{ 14, "CYP", "Cyprus"         , 0.585274 , "£"   , TRUE , ",", "" , 2  },	//
+	{ 23, "CZK", "Czech Republic" , 28.36	   , "Kč"  , FALSE, ",", " ", 2  },	// non-fixé - 2015 earliest
+	// Denmark
+	{ 17, "EEK", "Estonia"        , 15.6466  , "kr"  , FALSE, ",", " ", 2  },	//
+	{  3, "FIM", "Finland"        , 5.94573	, "mk"  , FALSE, ",", " ", 2  },	// -1 234 567,89 mk
+	{  4, "FRF", "France"         , 6.55957	, "F"   , FALSE, ",", " ", 2  },	// -1 234 567,89 F
+	{  5, "DEM", "Germany"        , 1.95583	, "DM"  , FALSE, ",", ".", 2  },	// -1.234.567,89 DM
+	{  6, "GRD", "Greece"         , 340.750	, "d"   , TRUE , ".", ",", 2  },	// ??
+	{ 21, "HUF", "Hungary"        , 261.51	, "Ft"  , TRUE , ",", " ", 2  },	// non-fixé - No current target for euro
+	{  7, "IEP", "Ireland"        , 0.787564  , "£"   , TRUE , ".", ",", 2  },	// -£1,234,567.89
+	{  8, "ITL", "Italy"          , 1936.27	, "L"   , TRUE , "" , ".", 0  },	// L -1.234.567
+	{ 18, "LVL", "Latvia"         , 0.702804 , "lat.", FALSE, ",", "" , 2  },	// jan. 2014
+	{ 19, "LTL", "Lithuania"      , 3.45280	, "Lt"  , FALSE, ",", "" , 2  },	// jan. 2015
+	{  9, "LUF", "Luxembourg"     , 40.3399	, "LU"  , TRUE , ",", ".", 2  },	// LU 1.234.567,89 -
+	{ 15, "MTL", "Malta"          , 0.429300 , "Lm"  , TRUE , ",", "" , 2  },	//
+	{ 10, "NLG", "Netherlands"    , 2.20371	, "F"   , TRUE , ",", ".", 2  },	// F 1.234.567,89-
+	{ 25, "PLN", "Poland"         , 0.25     , "zł"  , FALSE, ",", "" , 2  },	// non-fixé - No current target for euro
+	{ 11, "PTE", "Portugal"       , 200.482	, "Esc.", FALSE, "$", ".", 2  },	// -1.234.567$89 Esc.
+	{ 22, "RON", "Romania"        , 3.5155	, "Leu" , FALSE, ",", ".", 2  },	// non-fixé - 2015 target for euro earliest
+	{ 16, "SKK", "Slovak Republic", 30.12600 , "Sk"  , FALSE, ",", " ", 2  },	//
+	{ 13, "SIT", "Slovenia"       , 239.640	, "tol" , TRUE , ",", ".", 2  },	//
+	{ 12, "ESP", "Spain"          , 166.386	, "Pts" , TRUE , "" , ".", 0  },	// -Pts 1.234.567
+	//Sweden
+	//United Kingdom
 //	{ "   ", ""    , 1.00000	, ""   , ""  , FALSE, ",", "", 2  },
-	
 };
 
 
@@ -242,7 +236,7 @@ static LangName languagenames[] =
 	{ "an", "Aragonese" },
 	{ "ar", "Arabic" },
 	{ "as", "Assamese" },
-		{ "ast", "Asturian, Bable, Leonese, Asturleonese" },
+	{ "ast", "Asturian, Bable, Leonese, Asturleonese" },
 	{ "av", "Avaric" },
 	{ "ay", "Aymara" },
 	{ "az", "Azerbaijani" },
@@ -348,7 +342,7 @@ static LangName languagenames[] =
 	{ "na", "Nauru" },
 	{ "nb", "Norwegian Bokmål" },
 	{ "nd", "North Ndebele" },
-		{ "nds", "Low German, Low Saxon" },
+	{ "nds", "Low German, Low Saxon" },
 	{ "ne", "Nepali" },
 	{ "ng", "Ndonga" },
 	{ "nl", "Dutch" },
@@ -585,11 +579,47 @@ GtkCellRenderer *renderer;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
 
+static gint ui_euro_combobox_id_to_active(gint id)
+{
+guint i, retval;
 
-/*
-**
-*/
-static GtkWidget *make_euro_presets(GtkWidget *label)
+	DB( g_print("\n[ui-pref] ui_euro_combobox_id_to_active\n") );
+
+	retval = 0;
+	for (i = 0; i < G_N_ELEMENTS (euro_params); i++)
+	{
+		if( euro_params[i].id == id )
+		{
+			retval = i;
+			DB( g_print("- id (country)=%d => %d - %s\n", id, i, euro_params[i].name) );
+			break;
+		}
+	}
+
+	return retval;
+}
+
+
+
+static gint ui_euro_combobox_active_to_id(gint active)
+{
+gint id;
+
+	DB( g_print("\n[ui-pref] ui_euro_combobox_active_to_id\n") );
+
+	DB( g_print("- to %d\n", active) );
+
+	id = 0;
+	if( active < (gint)G_N_ELEMENTS (euro_params) )
+	{
+		id = euro_params[active].id;
+		DB( g_print("- id (country)=%d '%s'\n", id, euro_params[active].name) );
+	}
+	return id;
+}
+
+
+static GtkWidget *ui_euro_combobox_new(GtkWidget *label)
 {
 GtkWidget *combobox;
 guint i;
@@ -742,24 +772,23 @@ gboolean sensitive;
 /*
 ** set euro value widget from a country
 */
-static void defpref_eurosetcurrency(GtkWidget *widget, gpointer user_data)
+static void defpref_eurosetcurrency(GtkWidget *widget, gint country)
 {
 struct defpref_data *data;
-EuroParams *euro = user_data;
+EuroParams *euro;
 gchar *buf;
-
+gint active;
 	
 	DB( g_print("\n[ui-pref] eurosetcurrency\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 	
+	active = ui_euro_combobox_id_to_active(country);
+	euro = &euro_params[active];
 	buf = g_strdup_printf("%s - %s", euro->iso, euro->name);
-
 	gtk_label_set_markup(GTK_LABEL(data->ST_euro_country), buf);
-
 	g_free(buf);
 }
-
 
 
 /*
@@ -768,25 +797,25 @@ gchar *buf;
 static void defpref_europreset(GtkWidget *widget, gpointer user_data)
 {
 struct defpref_data *data;
-gint country;
+gint active;
 
 	DB( g_print("\n[ui-pref] euro preset\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	country = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_euro_preset));
-	data->country = country;
+	active = gtk_combo_box_get_active (GTK_COMBO_BOX(data->CY_euro_preset));
+	data->country = ui_euro_combobox_active_to_id (active);;
 
-	defpref_eurosetcurrency(widget, &euro_params[country]);
+	defpref_eurosetcurrency(widget, data->country);
 
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_value), euro_params[country].value);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_value), euro_params[active].value);
 
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_fracdigits), euro_params[country].frac_digits);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_fracdigits), euro_params[active].frac_digits);
 
-	gtk_entry_set_text(GTK_ENTRY(data->ST_euro_symbol)   , euro_params[country].symbol);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_euro_isprefix), euro_params[country].sym_prefix);
-	gtk_entry_set_text(GTK_ENTRY(data->ST_euro_decimalchar) , euro_params[country].decimal_char);
-	gtk_entry_set_text(GTK_ENTRY(data->ST_euro_groupingchar), euro_params[country].grouping_char);
+	gtk_entry_set_text(GTK_ENTRY(data->ST_euro_symbol)   , euro_params[active].symbol);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_euro_isprefix), euro_params[active].sym_prefix);
+	gtk_entry_set_text(GTK_ENTRY(data->ST_euro_decimalchar) , euro_params[active].decimal_char);
+	gtk_entry_set_text(GTK_ENTRY(data->ST_euro_groupingchar), euro_params[active].grouping_char);
 
 }
 
@@ -909,6 +938,8 @@ GdkRGBA rgba;
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_toolbar), PREFS->toolbar_style);
 	//gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_image_size), PREFS->image_size);
 
+
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_custom_colors), PREFS->custom_colors);
 
 	gdk_rgba_parse(&rgba, PREFS->color_exp);
@@ -953,9 +984,8 @@ GdkRGBA rgba;
 	/* euro */
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_euro_enable), PREFS->euro_active);
 	//gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_euro_preset), PREFS->euro_country);
-
 	data->country = PREFS->euro_country;
-	defpref_eurosetcurrency(data->window, &euro_params[PREFS->euro_country]);
+	defpref_eurosetcurrency(data->window, data->country);
 
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_value), PREFS->euro_value);
 
@@ -1405,7 +1435,7 @@ gint crow, row;
 	label = make_label_widget(_("_Preset:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
-	widget = make_euro_presets(label);
+	widget = ui_euro_combobox_new (label);
 	data->CY_euro_preset = widget;
 	gtk_widget_set_margin_left (label, 2*SPACING_LARGE);
 	//gtk_grid_attach (GTK_GRID (group_grid), data->CY_option[FILTER_DATE], 1, 2, row, row+1);

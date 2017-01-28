@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -72,6 +72,7 @@ enum colmap
 	CHART_COLMAP_OFFICE2010,
 	CHART_COLMAP_OFFICE2013,
 	CHART_COLMAP_ANALYTICS,
+	CHART_COLMAP_YNAB,
 };
 
 enum {
@@ -91,6 +92,7 @@ extern struct rgbcol office2010_colors[];
 extern struct rgbcol office2013_colors[];
 extern struct rgbcol sap_colors[];
 extern struct rgbcol homebank_colors[];
+extern struct rgbcol ynab_colors[];
 
 extern int money_nbcolors;
 extern int quicken_nbcolors;
@@ -99,6 +101,7 @@ extern int office2010_nbcolors;
 extern int office2013_nbcolors;
 extern int sap_nbcolors;
 extern int homebank_nbcolors;
+extern int ynab_nbcolors;
 
 void chart_color_global_default(void);
 

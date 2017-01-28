@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -423,7 +423,7 @@ Transaction *child;
 Account *acc;
 gchar swap;
 
-	DB( g_print("\n[transaction] transaction_xfer_create_child\n") );
+	DB( g_print("\n[transaction] xfer_create_child\n") );
 
 	if( ope->kxferacc > 0 )
 	{
@@ -460,7 +460,7 @@ gchar swap;
 			DB( g_print(" + strong link to %d\n", ope->kxfer) );
 
 
-			DB( g_print(" + add transfer, %p\n", child) );
+			DB( g_print(" + add transfer, %p to acc %d\n", child, acc->key) );
 
 			da_transaction_insert_sorted(child);
 
@@ -476,6 +476,8 @@ gchar swap;
 static gboolean transaction_xfer_child_might(Transaction *stxn, Transaction *dtxn, gint daygap)
 {
 gboolean retval = FALSE;
+
+	//DB( g_print("\n[transaction] xfer_child_might\n") );
 
 	if(stxn == dtxn)
 		return FALSE;
@@ -510,7 +512,7 @@ static GList *transaction_xfer_child_might_list_get(Transaction *ope)
 GList *lst_acc, *lnk_acc;
 GList *list, *matchlist = NULL;
 
-	DB( g_print("\n[transaction]xfer_get_potential_child\n") );
+	//DB( g_print("\n[transaction] xfer_child_might_list_get\n") );
 
 	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
 	lnk_acc = g_list_first(lst_acc);
@@ -551,12 +553,12 @@ void transaction_xfer_search_or_add_child(GtkWindow *parentwindow, Transaction *
 GList *matchlist;
 gint count;
 
-	DB( g_print("\n[transaction] transaction_xfer_search_or_add_child\n") );
+	DB( g_print("\n[transaction] xfer_search_or_add_child\n") );
 
 	matchlist = transaction_xfer_child_might_list_get(ope);
 	count = g_list_length(matchlist);
 
-	DB( g_print(" - found result is %d, switching\n", count) );
+	DB( g_print(" - found %d might match, switching\n", count) );
 
 	switch(count)
 	{
@@ -577,13 +579,13 @@ gint count;
 
 		default:	//the user must choose himself
 		{
-	Transaction *child;
+		Transaction *child;
 
 			child = ui_dialog_transaction_xfer_select_child(ope, matchlist);
-		if(child == NULL)
-			transaction_xfer_create_child(ope);
-		else
-			transaction_xfer_change_to_child(ope, child);
+			if(child == NULL)
+				transaction_xfer_create_child(ope);
+			else
+				transaction_xfer_change_to_child(ope, child);
 		}
 	}
 
@@ -596,7 +598,7 @@ Transaction *transaction_xfer_child_strong_get(Transaction *src)
 Account *dstacc;
 GList *list;
 
-	DB( g_print("\n[transaction] transaction_xfer_child_strong_get\n") );
+	DB( g_print("\n[transaction] xfer_child_strong_get\n") );
 
 	dstacc = da_acc_get(src->kxferacc);
 	if( !dstacc || src->kxfer <= 0 )
@@ -634,7 +636,7 @@ void transaction_xfer_change_to_child(Transaction *ope, Transaction *child)
 {
 Account *dstacc;
 
-	DB( g_print("\n[transaction] transaction_xfer_change_to_child\n") );
+	DB( g_print("\n[transaction] xfer_change_to_child\n") );
 
 	if(ope->kcur != child->kcur)
 		return;
@@ -663,7 +665,7 @@ Account *dstacc;
 void transaction_xfer_sync_child(Transaction *s_txn, Transaction *child)
 {
 
-	DB( g_print("\n[transaction] transaction_xfer_sync_child\n") );
+	DB( g_print("\n[transaction] xfer_sync_child\n") );
 
 	account_balances_sub (child);
 
@@ -701,7 +703,7 @@ void transaction_xfer_remove_child(Transaction *src)
 {
 Transaction *dst;
 
-	DB( g_print("\n[transaction] transaction_xfer_remove_child\n") );
+	DB( g_print("\n[transaction] xfer_remove_child\n") );
 
 	dst = transaction_xfer_child_strong_get( src );
 
@@ -727,7 +729,7 @@ Transaction *transaction_old_get_child_transfer(Transaction *src)
 Account *acc;
 GList *list;
 
-	DB( g_print("\n[transaction] transaction_get_child_transfer\n") );
+	DB( g_print("\n[transaction] get_child_transfer\n") );
 
 	//DB( g_print(" search: %d %s %f %d=>%d\n", src->date, src->wording, src->amount, src->account, src->kxferacc) );
 	acc = da_acc_get(src->kxferacc);
@@ -770,11 +772,13 @@ void transaction_add(Transaction *ope, GtkWidget *treeview, guint32 accnum)
 Transaction *newope;
 Account *acc;
 
-	DB( g_print("\n[transaction] transaction add\n") );
+	DB( g_print("\n[transaction] transaction_add\n") );
 
 	//controls accounts valid (archive scheduled maybe bad)
 	acc = da_acc_get(ope->kacc);
 	if(acc == NULL) return;
+
+	DB( g_print(" acc is '%s' %d\n", acc->name, acc->key) );
 
 	ope->kcur = acc->kcur;
 	
@@ -787,6 +791,7 @@ Account *acc;
 		da_splits_free(ope->splits);
 		ope->flags &= ~(OF_SPLIT); //Flag that Splits are cleared
 	}
+
 
 	//allocate a new entry and copy from our edited structure
 	newope = da_transaction_clone(ope);
@@ -826,7 +831,7 @@ Account *acc;
 	{
 		acc->flags |= AF_ADDED;
 
-		DB( g_print(" + add normal %p\n", newope) );
+		DB( g_print(" + add normal %p to acc %d\n", newope, acc->key) );
 		//da_transaction_append(newope);
 		da_transaction_insert_sorted(newope);
 
@@ -850,7 +855,7 @@ GtkTreeIter  iter;
 //GtkTreePath *path;
 //GtkTreeSelection *sel;
 
-	DB( g_print("\n[transaction] transaction add treeview\n") );
+	DB( g_print("\n[transaction] add_treeview\n") );
 
 	if(ope->kacc == accnum)
 	{
@@ -877,6 +882,8 @@ GtkTreeIter  iter;
 gboolean transaction_acc_move(Transaction *txn, guint32 okacc, guint32 nkacc)
 {
 Account *oacc, *nacc;
+
+	DB( g_print("\n[transaction] acc_move\n") );
 
 	oacc = da_acc_get(okacc);
 	nacc = da_acc_get(nkacc);
@@ -944,7 +951,7 @@ gboolean match = FALSE;
 	if(text == NULL)
 		return FALSE;
 	
-	DB( g_print("match RE %s in %s\n", searchtext, text) );
+	DB( g_print("- match RE %s in %s\n", searchtext, text) );
 	if( searchtext != NULL )
 	{
 		match = g_regex_match_simple(searchtext, text, ((exact == TRUE)?0:G_REGEX_CASELESS) | G_REGEX_OPTIMIZE, G_REGEX_MATCH_NOTEMPTY );
@@ -958,7 +965,9 @@ static Assign *transaction_auto_assign_eval_txn(GList *l_rul, Transaction *txn)
 {
 Assign *rule = NULL;
 GList *list;
-	
+
+	DB( g_print("\n[transaction] auto_assign_eval_txn\n") );
+
 	DB( g_print("- eval every rules, and return the last that match\n") );
 
 	list = g_list_first(l_rul);
@@ -997,6 +1006,8 @@ static Assign *transaction_auto_assign_eval(GList *l_rul, gchar *text)
 {
 Assign *rule = NULL;
 GList *list;
+
+	DB( g_print("\n[transaction] auto_assign_eval\n") );
 	
 	DB( g_print("- eval every rules, and return the last that match\n") );
 
@@ -1031,7 +1042,7 @@ GList *l_ope;
 GList *l_rul;
 gint changes = 0;
 
-	DB( g_print("\n[transaction] transaction_auto_assign\n") );
+	DB( g_print("\n[transaction] auto_assign\n") );
 
 	l_rul = g_hash_table_get_values(GLOBALS->h_rul);
 
@@ -1126,7 +1137,7 @@ transaction_tags_count(Transaction *ope)
 guint count = 0;
 guint32 *ptr = ope->tags;
 
-	DB( g_print("(transaction_tags_count)\n") );
+	//DB( g_print("\n[transaction] tags_count\n") );
 	
 	if( ope->tags == NULL )
 		return 0;
@@ -1158,7 +1169,7 @@ gchar **str_array;
 guint count, i;
 Tag *tag;
 
-	DB( g_print("(transaction_tags_parse)\n") );
+	DB( g_print("\n[transaction] tags_parse\n") );
 
 	DB( g_print(" - tagstring='%s'\n", tagstring) );
 
@@ -1212,7 +1223,7 @@ gchar **str_array;
 gchar *tagstring;
 Tag *tag;
 
-	DB( g_print("transaction_tags_tostring\n") );
+	DB( g_print("\n[transaction] tags_tostring\n") );
 
 	DB( g_print(" -> tags at=%p\n", ope->tags) );
 

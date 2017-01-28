@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -966,11 +966,9 @@ const gchar *encoding;
 				if( tmpstr != NULL )
 				{
 					DB( g_print(" + strip %s\n", tmpstr) );
-
 					hb_string_strip_crlf(tmpstr);
 
 					DB( g_print(" + split\n") );
-
 					str_array = g_strsplit (tmpstr, ";", 3);
 					// type; sign; name
 

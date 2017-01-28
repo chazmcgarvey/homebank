@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -136,6 +136,8 @@ gboolean ui_dialog_msg_savechanges(GtkWidget *widget, gpointer user_data);
 void ui_mainwindow_update(GtkWidget *widget, gpointer user_data);
 void ui_mainwindow_addtransactions(GtkWidget *widget, gpointer user_data);
 void ui_mainwindow_recent_add (struct hbfile_data *data, const gchar *path);
+
+static void ui_panel_topspending_update(GtkWidget *widget, gpointer user_data);
 
 static void ui_mainwindow_scheduled_populate(GtkWidget *widget, gpointer user_data);
 void ui_mainwindow_scheduled_postall(GtkWidget *widget, gpointer user_data);
@@ -429,7 +431,7 @@ gchar *version;
   };
 */
 
-	static const gchar *copyright = "Copyright \xc2\xa9 1995-2016 - Maxime DOYEN";
+	static const gchar *copyright = "Copyright \xc2\xa9 1995-2017 - Maxime DOYEN";
 
 
 
@@ -710,7 +712,8 @@ struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "ins
 
 	// top spending
 	gtk_chart_show_minor(GTK_CHART(data->RE_pie), GLOBALS->minor);
-	hb_label_set_amount(GTK_LABEL(data->TX_topamount), data->toptotal, GLOBALS->kcur, GLOBALS->minor);
+	
+	ui_panel_topspending_update(data->window, data);
 
 }
 
@@ -1032,6 +1035,8 @@ gboolean file_clear = GPOINTER_TO_INT(user_data);
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_upc))));
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_top))));
 	
+	data->showall = FALSE;
+	
 	hbfile_cleanup(file_clear);
 	hbfile_setup(file_clear);
 
@@ -1055,8 +1060,9 @@ gint account, count;
 
 	/* init the transaction */
 	date = homebank_app_date_get_julian();
-	//todo: maybe think about set a default account here
-	account = 1;
+
+	//#1656531
+	account = 0;
 	if(data->acc != NULL)
 		account = data->acc->key;
 
@@ -1125,9 +1131,41 @@ struct tmptop
 	gdouble		value;
 };
 
+
+#define MAX_TOPSPENDING 5
+
+
 static gint tmptop_compare_func(struct tmptop *tt1, struct tmptop *tt2)
 {
 	return tt1->value > tt2->value ? 1 : -1;
+}
+
+
+static void ui_panel_topspending_update(GtkWidget *widget, gpointer user_data)
+{
+struct hbfile_data *data;
+GtkTreeModel *model;
+gchar *title;
+gchar strbuffer[G_ASCII_DTOSTR_BUF_SIZE];
+
+	DB( g_print("\n[ui-mainwindow] topspending_update\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	hb_strfmon(strbuffer, G_ASCII_DTOSTR_BUF_SIZE-1, data->toptotal, GLOBALS->kcur, GLOBALS->minor);	
+	//hb_label_set_amount(GTK_LABEL(data->TX_topamount), total, GLOBALS->kcur, GLOBALS->minor);
+	title = g_strdup_printf("%s %s", _("Top spending"), strbuffer);
+
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_top));
+	
+	gtk_chart_set_color_scheme(GTK_CHART(data->RE_pie), PREFS->report_color_scheme);
+	gtk_chart_set_currency(GTK_CHART(data->RE_pie), GLOBALS->kcur);
+	gtk_chart_set_datas(GTK_CHART(data->RE_pie), model, LST_TOPSPEND_AMOUNT, title, NULL);
+
+	g_free(title);
+
+	//future usage
+	gchar *fu = _("Top %d spending"); title = fu;
 }
 
 
@@ -1143,7 +1181,6 @@ GArray *garray;
 gdouble total, other;
 Account *acc;
 
-#define MAX_TOPSPENDING 5
 	
 	DB( g_print("\n[ui-mainwindow] populate_topspending\n") );
 
@@ -1326,18 +1363,14 @@ Account *acc;
   		gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_top), model);
 		g_object_unref(model);
 		
-		data->toptotal = total;
-		hb_label_set_amount(GTK_LABEL(data->TX_topamount), total, GLOBALS->kcur, GLOBALS->minor);
-
-		gtk_chart_set_color_scheme(GTK_CHART(data->RE_pie), PREFS->report_color_scheme);
-		gtk_chart_set_currency(GTK_CHART(data->RE_pie), GLOBALS->kcur);
-		gtk_chart_set_datas(GTK_CHART(data->RE_pie), model, LST_TOPSPEND_AMOUNT, NULL, NULL);
-		//gtk_chart_show_legend(GTK_CHART(data->RE_pie), FALSE);
-
-	  /* update info range text */
+		
+		// update chart and widgets
 		{
 		gchar *daterange;
-		
+
+			data->toptotal = total;
+			ui_panel_topspending_update(widget, data);
+			
 			daterange = filter_daterange_text_get(data->filter);
 			gtk_widget_set_tooltip_markup(GTK_WIDGET(data->CY_range), daterange);
 			g_free(daterange);
@@ -1855,6 +1888,78 @@ gint r = XML_UNSET;
 }
 
 
+static void ui_panel_accounts_expand_all(GtkWidget *widget, gpointer user_data)
+{
+struct hbfile_data *data;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	gtk_tree_view_expand_all(GTK_TREE_VIEW(data->LV_acc));
+}
+
+
+static void ui_panel_accounts_collapse_all(GtkWidget *widget, gpointer user_data)
+{
+struct hbfile_data *data;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	gtk_tree_view_collapse_all(GTK_TREE_VIEW(data->LV_acc));
+}
+
+
+
+static GHashTable *ui_panel_accounts_groups_get(GList *lacc, gint groupby, gboolean showall)
+{
+GHashTable *hash;
+GList *elt;
+gchar *groupname;
+gint nballoc;
+
+	nballoc = da_acc_length ();
+	hash = g_hash_table_new_full(g_str_hash, g_str_equal, (GDestroyNotify)g_free, NULL);
+	elt = g_list_first(lacc);
+	while (elt != NULL)
+	{
+	Account *acc = elt->data;
+	GPtrArray *group;
+	
+		if( showall || !(acc->flags & (AF_CLOSED|AF_NOSUMMARY)) )
+		{
+			if( groupby == DSPACC_GROUP_BY_BANK )
+			{
+				groupname = _("(no institution)");
+				if( (acc->bankname != NULL) && strlen(acc->bankname) > 0 ) 
+					groupname = acc->bankname;
+			}
+			else
+			{
+				//pre 5.1.3 historical by type display
+				groupname = _(CYA_ACC_TYPE[acc->type]);
+			}
+			
+			if( g_hash_table_contains(hash, groupname) == FALSE )
+			{
+				g_hash_table_insert(hash, g_strdup(groupname), g_ptr_array_sized_new(nballoc) );
+				//DB( g_print(" - type hash insert '%s' = %d\n", groupname, inserted) );
+			}
+
+			group = g_hash_table_lookup(hash, groupname);
+			if( group != NULL )
+			{
+				g_ptr_array_add(group, (gpointer)acc);
+				DB( g_print(" -- add '%s' to group '%s'\n", acc->name, groupname) );
+			}
+		}
+		elt = g_list_next(elt);
+	}
+
+	return hash;
+}
+
+
+
+
+
+
 void ui_mainwindow_populate_accounts(GtkWidget *widget, gpointer user_data)
 {
 struct hbfile_data *data;
@@ -1862,59 +1967,49 @@ GtkTreeModel *model;
 GtkTreeIter  iter1, child_iter;
 GList *lacc, *elt;
 Account *acc;
-guint i, j, nbtype;
+guint j, nbtype;
 gdouble gtbank, gttoday, gtfuture;
+
+GHashTable *h_group;
+GHashTableIter grp_iter;
+gpointer key, value;
 
 	DB( g_print("\n[ui-mainwindow] populate accounts\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	/* here we create a count and a list of every account pointer by type */
-
-	GPtrArray *typeacc[ACC_TYPE_MAXVALUE] = {0};
 	lacc = elt = g_hash_table_get_values(GLOBALS->h_acc);
-	while (elt != NULL)
-	{
-		acc = elt->data;
-		//#1339572
-		if( !(acc->flags & (AF_CLOSED|AF_NOSUMMARY)) )
-		{
-			DB( g_print(" - insert %d:%s\n", acc->key, acc->name) );
-
-			if(typeacc[acc->type] == NULL)
-				typeacc[acc->type] = g_ptr_array_sized_new(da_acc_length ());
-
-			g_ptr_array_add(typeacc[acc->type], (gpointer)acc);
-		}
-		elt = g_list_next(elt);
-	}
+	
+	h_group = ui_panel_accounts_groups_get(lacc, PREFS->pnl_acc_show_by, data->showall);
 	g_list_free(lacc);
+
 
 	gtbank = gttoday = gtfuture = 0;
 
-	DB( g_print(" - populate listview\n") );
+	DB( g_print(" populate listview\n") );
 
-
-	/* then populate the listview */
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc));
 	gtk_tree_store_clear (GTK_TREE_STORE(model));
 
 	nbtype = 0;
-	for(i=0;i<ACC_TYPE_MAXVALUE;i++)
+	g_hash_table_iter_init (&grp_iter, h_group);
+	while (g_hash_table_iter_next (&grp_iter, &key, &value))
 	{
-	GPtrArray *gpa = typeacc[i];
+	GPtrArray *gpa = value;
 	gdouble tbank, ttoday, tfuture;
 
 		if(gpa != NULL)
 		{
 			nbtype++;
 			//1: Header: Bank, Cash, ...
-			DB( g_print(" - append type '%s'\n", CYA_ACC_TYPE[i]) );
+			//DB( g_print(" - append type '%s'\n", CYA_ACC_TYPE[i]) );
+			DB( g_print("\n - append type '%d'\n", key) );
 
 			gtk_tree_store_append (GTK_TREE_STORE(model), &iter1, NULL);
 			gtk_tree_store_set (GTK_TREE_STORE(model), &iter1,
 					  LST_DSPACC_DATATYPE, DSPACC_TYPE_HEADER,
-					  LST_DSPACC_NAME, _(CYA_ACC_TYPE[i]),
+					  LST_DSPACC_NAME, key,
 					  -1);
 
 			tbank = ttoday = tfuture = 0;
@@ -1959,6 +2054,7 @@ gdouble gtbank, gttoday, gtfuture;
 			}
 
 			/* set balance to header to display when collasped */
+			DB( g_print(" - enrich totals to header :: %.2f %.2f %.2f\n", tbank, ttoday, tfuture) );
 			gtk_tree_store_set (GTK_TREE_STORE(model), &iter1,
 					LST_DSPACC_BANK, tbank,
 					LST_DSPACC_TODAY, ttoday,
@@ -1994,16 +2090,12 @@ gdouble gtbank, gttoday, gtfuture;
 
 	DB( g_print(" - free ressources\n") );
 
-
-	/* free all temp stuff */
-	for(i=0;i<ACC_TYPE_MAXVALUE;i++)
+	g_hash_table_iter_init (&grp_iter, h_group);
+	while (g_hash_table_iter_next (&grp_iter, &key, &value))
 	{
-	GPtrArray *gpa = typeacc[i];
-
-		if(gpa != NULL)
-			g_ptr_array_free (gpa, TRUE);
+		g_ptr_array_free (value, TRUE);
 	}
-
+	g_hash_table_destroy (h_group);  
 
 }
 
@@ -2026,7 +2118,7 @@ gint flags;
 	gchar *basename;
 	gchar *changed;
 
-		DB( g_print(" +  1: wintitle %x\n", (gint)data->wintitle) );
+		DB( g_print(" +  1: wintitle %x\n", data->wintitle) );
 
 		basename = g_path_get_basename(GLOBALS->xhb_filepath);
 
@@ -2054,8 +2146,10 @@ gint flags;
 
 		DB( g_print(" +  2: disabled, opelist count\n") );
 
-		selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_acc));
+		//#1656531
+		data->acc = NULL;
 
+		selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_acc));
 		active = gtk_tree_selection_get_selected(selection, &model, &iter);
 		if(active)
 		{
@@ -2071,15 +2165,9 @@ gint flags;
 
 				gtk_tree_model_get(GTK_TREE_MODEL(model), &iter, LST_DSPACC_DATAS, &acc, -1);
 				data->acc = acc;
-
 			}
 			else
 				active = FALSE;
-		}
-		else
-		{
-			//ensure data->acc will not be null
-			data->acc = da_acc_get(1);
 		}
 
 
@@ -2279,7 +2367,7 @@ gboolean retval = FALSE;
 	}
 	else
 	{
-		DB( g_print(" free wintitle %x\n", (gint)data->wintitle) );
+		DB( g_print(" free wintitle %x\n", data->wintitle) );
 
 		gtk_widget_destroy(data->LV_top);
 
@@ -2422,9 +2510,9 @@ static void ui_mainwindow_drag_data_received (GtkWidget *widget,
 			GtkSelectionData *selection_data,
 			guint info, guint time, GtkWindow *window)
 {
-	gchar **uris, **str;
-	gchar *newseldata;
-	gint filetype, slen;
+gchar **uris, **str;
+gchar *newseldata;
+gint filetype, slen;
 
 	if (info != TARGET_URI_LIST)
 		return;
@@ -2438,6 +2526,8 @@ static void ui_mainwindow_drag_data_received (GtkWidget *widget,
 	newseldata[slen] = 0;
 
 	uris = g_uri_list_extract_uris (newseldata);
+
+	DB( g_print(" - dragged %d %d files\n", slen, g_strv_length(uris) ) );
 
 	str = uris;
 	//for (str = uris; *str; str++)
@@ -2460,6 +2550,9 @@ static void ui_mainwindow_drag_data_received (GtkWidget *widget,
 			else
 			{
 				//todo: future here to implement import for other filetype
+				//	ui_import_assistant_new();
+				// + write a method into assistant to catch other filename
+
 
 				ui_dialog_msg_infoerror(GTK_WINDOW(window), GTK_MESSAGE_ERROR,
 					_("File error"),
@@ -2517,7 +2610,7 @@ GtkRecentFilter *filter;
 static void ui_mainwindow_create_menu_bar_and_toolbar(struct hbfile_data *data, GtkWidget *mainvbox)
 {
 GtkUIManager *manager;
-GtkActionGroup *action_group;
+GtkActionGroup *actions;
 GtkAction *action;
 GError *error = NULL;
 
@@ -2527,62 +2620,62 @@ GError *error = NULL;
 	gtk_window_add_accel_group (GTK_WINDOW (data->window),
 				gtk_ui_manager_get_accel_group(manager));
 
-	action_group = gtk_action_group_new ("MainWindow");
-	gtk_action_group_set_translation_domain(action_group, GETTEXT_PACKAGE);
+	actions = gtk_action_group_new ("MainWindow");
+	gtk_action_group_set_translation_domain(actions, GETTEXT_PACKAGE);
 
-	gtk_action_group_add_actions (action_group,
+	gtk_action_group_add_actions (actions,
 			entries,
 			n_entries,
 			NULL);
 
-	gtk_action_group_add_toggle_actions (action_group,
+	gtk_action_group_add_toggle_actions (actions,
 			toggle_entries,
 			n_toggle_entries,
 			NULL);
 
-	gtk_ui_manager_insert_action_group (data->manager, action_group, 0);
-	g_object_unref (action_group);
-	data->actions = action_group;
+	gtk_ui_manager_insert_action_group (data->manager, actions, 0);
+	g_object_unref (actions);
+	data->actions = actions;
 
 	/* set short labels to use in the toolbar */
-	action = gtk_action_group_get_action(action_group, "Open");
+	action = gtk_action_group_get_action(actions, "Open");
 	g_object_set(action, "short_label", _("Open"), NULL);
 
 	//action = gtk_action_group_get_action(action_group, "Save");
 	//g_object_set(action, "is_important", TRUE, NULL);
 
-	action = gtk_action_group_get_action(action_group, "Account");
+	action = gtk_action_group_get_action(actions, "Account");
 	g_object_set(action, "short_label", _("Account"), NULL);
 
-	action = gtk_action_group_get_action(action_group, "Payee");
+	action = gtk_action_group_get_action(actions, "Payee");
 	g_object_set(action, "short_label", _("Payee"), NULL);
 
-	action = gtk_action_group_get_action(action_group, "Category");
+	action = gtk_action_group_get_action(actions, "Category");
 	g_object_set(action, "short_label", _("Category"), NULL);
 
-	action = gtk_action_group_get_action(action_group, "Archive");
+	action = gtk_action_group_get_action(actions, "Archive");
 	//TRANSLATORS: an archive is stored transaction buffers (kind of bookmark to prefill manual insertion)
 	g_object_set(action, "short_label", _("Archive"), NULL);
 
-	action = gtk_action_group_get_action(action_group, "Budget");
+	action = gtk_action_group_get_action(actions, "Budget");
 	g_object_set(action, "short_label", _("Budget"), NULL);
 
-	action = gtk_action_group_get_action(action_group, "ShowOpe");
+	action = gtk_action_group_get_action(actions, "ShowOpe");
 	g_object_set(action, "short_label", _("Show"), NULL);
 
-	action = gtk_action_group_get_action(action_group, "AddOpe");
+	action = gtk_action_group_get_action(actions, "AddOpe");
 	g_object_set(action, "is_important", TRUE, "short_label", _("Add"), NULL);
 
-	action = gtk_action_group_get_action(action_group, "RStatistics");
+	action = gtk_action_group_get_action(actions, "RStatistics");
 	g_object_set(action, "short_label", _("Statistics"), NULL);
 
-	action = gtk_action_group_get_action(action_group, "RBudget");
+	action = gtk_action_group_get_action(actions, "RBudget");
 	g_object_set(action, "short_label", _("Budget"), NULL);
 
-	action = gtk_action_group_get_action(action_group, "RBalance");
+	action = gtk_action_group_get_action(actions, "RBalance");
 	g_object_set(action, "short_label", _("Balance"), NULL);
 
-	action = gtk_action_group_get_action(action_group, "RVehiculeCost");
+	action = gtk_action_group_get_action(actions, "RVehiculeCost");
 	g_object_set(action, "short_label", _("Vehicle cost"), NULL);
 
 	/* now load the UI definition */
@@ -2644,70 +2737,208 @@ GError *error = NULL;
 
 }
 
+/* Callback function for the undo action */
+/*static void
+activate_action (GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+  g_print ("Action %s activated\n", g_action_get_name (G_ACTION (action)));
+}*/
+
+static void
+activate_toggle (GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct hbfile_data *data = user_data;
+  GVariant *old_state, *new_state;
+
+  old_state = g_action_get_state (G_ACTION (action));
+  new_state = g_variant_new_boolean (!g_variant_get_boolean (old_state));
+
+  DB( g_print ("Toggle action %s activated, state changes from %d to %d\n",
+           g_action_get_name (G_ACTION (action)),
+           g_variant_get_boolean (old_state),
+           g_variant_get_boolean (new_state)) );
+
+	data->showall = g_variant_get_boolean (new_state);
+	ui_mainwindow_populate_accounts(GLOBALS->mainwindow, NULL);
+
+  g_simple_action_set_state (action, new_state);
+  g_variant_unref (old_state);
+}
+
+static void
+activate_radio (GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+//struct hbfile_data *data = user_data;
+GVariant *old_state, *new_state;
+
+  old_state = g_action_get_state (G_ACTION (action));
+  new_state = g_variant_new_string (g_variant_get_string (parameter, NULL));
+
+  DB( g_print ("Radio action %s activated, state changes from %s to %s\n",
+           g_action_get_name (G_ACTION (action)),
+           g_variant_get_string (old_state, NULL),
+           g_variant_get_string (new_state, NULL)) );
+
+	PREFS->pnl_acc_show_by = DSPACC_GROUP_BY_TYPE;
+	if( !strcmp("bank", g_variant_get_string(new_state, NULL)) )
+		PREFS->pnl_acc_show_by = DSPACC_GROUP_BY_BANK;
+
+	ui_mainwindow_populate_accounts(GLOBALS->mainwindow, NULL);
+
+  g_simple_action_set_state (action, new_state);
+  g_variant_unref (old_state);
+}
+
+
+static const GActionEntry actions[] = {
+//  { "paste", activate_action, NULL, NULL,      NULL, {0,0,0} },
+  { "showall" ,  activate_toggle, NULL, "false",    NULL, {0,0,0} },
+  { "groupby",  activate_radio,  "s",  "'type'", NULL, {0,0,0} }
+};
+
+
 static GtkWidget *ui_mainwindow_create_youraccounts(struct hbfile_data *data)
 {
-GtkWidget *mainvbox, *label, *widget, *sw;
+GtkWidget *panel, *label, *widget, *sw, *tbar, *hbox, *image;
+GtkToolItem *toolitem;
 
-	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-
-	label = make_label_group(_("Your accounts"));
-	gtk_widget_set_margin_top(GTK_WIDGET(label), SPACING_SMALL/2);
-	gtk_widget_set_margin_bottom(GTK_WIDGET(label), SPACING_SMALL/2);
-	gtk_widget_set_margin_start(GTK_WIDGET(label), SPACING_SMALL);
-	gtk_widget_set_margin_end(GTK_WIDGET(label), SPACING_SMALL);
-    gtk_box_pack_start (GTK_BOX (mainvbox), label, FALSE, FALSE, 0);
+	panel = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(panel), SPACING_SMALL);
 
 	sw = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	//gtk_widget_set_margin_top(GTK_WIDGET(sw), 0);
-	gtk_widget_set_margin_bottom(GTK_WIDGET(sw), SPACING_SMALL);
-	gtk_widget_set_margin_start(GTK_WIDGET(sw), 2*SPACING_SMALL);
-	gtk_widget_set_margin_end(GTK_WIDGET(sw), SPACING_SMALL);
-	gtk_box_pack_start (GTK_BOX (mainvbox), sw, TRUE, TRUE, 0);
-
+	gtk_box_pack_start (GTK_BOX (panel), sw, TRUE, TRUE, 0);
 	widget = (GtkWidget *)create_list_account();
 	data->LV_acc = widget;
 	gtk_container_add (GTK_CONTAINER (sw), widget);
 
-	return mainvbox;
+	//list toolbar
+	tbar = gtk_toolbar_new();
+	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
+	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
+	gtk_box_pack_start (GTK_BOX (panel), tbar, FALSE, FALSE, 0);
+
+	label = make_label_group(_("Your accounts"));
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), label);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+
+	toolitem = gtk_separator_tool_item_new ();
+	gtk_tool_item_set_expand (toolitem, TRUE);
+	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	
+		widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
+		data->BT_expandall = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+		widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
+		data->BT_collapseall = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+	toolitem = gtk_separator_tool_item_new ();
+	gtk_tool_item_set_expand (toolitem, FALSE);
+	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+
+
+	//gmenu test (see test folder into gtk)
+	widget = gtk_menu_button_new();
+	gtk_menu_button_set_direction (GTK_MENU_BUTTON(widget), GTK_ARROW_UP);
+	gtk_widget_set_halign (widget, GTK_ALIGN_END);
+	image = gtk_image_new_from_icon_name (ICONNAME_EMBLEM_SYSTEM, GTK_ICON_SIZE_MENU);
+	g_object_set (widget, "image", image,  NULL);
+
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), widget);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+
+GMenu *menu, *section;
+
+	menu = g_menu_new ();
+	//g_menu_append (menumodel, "About", "actions.undo");
+	//g_menu_append (menumodel, "Test", "actions.redo");
+	section = g_menu_new ();
+	g_menu_append (section, _("Show all"), "actions.showall");
+	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_object_unref (section);
+
+	section = g_menu_new ();
+	g_menu_append (section, _("By type"), "actions.groupby::type");
+	g_menu_append (section, _("By institition"), "actions.groupby::bank");
+	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_object_unref (section);
+
+
+	GSimpleActionGroup *group = g_simple_action_group_new ();
+	g_action_map_add_action_entries (G_ACTION_MAP (group), actions, G_N_ELEMENTS (actions), data);
+
+	//init radio
+	GAction *action = g_action_map_lookup_action (G_ACTION_MAP (group), "groupby");
+	const gchar *value = (PREFS->pnl_acc_show_by == DSPACC_GROUP_BY_TYPE) ? "type" : "bank";
+	g_simple_action_set_state (G_SIMPLE_ACTION (action), g_variant_new_string (value));
+
+	gtk_widget_insert_action_group (widget, "actions", G_ACTION_GROUP(group));
+
+	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
+
+	return panel;
 }
 
 
 static GtkWidget *ui_mainwindow_create_topspending(struct hbfile_data *data)
 {
-GtkWidget *mainvbox, *hbox, *vbox;
+GtkWidget *panel, *hbox, *tbar;
 GtkWidget *label, *widget;
+GtkToolItem *toolitem;
 
-	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	data->GR_top = mainvbox;
+	widget = (GtkWidget *)create_list_topspending();
+	data->LV_top = widget;
+
+	panel = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(panel), SPACING_SMALL);
+	data->GR_top = panel;
+
+	/* chart + listview */
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_start (GTK_BOX (panel), hbox, TRUE, TRUE, 0);
+
+	widget = gtk_chart_new(CHART_TYPE_PIE);
+	data->RE_pie = widget;
+	gtk_chart_set_minor_prefs(GTK_CHART(widget), PREFS->euro_value, PREFS->minor_cur.symbol);
+	gtk_chart_show_legend(GTK_CHART(data->RE_pie), TRUE, TRUE);
+	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+
+	//list toolbar
+	tbar = gtk_toolbar_new();
+	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
+	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
+	gtk_box_pack_start (GTK_BOX (panel), tbar, FALSE, FALSE, 0);
 
 	label = make_label_group(_("Where your money goes"));
-	gtk_widget_set_margin_top(GTK_WIDGET(label), SPACING_SMALL/2);
-	gtk_widget_set_margin_bottom(GTK_WIDGET(label), SPACING_SMALL/2);
-	gtk_widget_set_margin_start(GTK_WIDGET(label), SPACING_SMALL);
-	gtk_widget_set_margin_end(GTK_WIDGET(label), SPACING_SMALL);
-    gtk_box_pack_start (GTK_BOX (mainvbox), label, FALSE, FALSE, 0);
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), label);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
 
+	toolitem = gtk_separator_tool_item_new ();
+	gtk_tool_item_set_expand (toolitem, TRUE);
+	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
 
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
-	//gtk_widget_set_margin_top(GTK_WIDGET(vbox), 0);
-	gtk_widget_set_margin_bottom(GTK_WIDGET(vbox), SPACING_SMALL);
-	gtk_widget_set_margin_start(GTK_WIDGET(vbox), 2*SPACING_SMALL);
-	gtk_widget_set_margin_end(GTK_WIDGET(vbox), SPACING_SMALL);
-	gtk_box_pack_start (GTK_BOX (mainvbox), vbox, TRUE, TRUE, 0);
-	
 	/* total + date range */
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
 	
-	label = make_label(_("Top spending"), 0.0, 0.5);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-	
-	label = make_label(NULL, 0.0, 0.5);
-	data->TX_topamount = label;
-	gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
-
 	data->CY_range = make_daterange(label, FALSE);
 	gtk_box_pack_end (GTK_BOX (hbox), data->CY_range, FALSE, FALSE, 0);
 
@@ -2715,67 +2946,26 @@ GtkWidget *label, *widget;
 	data->RA_type = widget;
 	gtk_box_pack_end (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
-	/* pie + listview */
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
-
-	widget = gtk_chart_new(CHART_TYPE_PIE);
-	data->RE_pie = widget;
-	gtk_chart_set_minor_prefs(GTK_CHART(widget), PREFS->euro_value, PREFS->minor_cur.symbol);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
-
-/*
-	sw = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (hbox), sw, FALSE, FALSE, 0);
-	*/
-	
-	widget = (GtkWidget *)create_list_topspending();
-	data->LV_top = widget;
-
-	gtk_chart_show_legend(GTK_CHART(data->RE_pie), TRUE, TRUE);
-
-//		gtk_container_add (GTK_CONTAINER (sw), widget);
-
-	return mainvbox;
+	return panel;
 }
 
 
 static GtkWidget *ui_mainwindow_scheduled_create(struct hbfile_data *data)
 {
-GtkWidget *mainvbox, *hbox, *vbox, *bbox, *sw, *tbar;
+GtkWidget *panel, *hbox, *vbox, *bbox, *sw, *tbar;
 GtkWidget *label, *widget;
 GtkToolItem *toolitem;
 	
-	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	data->GR_upc = mainvbox;
+	panel = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(panel), SPACING_SMALL);
+	data->GR_upc = panel;
 
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-    gtk_box_pack_start (GTK_BOX (mainvbox), hbox, FALSE, FALSE, 0);
-
-	label = make_label_group(_("Scheduled transactions"));
-	gtk_widget_set_margin_top(GTK_WIDGET(label), SPACING_SMALL/2);
-	gtk_widget_set_margin_bottom(GTK_WIDGET(label), SPACING_SMALL/2);
-	gtk_widget_set_margin_start(GTK_WIDGET(label), SPACING_SMALL);
-	gtk_widget_set_margin_end(GTK_WIDGET(label), SPACING_SMALL);
-    gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-
-	label = make_label(_("maximum post date"), 0.0, 0.7);
-	gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_SMALL, -1);
-    gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-
-	label = make_label(NULL, 0.0, 0.7);
-	data->LB_maxpostdate = label;
-	gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_SMALL, -1);
-    gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-	
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	//gtk_widget_set_margin_top(GTK_WIDGET(vbox), 0);
-	gtk_widget_set_margin_bottom(GTK_WIDGET(vbox), SPACING_SMALL);
-	gtk_widget_set_margin_start(GTK_WIDGET(vbox), 2*SPACING_SMALL);
-	gtk_widget_set_margin_end(GTK_WIDGET(vbox), SPACING_SMALL);
-	gtk_box_pack_start (GTK_BOX (mainvbox), vbox, TRUE, TRUE, 0);
+	//gtk_widget_set_margin_bottom(GTK_WIDGET(vbox), SPACING_SMALL);
+	//gtk_widget_set_margin_start(GTK_WIDGET(vbox), 2*SPACING_SMALL);
+	//gtk_widget_set_margin_end(GTK_WIDGET(vbox), SPACING_SMALL);
+	gtk_box_pack_start (GTK_BOX (panel), vbox, TRUE, TRUE, 0);
 
 	sw = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
@@ -2792,42 +2982,61 @@ GtkToolItem *toolitem;
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
 	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
 
+	label = make_label_group(_("Scheduled transactions"));
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), label);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+
+	toolitem = gtk_separator_tool_item_new ();
+	gtk_tool_item_set_expand (toolitem, FALSE);
+	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+
+
 	bbox = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
 	toolitem = gtk_tool_item_new();
 	gtk_container_add (GTK_CONTAINER(toolitem), bbox);
 	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
 
-	widget = gtk_button_new_with_label(_("Skip"));
-	data->BT_sched_skip = widget;
-	gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		widget = gtk_button_new_with_label(_("Skip"));
+		data->BT_sched_skip = widget;
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
-	widget = gtk_button_new_with_label(_("Edit & Post"));
-	data->BT_sched_editpost = widget;
-	gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		widget = gtk_button_new_with_label(_("Edit & Post"));
+		data->BT_sched_editpost = widget;
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
-	//TRANSLATORS: Posting a scheduled transaction is the action to materialize it into its target account.
-	//TRANSLATORS: Before that action the automated transaction occurrence is pending and not yet really existing.
-	widget = gtk_button_new_with_label (_("Post"));
-	data->BT_sched_post = widget;
-	gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		//TRANSLATORS: Posting a scheduled transaction is the action to materialize it into its target account.
+		//TRANSLATORS: Before that action the automated transaction occurrence is pending and not yet really existing.
+		widget = gtk_button_new_with_label (_("Post"));
+		data->BT_sched_post = widget;
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
-
-/*	image = gtk_image_new_from_icon_name (ICONNAME_HB_SCHED_SKIP, GTK_ICON_SIZE_MENU);
-	toolitem = gtk_tool_button_new(image, NULL);
-	data->BT_sched_skip = toolitem;
+	toolitem = gtk_separator_tool_item_new ();
+	gtk_tool_item_set_expand (toolitem, FALSE);
+	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
 	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-	gtk_widget_set_tooltip_text(GTK_WIDGET(toolitem), _("Skip"));
 
-	image = gtk_image_new_from_icon_name (ICONNAME_HB_SCHED_POST, GTK_ICON_SIZE_MENU);
-	toolitem = gtk_tool_button_new(image, NULL);
-	data->BT_sched_post = toolitem;
+	hbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_valign (hbox, GTK_ALIGN_CENTER);
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
 	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-	gtk_widget_set_tooltip_text(GTK_WIDGET(toolitem), _("Post"));
-*/
 
-	
-	return mainvbox;
+		label = make_label(_("maximum post date"), 0.0, 0.7);
+		gtk_widget_set_halign (label, GTK_ALIGN_CENTER);
+		gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_SMALL, -1);
+		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+		label = make_label(NULL, 0.0, 0.7);
+		data->LB_maxpostdate = label;
+		gtk_widget_set_halign (label, GTK_ALIGN_CENTER);
+		gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_SMALL, -1);
+		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+	return panel;
 }
+
 
 /*
 ** the window creation
@@ -2850,7 +3059,7 @@ GtkAction *action;
 
 	//store our window private data
 	g_object_set_data(G_OBJECT(window), "inst_data", (gpointer)data);
-	DB( g_print(" - new window=%x, inst_data=%0x\n", (gint)window, (gint)data) );
+	DB( g_print(" - new window=%x, inst_data=%0x\n", window, data) );
 
 	// this is our mainwindow, so store it to GLOBALS data
 	data->window = window;
@@ -2861,7 +3070,7 @@ GtkAction *action;
 
 	ui_mainwindow_create_menu_bar_and_toolbar (data, mainvbox);
 
-#if HB_UNSTABLE == TRUE
+#if HB_UNSTABLE_SHOW == TRUE
 GtkWidget *bar, *label;
 
 	bar = gtk_info_bar_new ();
@@ -2921,8 +3130,6 @@ GtkWidget *bar, *label;
 	filter_default_all_set(data->filter);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_wal);
 
-
-
 	action = gtk_ui_manager_get_action(data->manager, "/MenuBar/ViewMenu/Toolbar");
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(action), PREFS->wal_toolbar);
 	action = gtk_ui_manager_get_action(data->manager, "/MenuBar/ViewMenu/Spending");
@@ -2950,7 +3157,9 @@ GtkWidget *bar, *label;
 
 
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_acc)), "changed", G_CALLBACK (ui_mainwindow_selection), NULL);
-	g_signal_connect (GTK_TREE_VIEW(data->LV_acc), "row-activated", G_CALLBACK (ui_mainwindow_onRowActivated), GINT_TO_POINTER(2));
+	g_signal_connect (GTK_TREE_VIEW(data->LV_acc    ), "row-activated", G_CALLBACK (ui_mainwindow_onRowActivated), GINT_TO_POINTER(2));
+	g_signal_connect (G_OBJECT (data->BT_expandall  ), "clicked"      , G_CALLBACK (ui_panel_accounts_expand_all), NULL);
+	g_signal_connect (G_OBJECT (data->BT_collapseall), "clicked"      , G_CALLBACK (ui_panel_accounts_collapse_all), NULL);
 
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc)), "changed", G_CALLBACK (ui_mainwindow_scheduled_selection_cb), NULL);
 	g_signal_connect (GTK_TREE_VIEW(data->LV_upc), "row-activated", G_CALLBACK (ui_mainwindow_scheduled_onRowActivated), NULL);

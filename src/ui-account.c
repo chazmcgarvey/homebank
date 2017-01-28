@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -113,15 +113,16 @@ Account *item;
 	return item->key;
 }
 
+
 gboolean
 ui_acc_comboboxentry_set_active(GtkComboBox *entry_box, guint32 key)
 {
 Account *item;
-	
+
 	if( key > 0 )
 	{	
 		item = da_acc_get(key);
-		if( item != NULL)
+		if( (item != NULL) )
 		{
 			gtk_entry_set_text(GTK_ENTRY (gtk_bin_get_child(GTK_BIN (entry_box))), item->name);
 			return TRUE;

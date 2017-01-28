@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -589,7 +589,12 @@ GList *lnk_txn;
 		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
 		while (lnk_txn != NULL)
 		{
-			account_balances_add_internal(acc, lnk_txn->data);
+		Transaction *txn = lnk_txn->data;
+		
+			if(!(txn->status == TXN_STATUS_REMIND))
+			{
+				account_balances_add_internal(acc, txn);
+			}
 			lnk_txn = g_list_next(lnk_txn);
 		}
 		

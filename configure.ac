@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.52)
-AC_INIT([homebank], [5.1.2])
+AC_INIT([homebank], [5.1.3])
 #AC_INIT([homebank], [x.x-rc])
 
 AM_CONFIG_HEADER(config.h)
@@ -31,7 +31,7 @@ PKG_CHECK_MODULES(LIBSOUP, [libsoup-2.4 >= 2.26])
 AC_SUBST(LIBSOUP_CFLAGS)
 AC_SUBST(LIBSOUP_LIBS)
 
-# general usage flags
+# release flags
 CFLAGS="${CFLAGS} -Wall -Wmissing-prototypes"
 
 # disable deprecated warnings

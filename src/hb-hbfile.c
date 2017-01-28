@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -135,7 +135,7 @@ guint32 oldkcur;
 }
 
 
-GList *hbfile_transaction_get_all(guint32 kacc)
+GList *hbfile_transaction_get_all(void)
 {
 GList *lst_acc, *lnk_acc;
 GList *lnk_txn;
@@ -150,8 +150,6 @@ GList *list;
 	Account *acc = lnk_acc->data;
 
 		if( (acc->flags & (AF_CLOSED|AF_NOREPORT)) )
-			goto next_acc;
-		if( (kacc > 0 ) && (acc->key != kacc) )
 			goto next_acc;
 
 		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
@@ -170,7 +168,7 @@ GList *list;
 }
 
 
-GQueue *hbfile_transaction_get_partial(guint32 minjulian, guint32 maxjulian)
+static GQueue *hbfile_transaction_get_partial_internal(guint32 minjulian, guint32 maxjulian, gushort exclusionflags)
 {
 GList *lst_acc, *lnk_acc;
 GList *lnk_txn;
@@ -184,7 +182,7 @@ GQueue *txn_queue;
 	{
 	Account *acc = lnk_acc->data;
 
-		if( (acc->flags & (AF_CLOSED|AF_NOREPORT)) )
+		if( (acc->flags & exclusionflags) )
 			goto next_acc;
 
 		lnk_txn = g_queue_peek_tail_link(acc->txn_queue);
@@ -212,6 +210,18 @@ GQueue *txn_queue;
 	g_list_free(lst_acc);
 
 	return txn_queue;
+}
+
+
+GQueue *hbfile_transaction_get_partial(guint32 minjulian, guint32 maxjulian)
+{
+	return hbfile_transaction_get_partial_internal(minjulian, maxjulian, (AF_CLOSED|AF_NOREPORT));
+}
+
+
+GQueue *hbfile_transaction_get_partial_budget(guint32 minjulian, guint32 maxjulian)
+{
+	return hbfile_transaction_get_partial_internal(minjulian, maxjulian, (AF_CLOSED|AF_NOREPORT|AF_NOBUDGET));
 }
 
 
