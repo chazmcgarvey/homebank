@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -236,23 +236,31 @@ list_account_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, 
 gint retval = 0;
 gint dt1, dt2;
 Account *entry1, *entry2;
-//gchar *name1, *name2;
+gchar *name1, *name2;
 
     gtk_tree_model_get(model, a, 
     	LST_DSPACC_DATATYPE, &dt1, 
     	LST_DSPACC_DATAS, &entry1,
-    	//LST_DSPACC_NAME, &name1,
+    	LST_DSPACC_NAME, &name1,
     	-1);
     gtk_tree_model_get(model, b, 
     	LST_DSPACC_DATATYPE, &dt2, 
     	LST_DSPACC_DATAS, &entry2,
-    	//LST_DSPACC_NAME, &name2,
+    	LST_DSPACC_NAME, &name2,
     	-1);
 
 	if( dt1 == DSPACC_TYPE_NORMAL && dt2 == DSPACC_TYPE_NORMAL )
 	{
 		retval = entry1->pos - entry2->pos;
 	}
+	else
+	if( dt1 == DSPACC_TYPE_HEADER && dt2 == DSPACC_TYPE_HEADER )
+	{
+		retval = hb_string_utf8_compare(name1, name2);
+	}
+
+	g_free(name2);
+	g_free(name1);
 
     return retval;
 }
@@ -286,6 +294,19 @@ GtkTreeIter iter;
 }
 
 
+static void list_account_destroy(GtkTreeView *treeview, gpointer user_data)
+{
+GtkTreeViewColumn  *column;
+
+	//todo: unsafe to use direct column index
+	column = gtk_tree_view_get_column(treeview, LST_DSPACC_NAME);
+	if( column )
+	{
+		PREFS->pnl_acc_col_acc_width = gtk_tree_view_column_get_width(column);
+	}
+}
+
+
 GtkWidget *create_list_account(void)
 {
 GtkTreeStore *store;
@@ -296,13 +317,13 @@ GtkTreeViewColumn  *column;
 	/* create list store */
 	store = gtk_tree_store_new(
 	  	NUM_LST_DSPACC,
-		G_TYPE_POINTER,
-		G_TYPE_INT,		/* datatype */
 		G_TYPE_INT,		/* fake: status */
 		G_TYPE_STRING,	/* fake: name */
 		G_TYPE_DOUBLE,
 		G_TYPE_DOUBLE,
-		G_TYPE_DOUBLE
+		G_TYPE_DOUBLE,
+		G_TYPE_POINTER, /* datas*/
+		G_TYPE_INT		/* datatype */
 		);
 
 	//treeview
@@ -334,20 +355,21 @@ GtkTreeViewColumn  *column;
 
 	/* Account */
 	renderer = gtk_cell_renderer_text_new ();
-	/*g_object_set(renderer, 
+	g_object_set(renderer, 
 		"ellipsize", PANGO_ELLIPSIZE_END,
 		"ellipsize-set", TRUE,
-		NULL);*/
+		NULL);
 
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Accounts"));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, text_cell_data_function, GINT_TO_POINTER(1), NULL);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, text_cell_data_function, GINT_TO_POINTER(LST_DSPACC_NAME), NULL);
 	gtk_tree_view_column_set_alignment (column, 0.5);
-	//gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
+	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST/2);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 
+	gtk_tree_view_column_set_fixed_width(column, PREFS->pnl_acc_col_acc_width);
 	gtk_tree_view_set_expander_column(GTK_TREE_VIEW (view), column);
 
     /* Bank */
@@ -374,6 +396,8 @@ GtkTreeViewColumn  *column;
 	//sort etc
 	gtk_tree_sortable_set_default_sort_func(GTK_TREE_SORTABLE(store), list_account_compare_func, NULL, NULL);
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
+
+	g_signal_connect (view, "destroy", G_CALLBACK (list_account_destroy), NULL);
 
 	return(view);
 }

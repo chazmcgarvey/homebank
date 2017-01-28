@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -52,8 +52,7 @@ double hb_amount_round(const double x, unsigned int digits)
 
 gdouble hb_amount_to_euro(gdouble amount)
 {
-	return hb_amount_round((amount / PREFS->euro_value), 2);
-	//return hb_amount_round((amount * PREFS->euro_value), PREFS.minor_cur->frac_digits);
+	return hb_amount_round((amount * PREFS->euro_value), PREFS->minor_cur.frac_digits);
 }
 
 
@@ -271,7 +270,7 @@ gdouble monval;
 		if(cur != NULL)
 		{
 			monval = hb_amount_round(value, cur->frac_digits);
-			g_ascii_formatd(formatd_buf, outlen, "%0.f", monval);
+			g_ascii_formatd(formatd_buf, outlen, "%.2f", monval);
 			hb_str_formatd(outstr, outlen, formatd_buf, cur, TRUE);
 		}
 	}
@@ -279,7 +278,7 @@ gdouble monval;
 	{
 		cur = &PREFS->minor_cur;
 		monval = hb_amount_to_euro(value);
-		g_ascii_formatd(formatd_buf, outlen, "%0.f", monval);
+		g_ascii_formatd(formatd_buf, outlen, "%.2f", monval);
 		hb_str_formatd(outstr, outlen, formatd_buf, cur, TRUE);
 	}
 

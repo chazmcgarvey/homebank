@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2016 Maxime DOYEN
+ *	Copyright (C) 1995-2017 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -1889,32 +1889,53 @@ gint count = 0;
 		}
 		*/
 
-		// multiple: disable inherit, edit
-		sensitive = (count != 1 ) ? FALSE : TRUE;
-		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/MenuBar/TxnMenu/Inherit"), sensitive);
-		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/MenuBar/TxnMenu/Edit"), sensitive);
-		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/Inherit"), sensitive);
-		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/Edit"), sensitive);
+		//5.3.1 if closed account : disable any change
+		if( data->acc->flags & AF_CLOSED )
+		{
+			gtk_widget_set_sensitive (data->TB_bar, FALSE);
+			//gtk_widget_set_sensitive (data->TB_tools, FALSE);
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/ToolBar/Assign"), FALSE);
+			
+			gtk_widget_set_sensitive (gtk_ui_manager_get_widget(data->ui, "/MenuBar/TxnMenu"), FALSE);
+			gtk_widget_set_sensitive (gtk_ui_manager_get_widget(data->ui, "/MenuBar/ToolsMenu"), FALSE);
+		
+		}
+		else
+		{
+			gtk_widget_set_sensitive (data->TB_bar, TRUE);
+			//gtk_widget_set_sensitive (data->TB_tools, TRUE);
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/ToolBar/Assign"), TRUE);
 
-		// single: disable multiedit
-		sensitive = (count <= 1 ) ? FALSE : TRUE;
-		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/MenuBar/TxnMenu/MultiEdit"), sensitive);
-		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/MultiEdit"), sensitive);
+			gtk_widget_set_sensitive (gtk_ui_manager_get_widget(data->ui, "/MenuBar/TxnMenu"), TRUE);
+			gtk_widget_set_sensitive (gtk_ui_manager_get_widget(data->ui, "/MenuBar/ToolsMenu"), TRUE);
 
-		// no selection: disable reconcile, delete
-		sensitive = (count > 0 ) ? TRUE : FALSE;
-		gtk_widget_set_sensitive (gtk_ui_manager_get_widget(data->ui, "/MenuBar/TxnMenu/TxnStatusMenu"), sensitive);
-		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/MenuBar/TxnMenu/Delete"), sensitive);
-		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/MenuBar/TxnMenu/Template"), sensitive);
-		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/Delete"), sensitive);
-		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/Cleared"), sensitive);
-		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/Reconciled"), sensitive);
-		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/Template"), sensitive);
 
-		// euro convert
-		sensitive = PREFS->euro_active;
-		gtk_action_set_visible(gtk_ui_manager_get_action(data->ui, "/MenuBar/ToolsMenu/ConvToEuro"), sensitive);
+			// multiple: disable inherit, edit
+			sensitive = (count != 1 ) ? FALSE : TRUE;
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/MenuBar/TxnMenu/Inherit"), sensitive);
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/MenuBar/TxnMenu/Edit"), sensitive);
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/Inherit"), sensitive);
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/Edit"), sensitive);
 
+			// single: disable multiedit
+			sensitive = (count <= 1 ) ? FALSE : TRUE;
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/MenuBar/TxnMenu/MultiEdit"), sensitive);
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/MultiEdit"), sensitive);
+
+			// no selection: disable reconcile, delete
+			sensitive = (count > 0 ) ? TRUE : FALSE;
+			gtk_widget_set_sensitive (gtk_ui_manager_get_widget(data->ui, "/MenuBar/TxnMenu/TxnStatusMenu"), sensitive);
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/MenuBar/TxnMenu/Delete"), sensitive);
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/MenuBar/TxnMenu/Template"), sensitive);
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/Delete"), sensitive);
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/Cleared"), sensitive);
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/Reconciled"), sensitive);
+			gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/TxnBar/Template"), sensitive);
+
+			// euro convert
+			sensitive = PREFS->euro_active;
+			gtk_action_set_visible(gtk_ui_manager_get_action(data->ui, "/MenuBar/ToolsMenu/ConvToEuro"), sensitive);
+		}
 	}
 
 	/* update toolbar & list */
@@ -2031,6 +2052,11 @@ Transaction *ope;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(treeview), GTK_TYPE_WINDOW)), "inst_data");
 
+	//5.3.1 if closed account : disable any change
+	if( data->acc->flags & AF_CLOSED )
+		return;
+
+
 	col_id = gtk_tree_view_column_get_sort_column_id (col);
 
 	count = gtk_tree_selection_count_selected_rows(gtk_tree_view_get_selection(treeview));
@@ -2097,10 +2123,20 @@ static gint listview_context_cb (GtkWidget *widget, GdkEventButton *event, GtkWi
 void register_panel_window_init(GtkWidget *widget, gpointer user_data)
 {
 struct register_panel_data *data;
+gchar *name;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	DB( g_print("\n[account] init window\n") );
+
+	if( data->acc->flags & AF_CLOSED )
+	{
+		name = g_strdup_printf(_("[closed account] %s"), data->acc->name);
+		gtk_label_set_text (GTK_LABEL(data->LB_name), name);
+		g_free(name);
+	}
+	else
+		gtk_label_set_text (GTK_LABEL(data->LB_name), data->acc->name);
 
 	DB( g_print(" - sort transactions\n") );
 	da_transaction_queue_sort(data->acc->txn_queue);
@@ -2355,8 +2391,8 @@ GError *error = NULL;
 
 		actions = gtk_action_group_new ("Account");
 
-				//as we use gettext
-				gtk_action_group_set_translation_domain(actions, GETTEXT_PACKAGE);
+		//as we use gettext
+		gtk_action_group_set_translation_domain(actions, GETTEXT_PACKAGE);
 
 
 		DB( g_print(" - add actions: %p user_data: %p\n", actions, data) );
@@ -2415,7 +2451,8 @@ GError *error = NULL;
 	gtk_box_pack_start (GTK_BOX (mainbox), table, FALSE, FALSE, 0);	
 
 	// account name (+ balance)
-	label = gtk_label_new(data->acc->name);
+	label = gtk_label_new(NULL);
+	data->LB_name = label;
 	gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_LARGE, -1);
 	gtk_widget_set_halign (label, GTK_ALIGN_START);
 	gtk_widget_set_hexpand (label, TRUE);

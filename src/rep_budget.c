@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -581,7 +581,7 @@ gchar *title;
 	if(maxdate < mindate) return;
 
 	g_queue_free (data->txn_queue);
-	data->txn_queue = hbfile_transaction_get_partial(data->filter->mindate, data->filter->maxdate);
+	data->txn_queue = hbfile_transaction_get_partial_budget(data->filter->mindate, data->filter->maxdate);
 
 
 	DB( g_print(" for=%d, kind=%d\n", tmpfor, tmpkind) );
@@ -1156,7 +1156,7 @@ GError *error = NULL;
 	// data to action callbacks is set here (data)
 	gtk_action_group_add_actions (actions, entries, n_entries, data);
 
-     gtk_action_group_add_toggle_actions (actions,
+	gtk_action_group_add_toggle_actions (actions,
 					   toggle_entries, n_toggle_entries,
 					   data);
 

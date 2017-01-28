@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -278,6 +278,25 @@ Archive *arc;
 }
 
 
+static void list_upcoming_destroy(GtkTreeView *treeview, gpointer user_data)
+{
+GtkTreeViewColumn  *column;
+
+	//todo: unsafe to use direct column index
+	column = gtk_tree_view_get_column(treeview, 2);
+	if( column )
+	{
+		PREFS->pnl_upc_col_pay_width = gtk_tree_view_column_get_width(column);
+	}
+	
+	column = gtk_tree_view_get_column(treeview, 3);
+	if( column )
+	{
+		PREFS->pnl_upc_col_mem_width = gtk_tree_view_column_get_width(column);
+	}
+
+}
+
 
 GtkWidget *create_list_upcoming(void)
 {
@@ -354,10 +373,10 @@ GtkTreeViewColumn  *column;
 
 	/* column: Payee */
 	renderer = gtk_cell_renderer_text_new ();
-	/*g_object_set(renderer, 
+	g_object_set(renderer, 
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
-	    NULL);*/
+	    NULL);
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Payee"));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
@@ -366,15 +385,17 @@ GtkTreeViewColumn  *column;
 	//gtk_tree_view_column_add_attribute(column, renderer, "text", 1);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPACC_NAME);
 	gtk_tree_view_column_set_alignment (column, 0.5);
-	//gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
+	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST/2);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+
+	gtk_tree_view_column_set_fixed_width(column, PREFS->pnl_upc_col_pay_width);
 
 	/* column: Wording */
 	renderer = gtk_cell_renderer_text_new ();
-	/*g_object_set(renderer, 
+	g_object_set(renderer, 
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
-	    NULL);*/
+	    NULL);
 
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Memo"));
@@ -384,8 +405,10 @@ GtkTreeViewColumn  *column;
 	//gtk_tree_view_column_add_attribute(column, renderer, "text", 2);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPACC_NAME);
 	gtk_tree_view_column_set_alignment (column, 0.5);
-	//gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
+	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST/2);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+
+	gtk_tree_view_column_set_fixed_width(column, PREFS->pnl_upc_col_mem_width);
 
 	/* column: Amount */
 	column = gtk_tree_view_column_new();
@@ -439,6 +462,10 @@ GtkTreeViewColumn  *column;
 	
     /* set initial sort order */
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_DSPUPC_REMAINING, GTK_SORT_ASCENDING);
+
+
+	g_signal_connect (view, "destroy", G_CALLBACK (list_upcoming_destroy), NULL);
+
 
 	return(view);
 }

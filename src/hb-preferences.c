@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -354,6 +354,10 @@ gint i;
 	PREFS->wal_vpaned = 600/2;
 	PREFS->wal_hpaned = 1024/2;
 
+	PREFS->pnl_acc_col_acc_width = -1;
+	PREFS->pnl_acc_show_by = 0;
+	PREFS->pnl_upc_col_pay_width = -1;
+	PREFS->pnl_upc_col_mem_width = -1;
 
 
 	i = 0;
@@ -803,6 +807,17 @@ GError *error = NULL;
 				homebank_pref_get_boolean(keyfile, group, "WalSpending", &PREFS->wal_spending);
 				homebank_pref_get_boolean(keyfile, group, "WalUpcoming", &PREFS->wal_upcoming);
 
+			//since 5.1.3
+			group = "Panels";
+
+				DB( g_print(" -> ** Panels\n") );
+
+				homebank_pref_get_short(keyfile, group, "AccColAccW", &PREFS->pnl_acc_col_acc_width);
+				homebank_pref_get_short(keyfile, group, "AccShowBy" , &PREFS->pnl_acc_show_by);
+
+				homebank_pref_get_short(keyfile, group, "UpcColPayW", &PREFS->pnl_upc_col_pay_width);
+				homebank_pref_get_short(keyfile, group, "UpcColMemW", &PREFS->pnl_upc_col_mem_width);
+
 
 			group = "Format";
 
@@ -1036,6 +1051,16 @@ gsize length;
 		g_key_file_set_boolean (keyfile, group, "WalToolbar", PREFS->wal_toolbar);
 		g_key_file_set_boolean (keyfile, group, "WalSpending", PREFS->wal_spending);
 		g_key_file_set_boolean (keyfile, group, "WalUpcoming", PREFS->wal_upcoming);
+
+		//since 5.1.3
+		DB( g_print(" -> ** Panels\n") );
+
+		group = "Panels";
+		g_key_file_set_integer(keyfile, group, "AccColAccW", PREFS->pnl_acc_col_acc_width);
+		g_key_file_set_integer(keyfile, group, "AccShowBy" , PREFS->pnl_acc_show_by);
+
+		g_key_file_set_integer(keyfile, group, "UpcColPayW", PREFS->pnl_upc_col_pay_width);
+		g_key_file_set_integer(keyfile, group, "UpcColMemW", PREFS->pnl_upc_col_mem_width);
 
 
 		DB( g_print(" -> ** format\n") );

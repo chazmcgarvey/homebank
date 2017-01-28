@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -1247,7 +1247,10 @@ static void ui_reptime_setup(struct ui_reptime_data *data, guint32 accnum)
 
 	DB( g_print(" populate\n") );
 	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_acc), GLOBALS->h_acc, ACC_LST_INSERT_REPORT);
-	ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_acc), accnum);
+	if( accnum )
+		ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_acc), accnum);
+	else
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data->PO_acc), 0);
 
 	ui_pay_comboboxentry_populate(GTK_COMBO_BOX(data->PO_pay), GLOBALS->h_pay);
 	ui_pay_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_pay), 0);

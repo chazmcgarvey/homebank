@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -480,31 +480,31 @@ gchar *stripname;
  *
  * append a new payee into the GHashTable
  *
- * Return value: a new Payee or NULL
+ * Return value: true/false + new payee
  *
  */
-Payee *
-payee_append_if_new(gchar *name)
+gboolean
+payee_append_if_new(gchar *name, Payee **newpayee)
 {
-gchar *stripname;
+gboolean retval = FALSE;
+gchar *stripname = g_strdup(name);
 Payee *item;
 
-	stripname = g_strdup(name);
 	g_strstrip(stripname);
 	item = da_pay_get_by_name(stripname);
-
 	if(item == NULL)
 	{
 		item = da_pay_malloc();
 		item->name = g_strdup(stripname);
 		da_pay_append(item);
+		retval = TRUE;
 	}
-	else
-		item = NULL;
+	if( newpayee != NULL )
+		*newpayee = item;
 
 	g_free(stripname);
 
-	return item;
+	return retval;
 }
 
 static gint
@@ -533,16 +533,21 @@ GList *list = g_hash_table_get_values(GLOBALS->h_pay);
 
 
 
-void
-payee_load_csv(gchar *filename)
+gboolean
+payee_load_csv(gchar *filename, gchar **error)
 {
+gboolean retval;
 GIOChannel *io;
 gchar *tmpstr;
 gint io_stat;
+gchar **str_array;
 const gchar *encoding;
+gint nbcol;
 
 	encoding = homebank_file_getencoding(filename);
 
+	retval = TRUE;
+	*error = NULL;
 	io = g_io_channel_new_file(filename, "r", NULL);
 	if(io != NULL)
 	{
@@ -561,15 +566,56 @@ const gchar *encoding;
 			{
 				if( tmpstr != NULL)
 				{
+					DB( g_print("\n + strip\n") );
 					hb_string_strip_crlf(tmpstr);
 
-					DB( g_print(" read %s\n", tmpstr) );
+					DB( g_print(" + split '%s'\n", tmpstr) );
+					str_array = g_strsplit (tmpstr, ";", 2);
+					// payee;category   : later paymode?
 
-					if( payee_append_if_new( tmpstr ) )
+					nbcol = g_strv_length (str_array);
+					if( nbcol > 2 )
 					{
-						GLOBALS->changes_count++;
+						*error = _("invalid CSV format");
+						retval = FALSE;
+						DB( g_print(" + error %s\n", *error) );
 					}
+					else
+					{
+					gboolean added;
+					Payee *pay = NULL;
+					
+						if( nbcol >= 1 )
+						{
+							DB( g_print(" add pay:'%s' ?\n", str_array[0]) );
+							added = payee_append_if_new(str_array[0], &pay);
+							if(	added )
+							{				
+								DB( g_print(" added: %p\n", pay) );
+								GLOBALS->changes_count++;
+							}
+						}
 
+						if( nbcol == 2 )
+						{
+						Category *cat;
+						
+							DB( g_print(" add cat:'%s'\n", str_array[1]) );
+							cat = da_cat_append_ifnew_by_fullname(str_array[1], FALSE);
+							
+							DB( g_print(" cat: %p %p\n", cat, pay) );
+							if( cat != NULL )
+							{
+								if( pay != NULL)
+								{
+									DB( g_print(" set default cat to %d\n", cat->key) );
+									pay->kcat = cat->key;
+								}
+								GLOBALS->changes_count++;
+							}
+						}
+					}
+					g_strfreev (str_array);
 				}
 				g_free(tmpstr);
 			}
@@ -578,6 +624,7 @@ const gchar *encoding;
 		g_io_channel_unref (io);
 	}
 
+	return retval;
 }
 
 
@@ -596,15 +643,33 @@ gchar *outstr;
 		while (list != NULL)
 		{
 		Payee *item = list->data;
+		gchar *fullcatname;
 
 			if(item->key != 0)
 			{
-				outstr = g_strdup_printf("%s\n", item->name);
+				fullcatname = NULL;
+				if( item->kcat > 0 )
+				{
+				Category *cat = da_cat_get(item->kcat);
+					
+					if( cat != NULL )
+					{
+						fullcatname = da_cat_get_fullname (cat);
+					}
+				}
+
+				if( fullcatname != NULL )
+					outstr = g_strdup_printf("%s;%s\n", item->name, fullcatname);
+				else
+					outstr = g_strdup_printf("%s;\n", item->name);
+
+				DB( g_print(" + export %s\n", outstr) );
+				
 				g_io_channel_write_chars(io, outstr, -1, NULL, NULL);
 
-				DB( g_print("%s", outstr) );
-
 				g_free(outstr);
+				g_free(fullcatname);
+
 			}
 			list = g_list_next(list);
 		}

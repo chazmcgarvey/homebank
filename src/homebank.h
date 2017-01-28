@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -69,16 +69,18 @@
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
 
 #define HB_UNSTABLE		FALSE
+#define HB_UNSTABLE_SHOW	FALSE
+
 
 #define HB_VERSION_MAJOR	5
 #define HB_VERSION_MINOR	1
-#define HB_VERSION_MICRO	2
+#define HB_VERSION_MICRO	3
 
-#define HB_VERSION			"5.1.2"
+#define HB_VERSION			"5.1.3"
 #define HB_VERSION_NUM	(HB_VERSION_MAJOR*10000) + (HB_VERSION_MINOR*100) + HB_VERSION_MICRO
 
 #define FILE_VERSION		1.2
-#define PREF_VERSION		512
+#define PREF_VERSION		513
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -175,6 +177,8 @@ typedef enum
 #define ICONNAME_REFRESH			"view-refresh"		
 
 #define ICONNAME_FOLDER				"folder-symbolic"
+#define ICONNAME_EMBLEM_SYSTEM		"emblem-system-symbolic"
+
 
 #define ICONNAME_LIST_ADD			"list-add-symbolic"
 #define ICONNAME_LIST_REMOVE		"list-remove-symbolic"
@@ -218,8 +222,8 @@ typedef enum
 #define ICONNAME_HB_FILE_VALID		"hb-file-valid"
 #define ICONNAME_HB_FILE_INVALID	"hb-file-invalid"
 
-#define ICONNAME_HB_BUTTON_COLLAPSE	"btn-collapse"
-#define ICONNAME_HB_BUTTON_EXPAND	"btn-expand"
+#define ICONNAME_HB_BUTTON_COLLAPSE	"btn-collapse-symbolic"
+#define ICONNAME_HB_BUTTON_EXPAND	"btn-expand-symbolic"
 #define ICONNAME_HB_BUTTON_SPLIT	"btn-split"
 
 #define ICONNAME_HB_OPE_AUTO        "hb-ope-auto"   //? 

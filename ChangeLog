@@ -1,4 +1,24 @@
 
+2017-01-22  Maxime Doyen
+
+ Made 5.1.3 release.
+ * new   : your account, added expand/collapse button
+ * wish  : #1653350 cvs import default category for payee
+ * wish  : #1645126 remember the size of columns listview in the main window
+ * wish  : #1530784 easy way to see closed accounts in account list
+ * wish  : #1164643 totals per Financial Institution in account summary
+ * bugfix: #1658047 Euro major Lithuanian template corrections
+ * bugfix: #1658045 Euro major settings: list countries alphabetically
+ * bugfix: #1658043 Euro major feature calculates amounts incorrectly
+ * bugfix: #1656531 account combobox can be default set to disabled account
+ * bugfix: #1653957 Importing QIF file with existing accounts 
+ * bugfix: #1652994 Sorting for account in Statistics Report doen't work 
+ * bugfix: #1652527 Balance report crash when no result
+ * bugfix: #1649081 Exclude from budget option seems ignored
+ * bugfix: #1649078 Remind operations are included in "today" balance calculation
+ * bugfix: #1648856 balance report "select all" is not working 
+
+
 2016-12-08  Maxime Doyen
 
  Made 5.1.2 release.

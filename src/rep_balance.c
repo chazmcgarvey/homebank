@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2016 Maxime DOYEN
+ *  Copyright (C) 1995-2017 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -501,7 +501,9 @@ GList *list;
 	DB( g_print("(repbalance) compute_full\n") );
 
 	g_list_free(data->ope_list);
-	data->ope_list = hbfile_transaction_get_all(selkey);
+	data->ope_list = hbfile_transaction_get_all();
+
+	if(g_list_length(data->ope_list) == 0) return;
 
 	Transaction *omin = g_list_first(data->ope_list)->data;
 	Transaction *omax = g_list_last(data->ope_list)->data;
@@ -628,6 +630,10 @@ Account *acc;
 
 	repbalance_compute_full_datas(acckey, selectall, data);
 
+	/* do nothing if no transaction */
+	if(g_list_length(data->ope_list) == 0) return;
+
+
 	/* clear and detach our model */
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
 	gtk_list_store_clear (GTK_LIST_STORE(model));
@@ -753,7 +759,10 @@ static void repbalance_setup(struct repbalance_data *data, guint32 accnum)
 	g_signal_handler_unblock(data->PO_maxdate, data->handler_id[HID_REPBALANCE_MAXDATE]);
 
 	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_acc), GLOBALS->h_acc, ACC_LST_INSERT_REPORT);
-	ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_acc), accnum);
+	if( accnum )
+		ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_acc), accnum);
+	else
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data->PO_acc), 0);
 
 }
 
@@ -912,7 +921,7 @@ GError *error = NULL;
 	// data to action callbacks is set here (data)
 	gtk_action_group_add_actions (actions, entries, n_entries, data);
 
-     gtk_action_group_add_toggle_actions (actions,
+	gtk_action_group_add_toggle_actions (actions,
 					   toggle_entries, n_toggle_entries,
 					   data);
 
