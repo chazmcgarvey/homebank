@@ -172,10 +172,10 @@ static inline GObject* SvGobject(const SV* sv)
 
 static inline SV* newSVgobject(const GObject* o)
 {
-    SV* (*func)(const GObject*, gboolean) = ext_symbol_lookup("gperl_new_object");
-    if (func) {
-        return func(o, FALSE);
-    }
+	SV* (*func)(const GObject*, gboolean) = ext_symbol_lookup("gperl_new_object");
+	if (func) {
+		return func(o, FALSE);
+	}
 	return &PL_sv_undef;
 }
 
