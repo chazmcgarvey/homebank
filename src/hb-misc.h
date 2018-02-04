@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -32,7 +32,7 @@ void hb_strfmon(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolea
 void hb_strfmon_int(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor);
 void hb_strfnum(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor);
 
-gchar *hb_util_filename_new_with_extension(gchar *filename, const gchar *extension);
+gchar *hb_filename_new_with_extension(gchar *filename, const gchar *extension);
 
 gchar *get_normal_color_amount(gdouble value);
 gchar *get_minimum_color_amount(gdouble value, gdouble minvalue);
@@ -48,6 +48,8 @@ gint hb_string_utf8_compare(gchar *s1, gchar *s2);
 
 void hb_string_strip_crlf(gchar *str);
 void hb_string_replace_char(gchar c, gchar *str);
+gchar *hb_string_copy_jsonpair(gchar *dst, gchar *str);
+void hb_string_inline(gchar *str);
 gchar* hb_strdup_nobrackets (const gchar *str);
 
 gchar *hb_sprint_date(gchar *outstr, guint32 julian);

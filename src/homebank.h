@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -68,19 +68,19 @@
 /* = = = = = = = = = = = = = = = = */
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
 
-#define HB_UNSTABLE		FALSE
+#define HB_UNSTABLE			FALSE
 #define HB_UNSTABLE_SHOW	FALSE
 
 
 #define HB_VERSION_MAJOR	5
 #define HB_VERSION_MINOR	1
-#define HB_VERSION_MICRO	3
+#define HB_VERSION_MICRO	7
 
-#define HB_VERSION			"5.1.3"
+#define HB_VERSION			"5.1.7"
 #define HB_VERSION_NUM	(HB_VERSION_MAJOR*10000) + (HB_VERSION_MINOR*100) + HB_VERSION_MICRO
 
 #define FILE_VERSION		1.2
-#define PREF_VERSION		513
+#define PREF_VERSION		517
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -156,6 +156,7 @@ typedef enum
  * GTK_ICON_SIZE_DIALOG 48
  */
 
+
 /* -------- named icons (Standard Icon Name) -------- */
 #define ICONNAME_NEW				"document-new"
 #define ICONNAME_OPEN				"document-open"
@@ -183,8 +184,7 @@ typedef enum
 #define ICONNAME_LIST_ADD			"list-add-symbolic"
 #define ICONNAME_LIST_REMOVE		"list-remove-symbolic"
 
-//#define ICONNAME_HB_SCHED_SKIP		"media-skip-forward"
-//#define ICONNAME_HB_SCHED_POST		"media-playback-start"
+#define ICONNAME_CHANGES_PREVENT	"changes-prevent-symbolic"
 
 // custom or gnome not found
 #define ICONNAME_HB_BUTTON_MENU		"open-menu-symbolic"
@@ -275,6 +275,7 @@ struct HomeBank
 	// hbfile (unsaved properties)
 	guint			changes_count;
 	gboolean		hbfile_is_new;
+	gboolean		hbfile_is_bak;
 	gchar			*xhb_filepath;
 	gboolean		xhb_hasbak;		//file has backup (*.xhb~) used for revert menu sensitivity
 
@@ -297,7 +298,7 @@ gchar *homebank_filename_without_extention(gchar *path);
 void homebank_file_ensure_xhb(gchar *filename);
 void homebank_backup_current_file(void);
 gboolean homebank_util_url_show (const gchar *url);
-gboolean homebank_lastopenedfiles_load(void);
+gchar *homebank_lastopenedfiles_load(void);
 gboolean homebank_lastopenedfiles_save(void);
 
 

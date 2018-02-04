@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2017 Maxime DOYEN
+ *	Copyright (C) 1995-2018 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -675,7 +675,7 @@ GList *list = NULL;
 		}
 
 		if( PREFS->dtex_qifmemo )
-			newope->wording	 = g_strdup(tmpmemo);
+			newope->memo	 = g_strdup(tmpmemo);
 		
 		newope->info		 = g_strdup(item->info);
 		newope->amount		 = item->amount;

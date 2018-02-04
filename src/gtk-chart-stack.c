@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2013 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,11 +20,13 @@
 
 #include <math.h>
 #include <string.h>
+
 #include <gtk/gtk.h>
 
 #include "homebank.h"
 #include "gtk-chart-colors.h"
 #include "gtk-chart-stack.h"
+
 
 #define MYDEBUG 0
 
@@ -35,7 +37,11 @@
 #endif
 
 
-#define HELPDRAW 0
+#define DYNAMICS 1
+
+#define DBGDRAW_RECT 0
+#define DBGDRAW_TEXT 0
+#define DBGDRAW_ITEM 0
 
 
 
@@ -56,6 +62,7 @@ static void ui_chart_stack_first_changed( GtkAdjustment *adj, gpointer user_data
 
 static void ui_chart_stack_clear(ChartStack *chart, gboolean store);
 
+static gboolean drawarea_full_redraw(GtkWidget *widget, gpointer user_data);
 static void ui_chart_stack_queue_redraw(ChartStack *chart);
 
 /* --- variables --- */
@@ -119,7 +126,7 @@ GtkWidgetClass *widget_class;
 static void
 ui_chart_stack_init (ChartStack * chart)
 {
-GtkWidget *widget, *hbox, *scrollwin;
+GtkWidget *widget, *hbox, *frame;
 
 
 	DB( g_print("\n[chartstack] init\n") );
@@ -144,42 +151,43 @@ GtkWidget *widget, *hbox, *scrollwin;
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start (GTK_BOX (widget), hbox, TRUE, TRUE, 0);
 
-	/* drawing area */
-	scrollwin = gtk_frame_new(NULL);
-    gtk_frame_set_shadow_type (GTK_FRAME(scrollwin), GTK_SHADOW_ETCHED_IN);
-    gtk_box_pack_start (GTK_BOX (hbox), scrollwin, TRUE, TRUE, 0);
-
-	//scrollwin = gtk_scrolled_window_new(NULL,NULL);
-    //gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	//gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-    //gtk_box_pack_start (GTK_BOX (hbox), scrollwin, TRUE, TRUE, 0);
+	/* frame & drawing area */
+	frame = gtk_frame_new(NULL);
+    gtk_frame_set_shadow_type (GTK_FRAME(frame), GTK_SHADOW_ETCHED_IN);
+    gtk_box_pack_start (GTK_BOX (hbox), frame, TRUE, TRUE, 0);
 
 	chart->drawarea = gtk_drawing_area_new();
 	//gtk_widget_set_double_buffered (GTK_WIDGET(widget), FALSE);
 	
-	gtk_container_add( GTK_CONTAINER(scrollwin), chart->drawarea );
+	gtk_container_add( GTK_CONTAINER(frame), chart->drawarea );
 	gtk_widget_set_size_request(chart->drawarea, 150, 150 );
-	gtk_widget_set_has_tooltip(chart->drawarea, FALSE);
+	#if DYNAMICS == 1
+	gtk_widget_set_has_tooltip(chart->drawarea, TRUE);
+	#endif
 	gtk_widget_show(chart->drawarea);
-	
+
 	/* scrollbar */
     chart->adjustment = GTK_ADJUSTMENT(gtk_adjustment_new (0.0, 0.0, 1.0, 1.0, 1.0, 1.0));
     chart->scrollbar = gtk_scrollbar_new (GTK_ORIENTATION_VERTICAL,GTK_ADJUSTMENT (chart->adjustment));
     gtk_box_pack_start (GTK_BOX (hbox), chart->scrollbar, FALSE, TRUE, 0);
 
-	gtk_widget_set_events(GTK_WIDGET(chart->drawarea),
+
+	g_signal_connect( G_OBJECT(chart->drawarea), "configure-event", G_CALLBACK (drawarea_configure_event_callback), chart);
+	//g_signal_connect( G_OBJECT(chart->drawarea), "realize", G_CALLBACK(drawarea_realize_callback), chart ) ;
+	g_signal_connect( G_OBJECT(chart->drawarea), "draw", G_CALLBACK(drawarea_draw_callback), chart );
+
+#if DYNAMICS == 1
+	gtk_widget_add_events(GTK_WIDGET(chart->drawarea),
 		GDK_EXPOSURE_MASK |
 		//GDK_POINTER_MOTION_MASK |
 		//GDK_POINTER_MOTION_HINT_MASK |
 		GDK_SCROLL_MASK
 		);
 
-	g_signal_connect( G_OBJECT(chart->drawarea), "configure-event", G_CALLBACK (drawarea_configure_event_callback), chart);
-	//g_signal_connect( G_OBJECT(chart->drawarea), "realize", G_CALLBACK(drawarea_realize_callback), chart ) ;
-	g_signal_connect( G_OBJECT(chart->drawarea), "draw", G_CALLBACK(drawarea_draw_callback), chart );
 	//g_signal_connect( G_OBJECT(chart->drawarea), "query-tooltip", G_CALLBACK(drawarea_querytooltip_callback), chart );
 	g_signal_connect( G_OBJECT(chart->drawarea), "scroll-event", G_CALLBACK(drawarea_scroll_event_callback), chart ) ;
 	g_signal_connect( G_OBJECT(chart->drawarea), "motion-notify-event", G_CALLBACK(drawarea_motionnotifyevent_callback), chart );
+#endif
 
 	g_signal_connect (G_OBJECT(chart->adjustment), "value-changed", G_CALLBACK (ui_chart_stack_first_changed), chart);
 
@@ -245,6 +253,7 @@ static gchar *ui_chart_stack_print_int(ChartStack *chart, gdouble value)
 
 static void ui_chart_stack_clear(ChartStack *chart, gboolean store)
 {
+gint i;
 
 	DB( g_print("\n[chartstack] clear\n") );
 
@@ -263,12 +272,13 @@ static void ui_chart_stack_clear(ChartStack *chart, gboolean store)
 
 	if(chart->items != NULL)
 	{
-		/*for(i=0;i<chart->nb_items;i++)
+		for(i=0;i<chart->nb_items;i++)
 		{
 		StackItem *item = &g_array_index(chart->items, StackItem, i);
 
-			//g_free(item->legend);
-		}*/
+			g_free(item->label);	//we free label as it comes from a model_get into setup_with_model
+			g_free(item->status);	//we free status as it comes from a model_get into setup_with_model
+		}
 		g_array_free(chart->items, TRUE);
 		chart->items =  NULL;
 	}
@@ -338,6 +348,10 @@ GtkTreeIter iter;
 		
 		g_array_append_vals(chart->items, &item, 1);
 
+
+		//don't g_free(label); here done into chart_clear
+		//don't g_free(status); here done into chart_clear
+
 		i++;
 		valid = gtk_tree_model_iter_next (list_store, &iter);
 	}
@@ -348,6 +362,9 @@ GtkTreeIter iter;
 static void ui_chart_stack_set_font_size(ChartStack *chart, gint font_size)
 {
 gint size = 10;
+
+	if( chart->pfd == NULL )
+		return;
 
 	DB( g_print("\n[chartstack] set font size\n") );
 
@@ -448,9 +465,12 @@ PangoLayout *layout;
 	StackItem *item = &g_array_index(chart->items, StackItem, i);
 	
 		// category width
-		pango_layout_set_text (layout, item->label, -1);
-		pango_layout_get_size (layout, &tw, &th);
-		title_w = MAX(title_w, (tw / PANGO_SCALE));
+		if( item->label != NULL )
+		{
+			pango_layout_set_text (layout, item->label, -1);
+			pango_layout_get_size (layout, &tw, &th);
+			title_w = MAX(title_w, (tw / PANGO_SCALE));
+		}
 
 		DB( g_print(" - calc '%s' title_w=%f (w=%d)\n", item->label, title_w, tw) );
 
@@ -462,9 +482,12 @@ PangoLayout *layout;
 
 		DB( g_print(" - maxbudget maxbudget=%f (w=%d)\n", maxbudget, tw) );
 
-		pango_layout_set_text (layout, item->status, -1);
-		pango_layout_get_size (layout, &tw, &th);
-		chart->rel_col_w = MAX(chart->rel_col_w, (tw / PANGO_SCALE));
+		if( item->status != NULL )
+		{
+			pango_layout_set_text (layout, item->status, -1);
+			pango_layout_get_size (layout, &tw, &th);
+			chart->rel_col_w = MAX(chart->rel_col_w, (tw / PANGO_SCALE));
+		}
 	}
 	
 	chart->rel_col_w += CHART_SPACING;
@@ -515,8 +538,7 @@ PangoLayout *layout;
 	blkw = chart->barw + floor(chart->barw * 0.2);
 	chart->blkw = blkw;
 	
-	chart->visible = (chart->graph_height - chart->t) / blkw;
-	chart->visible = MIN(chart->visible, chart->nb_items);
+	chart->visible = MIN( 1 + (chart->graph_height / blkw), chart->nb_items);
 
 	g_object_unref (layout);
 	
@@ -526,7 +548,7 @@ PangoLayout *layout;
 }
 
 
-#if HELPDRAW == 1
+#if (DBGDRAW_RECT + DBGDRAW_TEXT + DBGDRAW_ITEM) > 0
 static void ui_chart_stack_draw_help(GtkWidget *widget, gpointer user_data)
 {
 ChartStack *chart = GTK_CHARTSTACK(user_data);
@@ -535,18 +557,29 @@ double x, y, y2;
 gint first = 0;
 gint i;
 
+	DB( g_print("\n[chartstack] draw help\n") );
+
+
 	//cr = gdk_cairo_create (gtk_widget_get_window(widget));
 	cr = cairo_create (chart->surface);
 
 	cairo_set_line_width (cr, 1);
 
-
+	#if DBGDRAW_RECT == 1
+	//clip area
 	cairo_set_line_width(cr, 1.0);
 	cairo_set_source_rgb(cr, 0.0, 1.0, 0.0); //green
 	cairo_rectangle(cr, chart->l+0.5, chart->t+0.5, chart->w, chart->h);
 	cairo_stroke(cr);
-
 	
+	//graph area
+	y = chart->header_y + chart->header_zh;
+	cairo_set_source_rgb(cr, 1.0, 0.5, 0.0); //orange
+	cairo_rectangle(cr, chart->l+chart->cat_col_w+0.5, y+0.5, chart->graph_width+0.5, chart->graph_height+0.5);
+	cairo_stroke(cr);
+	#endif
+	
+	#if DBGDRAW_TEXT == 1
 	//title rect
 	cairo_set_source_rgb(cr, .0, .0, 1.0);
 	cairo_rectangle(cr, chart->l+0.5, chart->t+0.5, chart->w, chart->title_zh);
@@ -579,17 +612,11 @@ gint i;
 	cairo_set_source_rgb(cr, 0.0, 0.0, 1.0); //blue
 	cairo_rectangle(cr, x+0.5, y+0.5, chart->res_col_w, chart->h - y);
 	cairo_stroke(cr);
+	#endif
 
 	
 	// draw item lines
-	y = chart->header_y + chart->header_zh;
-
-	cairo_set_source_rgb(cr, 1.0, .0, .0);
-	cairo_rectangle(cr, chart->l+chart->cat_col_w+0.5, y+0.5, chart->graph_width+0.5, chart->graph_height+0.5);
-	cairo_stroke(cr);
-
-
-
+	#if DBGDRAW_ITEM == 1
 	y2 = y+0.5;
 	cairo_set_line_width(cr, 1.0);
 	double dashlength;
@@ -604,6 +631,8 @@ gint i;
 		y2 += chart->blkw;
 	}
 	cairo_stroke(cr);
+	#endif
+
 
 	cairo_destroy(cr);
 
@@ -785,10 +814,13 @@ int tw, th;
 			pango_cairo_show_layout (cr, layout);
 
 			// status
-			pango_layout_set_text (layout, item->status, -1);
-			pango_layout_get_size (layout, &tw, &th);
-			cairo_move_to(cr, chart->l + chart->cat_col_w + chart->graph_width + chart->bud_col_w + chart->res_col_w  + (CHART_SPACING*4), ytext);
-			pango_cairo_show_layout (cr, layout);
+			if( item->status )
+			{
+				pango_layout_set_text (layout, item->status, -1);
+				pango_layout_get_size (layout, &tw, &th);
+				cairo_move_to(cr, chart->l + chart->cat_col_w + chart->graph_width + chart->bud_col_w + chart->res_col_w  + (CHART_SPACING*4), ytext);
+				pango_cairo_show_layout (cr, layout);
+			}
 		}
 		
 		//y += blkw;
@@ -809,13 +841,14 @@ ChartStack *chart = GTK_CHARTSTACK(user_data);
 gint retval, first, index, py;
 gint blkw = chart->blkw;
 double oy;
-		
+
+	DB( g_print("\n[chartstack] get active\n") );
+
 	retval = -1;
 
 	oy = chart->t + chart->title_zh + chart->header_zh + chart->subtitle_zh;
 
 	//DB( g_print(" y=%d, oy=%f, cb=%f\n", y, oy, chart->b) );
-
 
 	if( (y <= chart->b && y >= oy) && (x >= chart->l && x <= chart->r) )
 	{
@@ -827,7 +860,7 @@ double oy;
 		if(index < chart->nb_items)
 			retval = index;
 
-		//DB( g_print(" hover=%d\n", retval) );
+		DB( g_print(" hover=%d\n", retval) );
 	}
 
 	return(retval);
@@ -852,6 +885,7 @@ ChartStack *chart = GTK_CHARTSTACK(user_data);
     /* Set the number of decimal places to which adj->value is rounded */
     //gtk_scale_set_digits (GTK_SCALE (hscale), (gint) adj->value);
     //gtk_scale_set_digits (GTK_SCALE (vscale), (gint) adj->value);
+    drawarea_full_redraw (chart->drawarea, chart);
 	gtk_widget_queue_draw(chart->drawarea);
 
 }
@@ -922,7 +956,6 @@ cairo_t *cr;
 	/* fillin the back in white */
 	//cairo_user_set_rgbcol(cr, &global_colors[WHITE]);
 	cairo_user_set_rgbcol(cr, &global_colors[THBASE]);
-
 	cairo_paint(cr);
 
 	if(chart->nb_items == 0)
@@ -931,7 +964,11 @@ cairo_t *cr;
 		return FALSE;
 	}
 
-#if HELPDRAW == 1
+	cairo_rectangle(cr, chart->l, chart->t, chart->w, chart->h);
+	cairo_clip(cr);
+
+
+#if (DBGDRAW_RECT + DBGDRAW_TEXT + DBGDRAW_ITEM) > 0
 	ui_chart_stack_draw_help(widget, user_data);
 #endif
 
@@ -988,9 +1025,9 @@ GdkRGBA color;
 	}
 
 	//get text color
-	colfound = gtk_style_context_lookup_color(context, "theme_fg_color", &color);
+	colfound = gtk_style_context_lookup_color(context, "theme_text_color", &color);
 	if(!colfound)
-		gtk_style_context_lookup_color(context, "fg_color", &color);
+		gtk_style_context_lookup_color(context, "text_color", &color);
 
 	if( colfound )
 	{
@@ -1011,6 +1048,7 @@ GdkRGBA color;
 	chart->pfd = pango_font_description_copy(desc);
 	chart->pfd_size = pango_font_description_get_size (desc) / PANGO_SCALE;
 	chart->barw = (6 + chart->pfd_size) * PHI;
+
 
 	DB( g_print("family: %s\n", pango_font_description_get_family(chart->pfd) ) );
 	DB( g_print("size  : %d (%d)\n", chart->pfd_size, chart->pfd_size/PANGO_SCALE ) );
@@ -1052,6 +1090,9 @@ ChartStack *chart = GTK_CHARTSTACK(user_data);
 	{
 		DB( g_print(" draw active\n") );
 
+		cairo_rectangle(cr, chart->l, chart->t, chart->w, chart->h);
+		cairo_clip(cr);
+
 		oy += CHART_SPACING/2 + (chart->active - first) * chart->blkw;
 		//cairo_user_set_rgbacol (cr, &global_colors[THTEXT], 0.78);
 		cairo_user_set_rgbacol(cr, &global_colors[WHITE], OVER_ALPHA);
@@ -1069,7 +1110,7 @@ static gboolean drawarea_motionnotifyevent_callback(GtkWidget *widget, GdkEventM
 ChartStack *chart = GTK_CHARTSTACK(user_data);
 gint x, y;
 
-	if(chart->nb_items == 0)
+	if(chart->surface == NULL || chart->nb_items == 0)
 		return FALSE;
 
 	DB( g_print("\n[chartstack] drawarea motion cb\n") );
@@ -1134,7 +1175,6 @@ gint x, y;
 
 	return TRUE;
 }
-
 
 
 static gboolean drawarea_scroll_event_callback( GtkWidget *widget, GdkEventScroll *event, gpointer user_data)

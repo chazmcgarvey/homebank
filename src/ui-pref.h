@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -120,6 +120,30 @@ struct defpref_data
 	gint		country;
 
 };
+
+
+typedef struct 
+{
+	gchar   *locale;
+	gchar   *name;
+} LangName;
+
+
+typedef struct
+{
+	gshort		id;
+	gchar		*iso;
+	gchar		*name;
+	gdouble		value;
+	//gchar		*prefix_symbol;		/* max symbol is 3 digits in unicode */
+	//gchar		*suffix_symbol;		/* but mostly is 1 digit */
+	gchar		*symbol;
+	gboolean	sym_prefix;
+	gchar		*decimal_char;
+	gchar		*grouping_char;
+	gshort		frac_digits;
+} EuroParams;
+
 
 
 void free_pref_icons(void);

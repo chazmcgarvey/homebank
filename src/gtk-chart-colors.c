@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -29,7 +29,7 @@ char *chart_colors[] =
 	"Quicken", 
 	"Office 2010", 
 	"Office 2013", 
-	"Analytics", 
+	"Analytics",
 	"YNAB",
 	NULL
 };
@@ -46,7 +46,7 @@ struct rgbcol ynab_colors[] =
 	{ 167, 209, 195 },
 	{  51, 177, 191 },
 	{ 214, 227,  99 },
-	//{ 242, 219,  64 },	  // added color
+	//{ 246, 166, 209 },	  // added color
 	{ 131, 131, 131 },	  // others
 };
 int ynab_nbcolors = G_N_ELEMENTS(ynab_colors);
@@ -404,6 +404,7 @@ void colorscheme_init(GtkColorScheme *scheme, gint index)
 		case CHART_COLMAP_YNAB:
 			scheme->colors = ynab_colors;
 			scheme->nb_cols = ynab_nbcolors;
+			scheme->cs_blue = 3;
 			scheme->cs_green = 5;
 			scheme->cs_red = 0;
 			scheme->cs_orange = 1;

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2012 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -86,13 +86,26 @@ struct ui_cur_select_dialog_data
 	GtkTreeModel *model;
 	GtkWidget	*ST_search;
 	GtkWidget	*LV_cur;
+	GtkWidget	*CM_custom;
+	GtkWidget	*LB_custiso, *ST_custiso;
+	GtkWidget	*LB_custname, *ST_custname;
 };
+
 
 struct curPopContext
 {
 	GtkTreeModel *model;
 	guint	except_key;
 };
+
+
+struct curSelectContext
+{
+	Currency4217	*cur_4217;
+	gchar			*cur_name;
+	gchar			*cur_iso;
+};
+
 
 
 gchar *ui_cur_combobox_get_name(GtkComboBox *entry_box);
@@ -116,7 +129,7 @@ gint ui_cur_manage_dialog_update_currencies(GtkWindow *parent);
 
 GtkWidget *ui_cur_manage_dialog (void);
 
-Currency4217 *ui_cur_select_dialog_new(GtkWindow *parent, gint select_mode);
+gint ui_cur_select_dialog_new(GtkWindow *parent, gint select_mode, struct curSelectContext *ctx);
 
 void ui_cur_edit_dialog_new(GtkWindow *parent, Currency *cur);
 

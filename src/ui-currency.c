@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2012 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -37,7 +37,6 @@ extern struct Preferences *PREFS;
 extern Currency4217 iso4217cur[];
 extern guint n_iso4217cur;
 
-static void ui_cur_manage_dialog_update(GtkWidget *treeview, gpointer user_data);
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -246,6 +245,9 @@ gchar *name;
 		g_object_set(cell, "text", _("(none)"), NULL);
 	else
 		g_object_set(cell, "text", name, NULL);
+
+	//leak
+	g_free(name);
 
 }
 
@@ -677,7 +679,7 @@ Currency cur;
 gchar formatd_buf[G_ASCII_DTOSTR_BUF_SIZE];
 gchar  buf[128];
 
-	DB( g_print("\n[ui-pref] number sample\n") );
+	DB( g_printf("[ui_cur_edit] update sample\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -705,6 +707,8 @@ struct ui_cur_edit_dialog_data *data;
 Currency *base;
 gchar formatd_buf[G_ASCII_DTOSTR_BUF_SIZE];
 gchar label[128];
+
+	DB( g_printf("[ui_cur_edit] set\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -736,9 +740,10 @@ static void ui_cur_edit_dialog_get(GtkWidget *widget, Currency *cur)
 {
 struct ui_cur_edit_dialog_data *data;
 gdouble rate;
-	
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	DB( g_printf("[ui_cur_edit] get\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	ui_gtk_entry_replace_text(data->ST_symbol, &cur->symbol);
 	cur->sym_prefix = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_symisprefix));
@@ -779,7 +784,7 @@ gint crow, row;
 
 	//store our dialog private data
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)&data);
-	DB( g_printf("(ui_cur_select_dialog_new) dialog=%x, inst_data=%x\n", (guint)dialog, (guint)&data) );
+	DB( g_printf("[ui_cur_edit] new dialog=%p, inst_data=%p\n", dialog, &data) );
 
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));	// return a vbox
@@ -972,7 +977,7 @@ GtkTreeModel		 *model;
 GtkTreeIter			 iter;
 Currency4217 *curfmt = NULL;
 
-	DB( g_printf("\n(ui_cur_select_dialog_get_langue)\n") );
+	DB( g_printf("\n[ui_cur_select] get langue\n") );
 
 	treeselection = gtk_tree_view_get_selection (GTK_TREE_VIEW(data->LV_cur));
 	selected = gtk_tree_selection_get_selected(treeselection, &model, &iter);
@@ -992,10 +997,101 @@ ui_cur_select_search_changed_cb (GtkWidget *widget, gpointer user_data)
 {
 struct ui_cur_select_dialog_data *data = user_data;
 
-	DB( g_print(" search changed\n") );
+	DB( g_printf("\n[ui_cur_select] search changed\n") );
 
 	gtk_tree_model_filter_refilter(GTK_TREE_MODEL_FILTER(data->modelfilter));
 	
+}
+
+
+/* valid iso is empoty or 3 capital digit */
+static guint currency_iso_code_valid(gchar *str)
+{
+guint n = 0;
+
+	while( *str )
+	{
+		if( *str >= 'A' && *str <= 'Z' )
+			n++;
+		str++;
+	}
+	return n;
+}
+
+
+static void
+ui_cur_select_custom_validate_cb(GtkWidget *widget, gpointer user_data)
+{
+struct ui_cur_select_dialog_data *data = user_data;
+gboolean custom;
+gboolean valid = TRUE;
+const gchar *iso, *name;
+guint len;
+
+	DB( g_printf("\n[ui_cur_select] custom validate\n") );
+	
+	custom = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_custom));
+
+	DB( g_print(" custom=%d\n", custom) );
+
+	//custom
+	if( custom == TRUE )
+	{
+		valid = FALSE;
+		
+		name = gtk_entry_get_text (GTK_ENTRY (data->ST_custname));
+		iso  = gtk_entry_get_text (GTK_ENTRY (data->ST_custiso));
+
+		len = currency_iso_code_valid((gchar *)iso);
+
+		DB( g_print(" name='%d', iso='%d'\n", (gint)strlen(name), len) );
+	
+		if( (len==0 || len==3) && (strlen(name) >= 3 ) )
+		{
+			valid = TRUE;
+			// don't allow to enter stand 4217 iso code
+			if( len == 3 )
+			{
+			Currency4217 *stdcur = iso4217format_get((gchar *)iso);
+				if(stdcur != NULL)
+					valid = FALSE;					
+			}
+		}
+	}
+
+	gtk_dialog_set_response_sensitive(GTK_DIALOG(data->window), GTK_RESPONSE_ACCEPT, valid);
+
+}
+
+
+static void
+ui_cur_select_custom_activate_cb(GtkWidget *widget, gpointer     user_data)
+{
+struct ui_cur_select_dialog_data *data = user_data;
+gboolean custom;
+
+	DB( g_printf("\n[ui_cur_select] custom activate\n") );
+
+	custom = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_custom));
+
+	DB( g_print(" custom=%d\n", custom) );
+
+	gtk_widget_set_sensitive(data->ST_search, !custom);
+	gtk_widget_set_sensitive(data->LV_cur, !custom);
+
+	hb_widget_visible (data->LB_custname, custom);
+	hb_widget_visible (data->ST_custname, custom);
+	hb_widget_visible (data->LB_custiso, custom);
+	hb_widget_visible (data->ST_custiso, custom);
+
+	if(custom)
+	{
+		gtk_tree_selection_unselect_all(gtk_tree_view_get_selection (GTK_TREE_VIEW(data->LV_cur)));
+		gtk_window_set_focus(GTK_WINDOW(data->window), data->ST_custname);
+	}
+
+	ui_cur_select_custom_validate_cb(data->window, data);
+
 }
 
 
@@ -1004,10 +1100,10 @@ ui_cur_select_model_func_visible (GtkTreeModel *model,
               GtkTreeIter  *iter,
               gpointer      data)
 {
-  // Visible if row is non-empty and first column is “HI”
-  gchar *str;
-  gboolean visible = TRUE;
-  GtkEntry *entry = data;
+// Visible if row is non-empty and first column is “HI”
+gchar *str;
+gboolean visible = TRUE;
+GtkEntry *entry = data;
 
 	if(!GTK_IS_ENTRY(entry))
 		return TRUE;
@@ -1033,13 +1129,14 @@ ui_cur_select_model_func_visible (GtkTreeModel *model,
 }
 
 
-Currency4217 * ui_cur_select_dialog_new(GtkWindow *parent, gint select_mode)
+gint ui_cur_select_dialog_new(GtkWindow *parent, gint select_mode, struct curSelectContext *ctx)
 {
 struct ui_cur_select_dialog_data data;
 GtkWidget *dialog, *content_area, *content_grid, *group_grid;
-GtkWidget *scrollwin, *treeview, *widget;
+GtkWidget *scrollwin, *treeview, *label, *widget;
 gint crow, row;
-Currency4217 *curfmt = NULL;
+
+	memset(&data, 0, sizeof(struct ui_cur_select_dialog_data));
 
 	dialog = gtk_dialog_new_with_buttons (
 	                (select_mode == CUR_SELECT_MODE_BASE) ? _("Select base currency") : _("Select currency"),
@@ -1055,7 +1152,7 @@ Currency4217 *curfmt = NULL;
 
 	//store our dialog private data
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)&data);
-	DB( g_printf("(ui_cur_select_dialog_new) dialog=%x, inst_data=%x\n", (guint)dialog, (guint)&data) );
+	DB( g_printf("\n[ui_cur_select] new dialog=%p, inst_data=%p\n", dialog, &data) );
 
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));	// return a vbox
@@ -1073,16 +1170,16 @@ Currency4217 *curfmt = NULL;
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
 
-	row = 1;
+	row = 0;
 	widget = gtk_search_entry_new();
 	data.ST_search = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
 
 
 	row++;
 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
-	gtk_grid_attach (GTK_GRID (group_grid), scrollwin, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), scrollwin, 1, row, 4, 1);
 
 	gtk_widget_set_vexpand (scrollwin, TRUE);
     gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
@@ -1094,14 +1191,14 @@ Currency4217 *curfmt = NULL;
 	gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(data.modelfilter), ui_cur_select_model_func_visible, data.ST_search, NULL);
 	data.sortmodel = gtk_tree_model_sort_new_with_model(data.modelfilter);
 	
-	
-	//
-	
+	//treeview
 	treeview = gtk_tree_view_new_with_model (GTK_TREE_MODEL(data.sortmodel));
 	data.LV_cur = treeview;
 	//gtk_tree_view_set_search_column (GTK_TREE_VIEW (treeview), LST_CURSEL_NAME);
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(data.sortmodel), LST_CURSEL_NAME, GTK_SORT_ASCENDING);
 	//g_object_unref (model);
+	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (treeview), PREFS->grid_lines);
+
 	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
 	
 	// populate list
@@ -1117,29 +1214,78 @@ Currency4217 *curfmt = NULL;
 	column = gtk_tree_view_column_new_with_attributes (_("ISO Code"), renderer, "text", LST_CURSEL_ISO, NULL);
 	gtk_tree_view_column_set_sort_column_id (column, LST_CURSEL_ISO);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+
+	if( select_mode == CUR_SELECT_MODE_NORMAL )
+	{
+		// group :: Custom
+		row++;
+		widget = gtk_check_button_new_with_mnemonic (_("Add a custom _currency"));
+		data.CM_custom = widget;
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
+		
+		//custom currency (crypto and discontinued)
+		row++;
+		label = make_label_widget(_("_Name:"));
+		data.LB_custname = label;
+		gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+		widget = make_string(label);
+		data.ST_custname = widget;
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+		label = make_label_widget("_ISO:");
+		data.LB_custiso = label;
+		gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
+		widget = make_string_maxlength(label, 3);
+		data.ST_custiso = widget;
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 4, row, 1, 1);
+
+		g_signal_connect (G_OBJECT (data.CM_custom)  , "toggled", G_CALLBACK (ui_cur_select_custom_activate_cb), &data);	
+		g_signal_connect (G_OBJECT (data.ST_custname), "changed", G_CALLBACK (ui_cur_select_custom_validate_cb), &data);
+		g_signal_connect (G_OBJECT (data.ST_custiso) , "changed", G_CALLBACK (ui_cur_select_custom_validate_cb), &data);
 	
+	}
+
 	gtk_window_resize(GTK_WINDOW(dialog), 400/PHI, 400);
 
 
 	gtk_widget_show_all(content_area);
+	hb_widget_visible (data.LB_custname, FALSE);
+	hb_widget_visible (data.ST_custname, FALSE);
+	hb_widget_visible (data.LB_custiso, FALSE);
+	hb_widget_visible (data.ST_custiso, FALSE);
+
 
 	// signals
-	g_signal_connect (data.ST_search, "search-changed", G_CALLBACK (ui_cur_select_search_changed_cb), &data);
-	g_signal_connect (GTK_TREE_VIEW(data.LV_cur), "row-activated", G_CALLBACK (ui_cur_select_rowactivated), &data);
+	g_signal_connect (G_OBJECT(data.ST_search), "search-changed", G_CALLBACK (ui_cur_select_search_changed_cb), &data);
+	g_signal_connect (G_OBJECT(data.LV_cur), "row-activated", G_CALLBACK (ui_cur_select_rowactivated), &data);
 
-	
+	//init picker struct
+	memset(ctx, 0, sizeof(struct curSelectContext));
+
 	// wait for the user
 	gint result = gtk_dialog_run (GTK_DIALOG (dialog));
 	if(result == GTK_RESPONSE_ACCEPT)
 	{
-		curfmt = ui_cur_select_dialog_get_langue(&data);
+	gboolean custom;
+	
+		custom = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data.CM_custom));
+		if(!custom)
+		{
+			ctx->cur_4217 = ui_cur_select_dialog_get_langue(&data);
+		}
+		else
+		//never fill custom in base mode
+		if( select_mode != CUR_SELECT_MODE_BASE )
+		{
+			ctx->cur_name = g_strdup(gtk_entry_get_text (GTK_ENTRY(data.ST_custname)));
+			ctx->cur_iso = g_strdup(gtk_entry_get_text (GTK_ENTRY(data.ST_custiso)));
+		}
 	}
-		
 
 	// cleanup and destroy
 	gtk_widget_destroy (dialog);
 
-	return curfmt;
+	return result;
 }
 
 
@@ -1151,13 +1297,13 @@ gint ui_cur_manage_dialog_update_currencies(GtkWindow *parent)
 GError *error = NULL;
 gboolean retcode = FALSE;
 
-	DB( g_printf("\n(ui_cur_manage) update currencies\n") );
+	DB( g_printf("\n[ui_cur_manage] update currencies\n") );
 
 	// do nothing if just the base currency
 	if(da_cur_length() <= 1)
 		return TRUE;
 
-	retcode = currency_sync_online(&error);
+	retcode = currency_online_sync(&error);
 	
 	DB( g_print("retcode: %d\n", retcode) );
 
@@ -1190,7 +1336,7 @@ ui_cur_manage_dialog_sync(GtkWidget *widget, gpointer user_data)
 struct ui_cur_manage_dialog_data *data;
 gboolean retcode;
 	
-	DB( g_printf("\n(ui_cur_manage) sync online\n") );
+	DB( g_printf("\n[ui_cur_manage] sync online\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -1205,6 +1351,56 @@ gboolean retcode;
 }
 
 
+/*
+**
+*/
+static void ui_cur_manage_dialog_update(GtkWidget *treeview, gpointer user_data)
+{
+struct ui_cur_manage_dialog_data *data;
+GtkTreeSelection *selection;
+GtkTreeModel *model;
+GtkTreeIter iter;
+Currency *item;
+gboolean sensitive;
+
+	DB( g_printf("\n[ui_cur_manage] update\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(treeview), GTK_TYPE_WINDOW)), "inst_data");
+
+	sensitive = da_cur_length() <= 1 ? FALSE : TRUE;
+	gtk_widget_set_sensitive (data->BB_update, sensitive);
+
+
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_cur));
+
+	//if true there is a selected node
+	if (gtk_tree_selection_get_selected(selection, &model, &iter))
+	{
+		gtk_tree_model_get(model, &iter, LST_DEFCUR_DATAS, &item, -1);
+
+		gtk_widget_set_sensitive(data->BT_edit, TRUE);
+
+		sensitive = !(currency_is_used(item->key));
+		//gtk_widget_set_sensitive(data->BT_mov, sensitive);
+		//gtk_widget_set_sensitive(data->BT_mod, sensitive);
+		gtk_widget_set_sensitive(data->BT_rem, sensitive);
+
+		//disable set as base on actual base currency
+		//disable on custom currency
+		sensitive = TRUE;
+		if( (item->key == GLOBALS->kcur) || (item->flags & CF_CUSTOM) )
+			sensitive = FALSE; 
+		gtk_widget_set_sensitive(data->BT_base, sensitive);
+	}
+	else
+	{
+		gtk_widget_set_sensitive(data->BT_edit, FALSE);
+		gtk_widget_set_sensitive(data->BT_rem , FALSE);
+		gtk_widget_set_sensitive(data->BT_base, FALSE);
+	}
+}
+
+
 /**
  * ui_cur_manage_dialog_add:
  *
@@ -1213,35 +1409,71 @@ static void
 ui_cur_manage_dialog_add(GtkWidget *widget, gpointer user_data)
 {
 struct ui_cur_manage_dialog_data *data;
-Currency4217 *curfmt;
+struct curSelectContext selectCtx;
+gint result;
+gboolean added;
 
-	DB( g_printf("\n(ui_cur_manage) add\n") );
+	DB( g_printf("\n[ui_cur_manage] add\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	curfmt = ui_cur_select_dialog_new(GTK_WINDOW(data->window), CUR_SELECT_MODE_NORMAL);
-	if( curfmt != NULL )
+	result = ui_cur_select_dialog_new(GTK_WINDOW(data->window), CUR_SELECT_MODE_NORMAL, &selectCtx);
+	if( result == GTK_RESPONSE_ACCEPT )
 	{
-	Currency *item;
+	Currency *item = NULL;
 
-		DB( g_printf("- user selected: '%s' '%s'\n", curfmt->curr_iso_code, curfmt->name) );
-		item = da_cur_get_by_iso_code(curfmt->curr_iso_code);
-		if( item == NULL )
+		added = FALSE;
+		if( selectCtx.cur_4217 != NULL )
 		{
-			item = currency_add_from_user(curfmt);
+		Currency4217 *curfmt;
+
+			curfmt = selectCtx.cur_4217;
+
+			DB( g_printf("- user selected: '%s' '%s'\n", curfmt->curr_iso_code, curfmt->name) );
+			item = da_cur_get_by_iso_code(curfmt->curr_iso_code);
+			if( item == NULL )
+			{
+				item = currency_add_from_user(curfmt);
+				added = TRUE;
+			}
+		}
+		else
+		{		
+			DB( g_printf("- user custom: '%s' '%s'\n", selectCtx.cur_iso, selectCtx.cur_name) );
+
+			item = da_cur_malloc ();
+			item->flags |= CF_CUSTOM;
+			item->name = g_strdup(selectCtx.cur_name);
+			item->iso_code = g_strdup(selectCtx.cur_iso);
+			item->symbol = g_strdup(item->iso_code);
+			item->frac_digits = 2;
+			item->sym_prefix = FALSE;
+			item->decimal_char = g_strdup(".");
+			item->grouping_char = NULL;
+			
+			added = da_cur_append(item);
+			if( !added )
+			{
+				//not append (duplicate)
+				da_cur_free (item);
+				item = NULL;
+			}
+
+			g_free(selectCtx.cur_iso);
+			g_free(selectCtx.cur_name);
+		}
+
+		if( added )
+		{
 			ui_cur_listview_add(GTK_TREE_VIEW(data->LV_cur), item);
 			gtk_tree_sortable_sort_column_changed(GTK_TREE_SORTABLE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_cur))));
 			
 			ui_cur_manage_dialog_update (widget, user_data);
 			GLOBALS->changes_count++;
 		}
-		else
-		{
-			DB( g_printf("- already exists\n") );
-		}
+
 	}
 }
-
 
 
 static void
@@ -1252,7 +1484,7 @@ GtkTreeSelection *selection;
 GtkTreeModel		 *model;
 GtkTreeIter			 iter;
 
-	DB( g_printf("\n(ui_cur_manage) modify\n") );
+	DB( g_printf("\n[ui_cur_manage] modify\n") );
 
 	
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
@@ -1283,7 +1515,7 @@ struct ui_cur_manage_dialog_data *data;
 guint32 key;
 gboolean do_remove, result;
 
-	DB( g_printf("\n(ui_cur_manage) remove\n") );
+	DB( g_printf("\n[ui_cur_manage] remove\n") );
 	
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 	
@@ -1340,7 +1572,7 @@ struct ui_cur_manage_dialog_data *data;
 guint32 key;
 gboolean do_change;
 
-	DB( g_printf("\n(ui_cur_manage) setbase\n") );
+	DB( g_printf("\n[ui_cur_manage] setbase\n") );
 
 	
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
@@ -1365,51 +1597,6 @@ gboolean do_change;
 }
 
 
-/*
-**
-*/
-static void ui_cur_manage_dialog_update(GtkWidget *treeview, gpointer user_data)
-{
-struct ui_cur_manage_dialog_data *data;
-GtkTreeSelection *selection;
-GtkTreeModel *model;
-GtkTreeIter iter;
-Currency *item;
-gboolean sensitive;
-
-	DB( g_printf("\n(ui_cur_manage_dialog) update\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(treeview), GTK_TYPE_WINDOW)), "inst_data");
-
-	sensitive = da_cur_length() <= 1 ? FALSE : TRUE;
-	gtk_widget_set_sensitive (data->BB_update, sensitive);
-
-
-	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_cur));
-
-	//if true there is a selected node
-	if (gtk_tree_selection_get_selected(selection, &model, &iter))
-	{
-		gtk_tree_model_get(model, &iter, LST_DEFCUR_DATAS, &item, -1);
-
-		gtk_widget_set_sensitive(data->BT_edit, TRUE);
-
-		sensitive = !(currency_is_used(item->key));
-		//gtk_widget_set_sensitive(data->BT_mov, sensitive);
-		//gtk_widget_set_sensitive(data->BT_mod, sensitive);
-		gtk_widget_set_sensitive(data->BT_rem, sensitive);
-
-		//disable set as base on actual base currency
-		sensitive = (item->key != GLOBALS->kcur) ? TRUE : FALSE;
-		gtk_widget_set_sensitive(data->BT_base, sensitive);
-	}
-	else
-	{
-		gtk_widget_set_sensitive(data->BT_edit, FALSE);
-		gtk_widget_set_sensitive(data->BT_rem , FALSE);
-		gtk_widget_set_sensitive(data->BT_base, FALSE);
-	}
-}
 
 
 /*
@@ -1442,7 +1629,7 @@ static void ui_cur_manage_dialog_onRowActivated (GtkTreeView        *treeview,
 static void ui_cur_manage_dialog_setup(struct ui_cur_manage_dialog_data *data)
 {
 
-	DB( g_printf("\n(ui_cur_manage_setup)\n") );
+	DB( g_printf("\n[ui_cur_manage] setup\n") );
 
 
 	ui_cur_listview_populate(data->LV_cur);
@@ -1465,8 +1652,6 @@ GtkWidget *dialog, *content_area, *content_grid, *group_grid, *bbox;
 GtkWidget *widget, *scrollwin, *treeview;
 gint crow, row, w, h;
 
-	DB( g_printf("\n(ui_cur_manage_dialog)\n") );
-	
 	dialog = gtk_dialog_new_with_buttons (_("Currencies"),
 					    GTK_WINDOW(GLOBALS->mainwindow),
 					    0,
@@ -1487,7 +1672,7 @@ gint crow, row, w, h;
 	
 	//store our window private data
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)&data);
-	DB( g_printf("(ui_cur_manage_dialog) dialog=%p, inst_data=%p\n", dialog, &data) );
+	DB( g_printf("[ui_cur_manage] new dialog=%p, inst_data=%p\n", dialog, &data) );
 
     g_signal_connect (dialog, "destroy",
 			G_CALLBACK (gtk_widget_destroyed), &dialog);

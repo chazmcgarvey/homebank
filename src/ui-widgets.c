@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -218,6 +218,21 @@ const gchar *text;
 }
 
 
+GtkWidget *make_clicklabel(gchar *id, gchar *str)
+{
+GtkWidget *label;
+gchar buffer[255];
+
+	g_snprintf(buffer, 254, "<a href=\"%s\">%s</a>", id, str);
+	label = gtk_label_new(buffer);
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_label_set_track_visited_links(GTK_LABEL(label), FALSE);
+	gtk_widget_set_halign(label, GTK_ALIGN_START);
+
+	return GTK_WIDGET(label);
+}
+
+
 GtkWidget *make_label_group(gchar *str)
 {
 GtkWidget *label = gtk_label_new (str);
@@ -342,8 +357,11 @@ GList *lmem, *list;
 	{
 	GtkTreeIter  iter;
 
-		gtk_list_store_append (GTK_LIST_STORE(store), &iter);
-		gtk_list_store_set (GTK_LIST_STORE(store), &iter, 0, list->data, -1);
+		//gtk_list_store_append (GTK_LIST_STORE(store), &iter);
+		//gtk_list_store_set (GTK_LIST_STORE(store), &iter, 0, list->data, -1);
+		gtk_list_store_insert_with_values(GTK_LIST_STORE(store), &iter, -1,
+			0, list->data, 
+			-1);
 
 		list = g_list_next(list);
 	}
@@ -365,6 +383,7 @@ GtkWidget *make_string_maxlength(GtkWidget *label, guint max_length)
 GtkWidget *entry;
 
 	entry = make_string(label);
+	gtk_entry_set_width_chars(GTK_ENTRY(entry), max_length+2);
 	gtk_entry_set_max_length(GTK_ENTRY(entry), max_length);
 
 	return entry;
@@ -377,10 +396,12 @@ static void hb_amount_insert_text_handler (GtkEntry *entry, const gchar *text, g
 GtkEditable *editable = GTK_EDITABLE(entry);
 int i, count=0, dcpos=-1;
 gchar *result = g_new0 (gchar, length+1);
+int digits = 2;
 const gchar *numtext;
 
 	//g_message("insert_text-handler: text:%s - pos:%d - length:%d", text, *position, length);
 
+	digits = gtk_spin_button_get_digits(GTK_SPIN_BUTTON(entry));
 	numtext = gtk_entry_get_text(entry);
 	for (i=0 ; numtext[i]!='\0' ; i++)
 	{
@@ -388,11 +409,10 @@ const gchar *numtext;
 			dcpos = i;
 	}
 
-
 	//g_message("previous text='%s' dcpos:'%d'", numtext, dcpos);
 	for (i=0 ; i < length ; i++)
 	{
-		if( isdigit(text[i]) && ( (*position <= dcpos+2) || dcpos < 0) )
+		if( isdigit(text[i]) && ( (*position <= dcpos + digits) || dcpos < 0) )
 			goto inserttext;
 
 		if( text[i]=='-' && *position==0 )	/* minus sign only at position 0 */
@@ -485,7 +505,7 @@ GtkWidget *make_scale(GtkWidget *label)
 {
 GtkWidget *scale;
 
-	scale = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, GTK_CHART_MINBARW, GTK_CHART_MAXBARW, 1.0);
+	scale = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, GTK_CHART_MINBARW, GTK_CHART_SPANBARW, 1.0);
 	gtk_scale_set_draw_value(GTK_SCALE(scale), FALSE);
 	gtk_range_set_value(GTK_RANGE(scale), GTK_CHART_BARW);
 
@@ -540,6 +560,10 @@ is_separator (GtkTreeModel *model,
   //path = gtk_tree_model_get_path (model, iter);
   //result = gtk_tree_path_get_indices (path)[0] == 4;
   //gtk_tree_path_free (path);
+
+	//leak
+	g_free(txt);
+
 
   return retval;
 }
@@ -932,7 +956,7 @@ char *nainex_label_names[NUM_NAINEX_MAX] =
 {
 	N_("Inactive"),
 	N_("Include"),
-	N_("Exclude")
+	N_("Exclude"),
 };
 
 

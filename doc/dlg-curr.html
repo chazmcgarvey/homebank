@@ -13,6 +13,7 @@
   <div class="title">
     <h1>Currencies dialog</h1>
     <p>The currencies dialog is used to edit, modify and manage the currencies available for the wallets.</p>
+
     <h2>Dialog call</h2>
     <ul>
       <li>main window menu: Manage / Currencies</li>
@@ -27,7 +28,7 @@
       <tr>
         <th>Update on-line</th>
         <td>Trigger to update exchanges rate on-line. This is disabled when you only have a single currency.<br>
-        This is an extra feature relying on third party (yahoo).</td>
+        This is an extra feature relying on third party (>= 5.1.7: fixer.io, prior was yahoo).</td>
       </tr>
     </table>
     <h3><img align="bottom" border="0" height="12" id="graphics6" name="graphics6" src="images/2.png" width="12"> Currencies list</h3>
@@ -36,7 +37,8 @@
     <table class="widgetinfo">
       <tr>
         <th>Add</th>
-        <td>open a dialog to add a new currency</td>
+        <td>open a dialog to add a new currency<br>
+        + see the notes below.</td>
       </tr>
       <tr>
         <th>Edit</th>
@@ -51,6 +53,17 @@
         <td>set the selected currency to be the base currency</td>
       </tr>
     </table>
+
+    <h3>Add currency notes</h3>
+    <p>
+    - you can pick up new currencies from the official ISO 4217 list<br>
+    - you can define a custom currency for discontinued or cryptocurrency</p>
+    
+    <p>When you define a custom currency, please take care of the following:<br>
+    - the Name must be at least 3 chars long<br>
+    - the ISO code is optional, but you cannot change it easily later on<br>
+    - the ISO code must be 3 chars long and cannot be the same an existing ISO 4217 one
+    </p>
   </div>
   <div class="rounded content">
     <h2>Using the edit currency dialog</h2>

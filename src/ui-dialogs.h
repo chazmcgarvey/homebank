@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -31,6 +31,8 @@ gboolean ui_file_chooser_qif(GtkWindow *parent, gchar **storage_ptr);
 gboolean ui_file_chooser_csv(GtkWindow *parent, GtkFileChooserAction action, gchar **storage_ptr, gchar *name);
 gboolean ui_file_chooser_xhb(GtkFileChooserAction action, gchar **storage_ptr);
 gboolean ui_file_chooser_folder(GtkWindow *parent, gchar *title, gchar **storage_ptr);
+
+gint ui_dialog_export_pdf(GtkWindow *parent, gchar **storage_ptr);
 
 void ui_dialog_upgrade_choose_currency(void);
 

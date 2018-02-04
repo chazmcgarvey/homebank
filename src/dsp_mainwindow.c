@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -48,11 +48,17 @@
 
 #include "gtk-chart.h"
 
+//old url prior 2018
 //#define HOMEBANK_URL_HELP           "http://homebank.free.fr/help/"
+//#define HOMEBANK_URL_HELP_ONLINE    "https://launchpad.net/homebank/+addquestion"
+//#define HOMEBANK_URL_HELP_PROBLEM   "https://launchpad.net/homebank/+filebug"
+//#define HOMEBANK_URL_HELP_TRANSLATE "https://launchpad.net/homebank/+translations"
+
 #define HOMEBANK_URL_HELP           "index.html"
-#define HOMEBANK_URL_HELP_ONLINE    "https://launchpad.net/homebank/+addquestion"
-#define HOMEBANK_URL_HELP_TRANSLATE "https://launchpad.net/homebank/+translations"
-#define HOMEBANK_URL_HELP_PROBLEM   "https://launchpad.net/homebank/+filebug"
+#define HOMEBANK_URL_HELP_ONLINE    "http://homebank.free.fr/support.php"
+#define HOMEBANK_URL_HELP_UPDATES   "http://homebank.free.fr/downloads.php"
+#define HOMEBANK_URL_HELP_PROBLEM   "http://homebank.free.fr/development.php#bug"
+#define HOMEBANK_URL_HELP_TRANSLATE "http://homebank.free.fr/development.php#translate"
 
 
 /****************************************************************************/
@@ -114,6 +120,8 @@ static void ui_mainwindow_action_file_statistics(void);
 static void ui_mainwindow_action_help(void);
 void ui_mainwindow_action_help_welcome(void);
 static void ui_mainwindow_action_help_online(void);
+static void ui_mainwindow_action_help_updates(void);
+static void ui_mainwindow_action_help_releasenotes(void);
 static void ui_mainwindow_action_help_translate(void);
 static void ui_mainwindow_action_help_problem(void);
 static void ui_mainwindow_action_about(void);
@@ -143,6 +151,8 @@ static void ui_mainwindow_scheduled_populate(GtkWidget *widget, gpointer user_da
 void ui_mainwindow_scheduled_postall(GtkWidget *widget, gpointer user_data);
 
 void ui_mainwindow_recent_add (struct hbfile_data *data, const gchar *path);
+
+static void ui_panel_accounts_setup(struct hbfile_data *data);
 
 extern gchar *CYA_ACC_TYPE[];
 
@@ -222,8 +232,11 @@ static GtkActionEntry entries[] = {
   /* HelpMenu */
   { "Contents"    , ICONNAME_HELP     , N_("_Contents")                    , "F1", N_("Documentation about HomeBank"), G_CALLBACK (ui_mainwindow_action_help) },
   { "Online"      , "lpi-help"        , N_("Get Help Online...")           , NULL, N_("Connect to the LaunchPad website for online help"), G_CALLBACK (ui_mainwindow_action_help_online) },
-  { "Translate"   , "lpi-translate"   , N_("Translate this Application..."), NULL, N_("Connect to the LaunchPad website to help translate this application"), G_CALLBACK (ui_mainwindow_action_help_translate) },
+
+  { "Updates"     , NULL              , N_("Check for updates...")         , NULL, N_("Visit HomeBank website to check for update"), G_CALLBACK (ui_mainwindow_action_help_updates) },
+  { "ReleaseNotes", NULL              , N_("Release Notes")                , NULL, N_("Display the release notes"), G_CALLBACK (ui_mainwindow_action_help_releasenotes) },
   { "Problem"     , "lpi-bug"         , N_("Report a Problem...")          , NULL, N_("Connect to the LaunchPad website to help fix problems"), G_CALLBACK (ui_mainwindow_action_help_problem) },
+  { "Translate"   , "lpi-translate"   , N_("Translate this Application..."), NULL, N_("Connect to the LaunchPad website to help translate this application"), G_CALLBACK (ui_mainwindow_action_help_translate) },
 
   { "About"       , ICONNAME_ABOUT      , N_("_About")     , NULL, N_("About HomeBank")      ,G_CALLBACK (ui_mainwindow_action_about) },
 
@@ -310,10 +323,12 @@ static const gchar *ui_info =
 "    </menu>"
 "    <menu action='HelpMenu'>"
 "      <menuitem action='Contents'/>"
-"        <separator/>"
 "      <menuitem action='Online'/>"
-"      <menuitem action='Translate'/>"
+"        <separator/>"
+"      <menuitem action='Updates'/>"
+"      <menuitem action='ReleaseNotes'/>"
 "      <menuitem action='Problem'/>"
+"      <menuitem action='Translate'/>"
 "        <separator/>"
 "      <menuitem action='About'/>"
 "    </menu>"
@@ -386,9 +401,9 @@ gint result;
 	{
 		DB( g_print(" - should revert\n") );
 		
-		hbfile_change_filepath(hb_util_filename_new_with_extension(GLOBALS->xhb_filepath, "xhb~"));
+		hbfile_change_filepath(hb_filename_new_with_extension(GLOBALS->xhb_filepath, "xhb~"));
 		ui_mainwindow_open_internal(widget, NULL);
-		hbfile_change_filepath(hb_util_filename_new_with_extension(GLOBALS->xhb_filepath, "xhb"));
+		hbfile_change_filepath(hb_filename_new_with_extension(GLOBALS->xhb_filepath, "xhb"));
 	}
 
 }
@@ -431,7 +446,7 @@ gchar *version;
   };
 */
 
-	static const gchar *copyright = "Copyright \xc2\xa9 1995-2017 - Maxime DOYEN";
+	static const gchar *copyright = "Copyright \xc2\xa9 1995-2018 - Maxime DOYEN";
 
 
 
@@ -495,9 +510,9 @@ GtkWidget *widget = GLOBALS->mainwindow;
 		ui_mainwindow_update(widget, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_REFRESHALL));
 
 		ui_start_assistant();
-		ui_mainwindow_populate_accounts(GLOBALS->mainwindow, NULL);
-		ui_mainwindow_scheduled_populate(GLOBALS->mainwindow, NULL);
-		ui_mainwindow_populate_topspending(GLOBALS->mainwindow, NULL);
+		//ui_mainwindow_populate_accounts(GLOBALS->mainwindow, NULL);
+		//ui_mainwindow_scheduled_populate(GLOBALS->mainwindow, NULL);
+		//ui_mainwindow_populate_topspending(GLOBALS->mainwindow, NULL);
 	}
 }
 
@@ -539,12 +554,10 @@ static void ui_mainwindow_action_quit(void)
 {
 gboolean result;
 
-	//gtk_widget_destroy(GLOBALS->mainwindow);
-
+	//emulate the wm close button
 	g_signal_emit_by_name(GLOBALS->mainwindow, "delete-event", NULL, &result);
-
-	//gtk_main_quit();
 }
+
 
 static void ui_mainwindow_action_file_statistics(void)
 {
@@ -577,11 +590,14 @@ gchar *secondtext;
 			_("_Anonymize")
 		);
 
-	if( result == GTK_RESPONSE_CANCEL )
-		return;	
-	
-	hbfile_anonymize();
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_REFRESHALL));
+	//#1707201
+	//if( result == GTK_RESPONSE_CANCEL )
+	//	return;	
+	if( result == GTK_RESPONSE_OK )
+	{
+		hbfile_anonymize();
+		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_REFRESHALL));
+	}
 }
 
 
@@ -809,6 +825,7 @@ static void ui_mainwindow_action_about(void)
 
 }
 
+
 static void ui_mainwindow_action_export(void)
 {
 gchar *filename;
@@ -820,13 +837,27 @@ gchar *filename;
 	}
 }
 
+
 static void ui_mainwindow_action_help(void)
 {
 gchar *link;
 
     link = g_build_filename("file:///", homebank_app_get_help_dir(), HOMEBANK_URL_HELP, NULL );
 	homebank_util_url_show (link);
+    g_free(link);
+}
 
+
+static void ui_mainwindow_action_help_releasenotes(void)
+{
+gchar *link;
+
+	#ifdef G_OS_WIN32
+    	link = g_build_filename("file:///", homebank_app_get_datas_dir(), "ChangeLog.txt", NULL );
+	#else
+		link = g_build_filename("file:///", homebank_app_get_datas_dir(), "ChangeLog", NULL );
+	#endif
+	homebank_util_url_show (link);
     g_free(link);
 }
 
@@ -949,37 +980,39 @@ GtkWidget *mainvbox, *widget, *label;
 }
 
 
+static void ui_mainwindow_action_help_updates(void)
+{
+const gchar *link = HOMEBANK_URL_HELP_UPDATES;
+
+	homebank_util_url_show (link);
+}
+
 
 static void ui_mainwindow_action_help_online(void)
 {
 const gchar *link = HOMEBANK_URL_HELP_ONLINE;
 
 	homebank_util_url_show (link);
-
 }
+
 
 static void ui_mainwindow_action_help_translate(void)
 {
 const gchar *link = HOMEBANK_URL_HELP_TRANSLATE;
 
 	homebank_util_url_show (link);
-
 }
+
 
 static void ui_mainwindow_action_help_problem(void)
 {
 const gchar *link = HOMEBANK_URL_HELP_PROBLEM;
 
 	homebank_util_url_show (link);
-
 }
 
 
-
-
 /* hbfile functions -------------------- */
-
-
 
 
 /*
@@ -1036,6 +1069,7 @@ gboolean file_clear = GPOINTER_TO_INT(user_data);
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_top))));
 	
 	data->showall = FALSE;
+	ui_panel_accounts_setup(data);
 	
 	hbfile_cleanup(file_clear);
 	hbfile_setup(file_clear);
@@ -1076,7 +1110,7 @@ gint account, count;
 		if( result == GTK_RESPONSE_ADD )
 		{
 			ope = da_transaction_malloc();
-			ope->date    = date;
+			ope->date = date;
 			ope->kacc = account;
 
 			if( PREFS->heritdate == FALSE ) //fix: 318733
@@ -1094,7 +1128,7 @@ gint account, count;
 		if(result == GTK_RESPONSE_ADD || result == GTK_RESPONSE_ADDKEEP || result == GTK_RESPONSE_ACCEPT)
 		{
 			deftransaction_get(window, NULL);
-			transaction_add(ope, NULL, ope->kacc);
+			transaction_add(ope);
 
 			DB( g_print(" - added 1 transaction to %d\n", ope->kacc) );
 
@@ -1132,7 +1166,7 @@ struct tmptop
 };
 
 
-#define MAX_TOPSPENDING 5
+#define MAX_TOPSPENDING 10
 
 
 static gint tmptop_compare_func(struct tmptop *tt1, struct tmptop *tt2)
@@ -1233,7 +1267,7 @@ Account *acc;
 		{
 		Transaction *ope = list->data;
 
-			//DB( g_print(" - eval txn: '%s', cat=%d ==> flt-test=%d\n", ope->wording, ope->kcat, filter_test(data->filter, ope)) );
+			//DB( g_print(" - eval txn: '%s', cat=%d ==> flt-test=%d\n", ope->memo, ope->kcat, filter_test(data->filter, ope)) );
 
 			if( !(ope->paymode == PAYMODE_INTXFER) )
 			{
@@ -1246,7 +1280,7 @@ Account *acc;
 				if(acc)
 					trn_amount = hb_amount_base(ope->amount, acc->kcur);
 
-				if(  ope->flags & OF_SPLIT )
+				if( ope->flags & OF_SPLIT )
 				{
 				guint nbsplit = da_splits_count(ope->splits);
 				Split *split;
@@ -1446,7 +1480,7 @@ Transaction *txn;
 	if(result == GTK_RESPONSE_ADD || result == GTK_RESPONSE_ACCEPT)
 	{
 		deftransaction_get(window, NULL);
-		transaction_add(txn, NULL, txn->kacc);
+		transaction_add(txn);
 		GLOBALS->changes_count++;
 
 		scheduled_date_advance(arc);
@@ -1480,6 +1514,8 @@ static void ui_mainwindow_scheduled_post_cb(GtkWidget *widget, gpointer user_dat
 {
 struct hbfile_data *data = user_data;
 
+	DB( g_print("\n[ui-mainwindow] scheduled post\n") );
+
 	Archive *arc = ui_mainwindow_scheduled_get_selected_item(GTK_TREE_VIEW(data->LV_upc));
 
 	if( (arc != NULL) )
@@ -1490,7 +1526,7 @@ struct hbfile_data *data = user_data;
 
 			da_transaction_init_from_template(txn, arc);
 			txn->date = scheduled_get_postdate(arc, arc->nextdate);
-			transaction_add(txn, NULL, 0);
+			transaction_add(txn);
 
 			GLOBALS->changes_count++;
 			scheduled_date_advance(arc);
@@ -1539,7 +1575,7 @@ struct hbfile_data *data;
 
 	if(arc)
 	{
-		DB( g_print("archive is %s\n", arc->wording) );
+		DB( g_print("archive is %s\n", arc->memo) );
 		
 		gtk_widget_set_sensitive(GTK_WIDGET(data->BT_sched_skip), TRUE);
 		gtk_widget_set_sensitive(GTK_WIDGET(data->BT_sched_post), TRUE);
@@ -1651,7 +1687,7 @@ GDate *date;
 			nbdays = arc->nextdate - maxpostdate;
 			nblate = scheduled_get_latepost_count(arc, GLOBALS->today);
 			
-			DB( g_print(" - append '%s' : %d\n", arc->wording, nbdays) );
+			DB( g_print(" - append '%s' : %d\n", arc->memo, nbdays) );
 
 			if(arc->flags & OF_INCOME)
 			{
@@ -1675,7 +1711,7 @@ GDate *date;
 			gtk_list_store_set (GTK_LIST_STORE(model), &iter,
 				  LST_DSPUPC_DATAS, arc,
 				  LST_DSPUPC_ACCOUNT, acc,
-			      LST_DSPUPC_WORDING, arc->wording,
+			      LST_DSPUPC_MEMO, arc->memo,
 			      LST_DSPUPC_EXPENSE, exp,
 			      LST_DSPUPC_INCOME, inc,
 				  LST_DSPUPC_REMAINING, nbdays,
@@ -1695,7 +1731,7 @@ GDate *date;
 				gtk_list_store_set (GTK_LIST_STORE(model), &iter,
 					  LST_DSPUPC_DATAS, arc,
 					  LST_DSPUPC_ACCOUNT, acc,
-					  LST_DSPUPC_WORDING, arc->wording,
+					  LST_DSPUPC_MEMO, arc->memo,
 					  LST_DSPUPC_EXPENSE, -inc,
 					  LST_DSPUPC_INCOME, -exp,
 					  LST_DSPUPC_REMAINING, nbdays,
@@ -1714,18 +1750,42 @@ GDate *date;
 		gtk_list_store_set (GTK_LIST_STORE(model), &iter,
 			  LST_DSPUPC_DATAS, NULL,
 			  LST_DSPUPC_ACCOUNT, NULL,
-			  LST_DSPUPC_WORDING, _("Total"),
+			  LST_DSPUPC_MEMO, _("Total"),
 			  LST_DSPUPC_EXPENSE, totexp,
 		      LST_DSPUPC_INCOME, totinc,
 		  -1);
 	}
-
 
 	ui_mainwindow_scheduled_update(widget, NULL);
 	
 }
 
 
+gboolean ui_mainwindow_open_backup_check_confirm(gchar *filepath)
+{
+gboolean retval = FALSE;
+gchar *basename, *secondtext;
+gboolean result;
+
+	basename = g_path_get_basename(filepath);
+	secondtext = g_strdup_printf (
+	_("Your are about to open the backup file '%s'.\n\nAre you sure you want to do this ?"), basename);		
+
+	result = ui_dialog_msg_confirm_alert(
+		GTK_WINDOW(GLOBALS->mainwindow),
+		_("Open a backup file ?"),
+		secondtext,
+		_("_Open backup")
+	);	
+
+	g_free(secondtext);
+	g_free(basename);
+
+	if( result == GTK_RESPONSE_OK )
+		retval = TRUE;
+	
+	return retval;
+}
 
 
 /*
@@ -1742,16 +1802,28 @@ gchar *filename = NULL;
 
 	if( ui_dialog_msg_savechanges(widget,NULL) == TRUE )
 	{
-		if(ui_file_chooser_xhb(GTK_FILE_CHOOSER_ACTION_OPEN, &filename) == TRUE)
+		if( ui_file_chooser_xhb(GTK_FILE_CHOOSER_ACTION_OPEN, &filename) == TRUE )
 		{
+			//#1710955 test for backup open
+			if( hbfile_file_isbackup(filename) )
+			{
+				if( ui_mainwindow_open_backup_check_confirm(filename) == TRUE )
+				{
+					GLOBALS->hbfile_is_bak = TRUE;
+				}
+				else
+				{
+					g_free(filename);
+					return;
+				}
+			}			
+
 			hbfile_change_filepath(filename);
-
 			ui_mainwindow_open_internal(widget, NULL);
-
-
 		}
 	}
 }
+
 
 /*
  *	open the file stored in GLOBALS->xhb_filepath
@@ -1765,10 +1837,10 @@ gint r;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	DB( g_print(" - filename: '%s'\n", GLOBALS->xhb_filepath) );
-
 	if( GLOBALS->xhb_filepath != NULL )
 	{
+		DB( g_print(" - filename: '%s'\n", GLOBALS->xhb_filepath) );
+
 		ui_mainwindow_clear(GLOBALS->mainwindow, GINT_TO_POINTER(FALSE));
 		GLOBALS->hbfile_is_new = FALSE;
 
@@ -1828,6 +1900,7 @@ gint r;
 
 }
 
+
 /*
 **
 */
@@ -1845,6 +1918,14 @@ gint r = XML_UNSET;
 	if( GLOBALS->hbfile_is_new == TRUE )
 		saveas = 1;
 
+	//#1710955 test for backup open
+	if( GLOBALS->hbfile_is_bak == TRUE )
+	{
+		//todo: later for backup, should also remove datetime and .bak
+		hbfile_change_filepath(hb_filename_new_with_extension(GLOBALS->xhb_filepath, "xhb"));
+		saveas = 1;
+	}
+
 	if(saveas == 1)
 	{
 		if(ui_file_chooser_xhb(GTK_FILE_CHOOSER_ACTION_SAVE, &filename) == TRUE)
@@ -1854,6 +1935,7 @@ gint r = XML_UNSET;
 			homebank_backup_current_file();
 			r = homebank_save_xml(GLOBALS->xhb_filepath);
 			GLOBALS->hbfile_is_new = FALSE;
+			GLOBALS->hbfile_is_bak = FALSE;
 		}
 		else
 			return;
@@ -1914,7 +1996,12 @@ GList *elt;
 gchar *groupname;
 gint nballoc;
 
+	DB( g_print("\n[ui-mainwindow] accounts_groups_get\n") );
+
 	nballoc = da_acc_length ();
+	
+	DB( g_print(" %d accounts\n", nballoc) );
+	
 	hash = g_hash_table_new_full(g_str_hash, g_str_equal, (GDestroyNotify)g_free, NULL);
 	elt = g_list_first(lacc);
 	while (elt != NULL)
@@ -1922,7 +2009,9 @@ gint nballoc;
 	Account *acc = elt->data;
 	GPtrArray *group;
 	
-		if( showall || !(acc->flags & (AF_CLOSED|AF_NOSUMMARY)) )
+		//#1674045 ony rely on nosummary
+		//if( showall || !(acc->flags & (AF_CLOSED|AF_NOSUMMARY)) )
+		if( showall || !(acc->flags & AF_NOSUMMARY) )
 		{
 			if( groupby == DSPACC_GROUP_BY_BANK )
 			{
@@ -1987,7 +2076,7 @@ gpointer key, value;
 
 	gtbank = gttoday = gtfuture = 0;
 
-	DB( g_print(" populate listview\n") );
+	DB( g_print(" - populate listview, %d group(s)\n", g_hash_table_size(h_group)) );
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc));
 	gtk_tree_store_clear (GTK_TREE_STORE(model));
@@ -1998,16 +2087,33 @@ gpointer key, value;
 	{
 	GPtrArray *gpa = value;
 	gdouble tbank, ttoday, tfuture;
+	gint position;
 
 		if(gpa != NULL)
 		{
 			nbtype++;
 			//1: Header: Bank, Cash, ...
-			//DB( g_print(" - append type '%s'\n", CYA_ACC_TYPE[i]) );
-			DB( g_print("\n - append type '%d'\n", key) );
+			DB( g_print(" - add group '%s'\n", (gchar *)key) );
+
+			//#1663399 keep type position like in dropdown
+			position = 0;
+			if( PREFS->pnl_acc_show_by == DSPACC_GROUP_BY_TYPE )
+			{
+			gint t = 0;	
+
+				while(CYA_ACC_TYPE[t] != NULL && t < 15)
+				{
+					if( !strcmp(CYA_ACC_TYPE[t], key) )
+						break;
+					t++;
+				}
+
+				position = t;
+			}
 
 			gtk_tree_store_append (GTK_TREE_STORE(model), &iter1, NULL);
 			gtk_tree_store_set (GTK_TREE_STORE(model), &iter1,
+					  LST_DSPACC_POS, position,
 					  LST_DSPACC_DATATYPE, DSPACC_TYPE_HEADER,
 					  LST_DSPACC_NAME, key,
 					  -1);
@@ -2026,7 +2132,7 @@ gpointer key, value;
 				ttoday += hb_amount_base(acc->bal_today, acc->kcur);
 				tfuture += hb_amount_base(acc->bal_future, acc->kcur);
 
-				DB( g_print(" - insert '%s' :: %.2f %.2f %.2f\n", acc->name, acc->bal_bank, acc->bal_today, acc->bal_future) );
+				DB( g_print(" - add account '%s' :: %.2f %.2f %.2f\n", acc->name, acc->bal_bank, acc->bal_today, acc->bal_future) );
 
 				gtk_tree_store_append (GTK_TREE_STORE(model), &child_iter, &iter1);
 				gtk_tree_store_set (GTK_TREE_STORE(model), &child_iter,
@@ -2040,7 +2146,7 @@ gpointer key, value;
 
 			if(gpa->len > 1)
 			{
-				DB( g_print(" - type totals :: %.2f %.2f %.2f\n", tbank, ttoday, tfuture) );
+				DB( g_print(" - group total :: %.2f %.2f %.2f\n", tbank, ttoday, tfuture) );
 
 				// insert the total line
 				gtk_tree_store_append (GTK_TREE_STORE(model), &child_iter, &iter1);
@@ -2054,7 +2160,7 @@ gpointer key, value;
 			}
 
 			/* set balance to header to display when collasped */
-			DB( g_print(" - enrich totals to header :: %.2f %.2f %.2f\n", tbank, ttoday, tfuture) );
+			DB( g_print(" - enrich group total header :: %.2f %.2f %.2f\n", tbank, ttoday, tfuture) );
 			gtk_tree_store_set (GTK_TREE_STORE(model), &iter1,
 					LST_DSPACC_BANK, tbank,
 					LST_DSPACC_TODAY, ttoday,
@@ -2070,7 +2176,7 @@ gpointer key, value;
 
 	}
 
-	DB( g_print(" - grand totals :: %.2f %.2f %.2f\n", gtbank, gttoday, gtfuture) );
+	DB( g_print(" - grand total :: %.2f %.2f %.2f\n", gtbank, gttoday, gtfuture) );
 
 	// Grand total
 	if( nbtype > 1 )
@@ -2105,7 +2211,7 @@ void ui_mainwindow_update(GtkWidget *widget, gpointer user_data)
 struct hbfile_data *data;
 gint flags;
 
-	DB( g_print("\n[ui-mainwindow] refresh_display\n") );
+	DB( g_print("\n[ui-mainwindow] update %p\n", user_data) );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 	//data = INST_DATA(widget);
@@ -2118,7 +2224,7 @@ gint flags;
 	gchar *basename;
 	gchar *changed;
 
-		DB( g_print(" +  1: wintitle %x\n", data->wintitle) );
+		DB( g_print(" 1: wintitle %p\n", data->wintitle) );
 
 		basename = g_path_get_basename(GLOBALS->xhb_filepath);
 
@@ -2144,7 +2250,7 @@ gint flags;
 	GtkTreePath		*path;
 	gboolean	active,sensitive;
 
-		DB( g_print(" +  2: disabled, opelist count\n") );
+		DB( g_print(" 2: disabled, opelist count\n") );
 
 		//#1656531
 		data->acc = NULL;
@@ -2231,7 +2337,7 @@ gint flags;
 	/* update toolbar, list */
 	if(flags & UF_VISUAL)
 	{
-		DB( g_print(" +  8: visual\n") );
+		DB( g_print(" 8: visual\n") );
 
 		if(PREFS->toolbar_style == 0)
 			gtk_toolbar_unset_style(GTK_TOOLBAR(data->toolbar));
@@ -2276,7 +2382,7 @@ gint flags;
 	if(flags & UF_BALANCE)
 	{
 
-		DB( g_print(" +  4: balances\n") );
+		DB( g_print(" 4: balances\n") );
 
 		gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_acc));
 
@@ -2291,7 +2397,7 @@ gint flags;
 
 	if(flags & UF_REFRESHALL)
 	{
-		DB( g_print(" +  8: refreshall\n") );
+		DB( g_print(" 16: refreshall\n") );
 
 		ui_mainwindow_populate_accounts(GLOBALS->mainwindow, NULL);
 		ui_mainwindow_populate_topspending(GLOBALS->mainwindow, NULL);
@@ -2334,6 +2440,14 @@ static void
     }
   }
 
+
+static void ui_mainwindow_destroy(GtkTreeView *treeview, gpointer user_data)
+{
+	DB( g_print("\n[ui-mainwindow] destroy\n") );
+
+}
+
+
 /*
 **
 */
@@ -2343,7 +2457,7 @@ struct hbfile_data *data = user_data;
 struct WinGeometry *wg;
 gboolean retval = FALSE;
 
-	DB( g_print("\n[ui-mainwindow] dispose\n") );
+	DB( g_print("\n[ui-mainwindow] delete-event\n") );
 
 	//store position and size
 	wg = &PREFS->wal_wg;
@@ -2367,19 +2481,18 @@ gboolean retval = FALSE;
 	}
 	else
 	{
-		DB( g_print(" free wintitle %x\n", data->wintitle) );
-
+		//todo: retval is useless and below should move to destroy
+		retval = TRUE;
 		gtk_widget_destroy(data->LV_top);
 
 		g_free(data->wintitle);
 		da_filter_free(data->filter);
 		g_free(user_data);
+		
 		gtk_main_quit();
 	}
 
-
-
-	//delete-event TRUE abort/FALSE destroy
+	//TRUE:stop other handlers from being invoked for the event | FALSE: propagate
 	return retval;
 }
 
@@ -2792,9 +2905,35 @@ GVariant *old_state, *new_state;
 
 static const GActionEntry actions[] = {
 //  { "paste", activate_action, NULL, NULL,      NULL, {0,0,0} },
-  { "showall" ,  activate_toggle, NULL, "false",    NULL, {0,0,0} },
-  { "groupby",  activate_radio,  "s",  "'type'", NULL, {0,0,0} }
+	{ "showall", activate_toggle, NULL, "false" , NULL, {0,0,0} },
+	{ "groupby", activate_radio ,  "s", "'type'", NULL, {0,0,0} }
 };
+
+
+static void ui_panel_accounts_setup(struct hbfile_data *data)
+{
+GAction *action;
+GVariant *new_state;
+
+	if( !G_IS_SIMPLE_ACTION_GROUP(data->action_group_acc) )
+		return;
+
+	action = g_action_map_lookup_action (G_ACTION_MAP (data->action_group_acc), "showall");
+	if( action )
+	{
+		new_state = g_variant_new_boolean (data->showall);
+		g_simple_action_set_state (G_SIMPLE_ACTION(action), new_state);
+	}
+	
+	action = g_action_map_lookup_action (G_ACTION_MAP (data->action_group_acc), "groupby");
+	if( action )
+	{
+		const gchar *value = (PREFS->pnl_acc_show_by == DSPACC_GROUP_BY_TYPE) ? "type" : "bank";
+		new_state = g_variant_new_string (value);
+		g_simple_action_set_state (G_SIMPLE_ACTION (action), new_state);
+	}
+
+}
 
 
 static GtkWidget *ui_mainwindow_create_youraccounts(struct hbfile_data *data)
@@ -2850,16 +2989,6 @@ GtkToolItem *toolitem;
 
 
 	//gmenu test (see test folder into gtk)
-	widget = gtk_menu_button_new();
-	gtk_menu_button_set_direction (GTK_MENU_BUTTON(widget), GTK_ARROW_UP);
-	gtk_widget_set_halign (widget, GTK_ALIGN_END);
-	image = gtk_image_new_from_icon_name (ICONNAME_EMBLEM_SYSTEM, GTK_ICON_SIZE_MENU);
-	g_object_set (widget, "image", image,  NULL);
-
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), widget);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-
 GMenu *menu, *section;
 
 	menu = g_menu_new ();
@@ -2878,15 +3007,21 @@ GMenu *menu, *section;
 
 
 	GSimpleActionGroup *group = g_simple_action_group_new ();
+	data->action_group_acc = group;
 	g_action_map_add_action_entries (G_ACTION_MAP (group), actions, G_N_ELEMENTS (actions), data);
 
-	//init radio
-	GAction *action = g_action_map_lookup_action (G_ACTION_MAP (group), "groupby");
-	const gchar *value = (PREFS->pnl_acc_show_by == DSPACC_GROUP_BY_TYPE) ? "type" : "bank";
-	g_simple_action_set_state (G_SIMPLE_ACTION (action), g_variant_new_string (value));
+
+	widget = gtk_menu_button_new();
+	gtk_menu_button_set_direction (GTK_MENU_BUTTON(widget), GTK_ARROW_UP);
+	gtk_widget_set_halign (widget, GTK_ALIGN_END);
+	image = gtk_image_new_from_icon_name (ICONNAME_EMBLEM_SYSTEM, GTK_ICON_SIZE_MENU);
+	g_object_set (widget, "image", image,  NULL);
+
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), widget);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
 
 	gtk_widget_insert_action_group (widget, "actions", G_ACTION_GROUP(group));
-
 	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
 
 	return panel;
@@ -3059,7 +3194,7 @@ GtkAction *action;
 
 	//store our window private data
 	g_object_set_data(G_OBJECT(window), "inst_data", (gpointer)data);
-	DB( g_print(" - new window=%x, inst_data=%0x\n", window, data) );
+	DB( g_print(" - new window=%p, inst_data=%p\n", window, data) );
 
 	// this is our mainwindow, so store it to GLOBALS data
 	data->window = window;
@@ -3095,21 +3230,16 @@ GtkWidget *bar, *label;
 		gtk_paned_pack1 (GTK_PANED(vpaned), hpaned, FALSE, FALSE);
 
 		widget = ui_mainwindow_scheduled_create(data);
-		gtk_paned_pack2 (GTK_PANED(vpaned), widget, FALSE, FALSE);
+		gtk_paned_pack2 (GTK_PANED(vpaned), widget, TRUE, FALSE);
 
 		widget = ui_mainwindow_create_youraccounts(data);
+		//gtk_widget_set_size_request (widget, 100, -1);
 		gtk_paned_pack1 (GTK_PANED(hpaned), widget, FALSE, FALSE);
 
 		widget = ui_mainwindow_create_topspending(data);
-		gtk_paned_pack2 (GTK_PANED(hpaned), widget, FALSE, FALSE);
+		//gtk_widget_set_size_request (widget, -1, 100);
+		gtk_paned_pack2 (GTK_PANED(hpaned), widget, TRUE, FALSE);
 
-
-	DB( g_print(" - vpaned=%d hpaned=%d\n", PREFS->wal_vpaned, PREFS->wal_hpaned) );
-
-	if(PREFS->wal_hpaned > 0)
-		gtk_paned_set_position(GTK_PANED(data->hpaned), PREFS->wal_hpaned);
-	if(PREFS->wal_vpaned > 0)
-		gtk_paned_set_position(GTK_PANED(data->vpaned), PREFS->wal_vpaned);
 
 	//setup, init and show window
 	wg = &PREFS->wal_wg;
@@ -3122,7 +3252,15 @@ GtkWidget *bar, *label;
 		gtk_window_maximize(GTK_WINDOW(window));
 
 	gtk_widget_show_all (window);
-	
+
+	//#1662197/1660910 moved after resize/show
+	DB( g_print(" - vpaned=%d hpaned=%d\n", PREFS->wal_vpaned, PREFS->wal_hpaned) );
+
+	if(PREFS->wal_hpaned > 0)
+		gtk_paned_set_position(GTK_PANED(data->hpaned), PREFS->wal_hpaned);
+	if(PREFS->wal_vpaned > 0)
+		gtk_paned_set_position(GTK_PANED(data->vpaned), PREFS->wal_vpaned);
+
 	//todo: move this elsewhere
 	DB( g_print(" - setup stuff\n") );
 
@@ -3176,6 +3314,7 @@ GtkWidget *bar, *label;
 
 	/* GtkWindow events */
     g_signal_connect (window, "delete-event", G_CALLBACK (ui_mainwindow_dispose), (gpointer)data);
+	g_signal_connect (window, "destroy", G_CALLBACK (ui_mainwindow_destroy), NULL);
 
 
 	g_signal_connect (window, "screen-changed",

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -50,7 +50,7 @@ void da_filter_free(Filter *flt)
 {
 	if(flt != NULL)
 	{
-		g_free(flt->wording);
+		g_free(flt->memo);
 		g_free(flt->info);
 		g_free(flt->tag);
 		g_free(flt);
@@ -93,23 +93,27 @@ guint i;
 	}
 	
 	g_free(flt->info);
-	g_free(flt->wording);
+	g_free(flt->memo);
 	g_free(flt->tag);
 	flt->info = NULL;
-	flt->wording = NULL;
+	flt->memo = NULL;
 	flt->tag = NULL;
 
-	flt->last_tab = 0;
+	*flt->last_tab = '\0';
 }
 
 
 void filter_default_all_set(Filter *flt)
 {
+GHashTableIter iter;
+gpointer key, value;
 gint i;
 
 	DB( g_print("(filter) reset %p\n", flt) );
 
 	filter_clear(flt);
+
+	flt->nbdaysfuture = 0;
 
 	flt->range  = FLT_RANGE_LAST12MONTHS;
 	flt->type   = FLT_TYPE_ALL;
@@ -124,6 +128,30 @@ gint i;
 		flt->paymode[i] = TRUE;
 
 	filter_preset_daterange_set(flt, flt->range, 0);
+
+	// set all account
+	g_hash_table_iter_init (&iter, GLOBALS->h_acc);
+	while (g_hash_table_iter_next (&iter, &key, &value))
+	{
+	Account *item = value;
+		item->filter = TRUE;
+	}
+
+	// set all payee
+	g_hash_table_iter_init (&iter, GLOBALS->h_pay);
+	while (g_hash_table_iter_next (&iter, &key, &value))
+	{
+	Payee *item = value;
+		item->filter = TRUE;
+	}
+
+	// set all payee
+	g_hash_table_iter_init (&iter, GLOBALS->h_cat);
+	while (g_hash_table_iter_next (&iter, &key, &value))
+	{
+	Category *item = value;
+		item->filter = TRUE;
+	}
 
 }
 
@@ -144,7 +172,8 @@ GList *lnk_txn;
 	{
 	Account *acc = lnk_acc->data;
 	
-		if( !(acc->flags & AF_CLOSED) )
+		//#1674045 ony rely on nosummary
+		//if( !(acc->flags & AF_CLOSED) )
 		{
 		Transaction *txn;
 		
@@ -192,8 +221,11 @@ void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays)
 {
 
 	if( nbdays <= 0 )
+	{
+		filter->nbdaysfuture = 0;
 		return;
-		
+	}
+	
 	switch( filter->range )
 	{
 		case FLT_RANGE_THISMONTH:
@@ -203,7 +235,7 @@ void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays)
 		case FLT_RANGE_LAST60DAYS:
 		case FLT_RANGE_LAST90DAYS:
 		case FLT_RANGE_LAST12MONTHS:
-			filter->maxdate += nbdays;
+			filter->nbdaysfuture = nbdays;
 			break;
 	}
 
@@ -394,7 +426,8 @@ GList *lcat, *list;
 		case FLT_STATUS_UNCATEGORIZED:
 			flt->option[FILTER_CATEGORY] = 1;
 			catitem = da_cat_get(0);	// no category
-			catitem->filter = TRUE;
+			if(catitem != NULL)
+				catitem->filter = TRUE;
 			break;
 
 		case FLT_STATUS_UNRECONCILED:
@@ -465,6 +498,13 @@ gchar *tags;
 
 	if(flags & FLT_QSEARCH_MEMO)
 	{
+		//#1668036 always try match on txn memo first
+		if(txn->memo)
+		{
+			retval |= filter_text_compare(txn->memo, needle, FALSE);
+		}
+		if(retval) goto end;
+		
 		//#1509485
 		if(txn->flags & OF_SPLIT)
 		{
@@ -481,13 +521,6 @@ gchar *tags;
 				retval |= tmpinsert;
 				if( tmpinsert )
 					break;
-			}
-		}
-		else
-		{
-			if(txn->wording)
-			{
-				retval |= filter_text_compare(txn->wording, needle, FALSE);
 			}
 		}
 		if(retval) goto end;
@@ -562,7 +595,16 @@ gchar *tags;
 			retval |= filter_text_compare(tags, needle, FALSE);
 		}
 		g_free(tags);
-		//if(retval) goto end;
+		if(retval) goto end;
+	}
+
+	//#1741339 add quicksearch for amount
+	if(flags & FLT_QSEARCH_AMOUNT)
+	{
+	gchar formatd_buf[G_ASCII_DTOSTR_BUF_SIZE];
+	
+		hb_strfnum(formatd_buf, G_ASCII_DTOSTR_BUF_SIZE-1, txn->amount, txn->kcur, FALSE);
+		retval |= filter_text_compare(formatd_buf, needle, FALSE);
 	}
 
 	
@@ -597,7 +639,7 @@ gint insert;
 
 /* date */
 	if(flt->option[FILTER_DATE]) {
-		insert = ( (txn->date >= flt->mindate) && (txn->date <= flt->maxdate) ) ? 1 : 0;
+		insert = ( (txn->date >= flt->mindate) && (txn->date <= (flt->maxdate + flt->nbdaysfuture) ) ) ? 1 : 0;
 		if(flt->option[FILTER_DATE] == 2) insert ^= 1;
 	}
 	if(!insert) goto end;
@@ -688,7 +730,7 @@ gint insert;
 	}
 	if(!insert) goto end;
 
-/* info/wording/tag */
+/* info/memo/tag */
 	if(flt->option[FILTER_TEXT])
 	{
 	gchar *tags;
@@ -705,9 +747,15 @@ gint insert;
 		else
 			insert1 = 1;
 
-		if(flt->wording)
+		if(flt->memo)
 		{
-			if(txn->flags & OF_SPLIT)
+			//#1668036 always try match on txn memo first
+			if(txn->memo)
+			{
+				insert2 = filter_text_compare(txn->memo, flt->memo, flt->exact);
+			}
+
+			if( (insert2 == 0) && (txn->flags & OF_SPLIT) )
 			{
 			guint count, i;
 			Split *split;
@@ -718,17 +766,10 @@ gint insert;
 				gint tmpinsert = 0;
 			
 					split = txn->splits[i];
-					tmpinsert = filter_text_compare(split->memo, flt->wording, flt->exact);
+					tmpinsert = filter_text_compare(split->memo, flt->memo, flt->exact);
 					insert2 |= tmpinsert;
 					if( tmpinsert )
 						break;
-				}
-			}
-			else
-			{
-				if(txn->wording)
-				{
-					insert2 = filter_text_compare(txn->wording, flt->wording, flt->exact);
 				}
 			}
 		}
@@ -756,7 +797,7 @@ gint insert;
 
 end:
 //	DB( g_print(" %d :: %d :: %d\n", flt->mindate, txn->date, flt->maxdate) );
-//	DB( g_print(" [%d] %s => %d (%d)\n", txn->account, txn->wording, insert, count) );
+//	DB( g_print(" [%d] %s => %d (%d)\n", txn->account, txn->memo, insert, count) );
 	return(insert);
 }
 

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -317,12 +317,42 @@ GList *list;
 // v0.6 to v0.7 : assign a default currency
 static void homebank_upgrade_to_v12(void)
 {
+	DB( g_print("\n[hb-xml] homebank_upgrade_to_v12\n") );
+
 	// set a base currency to the hbfile if not
 	DB( g_print("GLOBALS->kcur %d\n", GLOBALS->kcur) );
 
 	ui_dialog_upgrade_choose_currency();
 }
 
+
+static void homebank_upgrade_to_v12_7(void)
+{
+GList *lst_acc, *lnk_acc;
+
+	DB( g_print("\n[hb-xml] homebank_upgrade_to_v12\n") );
+
+	//#1674045 exclude closed account from everywhere to
+	//keep continuity for user that don't want to change this
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
+	{
+	Account *acc = lnk_acc->data;
+
+		if( acc->flags & AF_CLOSED )
+		{
+			if( !(acc->flags & AF_NOSUMMARY) )
+				acc->flags |= AF_NOSUMMARY;
+			if( !(acc->flags & AF_NOBUDGET) )
+				acc->flags |= AF_NOBUDGET;
+			if( !(acc->flags & AF_NOREPORT) )
+				acc->flags |= AF_NOREPORT;
+		}
+		lnk_acc = g_list_next(lnk_acc);
+	}
+	g_list_free(lst_acc);
+}
 
 
 // lower v0.6 : we must assume categories/payee exists
@@ -543,7 +573,8 @@ gint i;
 	{
 		//DB( g_print(" att='%s' val='%s'\n", attribute_names[i], attribute_values[i]) );
 
-			 if(!strcmp (attribute_names[i], "key"    )) { entry->key = atoi(attribute_values[i]); }
+			 if(!strcmp (attribute_names[i], "key"   )) { entry->key = atoi(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "flags" )) { entry->flags = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "name"  )) { entry->name = g_strdup(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "iso"   )) { entry->iso_code = g_strdup(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "symb"  )) { entry->symbol = g_strdup(attribute_values[i]); }
@@ -593,6 +624,7 @@ gint i;
 	{
 		//DB( g_print(" att='%s' val='%s'\n", attribute_names[i], attribute_values[i]) );
 
+
 		     if(!strcmp (attribute_names[i], "amount"     )) { entry->amount = g_ascii_strtod(attribute_values[i], NULL); }
 		else if(!strcmp (attribute_names[i], "account"    )) { entry->kacc = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "dst_account")) { entry->kxferacc = atoi(attribute_values[i]); }
@@ -601,12 +633,20 @@ gint i;
 		else if(!strcmp (attribute_names[i], "flags"      )) { entry->flags = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "payee"      )) { entry->kpay = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "category"   )) { entry->kcat = atoi(attribute_values[i]); }
-		else if(!strcmp (attribute_names[i], "wording"    )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->wording = g_strdup(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "wording"    )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->memo = g_strdup(attribute_values[i]); }
+
+
+
+
+
+
+
 		else if(!strcmp (attribute_names[i], "nextdate"   )) { entry->nextdate = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "every"      )) { entry->every = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "unit"       )) { entry->unit = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "limit"      )) { entry->limit = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "weekend"    )) { entry->weekend = atoi(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "gap"        )) { entry->daygap = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "scat" 	  )) { scat = (gchar *)attribute_values[i]; split = TRUE; }
 		else if(!strcmp (attribute_names[i], "samt"       )) { samt = (gchar *)attribute_values[i]; split = TRUE; }
 		else if(!strcmp (attribute_names[i], "smem"       )) { smem = (gchar *)attribute_values[i]; split = TRUE; }
@@ -648,7 +688,7 @@ gint i;
 		else if(!strcmp (attribute_names[i], "flags"      )) { entry->flags = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "payee"      )) { entry->kpay = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "category"   )) { entry->kcat = atoi(attribute_values[i]); }
-		else if(!strcmp (attribute_names[i], "wording"    )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->wording = g_strdup(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "wording"    )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->memo = g_strdup(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "info"       )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->info = g_strdup(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "tags"       ))
 		{
@@ -676,7 +716,7 @@ gint i;
 	}
 	
 	//all attribute loaded: append
-	// we use prepend here, the list will be reversed later for perf reason
+	// for perf reason we use prepend here, the list will be reversed later 
 	da_transaction_prepend(entry);
 }
 
@@ -744,6 +784,7 @@ ParseContext *ctx = user_data;
 				homebank_load_xml_tag(ctx, attribute_names, attribute_values);
 			}
 		}
+		break;
 
 		case 'f':
 		{
@@ -893,51 +934,62 @@ gboolean rc;
 			DB( g_timer_destroy (t) );
 
 			/* file upgrade / bugfix */
-			if( ctx.file_version <= 0.1 )
-				homebank_upgrade_to_v02();
-			if( ctx.file_version <= 0.2 )
-				homebank_upgrade_to_v03();
-			if( ctx.file_version <= 0.3 )
-				homebank_upgrade_to_v04();
-			if( ctx.file_version <= 0.4 )
-				homebank_upgrade_to_v05();
-			if( ctx.file_version <= 0.5 )
+			// group a test for very old version
+			if( ctx.file_version <= 1.0 )
 			{
-				homebank_upgrade_to_v06();
-				homebank_upgrade_lower_v06();
-			}
-			if( ctx.file_version <= 0.6 )
-			{
-				homebank_upgrade_to_v07();
-				hbfile_sanity_check();
-			}
-			if( ctx.file_version <= 0.7 )	// <= 4.5
-			{	
-				homebank_upgrade_to_v08();
-			}
-			if( ctx.file_version <= 0.8 )	// <= 4.6
-			{
-				hbfile_sanity_check();
-			}
-			if( ctx.file_version <= 0.9 )	// <= 4.6.3
-			{
-				hbfile_sanity_check();
-				homebank_upgrade_to_v10();
-			}
-			if( ctx.file_version <= 1.0 )	// <= 5.0.0 
-			{
-				hbfile_sanity_check();
-				homebank_upgrade_to_v11();
-			}
+				if( ctx.file_version <= 0.1 )
+					homebank_upgrade_to_v02();
+				if( ctx.file_version <= 0.2 )
+					homebank_upgrade_to_v03();
+				if( ctx.file_version <= 0.3 )
+					homebank_upgrade_to_v04();
+				if( ctx.file_version <= 0.4 )
+					homebank_upgrade_to_v05();
+				if( ctx.file_version <= 0.5 )
+				{
+					homebank_upgrade_to_v06();
+					homebank_upgrade_lower_v06();
+				}
+				if( ctx.file_version <= 0.6 )
+				{
+					homebank_upgrade_to_v07();
+					hbfile_sanity_check();
+				}
+				if( ctx.file_version <= 0.7 )	// <= 4.5
+				{	
+					homebank_upgrade_to_v08();
+				}
+				if( ctx.file_version <= 0.8 )	// <= 4.6
+				{
+					hbfile_sanity_check();
+				}
+				if( ctx.file_version <= 0.9 )	// <= 4.6.3
+				{
+					hbfile_sanity_check();
+					homebank_upgrade_to_v10();
+				}
+				if( ctx.file_version <= 1.0 )	// <= 5.0.0
+				{
+					hbfile_sanity_check();
+					homebank_upgrade_to_v11();
+				}
+			}			
+
 			//starting 5.0.4 data upgrade is done without changing file_version
-			if( ctx.data_version < 050005 )	// <= 5.0.5 
+			//file version is changed only when the structure change
+			//don't start number below with 0 to avoid octal interpretation
+			if( ctx.data_version <= 50005 )	// <= 5.0.5 
 			{
 				hbfile_sanity_check();
 			}
-			if( ctx.file_version <= 1.1 )	// <= 5.1.0 
+			if( ctx.file_version <= 1.1 )	// <= 5.1.0
 			{
 				hbfile_sanity_check();
 				homebank_upgrade_to_v12();
+			}
+			if( ctx.data_version <= 50106 )	// < 5.1.6
+			{
+				homebank_upgrade_to_v12_7();
 			}
 
 			// next ?
@@ -947,7 +999,6 @@ gboolean rc;
 
 	return retval;
 }
-
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
@@ -1118,8 +1169,9 @@ gint retval = XML_OK;
 	Currency *item = list->data;
 
 		tmpstr = g_markup_printf_escaped(
-		    "<cur key=\"%d\" iso=\"%s\" name=\"%s\" symb=\"%s\" syprf=\"%d\" dchar=\"%s\" gchar=\"%s\" frac=\"%d\" rate=\"%s\" mdate=\"%d\" />\n",
+		    "<cur key=\"%d\" flags=\"%d\" iso=\"%s\" name=\"%s\" symb=\"%s\" syprf=\"%d\" dchar=\"%s\" gchar=\"%s\" frac=\"%d\" rate=\"%s\" mdate=\"%d\"/>\n",
 			item->key,
+			item->flags,
 			item->iso_code,
 		    item->name,
 		    item->symbol,
@@ -1408,12 +1460,13 @@ GError *error = NULL;
 		hb_xml_append_int(node, "flags", item->flags);
 		hb_xml_append_int(node, "payee", item->kpay);
 		hb_xml_append_int(node, "category", item->kcat);
-		hb_xml_append_txt(node, "wording", item->wording);	
+		hb_xml_append_txt(node, "wording", item->memo);	
 		hb_xml_append_int(node, "nextdate", item->nextdate);
 		hb_xml_append_int(node, "every", item->every);
 		hb_xml_append_int(node, "unit", item->unit);
 		hb_xml_append_int(node, "limit", item->limit);
 		hb_xml_append_int(node, "weekend", item->weekend);
+		hb_xml_append_int(node, "gap", item->daygap);
 
 		if(da_splits_count(item->splits) > 0)
 		{
@@ -1489,13 +1542,13 @@ GError *error = NULL;
 			hb_xml_append_int(node, "flags", item->flags);
 			hb_xml_append_int(node, "payee", item->kpay);
 			hb_xml_append_int(node, "category", item->kcat);
-			hb_xml_append_txt(node, "wording", item->wording);	
+			hb_xml_append_txt(node, "wording", item->memo);	
 			hb_xml_append_txt(node, "info", item->info);	
 			hb_xml_append_txt(node, "tags", tagstr);	
 			hb_xml_append_int(node, "kxfer", item->kxfer);
 
-		if(da_splits_count(item->splits) > 0)
-		{
+			if(da_splits_count(item->splits) > 0)
+			{
 			gchar *cats, *amounts, *memos;
 		
 				da_splits_tostring(item->splits, &cats, &amounts, &memos);

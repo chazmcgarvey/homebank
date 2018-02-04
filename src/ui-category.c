@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -396,6 +396,10 @@ gint style;
 	    "style", style,
 		"text", name,
 		NULL);
+
+	//leak
+	g_free(name);
+
 }
 
 
@@ -527,24 +531,37 @@ ui_cat_listview_fixed_toggled (GtkCellRendererToggle *cell,
 	       gchar                 *path_str,
 	       gpointer               data)
 {
-  GtkTreeModel *model = (GtkTreeModel *)data;
-  GtkTreeIter  iter;
-  GtkTreePath *path = gtk_tree_path_new_from_string (path_str);
-  gboolean fixed;
+GtkTreeModel *model = (GtkTreeModel *)data;
+GtkTreeIter  iter, child;
+GtkTreePath *path = gtk_tree_path_new_from_string (path_str);
+gboolean fixed;
+gint n_child;
 
-  /* get toggled iter */
-  gtk_tree_model_get_iter (model, &iter, path);
-  gtk_tree_model_get (model, &iter, LST_DEFCAT_TOGGLE, &fixed, -1);
+	/* get toggled iter */
+	gtk_tree_model_get_iter (model, &iter, path);
+	gtk_tree_model_get (model, &iter, LST_DEFCAT_TOGGLE, &fixed, -1);
 
-  /* do something with the value */
-  fixed ^= 1;
+	/* do something with the value */
+	fixed ^= 1;
 
-  /* set new value */
-  gtk_tree_store_set (GTK_TREE_STORE (model), &iter, LST_DEFCAT_TOGGLE, fixed, -1);
+	/* set new value */
+	gtk_tree_store_set (GTK_TREE_STORE (model), &iter, LST_DEFCAT_TOGGLE, fixed, -1);
 
-  /* clean up */
-  gtk_tree_path_free (path);
+	/* propagate to child */
+	n_child = gtk_tree_model_iter_n_children (GTK_TREE_MODEL(model), &iter);
+	gtk_tree_model_iter_children (GTK_TREE_MODEL(model), &child, &iter);
+	while(n_child > 0)
+	{
+		gtk_tree_store_set (GTK_TREE_STORE (model), &child, LST_DEFCAT_TOGGLE, fixed, -1);
+
+		n_child--;
+		gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &child);
+	}
+	
+	/* clean up */
+	gtk_tree_path_free (path);
 }
+
 
 static gint
 ui_cat_listview_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
@@ -1036,7 +1053,7 @@ GtkTreeViewColumn	*column;
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_cat_listview_text_cell_data_function, GINT_TO_POINTER(LST_DEFCAT_NAME), NULL);
 	gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
+	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST*2);
 	gtk_tree_view_column_set_sort_column_id (column, LST_DEFCAT_SORT_NAME);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
