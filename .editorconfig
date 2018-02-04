@@ -1,0 +1,19 @@
+
+# Please follow these code style guidelines. You can use this file to
+# automatically configure your editor.
+# For instructions, see: http://editorconfig.org/
+
+[*.{c,h,xs}]
+charset                     = utf8
+indent_size                 = 4
+indent_style                = tab
+insert_final_newline        = true
+trim_trailing_whitespace    = true
+
+[*.xml]
+charset                     = utf8
+indent_size                 = 2
+indent_style                = space
+insert_final_newline        = true
+trim_trailing_whitespace    = true
+
