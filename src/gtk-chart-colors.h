@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -23,6 +23,8 @@
 #include <cairo.h>
 
 #define MASKCOL 255
+//#define MASKCOL 000
+
 #define COLTO16(col8) ( (col8 | col8<<8 ) )
 #define COLTOOVER(col8) ( (col8 + MASKCOL) / 2 )
 
@@ -78,7 +80,8 @@ enum colmap
 enum {
 	CHART_FONT_SIZE_TITLE,
 	CHART_FONT_SIZE_SUBTITLE,
-	CHART_FONT_SIZE_NORMAL
+	CHART_FONT_SIZE_NORMAL,
+	CHART_FONT_SIZE_SMALL
 };
 
 

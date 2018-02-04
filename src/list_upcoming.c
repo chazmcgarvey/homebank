@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -17,9 +17,21 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 #include "homebank.h"
 
 #include "list_upcoming.h"
+
+/****************************************************************************/
+/* Debug macros																*/
+/****************************************************************************/
+#define MYDEBUG 0
+
+#if MYDEBUG
+#define DB(x) (x);
+#else
+#define DB(x);
+#endif
 
 /* our global datas */
 extern struct HomeBank *GLOBALS;
@@ -169,22 +181,25 @@ Payee *pay;
 }
 
 /*
-** wording cell function
+** memo cell function
 */
-static void wording_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+static void memo_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *arc;
-gchar *txt;
+gchar *memo;
 gint weight;
 
 	gtk_tree_model_get(model, iter,
 		LST_DSPUPC_DATAS, &arc,
-		LST_DSPUPC_WORDING, &txt,
+		LST_DSPUPC_MEMO, &memo,
 		-1);
 
 	weight = arc == NULL ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL;
 
-	g_object_set(renderer, "weight", weight, "text", txt, NULL);
+	g_object_set(renderer, "weight", weight, "text", memo, NULL);
+
+	//leak
+	g_free(memo);
 
 }
 
@@ -282,6 +297,8 @@ static void list_upcoming_destroy(GtkTreeView *treeview, gpointer user_data)
 {
 GtkTreeViewColumn  *column;
 
+	DB( g_print ("\n[list_upcoming] destroy\n") );
+
 	//todo: unsafe to use direct column index
 	column = gtk_tree_view_get_column(treeview, 2);
 	if( column )
@@ -305,12 +322,14 @@ GtkWidget *view;
 GtkCellRenderer    *renderer;
 GtkTreeViewColumn  *column;
 
+	DB( g_print ("\n[list_upcoming] create\n") );
+
 	/* create list store */
 	store = gtk_list_store_new(
 	  	NUM_LST_DSPUPC,
 		G_TYPE_POINTER,
 		G_TYPE_BOOLEAN,	/* payee */
-		G_TYPE_STRING,	/* wording */
+		G_TYPE_STRING,	/* memo */
 		G_TYPE_DOUBLE,	/* expense */
 		G_TYPE_DOUBLE,	/* income */
 		G_TYPE_POINTER,	/* account */
@@ -390,7 +409,7 @@ GtkTreeViewColumn  *column;
 
 	gtk_tree_view_column_set_fixed_width(column, PREFS->pnl_upc_col_pay_width);
 
-	/* column: Wording */
+	/* column: Memo */
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set(renderer, 
 		"ellipsize", PANGO_ELLIPSIZE_END,
@@ -400,7 +419,7 @@ GtkTreeViewColumn  *column;
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Memo"));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, wording_cell_data_function, NULL, NULL);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, memo_cell_data_function, NULL, NULL);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	//gtk_tree_view_column_add_attribute(column, renderer, "text", 2);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPACC_NAME);

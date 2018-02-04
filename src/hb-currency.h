@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2012 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -27,9 +27,8 @@ typedef struct _iso4217		Currency4217;
 struct _currency
 {
 	guint32   	key;
-	//gushort 	flags;
+	gushort 	flags;
 	gchar		*name;
-	//gchar		*country;
 	gchar		*iso_code;
 	gboolean	sym_prefix;
 	gchar		*symbol;			/* max symbol is 3 digits in unicode but mostly is 1 digit */
@@ -39,12 +38,13 @@ struct _currency
 	gshort		_pad1;
 	gdouble		rate;
 	guint32		mdate;
-
 	/* unsaved datas */
 	gchar		format[8];			/* hold decimal format: '%.xf' */
 	gchar		monfmt[32];			/* hold monetary format: 'prefix %s suffix' */
-
 };
+
+// 0 is free
+#define CF_CUSTOM		(1<<1)
 
 
 struct _iso4217
@@ -56,15 +56,6 @@ struct _iso4217
 	gboolean   curr_is_prefix;
 	gchar      *curr_symbol;
 	gchar      *name;
-};
-
-typedef struct _ParseExchangeContext ParseExchangeContext;
-struct _ParseExchangeContext
-{
-	const gchar   *elt_name;
-	gchar   iso[8];
-	gdouble rate;
-
 };
 
 
@@ -83,12 +74,15 @@ gboolean da_cur_insert(Currency *item);
 gboolean da_cur_append(Currency *item);
 guint32 da_cur_get_max_key(void);
 
+Currency *da_cur_get_by_name(gchar *name);
 Currency *da_cur_get_by_iso_code(gchar *iso_code);
 Currency *da_cur_get(guint32 key);
 
 gboolean currency_is_used(guint32 key);
 Currency *currency_add_from_user(Currency4217 *curfmt);
-gboolean currency_sync_online(GError **error);
+gboolean currency_online_sync(GError **error);
+
+Currency4217 *iso4217format_get(gchar *code);
 
 
 #endif

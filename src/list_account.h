@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -41,7 +41,7 @@ enum
 /* list display account */
 enum
 {
-	LST_DSPACC_STATE,	/* fake column */
+	LST_DSPACC_POS,	/* fake column */
 	LST_DSPACC_NAME,	/* fake column */
 	LST_DSPACC_BANK,
 	LST_DSPACC_TODAY,

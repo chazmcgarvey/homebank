@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -65,6 +65,9 @@ gint dt;
 		{
 			case 1:
 				iconname = (acc->flags & AF_ADDED) ? ICONNAME_NEW : NULL;
+				// override if closed account
+				if( acc->flags & AF_CLOSED )
+					iconname = ICONNAME_CHANGES_PREVENT;
 				break;
 			case 2:
 				iconname = (acc->flags & AF_CHANGED) ? ICONNAME_HB_OPE_EDIT : NULL;
@@ -137,6 +140,9 @@ gchar *groupname;
 		    "weight", PANGO_WEIGHT_BOLD,
 		    "text", groupname, 
 		    NULL);
+
+	//leak
+	g_free(groupname);
 }
 
 
@@ -165,6 +171,9 @@ gchar *color;
 
 		tp = gtk_tree_model_get_path(model, iter);
 		expanded = gtk_tree_view_row_expanded(GTK_TREE_VIEW(gtk_tree_view_column_get_tree_view(col)), tp);
+	
+		//leak
+		gtk_tree_path_free(tp);
 	
 		if(!expanded)
 		{
@@ -237,13 +246,16 @@ gint retval = 0;
 gint dt1, dt2;
 Account *entry1, *entry2;
 gchar *name1, *name2;
+gint pos1, pos2;
 
     gtk_tree_model_get(model, a, 
+		LST_DSPACC_POS, &pos1,
     	LST_DSPACC_DATATYPE, &dt1, 
     	LST_DSPACC_DATAS, &entry1,
     	LST_DSPACC_NAME, &name1,
     	-1);
     gtk_tree_model_get(model, b, 
+		LST_DSPACC_POS, &pos2,
     	LST_DSPACC_DATATYPE, &dt2, 
     	LST_DSPACC_DATAS, &entry2,
     	LST_DSPACC_NAME, &name2,
@@ -256,7 +268,9 @@ gchar *name1, *name2;
 	else
 	if( dt1 == DSPACC_TYPE_HEADER && dt2 == DSPACC_TYPE_HEADER )
 	{
-		retval = hb_string_utf8_compare(name1, name2);
+		retval = pos1 - pos2;
+		if( !retval )
+			retval = hb_string_utf8_compare(name1, name2);
 	}
 
 	g_free(name2);
@@ -298,6 +312,8 @@ static void list_account_destroy(GtkTreeView *treeview, gpointer user_data)
 {
 GtkTreeViewColumn  *column;
 
+	DB( g_print ("\n[list_account] destroy\n") );
+
 	//todo: unsafe to use direct column index
 	column = gtk_tree_view_get_column(treeview, LST_DSPACC_NAME);
 	if( column )
@@ -313,6 +329,8 @@ GtkTreeStore *store;
 GtkWidget *view;
 GtkCellRenderer    *renderer;
 GtkTreeViewColumn  *column;
+
+	DB( g_print ("\n[list_account] create\n") );
 
 	/* create list store */
 	store = gtk_tree_store_new(

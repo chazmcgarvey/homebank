@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -314,14 +314,14 @@ guint32 catkey;
 			{
 				item = da_vehiclecost_malloc();
 				item->date = ope->date;
-				item->wording = ope->wording;
+				item->memo = ope->memo;
 				// get amount in base currency
 				//item->amount = ope->amount;
 				item->amount = hb_amount_base(ope->amount, ope->kcur);
 
-				item = repvehicle_eval_memofield(item, ope->wording);
+				item = repvehicle_eval_memofield(item, ope->memo);
 				data->vehicle_list = g_list_append(data->vehicle_list, item);
-				DB( g_print(" -> store acc=%d '%s' %.2f\n", ope->kacc, ope->wording, ope->amount) );
+				DB( g_print(" -> store acc=%d '%s' %.2f\n", ope->kacc, ope->memo, ope->amount) );
 			}
 		}
 		// eval split transaction
@@ -343,7 +343,7 @@ guint32 catkey;
 				{
 					item = da_vehiclecost_malloc();
 					item->date = ope->date;
-					item->wording = split->memo;
+					item->memo = split->memo;
 					// get amount in base currency
 					//item->amount = split->amount;
 					item->amount = hb_amount_base(split->amount, ope->kcur);
@@ -473,7 +473,7 @@ guint lastmeter = 0;
 
 				gtk_list_store_set (GTK_LIST_STORE(model), &iter,
 					LST_CAR_DATE    , item->date,
-					LST_CAR_WORDING , item->wording,
+					LST_CAR_MEMO    , item->memo,
 					LST_CAR_METER   , item->meter,
 					LST_CAR_FUEL    , item->fuel,
 					LST_CAR_PRICE   , ABS(trn_amount) / item->fuel,
@@ -677,7 +677,7 @@ GtkWidget *label, *widget, *table;
 gint row, col;
 GtkUIManager *ui;
 GtkActionGroup *actions;
-GtkAction *action;
+//GtkAction *action;
 GError *error = NULL;
 
 	data = g_malloc0(sizeof(struct repvehicle_data));
@@ -687,7 +687,7 @@ GError *error = NULL;
 
 	//disable define windows
 	GLOBALS->define_off++;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(2));
+	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
     /* create window, etc */
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -695,6 +695,7 @@ GError *error = NULL;
 
 	//store our window private data
 	g_object_set_data(G_OBJECT(window), "inst_data", (gpointer)data);
+	DB( g_print(" - new window=%p, inst_data=%p\n", window, data) );
 
 	gtk_window_set_title (GTK_WINDOW (window), _("Vehicle cost report"));
 
@@ -768,7 +769,7 @@ GError *error = NULL;
     gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
 
 	//ui manager
-	actions = gtk_action_group_new ("Account");
+	actions = gtk_action_group_new ("default");
 
 	//as we use gettext
    	gtk_action_group_set_translation_domain(actions, GETTEXT_PACKAGE);
@@ -777,8 +778,8 @@ GError *error = NULL;
 	gtk_action_group_add_actions (actions, entries, n_entries, data);
 
 	/* set which action should have priority in the toolbar */
-	action = gtk_action_group_get_action(actions, "Refresh");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Refresh");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
 
 	ui = gtk_ui_manager_new ();
@@ -1105,7 +1106,7 @@ GtkTreeViewColumn  *column;
 
 /*
 	LST_CAR_DATE,
-	LST_CAR_WORDING,
+	LST_CAR_MEMO,
 	LST_CAR_METER,
 	LST_CAR_FUEL,
 	LST_CAR_PRICE,
@@ -1115,14 +1116,14 @@ GtkTreeViewColumn  *column;
 
 */
 
-	/* column: Wording */
+	/* column: Memo */
 /*
 	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(column, _("Wording"));
+	gtk_tree_view_column_set_title(column, _("Memo"));
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 	renderer = gtk_cell_renderer_text_new();
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_WORDING);
+	gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 	//gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
 */
 

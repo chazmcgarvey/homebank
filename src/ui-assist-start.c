@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2017 Maxime DOYEN
+ *	Copyright (C) 1995-2018 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -46,6 +46,9 @@ on_assistant_apply (GtkWidget *widget, gpointer user_data)
 struct assist_start_data *data = user_data;
 Account *item;
 gdouble value;
+
+	DB( g_print("\n[ui-start] apply\n") );
+
 
 	/* set owner */
 	gchar *owner = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_owner));
@@ -98,6 +101,8 @@ gdouble value;
 	GLOBALS->changes_count++;
 
 	//our global list has changed, so update the treeview
+	//todo: #1693998 crappy to do this here
+	account_compute_balances ();
 	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_BALANCE+UF_REFRESHALL));
 
 }
@@ -106,6 +111,9 @@ static void
 on_assistant_close_cancel (GtkWidget *widget, gpointer user_data)
 {
 struct assist_start_data *data = user_data;
+
+	DB( g_print("\n[ui-start] close/cancel\n") );
+
 
 	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 	gtk_widget_destroy (data->window);
@@ -122,6 +130,9 @@ on_assistant_prepare (GtkWidget *widget, GtkWidget *page, gpointer user_data)
 struct assist_start_data *data = user_data;
 	gint current_page, n_pages;
   gchar *title;
+
+	DB( g_print("\n[ui-start] prepare\n") );
+
 
   current_page = gtk_assistant_get_current_page (GTK_ASSISTANT (widget));
   n_pages = gtk_assistant_get_n_pages (GTK_ASSISTANT (widget));
@@ -194,19 +205,21 @@ on_entry_changed (GtkWidget *widget, gpointer data)
 static void ui_start_assistant_property_change_action(GtkWidget *widget, gpointer user_data)
 {
 struct assist_start_data *data;
-Currency4217 *curfmt;
+struct curSelectContext selectCtx;
 	
 	DB( g_print("\n[ui-start] property_change_action\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	data->curfmt = NULL;
-
-	curfmt = ui_cur_select_dialog_new(GTK_WINDOW(data->window), CUR_SELECT_MODE_BASE);
-	if( curfmt != NULL )
+	ui_cur_select_dialog_new(GTK_WINDOW(data->window), CUR_SELECT_MODE_BASE, &selectCtx);
+	if( selectCtx.cur_4217 != NULL )
 	{
+	Currency4217 *curfmt;
 	gchar label[128];
 	gchar *name;
+		
+		curfmt = selectCtx.cur_4217;
 		
 		DB( g_printf("- user selected: '%s' '%s'\n", curfmt->curr_iso_code, curfmt->name) );
 
@@ -225,6 +238,9 @@ ui_start_assistant_property_fill (GtkWidget *assistant, struct assist_start_data
 {
 Currency *cur;
 gchar label[128];
+
+	DB( g_print("\n[ui-start] property_fill\n") );
+
 
 	gtk_entry_set_text(GTK_ENTRY(data->ST_owner), g_get_real_name ());
 
@@ -442,6 +458,9 @@ ui_start_assistant (void)
 {
 struct assist_start_data *data;
 GtkWidget *assistant, *page;
+
+	DB( g_print("\n[ui-start] new\n") );
+
 
 	data = g_malloc0(sizeof(struct assist_start_data));
 	if(!data) return NULL;

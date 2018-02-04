@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2017 Maxime DOYEN
+ *	Copyright (C) 1995-2018 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -786,7 +786,7 @@ GList *lxxx, *list;
 				}
 			}
 			
-			transaction_add(item, NULL, 0);
+			transaction_add(item);
 		}
 
 		/* Make iter point to the next row in the list store */

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -58,18 +58,21 @@ static void ui_repdist_action_legend(GtkAction *action, gpointer user_data);
 static void ui_repdist_action_rate(GtkAction *action, gpointer user_data);
 static void ui_repdist_action_filter(GtkAction *action, gpointer user_data);
 static void ui_repdist_action_refresh(GtkAction *action, gpointer user_data);
-static void ui_repdist_action_export(GtkAction *action, gpointer user_data);
+
+
+static GtkRadioActionEntry radio_entries[] = {
+  { "List"    , ICONNAME_HB_VIEW_LIST   , N_("List")   , NULL,    N_("View results as list"),   0 },
+  { "Column"  , ICONNAME_HB_VIEW_COLUMN , N_("Column") , NULL,    N_("View results as column"), 1 },
+  { "Donut"   , ICONNAME_HB_VIEW_DONUT  , N_("Donut")  , NULL,    N_("View results as donut"),  2 },
+};
+static guint n_radio_entries = G_N_ELEMENTS (radio_entries);
 
 
 static GtkActionEntry entries[] = {
-  { "List"    , ICONNAME_HB_VIEW_LIST   , N_("List")   , NULL,    N_("View results as list"), G_CALLBACK (ui_repdist_action_viewlist) },
-  { "Column"  , ICONNAME_HB_VIEW_COLUMN , N_("Column") , NULL,    N_("View results as column"), G_CALLBACK (ui_repdist_action_viewbar) },
-  { "Donut"   , ICONNAME_HB_VIEW_DONUT  , N_("Donut")  , NULL,    N_("View results as donut"), G_CALLBACK (ui_repdist_action_viewpie) },
-
   { "Filter"  , ICONNAME_HB_FILTER      , N_("Filter") , NULL,   N_("Edit filter"), G_CALLBACK (ui_repdist_action_filter) },
   { "Refresh" , ICONNAME_REFRESH        , N_("Refresh"), NULL,   N_("Refresh results"), G_CALLBACK (ui_repdist_action_refresh) },
 
-  { "Export"  , ICONNAME_HB_FILE_EXPORT , N_("Export")  , NULL,   N_("Export as CSV"), G_CALLBACK (ui_repdist_action_export) },
+  //{ "Export"  , ICONNAME_HB_FILE_EXPORT , N_("Export")  , NULL,   N_("Export as CSV"), G_CALLBACK (ui_repdist_action_export) },
 };
 static guint n_entries = G_N_ELEMENTS (entries);
 
@@ -112,7 +115,8 @@ static const gchar *ui_info =
 "    <toolitem action='Filter'/>"
 "    <toolitem action='Refresh'/>"
 "      <separator/>"
-"    <toolitem action='Export'/>"
+//"    <toolitem action='Export'/>"
+//		replaced by a menubutton
 "  </toolbar>"
 "</ui>";
 
@@ -123,7 +127,6 @@ static void ui_repdist_range_change(GtkWidget *widget, gpointer user_data);
 static void ui_repdist_detail(GtkWidget *widget, gpointer user_data);
 static void ui_repdist_update(GtkWidget *widget, gpointer user_data);
 static void ui_repdist_update_total(GtkWidget *widget, gpointer user_data);
-static void ui_repdist_export_csv(GtkWidget *widget, gpointer user_data);
 static void ui_repdist_compute(GtkWidget *widget, gpointer user_data);
 static void ui_repdist_sensitive(GtkWidget *widget, gpointer user_data);
 static void ui_repdist_toggle_detail(GtkWidget *widget, gpointer user_data);
@@ -132,7 +135,9 @@ static void ui_repdist_toggle_minor(GtkWidget *widget, gpointer user_data);
 static void ui_repdist_toggle_rate(GtkWidget *widget, gpointer user_data);
 static GtkWidget *ui_list_repdist_create(void);
 static void ui_repdist_update_daterange(GtkWidget *widget, gpointer user_data);
+static void ui_repdist_update_date_widget(GtkWidget *widget, gpointer user_data);
 
+static GString *ui_list_repdist_to_string(GtkTreeView *treeview, gboolean clipboard);
 static gint ui_list_repdist_compare_func (GtkTreeModel *model, GtkTreeIter  *a, GtkTreeIter  *b, gpointer      userdata);
 
 
@@ -216,6 +221,27 @@ gint tmpview;
 
 }
 
+
+static void ui_repdist_action_mode (GtkRadioAction *action, GtkRadioAction *current, gpointer user_data)
+{
+gint value;
+
+	value = gtk_radio_action_get_current_value(GTK_RADIO_ACTION(action));
+	switch( value )
+	{
+		case 0:
+			ui_repdist_action_viewlist(GTK_ACTION(action), user_data);
+			break;
+		case 1:
+			ui_repdist_action_viewbar(GTK_ACTION(action), user_data);
+			break;
+		case 2:
+			ui_repdist_action_viewpie(GTK_ACTION(action), user_data);
+			break;
+	}
+}
+
+
 static void ui_repdist_action_detail(GtkAction *action, gpointer user_data)
 {
 struct ui_repdist_data *data = user_data;
@@ -247,7 +273,13 @@ struct ui_repdist_data *data = user_data;
 	if(ui_flt_manage_dialog_new(data->window, data->filter, TRUE) != GTK_RESPONSE_REJECT)
 	{
 		ui_repdist_compute(data->window, NULL);
+		ui_repdist_update_date_widget(data->window, NULL);
 		ui_repdist_update_daterange(data->window, NULL);
+
+		g_signal_handler_block(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_OTHER);
+		g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+
 	}
 }
 
@@ -258,12 +290,12 @@ struct ui_repdist_data *data = user_data;
 	ui_repdist_compute(data->window, NULL);
 }
 
-static void ui_repdist_action_export(GtkAction *action, gpointer user_data)
+/*static void ui_repdist_action_export(GtkAction *action, gpointer user_data)
 {
 struct ui_repdist_data *data = user_data;
 
 	ui_repdist_export_csv(data->window, NULL);
-}
+}*/
 
 
 
@@ -323,6 +355,7 @@ gint year_from, year_ope, pos;
 	return(pos);
 }
 
+
 static void ui_repdist_date_change(GtkWidget *widget, gpointer user_data)
 {
 struct ui_repdist_data *data;
@@ -342,12 +375,10 @@ struct ui_repdist_data *data;
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_OTHER);
 	g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
 
-
 	ui_repdist_compute(widget, NULL);
 	ui_repdist_update_daterange(widget, NULL);
 
 }
-
 
 
 static void ui_repdist_range_change(GtkWidget *widget, gpointer user_data)
@@ -365,24 +396,18 @@ gint range;
 	{
 		filter_preset_daterange_set(data->filter, range, 0);
 
-		g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPDIST_MINDATE]);
-		g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPDIST_MAXDATE]);
-		
-		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), data->filter->mindate);
-		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->maxdate);
-		
-		g_signal_handler_unblock(data->PO_mindate, data->handler_id[HID_REPDIST_MINDATE]);
-		g_signal_handler_unblock(data->PO_maxdate, data->handler_id[HID_REPDIST_MAXDATE]);
+		ui_repdist_update_date_widget(data->window, NULL);
 
-		ui_repdist_compute(widget, NULL);
-		ui_repdist_update_daterange(widget, NULL);
+		ui_repdist_compute(data->window, NULL);
+		ui_repdist_update_daterange(data->window, NULL);
 	}
 	else
 	{
 		if(ui_flt_manage_dialog_new(data->window, data->filter, TRUE) != GTK_RESPONSE_REJECT)
 		{
+			ui_repdist_update_date_widget(data->window, NULL);
 			ui_repdist_compute(data->window, NULL);
-			ui_repdist_update_daterange(widget, NULL);
+			ui_repdist_update_daterange(data->window, NULL);
 		}
 	}
 }
@@ -569,8 +594,11 @@ gchar *title;
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
 	byamount = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_byamount));
-	tmpfor  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_by));
 	tmpkind = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_view));
+	tmpfor  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_by));
+
+	//debug option
+	DB( g_print(" option: byamount=%d tmpkind=%d '%s' tmpfor=%d '%s'\n\n", byamount, tmpkind, CYA_KIND2[tmpkind], tmpfor, CYA_STATSELECT[tmpfor]) );
 
 	// ensure not exp & inc for piechart
 	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
@@ -583,26 +611,32 @@ gchar *title;
 		tmpkind = 1;
 	}
 
+	// define view/sort column
+	column = LST_REPDIST_POS; 
 
-	DB( g_print(" tmpkind %d\n\n", tmpkind) );
+	if( byamount )
+	{
+		switch( tmpkind )
+		{
+			case 0: //Inc & Exp
+			case 3:
+				column = LST_REPDIST_BALANCE;
+				break;
+			case 1:
+				column = LST_REPDIST_EXPENSE;
+				break;
+			case 2:
+				column = LST_REPDIST_INCOME;
+				break;
+		}
+	}
 
-
-	column = byamount ? LST_REPDIST_EXPENSE+(tmpkind-1)*2 : LST_REPDIST_POS;
-	
-	//#833614 sort category/payee by name
-	//if(!byamount && tmpkind <= BY_REPDIST_PAYEE)
-	//	column = LST_REPDIST_NAME;
-		
 	DB( g_print(" sort on column %d\n\n", column) );
 
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column, GTK_SORT_DESCENDING);
 
-	column = LST_REPDIST_EXPENSE+(tmpkind-1)*2;
-
-	/* set chart color scheme */
 	gtk_chart_set_color_scheme(GTK_CHART(data->RE_chart), PREFS->report_color_scheme);
 
-	/* set chart title */
 	////TRANSLATORS: example 'Expense by Category'
 	title = g_strdup_printf(_("%s by %s"), _(CYA_KIND2[tmpkind]), _(CYA_STATSELECT[tmpfor]) );
 
@@ -610,23 +644,13 @@ gchar *title;
 	gboolean abs = (tmpkind == 1 || tmpkind == 2) ? TRUE : FALSE;
 	gtk_chart_set_absolute(GTK_CHART(data->RE_chart), abs);
 
-	
-	/* update bar chart */
-	DB( g_print(" set bar to %d %s\n\n", column, _(CYA_KIND2[tmpkind])) );
-	if( tmpkind == 0 )
-		gtk_chart_set_dualdatas(GTK_CHART(data->RE_chart), model, LST_REPDIST_EXPENSE, LST_REPDIST_INCOME, title, NULL);
-	else
-		gtk_chart_set_datas(GTK_CHART(data->RE_chart), model, column, title, NULL);
-
-
 	/* show xval for month/year and no by amount display */
 	xval = FALSE;
-
 
 	if( !byamount && (tmpfor == BY_REPDIST_MONTH || tmpfor == BY_REPDIST_YEAR) )
 	{
 		xval = TRUE;
-		switch( tmpfor)
+		/*switch( tmpfor)
 		{
 			case BY_REPDIST_MONTH:
 				gtk_chart_set_every_xval(GTK_CHART(data->RE_chart), 4);
@@ -634,14 +658,50 @@ gchar *title;
 			case BY_REPDIST_YEAR:
 				gtk_chart_set_every_xval(GTK_CHART(data->RE_chart), 2);
 				break;
-		}
+		}*/
 	}
 
 	gtk_chart_show_xval(GTK_CHART(data->RE_chart), xval);
 
+
+	/* update bar chart */
+	if( tmpkind == 0 ) //dual exp/inc
+	{
+		DB( g_print(" set bar to dual exp %d/inc %d\n\n", LST_REPDIST_EXPENSE, LST_REPDIST_INCOME) );
+		gtk_chart_set_dualdatas(GTK_CHART(data->RE_chart), model, LST_REPDIST_EXPENSE, LST_REPDIST_INCOME, title, NULL);
+	}
+	else
+	{
+		column = LST_REPDIST_EXPENSE+(tmpkind-1)*2;
+		DB( g_print(" set bar to %d\n\n", column) );
+		gtk_chart_set_datas(GTK_CHART(data->RE_chart), model, column, title, NULL);
+	}
+
+
 	g_free(title);
 	
 }
+
+
+static void ui_repdist_update_date_widget(GtkWidget *widget, gpointer user_data)
+{
+struct ui_repdist_data *data;
+
+	DB( g_print("\n[repdist] update date widget\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPDIST_MINDATE]);
+	g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPDIST_MAXDATE]);
+	
+	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), data->filter->mindate);
+	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->maxdate);
+	
+	g_signal_handler_unblock(data->PO_mindate, data->handler_id[HID_REPDIST_MINDATE]);
+	g_signal_handler_unblock(data->PO_maxdate, data->handler_id[HID_REPDIST_MAXDATE]);
+
+}
+
 
 static void ui_repdist_update_daterange(GtkWidget *widget, gpointer user_data)
 {
@@ -675,24 +735,97 @@ struct ui_repdist_data *data;
 
 }
 
-static void ui_repdist_export_csv(GtkWidget *widget, gpointer user_data)
+
+static void ui_repdist_export_result_clipboard(GtkWidget *widget, gpointer user_data)
 {
 struct ui_repdist_data *data;
-GtkTreeModel *model;
-GtkTreeIter	iter;
-gboolean valid;
+GtkClipboard *clipboard;
+GString *node;
+
+	DB( g_print("\n[repdist] export result clipboard\n") );
+
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	node = ui_list_repdist_to_string(GTK_TREE_VIEW(data->LV_report), TRUE);
+
+	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+	gtk_clipboard_set_text(clipboard, node->str, node->len);
+
+	g_string_free(node, TRUE);
+}
+
+
+static void ui_repdist_export_result_csv(GtkWidget *widget, gpointer user_data)
+{
+struct ui_repdist_data *data;
 gchar *filename = NULL;
+GString *node;
 GIOChannel *io;
-gchar *outstr, *name;
+gchar *name;
 gint tmpfor;
 
-	DB( g_print("\n[repdist] export csv\n") );
+	DB( g_print("\n[repdist] export result csv\n") );
 
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	tmpfor  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_by));
+	name = g_strdup_printf("hb-repstat_%s.csv", CYA_STATSELECT[tmpfor]);
 
-	name = g_strdup_printf("hb-stat_%s.csv", CYA_STATSELECT[tmpfor]);
+	if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filename, name) == TRUE )
+	{
+		DB( g_print(" + filename is %s\n", filename) );
+		io = g_io_channel_new_file(filename, "w", NULL);
+		if(io != NULL)
+		{
+			node = ui_list_repdist_to_string(GTK_TREE_VIEW(data->LV_report), FALSE);
+			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
+			g_io_channel_unref (io);
+			g_string_free(node, TRUE);
+		}
+		g_free( filename );
+	}
+	g_free(name);
+}
+
+
+static void ui_repdist_export_detail_clipboard(GtkWidget *widget, gpointer user_data)
+{
+struct ui_repdist_data *data;
+GtkClipboard *clipboard;
+GString *node;
+
+	DB( g_print("\n[repdist] export detail clipboard\n") );
+
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), TRUE);
+
+	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+	gtk_clipboard_set_text(clipboard, node->str, node->len);
+
+	g_string_free(node, TRUE);
+}
+
+
+static void ui_repdist_export_detail_csv(GtkWidget *widget, gpointer user_data)
+{
+struct ui_repdist_data *data;
+gchar *filename = NULL;
+GString *node;
+GIOChannel *io;
+gchar *name;
+gint tmpfor;
+
+	DB( g_print("\n[repdist] export detail csv\n") );
+
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	tmpfor  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_by));
+	name = g_strdup_printf("hb-repstat-detail_%s.csv", CYA_STATSELECT[tmpfor]);
 
 	if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filename, name) == TRUE )
 	{
@@ -701,44 +834,17 @@ gint tmpfor;
 		io = g_io_channel_new_file(filename, "w", NULL);
 		if(io != NULL)
 		{
-			// header
-			outstr = g_strdup_printf("%s;%s;%s;%s\n", _("Result"), _("expense"), _("Income"), _("Balance"));
-			g_io_channel_write_chars(io, outstr, -1, NULL, NULL);
-
-			model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
-			valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
-			while (valid)
-			{
-			gchar *name;
-			gdouble exp, inc, bal;
-
-				gtk_tree_model_get (model, &iter,
-					//LST_REPDIST_KEY, i,
-					LST_REPDIST_NAME   , &name,
-					LST_REPDIST_EXPENSE, &exp,
-					LST_REPDIST_INCOME , &inc,
-					LST_REPDIST_BALANCE, &bal,
-					-1);
-
-				outstr = g_strdup_printf("%s;%.2f;%.2f;%.2f\n", name, exp, inc, bal);
-				g_io_channel_write_chars(io, outstr, -1, NULL, NULL);
-
-				DB( g_print("%s", outstr) );
-
-				g_free(outstr);
-
-				valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
-			}
+			node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), FALSE);
+			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
 
 			g_io_channel_unref (io);
+			g_string_free(node, TRUE);
 		}
 
 		g_free( filename );
 	}
 
 	g_free(name);
-
-
 }
 
 
@@ -831,7 +937,7 @@ gdouble exprate, incrate, balrate;
 		{
 		Transaction *ope = list->data;
 			
-			DB( g_print("** testing '%s', cat=%d==> %d\n", ope->wording, ope->kcat, filter_test(data->filter, ope)) );
+			DB( g_print("** testing '%s', cat=%d==> %d\n", ope->memo, ope->kcat, filter_test(data->filter, ope)) );
 
 			if( (filter_test(data->filter, ope) == 1) )
 			{
@@ -1019,7 +1125,6 @@ gdouble exprate, incrate, balrate;
 				case BY_REPDIST_CATEGORY:
 					{
 					Category *entry = da_cat_get(i);
-
 						if(entry != NULL)
 						{
 							name = entry->key == 0 ? _("(no category)") : entry->name;
@@ -1153,32 +1258,41 @@ gdouble exprate, incrate, balrate;
 static void ui_repdist_sensitive(GtkWidget *widget, gpointer user_data)
 {
 struct ui_repdist_data *data;
-gboolean active;
-gboolean sensitive;
+GtkAction *action;
+gboolean visible, sensitive;
 gint page;
 
 	DB( g_print("\n[repdist] sensitive\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	active = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report)), NULL, NULL);
-
 	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
 
-	sensitive = page == 0 ? active : FALSE;
-//	gtk_widget_set_sensitive(data->TB_buttons[ACTION_REPBUDGET_DETAIL], sensitive);
-	gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/ToolBar/Detail"), sensitive);
+	visible = page == 0 ? TRUE : FALSE;
+	action = gtk_ui_manager_get_action(data->ui, "/ToolBar/Detail");
+	gtk_action_set_visible (action, visible);
+	//sensitive = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report)), NULL, NULL);
+	//gtk_action_set_sensitive(action, sensitive);
+	//action = gtk_ui_manager_get_action(data->ui, "/ToolBar/Export");
+	//gtk_action_set_visible (action, visible);
+	hb_widget_visible (data->BT_export, visible);
 
-	//view = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_view));
 
-	sensitive = page == 0 ? FALSE : TRUE;
-	gtk_widget_set_sensitive(data->LB_zoomx, sensitive);
-	gtk_widget_set_sensitive(data->RG_zoomx, sensitive);
-	gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/ToolBar/Legend"), sensitive);
+	visible = page == 0 ? FALSE : TRUE;
+	//todo: don't display for pie chart (get the type form chart)
+	
+	hb_widget_visible(data->LB_zoomx, visible);
+	hb_widget_visible(data->RG_zoomx, visible);
 
-	sensitive = page == 0 ? TRUE : FALSE;
-	gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/ToolBar/Rate"), sensitive);
+	visible = page == 0 ? FALSE : TRUE;
+	gtk_action_set_visible(gtk_ui_manager_get_action(data->ui, "/ToolBar/Legend"), visible);
 
+	visible = page == 0 ? TRUE : FALSE;
+	gtk_action_set_visible(gtk_ui_manager_get_action(data->ui, "/ToolBar/Rate"), visible);
+	
+	sensitive = gtk_tree_model_iter_n_children(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail)), NULL) > 0 ? TRUE : FALSE;
+	gtk_widget_set_sensitive(data->MI_detailtoclip, sensitive);
+	gtk_widget_set_sensitive(data->MI_detailtocsv, sensitive);
 }
 
 
@@ -1381,14 +1495,7 @@ static void ui_repdist_setup(struct ui_repdist_data *data)
 
 	filter_preset_daterange_set(data->filter, PREFS->date_range_rep, 0);
 	
-	g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPDIST_MINDATE]);
-	g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPDIST_MAXDATE]);
-
-	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), data->filter->mindate);
-	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->maxdate);
-
-	g_signal_handler_unblock(data->PO_mindate, data->handler_id[HID_REPDIST_MINDATE]);
-	g_signal_handler_unblock(data->PO_maxdate, data->handler_id[HID_REPDIST_MAXDATE]);
+	ui_repdist_update_date_widget(data->window, NULL);
 
 }
 
@@ -1405,7 +1512,6 @@ guint key = -1;
 	if (gtk_tree_selection_get_selected(treeselection, &model, &iter))
 	{
 		gtk_tree_model_get(model, &iter, LST_REPDIST_KEY, &key, -1);
-
 	}
 
 	DB( g_print(" - active is %d\n", key) );
@@ -1468,7 +1574,7 @@ GError *error = NULL;
 
 	//disable define windows
 	GLOBALS->define_off++;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(2));
+	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
     /* create window, etc */
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -1476,8 +1582,10 @@ GError *error = NULL;
 
 	//store our window private data
 	g_object_set_data(G_OBJECT(window), "inst_data", (gpointer)data);
+	DB( g_print(" - new window=%p, inst_data=%p\n", window, data) );
 
 	gtk_window_set_title (GTK_WINDOW (window), _("Statistics Report"));
+
 
 	//set the window icon
 	gtk_window_set_icon_name(GTK_WINDOW (window), ICONNAME_HB_REP_STATS);
@@ -1574,12 +1682,14 @@ GError *error = NULL;
     gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
 
 	//ui manager
-	actions = gtk_action_group_new ("Account");
+	actions = gtk_action_group_new ("default");
 
 	//as we use gettext
    	gtk_action_group_set_translation_domain(actions, GETTEXT_PACKAGE);
 
 	// data to action callbacks is set here (data)
+	gtk_action_group_add_radio_actions (actions, radio_entries, n_radio_entries, 0, G_CALLBACK(ui_repdist_action_mode), data);
+
 	gtk_action_group_add_actions (actions, entries, n_entries, data);
 
 	gtk_action_group_add_toggle_actions (actions,
@@ -1588,27 +1698,27 @@ GError *error = NULL;
 
 
 	/* set which action should have priority in the toolbar */
-	action = gtk_action_group_get_action(actions, "List");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "List");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
-	action = gtk_action_group_get_action(actions, "Column");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Column");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
-	action = gtk_action_group_get_action(actions, "Donut");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Donut");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
 	action = gtk_action_group_get_action(actions, "Detail");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//g_object_set(action, "is_important", TRUE, NULL);
 	g_object_set(action, "active", PREFS->stat_showdetail, NULL);
 
 	action = gtk_action_group_get_action(actions, "Rate");
 	g_object_set(action, "active", PREFS->stat_showrate, NULL);
 
-	action = gtk_action_group_get_action(actions, "Filter");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Filter");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
-	action = gtk_action_group_get_action(actions, "Refresh");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Refresh");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
 
 	ui = gtk_ui_manager_new ();
@@ -1627,6 +1737,47 @@ GError *error = NULL;
 	//toolbar
 	data->TB_bar = gtk_ui_manager_get_widget (ui, "/ToolBar");
 	gtk_box_pack_start (GTK_BOX (vbox), data->TB_bar, FALSE, FALSE, 0);
+
+	//add export menu button
+	GtkToolItem *toolitem;
+	GtkWidget *menu, *menuitem, *image;
+
+	menu = gtk_menu_new ();
+	//gtk_widget_set_halign (menu, GTK_ALIGN_END);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Result to clipboard"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_repdist_export_result_clipboard), data);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Result to CSV"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_repdist_export_result_csv), data);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Detail to clipboard"));
+	data->MI_detailtoclip = menuitem;
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_repdist_export_detail_clipboard), data);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Detail to CSV"));
+	data->MI_detailtocsv = menuitem;
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_repdist_export_detail_csv), data);
+
+	gtk_widget_show_all (menu);
+
+	widget = gtk_menu_button_new();
+	data->BT_export = widget;
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_FLAT);
+
+	//gtk_menu_button_set_direction (GTK_MENU_BUTTON(widget), GTK_ARROW_DOWN);
+	//gtk_widget_set_halign (widget, GTK_ALIGN_END);
+	image = gtk_image_new_from_icon_name (ICONNAME_HB_FILE_EXPORT, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	g_object_set (widget, "image", image, "popup", GTK_MENU(menu),  NULL);
+
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), widget);
+	gtk_toolbar_insert(GTK_TOOLBAR(data->TB_bar), GTK_TOOL_ITEM(toolitem), -1);
+
 
 	//infos + balance
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
@@ -1775,6 +1926,53 @@ GError *error = NULL;
 /*
 ** ============================================================================
 */
+
+
+static GString *ui_list_repdist_to_string(GtkTreeView *treeview, gboolean clipboard)
+{
+GString *node;
+GtkTreeModel *model;
+GtkTreeIter	iter;
+gboolean valid;
+const gchar *format;
+
+	node = g_string_new(NULL);
+
+	// header
+	format = (clipboard == TRUE) ? "%s\t%s\t%s\t%s\n" : "%s;%s;%s;%s\n";
+	g_string_append_printf(node, format, _("Result"), _("Expense"), _("Income"), _("Balance"));
+
+	model = gtk_tree_view_get_model(treeview);
+	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+	while (valid)
+	{
+	gchar *name;
+	gdouble exp, inc, bal;
+
+		gtk_tree_model_get (model, &iter,
+			//LST_REPDIST_KEY, i,
+			LST_REPDIST_NAME   , &name,
+			LST_REPDIST_EXPENSE, &exp,
+			LST_REPDIST_INCOME , &inc,
+			LST_REPDIST_BALANCE, &bal,
+			-1);
+
+		format = (clipboard == TRUE) ? "%s\t%.2f\t%.2f\t%.2f\n" : "%s;%.2f;%.2f;%.2f\n";
+		g_string_append_printf(node, format, name, exp, inc, bal);
+
+		//leak
+		g_free(name);
+		
+		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+	}
+
+	//DB( g_print("text is:\n%s", node->str) );
+
+	return node;
+}
+
+
+
 
 static void ui_list_repdist_rate_cell_data_function (GtkTreeViewColumn *col,
                            GtkCellRenderer   *renderer,

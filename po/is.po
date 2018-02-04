@@ -6,19 +6,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-22 18:52+0100\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2018-01-06 18:30+0100\n"
 "PO-Revision-Date: 2012-02-14 11:43+0000\n"
 "Last-Translator: Rúnar Freyr Þorsteinsson <runarf@gmail.com>\n"
 "Language-Team: Icelandic <is@li.org>\n"
-"Language: is\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2017-01-22 16:08+0000\n"
-"X-Generator: Launchpad (build 18302)\n"
+"X-Launchpad-Export-Date: 2018-01-06 18:08+0000\n"
+"X-Generator: Launchpad (build 18521)\n"
 
-#: ../data/homebank.desktop.in.in.h:1 ../src/dsp_mainwindow.c:879
+#: ../data/homebank.desktop.in.in.h:1 ../src/dsp_mainwindow.c:910
 msgid "HomeBank"
 msgstr "Heimabanki"
 
@@ -26,8 +25,8 @@ msgstr "Heimabanki"
 msgid "Personal finance"
 msgstr ""
 
-#: ../data/homebank.desktop.in.in.h:3 ../src/dsp_mainwindow.c:451
-#: ../src/dsp_mainwindow.c:883
+#: ../data/homebank.desktop.in.in.h:3 ../src/dsp_mainwindow.c:466
+#: ../src/dsp_mainwindow.c:914
 msgid "Free, easy, personal accounting for everyone"
 msgstr ""
 
@@ -37,8 +36,8 @@ msgstr ""
 
 #: ../data/homebank.appdata.xml.in.h:1
 msgid ""
-"HomeBank is a free software (as in \"free speech\" and also as in \"free beer"
-"\") that will assist you to manage your personal accounting."
+"HomeBank is a free software (as in \"free speech\" and also as in \"free "
+"beer\") that will assist you to manage your personal accounting."
 msgstr ""
 
 #: ../data/homebank.appdata.xml.in.h:2
@@ -53,119 +52,56 @@ msgid ""
 "personal accounting then HomeBank should be the software of choice."
 msgstr ""
 
-#. GTK_FILE_CHOOSER_ACTION_OPEN,
-#: ../src/dsp_account.c:403 ../src/ui-account.c:658
-#: ../src/ui-assist-import.c:950 ../src/ui-category.c:1307
-#: ../src/ui-category.c:1455 ../src/ui-currency.c:772 ../src/ui-currency.c:1048
-#: ../src/ui-dialogs.c:69 ../src/ui-dialogs.c:327 ../src/ui-dialogs.c:434
-#: ../src/ui-dialogs.c:489 ../src/ui-dialogs.c:549 ../src/ui-dialogs.c:600
-#: ../src/ui-dialogs.c:665 ../src/ui-dialogs.c:751 ../src/ui-filter.c:1270
-#: ../src/ui-hbfile.c:194 ../src/ui-payee.c:881 ../src/ui-payee.c:1042
-#: ../src/ui-pref.c:2022 ../src/ui-split.c:365 ../src/ui-transaction.c:1124
-msgid "_Cancel"
-msgstr ""
-
-#: ../src/dsp_account.c:405 ../src/ui-account.c:660
-#: ../src/ui-assist-import.c:952 ../src/ui-category.c:1309
-#: ../src/ui-currency.c:774 ../src/ui-currency.c:1050 ../src/ui-dialogs.c:328
-#: ../src/ui-dialogs.c:753 ../src/ui-filter.c:1272 ../src/ui-hbfile.c:196
-#: ../src/ui-payee.c:883 ../src/ui-pref.c:2024 ../src/ui-split.c:383
-#: ../src/ui-transaction.c:1125
-msgid "_OK"
-msgstr ""
-
-#: ../src/dsp_account.c:422
-msgid "Multiple edit transactions"
-msgstr ""
-
-#: ../src/dsp_account.c:437 ../src/ui-transaction.c:959
-msgid "_Date:"
-msgstr "_Dagur:"
-
-#: ../src/dsp_account.c:453 ../src/ui-payee.c:931 ../src/ui-transaction.c:987
-msgid "Pa_yment:"
-msgstr ""
-
-#: ../src/dsp_account.c:467 ../src/ui-filter.c:1027
-#: ../src/ui-transaction.c:1000
-msgid "_Info:"
-msgstr "_Upplýsingar"
-
-#: ../src/dsp_account.c:481 ../src/rep_balance.c:853 ../src/rep_time.c:1384
-#: ../src/ui-archive.c:1017 ../src/ui-assist-import.c:985
-#: ../src/ui-transaction.c:1008
-msgid "A_ccount:"
-msgstr "R_eikningur:"
-
-#: ../src/dsp_account.c:497 ../src/rep_time.c:1400 ../src/ui-archive.c:1034
-#: ../src/ui-assign.c:843 ../src/ui-transaction.c:1025
-msgid "_Payee:"
-msgstr "_Greiðandi"
-
-#: ../src/dsp_account.c:513 ../src/rep_time.c:1392 ../src/ui-archive.c:1042
-#: ../src/ui-assign.c:872 ../src/ui-hbfile.c:279 ../src/ui-payee.c:923
-#: ../src/ui-transaction.c:1034
-msgid "_Category:"
-msgstr "_Flokkur"
-
-#: ../src/dsp_account.c:529 ../src/ui-transaction.c:1059
-msgid "Ta_gs:"
-msgstr ""
-
-#: ../src/dsp_account.c:545 ../src/ui-transaction.c:1051
-msgid "M_emo:"
-msgstr ""
-
-#: ../src/dsp_account.c:730 ../src/dsp_account.c:740
+#: ../src/dsp_account.c:238 ../src/dsp_account.c:248
 msgid "Check internal transfert result"
 msgstr ""
 
-#: ../src/dsp_account.c:731
+#: ../src/dsp_account.c:239
 msgid "No inconsistency found !"
 msgstr ""
 
-#: ../src/dsp_account.c:741
+#: ../src/dsp_account.c:249
 #, c-format
 msgid ""
 "Inconsistency were found: %d\n"
 "do you want to review and fix ?"
 msgstr ""
 
-#: ../src/dsp_account.c:798
+#: ../src/dsp_account.c:305
 #, c-format
 msgid "Every transaction amount will be divided by %.6f."
 msgstr ""
 
-#: ../src/dsp_account.c:802
+#: ../src/dsp_account.c:309
 msgid ""
 "Are you sure you want to convert this account\n"
 "to Euro as Major currency?"
 msgstr ""
 
-#: ../src/dsp_account.c:804
+#: ../src/dsp_account.c:311
 msgid "_Convert"
 msgstr ""
 
-#: ../src/dsp_account.c:833
+#: ../src/dsp_account.c:342
 msgid "No transaction changed"
 msgstr "Engum færslum breytt"
 
-#: ../src/dsp_account.c:835
+#: ../src/dsp_account.c:344
 #, c-format
 msgid "transaction changed: %d"
 msgstr ""
 
-#: ../src/dsp_account.c:838
+#: ../src/dsp_account.c:347
 msgid "Automatic assignment result"
 msgstr ""
 
-#: ../src/dsp_account.c:1021
+#: ../src/dsp_account.c:467
 msgid ""
 "Do you want to create a template with\n"
 "each of the selected transaction ?"
 msgstr ""
 
-#: ../src/dsp_account.c:1618
+#: ../src/dsp_account.c:1142
 msgid ""
 "Do you want to delete\n"
 "each of the selected transaction ?"
@@ -173,291 +109,297 @@ msgstr ""
 "Viltu eyða\n"
 "völdum færslum ?"
 
-#: ../src/dsp_account.c:1707
+#: ../src/dsp_account.c:1208
 msgid "Are you sure you want to change the status to None?"
 msgstr ""
 
-#: ../src/dsp_account.c:1708 ../src/dsp_account.c:1770
+#: ../src/dsp_account.c:1209 ../src/dsp_account.c:1271
 msgid "Some transaction in your selection are already Reconciled."
 msgstr ""
 
-#: ../src/dsp_account.c:1709 ../src/ui-assist-start.c:265
-#: ../src/ui-dialogs.c:368
+#: ../src/dsp_account.c:1210 ../src/ui-assist-start.c:281
+#: ../src/ui-dialogs.c:374
 msgid "_Change"
 msgstr ""
 
-#: ../src/dsp_account.c:1769
+#: ../src/dsp_account.c:1270
 msgid "Are you sure you want to toggle the status Reconciled?"
 msgstr ""
 
-#: ../src/dsp_account.c:1771
+#: ../src/dsp_account.c:1272
 msgid "_Toggle"
 msgstr ""
 
-#: ../src/dsp_account.c:2032
+#: ../src/dsp_account.c:1537
 #, c-format
 msgid "%d items (%s)"
 msgstr ""
 
 #. TRANSLATORS: detail of the 3 %s which are some amount of selected transaction, 1=total 2=income, 3=expense
 #. msg = g_strdup_printf (_("transaction selected: %d, hidden: %d / %s ( %s - %s)"), count, data->hidden, buf3, buf1, buf2);
-#: ../src/dsp_account.c:2037
+#: ../src/dsp_account.c:1542
 #, c-format
 msgid "%d items (%d selected %s)"
 msgstr ""
 
-#: ../src/dsp_account.c:2134
+#: ../src/dsp_account.c:1639
 #, c-format
 msgid "[closed account] %s"
 msgstr ""
 
 #. name, icon-name, label
-#: ../src/dsp_account.c:2243
+#: ../src/dsp_account.c:1751
 msgid "A_ccount"
 msgstr ""
 
-#: ../src/dsp_account.c:2244
+#: ../src/dsp_account.c:1752
 msgid "Transacti_on"
 msgstr "Færs_la"
 
-#: ../src/dsp_account.c:2245
+#: ../src/dsp_account.c:1753
 msgid "_Status"
 msgstr ""
 
-#: ../src/dsp_account.c:2246 ../src/dsp_mainwindow.c:167
+#: ../src/dsp_account.c:1754 ../src/dsp_mainwindow.c:177
 msgid "_Tools"
 msgstr "_Tól"
 
-#: ../src/dsp_account.c:2248 ../src/dsp_mainwindow.c:182
-#: ../src/dsp_mainwindow.c:869 ../src/ui-account.c:1188
-#: ../src/ui-archive.c:1161 ../src/ui-assign.c:720 ../src/ui-budget.c:996
-#: ../src/ui-category.c:1819 ../src/ui-currency.c:1473 ../src/ui-dialogs.c:179
-#: ../src/ui-payee.c:1232 ../src/ui-transaction.c:1133
-#: ../src/ui-transaction.c:1141
+#: ../src/dsp_account.c:1758 ../src/dsp_mainwindow.c:192
+#: ../src/dsp_mainwindow.c:900 ../src/ui-account.c:1257
+#: ../src/ui-archive.c:1152 ../src/ui-assign.c:723 ../src/ui-budget.c:999
+#: ../src/ui-category.c:1836 ../src/ui-currency.c:1658 ../src/ui-dialogs.c:179
+#: ../src/ui-payee.c:1235 ../src/ui-transaction.c:1203
+#: ../src/ui-transaction.c:1211
 msgid "_Close"
 msgstr "_Loka"
 
-#: ../src/dsp_account.c:2248
+#: ../src/dsp_account.c:1758
 msgid "Close the current account"
 msgstr "Loka virkum reikningi"
 
 #. name, icon-name, label, accelerator, tooltip
-#: ../src/dsp_account.c:2251
+#: ../src/dsp_account.c:1761
 msgid "_Filter..."
 msgstr "_Sía..."
 
-#: ../src/dsp_account.c:2251
+#: ../src/dsp_account.c:1761
 msgid "Open the list filter"
 msgstr "Opna listasíuna"
 
-#: ../src/dsp_account.c:2252
+#: ../src/dsp_account.c:1762
 msgid "Convert to Euro..."
 msgstr ""
 
-#: ../src/dsp_account.c:2252
+#: ../src/dsp_account.c:1762
 msgid "Convert this account to Euro currency"
 msgstr ""
 
-#: ../src/dsp_account.c:2254
+#: ../src/dsp_account.c:1764
 msgid "_Add..."
 msgstr "_Bæta við..."
 
-#: ../src/dsp_account.c:2254
+#: ../src/dsp_account.c:1764
 msgid "Add a new transaction"
 msgstr "Bæta við nýrri færslu"
 
-#: ../src/dsp_account.c:2255
+#: ../src/dsp_account.c:1765
 msgid "_Inherit..."
 msgstr "_Erfa..."
 
-#: ../src/dsp_account.c:2255
+#: ../src/dsp_account.c:1765
 msgid "Inherit from the active transaction"
 msgstr "Erfa frá virkri færslu"
 
-#: ../src/dsp_account.c:2256
+#: ../src/dsp_account.c:1766
 msgid "_Edit..."
 msgstr "_Breyta..."
 
-#: ../src/dsp_account.c:2256
+#: ../src/dsp_account.c:1766
 msgid "Edit the active transaction"
 msgstr "Breyta virkri færslu"
 
-#: ../src/dsp_account.c:2258
+#: ../src/dsp_account.c:1768
 msgid "_None"
 msgstr ""
 
-#: ../src/dsp_account.c:2258
+#: ../src/dsp_account.c:1768
 msgid "Toggle none for selected transaction(s)"
 msgstr ""
 
-#: ../src/dsp_account.c:2259
+#: ../src/dsp_account.c:1769
 msgid "_Cleared"
 msgstr ""
 
-#: ../src/dsp_account.c:2259
+#: ../src/dsp_account.c:1769
 msgid "Toggle cleared for selected transaction(s)"
 msgstr ""
 
-#: ../src/dsp_account.c:2260
+#: ../src/dsp_account.c:1770
 msgid "_Reconciled"
 msgstr ""
 
-#: ../src/dsp_account.c:2260
+#: ../src/dsp_account.c:1770
 msgid "Toggle reconciled for selected transaction(s)"
 msgstr ""
 
-#: ../src/dsp_account.c:2262
+#: ../src/dsp_account.c:1772
 msgid "_Multiple Edit..."
 msgstr ""
 
-#: ../src/dsp_account.c:2262
+#: ../src/dsp_account.c:1772
 msgid "Edit multiple transaction"
 msgstr ""
 
-#: ../src/dsp_account.c:2263
+#: ../src/dsp_account.c:1773
 msgid "Create template..."
 msgstr ""
 
-#: ../src/dsp_account.c:2263
+#: ../src/dsp_account.c:1773
 msgid "Create template"
 msgstr ""
 
-#: ../src/dsp_account.c:2264
+#: ../src/dsp_account.c:1774
 msgid "_Delete..."
 msgstr ""
 
-#: ../src/dsp_account.c:2264
+#: ../src/dsp_account.c:1774
 msgid "Delete selected transaction(s)"
 msgstr ""
 
-#: ../src/dsp_account.c:2266
+#: ../src/dsp_account.c:1776
 msgid "Auto. assignments"
 msgstr ""
 
-#: ../src/dsp_account.c:2266
+#: ../src/dsp_account.c:1776
 msgid "Run automatic assignments"
 msgstr ""
 
-#: ../src/dsp_account.c:2267
+#: ../src/dsp_account.c:1777
 msgid "Export QIF..."
 msgstr ""
 
-#: ../src/dsp_account.c:2267 ../src/ui-dialogs.c:431
+#: ../src/dsp_account.c:1777 ../src/ui-dialogs.c:437
 msgid "Export as QIF"
 msgstr "Flytja út sem QIF"
 
-#: ../src/dsp_account.c:2268
+#: ../src/dsp_account.c:1778
 msgid "Export CSV..."
 msgstr "Útflytja CSV..."
 
-#: ../src/dsp_account.c:2268 ../src/rep_budget.c:84 ../src/rep_stats.c:72
-#: ../src/rep_time.c:73 ../src/rep_vehicle.c:67 ../src/ui-dialogs.c:481
+#: ../src/dsp_account.c:1778 ../src/rep_vehicle.c:67 ../src/ui-dialogs.c:487
 msgid "Export as CSV"
 msgstr "Útflytja sem CSV"
 
-#: ../src/dsp_account.c:2270
+#: ../src/dsp_account.c:1780
 msgid "Check internal xfer..."
 msgstr ""
 
-#: ../src/dsp_account.c:2403 ../src/dsp_mainwindow.c:2667
+#. = = = = = = = = future version = = = = = = = =
+#: ../src/dsp_account.c:1783
+msgid "Export PDF..."
+msgstr ""
+
+#: ../src/dsp_account.c:1783
+msgid "Export as PDF"
+msgstr ""
+
+#: ../src/dsp_account.c:1921 ../src/dsp_mainwindow.c:2780
 msgid "Add"
 msgstr "Bæta við"
 
-#: ../src/dsp_account.c:2406
+#: ../src/dsp_account.c:1924
 msgid "Inherit"
 msgstr "Erfa"
 
-#: ../src/dsp_account.c:2409
+#: ../src/dsp_account.c:1927
 msgid "Edit"
 msgstr "Breyta"
 
-#: ../src/dsp_account.c:2412 ../src/rep_stats.c:69
+#: ../src/dsp_account.c:1930 ../src/rep_stats.c:72
 msgid "Filter"
 msgstr "Sía"
 
 #. balances area
-#: ../src/dsp_account.c:2464
+#: ../src/dsp_account.c:1984
 msgid "Bank:"
 msgstr "Banki:"
 
-#: ../src/dsp_account.c:2470
+#: ../src/dsp_account.c:1990
 msgid "Today:"
 msgstr "Í dag:"
 
-#: ../src/dsp_account.c:2476
+#: ../src/dsp_account.c:1996
 msgid "Future:"
 msgstr "Framtíðinni:"
 
-#: ../src/dsp_account.c:2499 ../src/rep_balance.c:892 ../src/rep_budget.c:1128
-#: ../src/rep_stats.c:1555 ../src/rep_time.c:1447 ../src/rep_vehicle.c:748
+#: ../src/dsp_account.c:2020 ../src/rep_balance.c:940 ../src/rep_budget.c:1224
+#: ../src/rep_stats.c:1663 ../src/rep_time.c:1527 ../src/rep_vehicle.c:749
 msgid "_Range:"
 msgstr "_Drægni:"
 
-#: ../src/dsp_account.c:2504 ../src/ui-account.c:1276
-#: ../src/ui-assist-start.c:376
+#: ../src/dsp_account.c:2025 ../src/ui-account.c:1345
+#: ../src/ui-assist-start.c:392
 msgid "_Type:"
 msgstr "_Gerð:"
 
-#: ../src/dsp_account.c:2509 ../src/ui-archive.c:1050
-#: ../src/ui-transaction.c:1043
+#: ../src/dsp_account.c:2030 ../src/ui-archive.c:1041
+#: ../src/ui-transaction.c:1113
 msgid "_Status:"
 msgstr ""
 
-#: ../src/dsp_account.c:2514
+#: ../src/dsp_account.c:2035
 msgid "Reset _filters"
 msgstr ""
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp_account.c:2519 ../src/rep_balance.c:871 ../src/rep_budget.c:1115
-#: ../src/rep_stats.c:1526 ../src/rep_time.c:1425 ../src/rep_vehicle.c:735
+#: ../src/dsp_account.c:2040 ../src/rep_balance.c:919 ../src/rep_budget.c:1211
+#: ../src/rep_stats.c:1634 ../src/rep_time.c:1505 ../src/rep_vehicle.c:736
 msgid "Euro _minor"
 msgstr ""
 
-#. header
-#: ../src/dsp_mainwindow.c:150 ../src/dsp_mainwindow.c:2654
-#: ../src/list_operation.c:52 ../src/list_operation.c:1127
-#: ../src/list_operation.c:1383 ../src/rep_budget.c:70 ../src/rep_budget.c:402
-#: ../src/rep_budget.c:1510 ../src/rep_stats.c:141 ../src/rep_time.c:121
-#: ../src/ui-budget.c:243 ../src/ui-dialogs.c:234 ../src/ui-filter.c:1327
-#: ../src/ui-split.c:406
+#: ../src/dsp_mainwindow.c:160 ../src/dsp_mainwindow.c:2767
+#: ../src/list_operation.c:1188 ../src/list_operation.c:1444
+#: ../src/rep_budget.c:70 ../src/rep_budget.c:1519 ../src/rep_budget.c:1704
+#: ../src/rep_stats.c:146 ../src/rep_time.c:123 ../src/ui-budget.c:245
+#: ../src/ui-dialogs.c:234 ../src/ui-split.c:406
 msgid "Category"
 msgstr "Flokkur"
 
-#: ../src/dsp_mainwindow.c:151 ../src/rep_budget.c:70 ../src/rep_stats.c:142
+#: ../src/dsp_mainwindow.c:161 ../src/rep_budget.c:70 ../src/rep_stats.c:147
 msgid "Subcategory"
 msgstr "Undirflokkur"
 
 #. name, icon-name, label
-#: ../src/dsp_mainwindow.c:160
+#: ../src/dsp_mainwindow.c:170
 msgid "_File"
 msgstr "_Skrá"
 
-#: ../src/dsp_mainwindow.c:161 ../src/ui-pref.c:1206
+#: ../src/dsp_mainwindow.c:171 ../src/ui-pref.c:1153
 msgid "_Import"
 msgstr "_Flytja inn"
 
-#: ../src/dsp_mainwindow.c:162 ../src/ui-category.c:1988
-#: ../src/ui-currency.c:1545 ../src/ui-payee.c:1323
+#: ../src/dsp_mainwindow.c:172 ../src/ui-category.c:2005
+#: ../src/ui-currency.c:1730 ../src/ui-payee.c:1326
 msgid "_Edit"
 msgstr "_Breyta"
 
-#: ../src/dsp_mainwindow.c:163
+#: ../src/dsp_mainwindow.c:173
 msgid "_View"
 msgstr "_Skoða"
 
-#: ../src/dsp_mainwindow.c:164
+#: ../src/dsp_mainwindow.c:174
 msgid "_Manage"
 msgstr "_Sýsla"
 
-#: ../src/dsp_mainwindow.c:165
+#: ../src/dsp_mainwindow.c:175
 msgid "_Transactions"
 msgstr "_Færslur"
 
-#: ../src/dsp_mainwindow.c:166
+#: ../src/dsp_mainwindow.c:176
 msgid "_Reports"
 msgstr "_Skýrslur"
 
-#: ../src/dsp_mainwindow.c:168
+#: ../src/dsp_mainwindow.c:178
 msgid "_Help"
 msgstr "_Hjálp"
 
@@ -465,565 +407,621 @@ msgstr "_Hjálp"
 #. { "Export"       , NULL, N_("Export to") },
 #. name, icon-name, label, accelerator, tooltip
 #. FileMenu
-#: ../src/dsp_mainwindow.c:175
+#: ../src/dsp_mainwindow.c:185
 msgid "_New"
 msgstr "_Nýtt"
 
-#: ../src/dsp_mainwindow.c:175
+#: ../src/dsp_mainwindow.c:185
 msgid "Create a new file"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:176
+#: ../src/dsp_mainwindow.c:186
 msgid "_Open..."
 msgstr "_Opna..."
 
-#: ../src/dsp_mainwindow.c:176 ../src/dsp_mainwindow.c:2727
+#: ../src/dsp_mainwindow.c:186 ../src/dsp_mainwindow.c:2840
 msgid "Open a file"
 msgstr "Opna skrá"
 
-#: ../src/dsp_mainwindow.c:177 ../src/ui-dialogs.c:435 ../src/ui-dialogs.c:482
-#: ../src/ui-dialogs.c:543 ../src/ui-dialogs.c:666
+#: ../src/dsp_mainwindow.c:187 ../src/ui-dialogs.c:441 ../src/ui-dialogs.c:488
+#: ../src/ui-dialogs.c:549 ../src/ui-dialogs.c:673
 msgid "_Save"
 msgstr "Vi_sta"
 
-#: ../src/dsp_mainwindow.c:177
+#: ../src/dsp_mainwindow.c:187
 msgid "Save the current file"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:178
+#: ../src/dsp_mainwindow.c:188
 msgid "Save _As..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:178
+#: ../src/dsp_mainwindow.c:188
 msgid "Save the current file with a different name"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:179
+#: ../src/dsp_mainwindow.c:189
 msgid "Revert"
 msgstr "Afturkalla"
 
-#: ../src/dsp_mainwindow.c:179
+#: ../src/dsp_mainwindow.c:189
 msgid "Revert to a saved version of this file"
 msgstr "Afturkalla í vistaða útgáfu af þessari skrá"
 
-#: ../src/dsp_mainwindow.c:181
+#: ../src/dsp_mainwindow.c:191
 msgid "Properties..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:181
+#: ../src/dsp_mainwindow.c:191
 msgid "Configure the file"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:182
+#: ../src/dsp_mainwindow.c:192
 msgid "Close the current file"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:183
+#: ../src/dsp_mainwindow.c:193
 msgid "_Quit"
 msgstr "_Hætta"
 
-#: ../src/dsp_mainwindow.c:183
+#: ../src/dsp_mainwindow.c:193
 msgid "Quit HomeBank"
 msgstr ""
 
 #. Exchange
-#: ../src/dsp_mainwindow.c:186
+#: ../src/dsp_mainwindow.c:196
 msgid "QIF file..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:186 ../src/dsp_mainwindow.c:187
-#: ../src/dsp_mainwindow.c:188
+#: ../src/dsp_mainwindow.c:196 ../src/dsp_mainwindow.c:197
+#: ../src/dsp_mainwindow.c:198
 msgid "Open the import assistant"
 msgstr "Opna innflutnings aðstoð"
 
-#: ../src/dsp_mainwindow.c:187
+#: ../src/dsp_mainwindow.c:197
 msgid "OFX/QFX file..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:188
+#: ../src/dsp_mainwindow.c:198
 msgid "CSV file..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:190
+#: ../src/dsp_mainwindow.c:200
 msgid "Export QIF file..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:190
+#: ../src/dsp_mainwindow.c:200
 msgid "Export all account in a QIF file"
 msgstr ""
 
 #. EditMenu
-#: ../src/dsp_mainwindow.c:193
+#: ../src/dsp_mainwindow.c:203
 msgid "Preferences..."
 msgstr "Stillingar"
 
-#: ../src/dsp_mainwindow.c:193
+#: ../src/dsp_mainwindow.c:203
 msgid "Configure HomeBank"
 msgstr ""
 
 #. ManageMenu
-#: ../src/dsp_mainwindow.c:196
+#: ../src/dsp_mainwindow.c:206
 msgid "Currencies..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:196
+#: ../src/dsp_mainwindow.c:206
 msgid "Configure the currencies"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:197
+#: ../src/dsp_mainwindow.c:207
 msgid "Acc_ounts..."
 msgstr "Rei_kningar"
 
-#: ../src/dsp_mainwindow.c:197
+#: ../src/dsp_mainwindow.c:207
 msgid "Configure the accounts"
 msgstr "Sýsla með reikninga"
 
-#: ../src/dsp_mainwindow.c:198
+#: ../src/dsp_mainwindow.c:208
 msgid "_Payees..."
 msgstr "Greiðendur..."
 
-#: ../src/dsp_mainwindow.c:198
+#: ../src/dsp_mainwindow.c:208
 msgid "Configure the payees"
 msgstr "Sýsla með greiðendur"
 
-#: ../src/dsp_mainwindow.c:199
+#: ../src/dsp_mainwindow.c:209
 msgid "Categories..."
 msgstr "Flokkar..."
 
-#: ../src/dsp_mainwindow.c:199
+#: ../src/dsp_mainwindow.c:209
 msgid "Configure the categories"
 msgstr "Sýsla með flokka"
 
-#: ../src/dsp_mainwindow.c:200
+#: ../src/dsp_mainwindow.c:210
 msgid "Scheduled/Template..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:200
+#: ../src/dsp_mainwindow.c:210
 msgid "Configure the scheduled/template transactions"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:201
+#: ../src/dsp_mainwindow.c:211
 msgid "Budget..."
 msgstr "Eyðsluáætlun..."
 
-#: ../src/dsp_mainwindow.c:201
+#: ../src/dsp_mainwindow.c:211
 msgid "Configure the budget"
 msgstr "Sýsla með eyðsluáætlun"
 
-#: ../src/dsp_mainwindow.c:202
+#: ../src/dsp_mainwindow.c:212
 msgid "Assignments..."
 msgstr "Gildingar..."
 
-#: ../src/dsp_mainwindow.c:202
+#: ../src/dsp_mainwindow.c:212
 msgid "Configure the automatic assignments"
 msgstr "Samskipa sjálfvirkri gildingu"
 
 #. TxnMenu
-#: ../src/dsp_mainwindow.c:205
+#: ../src/dsp_mainwindow.c:215
 msgid "Show..."
 msgstr "Sýna..."
 
-#: ../src/dsp_mainwindow.c:205
+#: ../src/dsp_mainwindow.c:215
 msgid "Shows selected account transactions"
 msgstr "Sýnir valdar reikningsfærslur"
 
-#: ../src/dsp_mainwindow.c:206
+#: ../src/dsp_mainwindow.c:216
 msgid "Add..."
 msgstr "Bæta við..."
 
-#: ../src/dsp_mainwindow.c:206
+#: ../src/dsp_mainwindow.c:216
 msgid "Add transactions"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:207
+#: ../src/dsp_mainwindow.c:217
 msgid "Set scheduler..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:207
+#: ../src/dsp_mainwindow.c:217
 msgid "Configure the transaction scheduler"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:208
+#: ../src/dsp_mainwindow.c:218
 msgid "Post scheduled"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:208 ../src/ui-pref.c:1836
+#: ../src/dsp_mainwindow.c:218 ../src/ui-pref.c:1785
 msgid "Post pending scheduled transactions"
 msgstr ""
 
 #. ReportMenu
-#: ../src/dsp_mainwindow.c:211
+#: ../src/dsp_mainwindow.c:221
 msgid "_Statistics..."
 msgstr "_Tölulegar upplýsingar..."
 
-#: ../src/dsp_mainwindow.c:211
+#: ../src/dsp_mainwindow.c:221
 msgid "Open the Statistics report"
 msgstr "Opna skýrslu yfir tölulegar upplýsingar"
 
-#: ../src/dsp_mainwindow.c:212
+#: ../src/dsp_mainwindow.c:222
 msgid "_Trend Time..."
 msgstr "_Hneigðar Tími..."
 
-#: ../src/dsp_mainwindow.c:212
+#: ../src/dsp_mainwindow.c:222
 msgid "Open the Trend Time report"
 msgstr "Opna skýrslu yfir Hneigðar tíma"
 
-#: ../src/dsp_mainwindow.c:213
+#: ../src/dsp_mainwindow.c:223
 msgid "B_udget..."
 msgstr "E_yðsluáætlun..."
 
-#: ../src/dsp_mainwindow.c:213
+#: ../src/dsp_mainwindow.c:223
 msgid "Open the Budget report"
 msgstr "Opna skýrslu um eyðsluáætlun"
 
-#: ../src/dsp_mainwindow.c:214
+#: ../src/dsp_mainwindow.c:224
 msgid "Balance..."
 msgstr "Staða..."
 
-#: ../src/dsp_mainwindow.c:214
+#: ../src/dsp_mainwindow.c:224
 msgid "Open the Balance report"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:215
+#: ../src/dsp_mainwindow.c:225
 msgid "_Vehicle cost..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:215
+#: ../src/dsp_mainwindow.c:225
 msgid "Open the Vehicle cost report"
 msgstr ""
 
 #. Tools
-#: ../src/dsp_mainwindow.c:218
+#: ../src/dsp_mainwindow.c:228
 msgid "Show welcome dialog..."
 msgstr "sýna velkomin svarglugga..."
 
-#: ../src/dsp_mainwindow.c:219
+#: ../src/dsp_mainwindow.c:229
 msgid "File statistics..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:220
+#: ../src/dsp_mainwindow.c:230
 msgid "Anonymize..."
 msgstr ""
 
 #. HelpMenu
-#: ../src/dsp_mainwindow.c:223
+#: ../src/dsp_mainwindow.c:233
 msgid "_Contents"
 msgstr "_Innihald"
 
-#: ../src/dsp_mainwindow.c:223
+#: ../src/dsp_mainwindow.c:233
 msgid "Documentation about HomeBank"
 msgstr "Fylgiskjöl með HeimaBanka"
 
-#: ../src/dsp_mainwindow.c:224
+#: ../src/dsp_mainwindow.c:234
 msgid "Get Help Online..."
 msgstr "Fá aðstoð á netinu..."
 
-#: ../src/dsp_mainwindow.c:224
+#: ../src/dsp_mainwindow.c:234
 msgid "Connect to the LaunchPad website for online help"
 msgstr "Tengstu LaunchPad vefsíðunni fyrir nethjálp"
 
-#: ../src/dsp_mainwindow.c:225
-msgid "Translate this Application..."
-msgstr "Þýða þennan hugbúnað..."
+#: ../src/dsp_mainwindow.c:236
+msgid "Check for updates..."
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:225
-msgid "Connect to the LaunchPad website to help translate this application"
-msgstr "Tengstu LaunchPad vefsíðunni til að hjálpa við að þýða þennan hugbúnað"
+#: ../src/dsp_mainwindow.c:236
+msgid "Visit HomeBank website to check for update"
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:226
+#: ../src/dsp_mainwindow.c:237
+msgid "Release Notes"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:237
+msgid "Display the release notes"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:238
 msgid "Report a Problem..."
 msgstr "Tilkynna vandamál..."
 
-#: ../src/dsp_mainwindow.c:226
+#: ../src/dsp_mainwindow.c:238
 msgid "Connect to the LaunchPad website to help fix problems"
 msgstr ""
 "Tengstu LaunchPad vefsíðunni til að hjálpa við að greiða úr vanddamálum"
 
-#: ../src/dsp_mainwindow.c:228
+#: ../src/dsp_mainwindow.c:239
+msgid "Translate this Application..."
+msgstr "Þýða þennan hugbúnað..."
+
+#: ../src/dsp_mainwindow.c:239
+msgid "Connect to the LaunchPad website to help translate this application"
+msgstr ""
+"Tengstu LaunchPad vefsíðunni til að hjálpa við að þýða þennan hugbúnað"
+
+#: ../src/dsp_mainwindow.c:241
 msgid "_About"
 msgstr "_Um"
 
-#: ../src/dsp_mainwindow.c:228
+#: ../src/dsp_mainwindow.c:241
 msgid "About HomeBank"
 msgstr "Un HeimaBanka"
 
 #. name         , icon-name, label, accelerator, tooltip, callback, is_active
-#: ../src/dsp_mainwindow.c:236
+#: ../src/dsp_mainwindow.c:249
 msgid "_Toolbar"
 msgstr "_Tækjastika"
 
-#: ../src/dsp_mainwindow.c:237
+#: ../src/dsp_mainwindow.c:250
 msgid "_Top spending"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:238
+#: ../src/dsp_mainwindow.c:251
 msgid "_Scheduled list"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:239 ../src/ui-pref.c:92
+#: ../src/dsp_mainwindow.c:252 ../src/ui-pref.c:85
 msgid "Euro minor"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:369
+#: ../src/dsp_mainwindow.c:384
 #, c-format
 msgid "Revert unsaved changes to file '%s'?"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:372
+#: ../src/dsp_mainwindow.c:387
 msgid ""
 "- Changes made to the file will be permanently lost\n"
 "- File will be reloaded from the last save (.xhb~)"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:379
+#: ../src/dsp_mainwindow.c:394
 msgid "_Revert"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:567
+#: ../src/dsp_mainwindow.c:580
 msgid "Are you sure you want to anonymize the file?"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:570
+#: ../src/dsp_mainwindow.c:583
 msgid ""
 "Proceeding will anonymize any text, \n"
 "like 'account x', 'payee y', 'memo z', ..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:577
+#: ../src/dsp_mainwindow.c:590
 msgid "_Anonymize"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:866
+#: ../src/dsp_mainwindow.c:897
 msgid "Welcome to HomeBank"
 msgstr "Velkomin(n) í HeimaBankann"
 
-#: ../src/dsp_mainwindow.c:893
+#: ../src/dsp_mainwindow.c:924
 msgid "What do you want to do:"
 msgstr "Hvað viltu gera:"
 
-#: ../src/dsp_mainwindow.c:897
+#: ../src/dsp_mainwindow.c:928
 msgid "Read HomeBank _Manual"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:901
+#: ../src/dsp_mainwindow.c:932
 msgid "Configure _preferences"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:905
+#: ../src/dsp_mainwindow.c:936
 msgid "Create a _new file"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:909
+#: ../src/dsp_mainwindow.c:940
 msgid "_Open an existing file"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:913
+#: ../src/dsp_mainwindow.c:944
 msgid "Open the _example file"
 msgstr "Opna _sýnishorna skrá"
 
 #. hb_label_set_amount(GTK_LABEL(data->TX_topamount), total, GLOBALS->kcur, GLOBALS->minor);
-#: ../src/dsp_mainwindow.c:1157
+#: ../src/dsp_mainwindow.c:1191
 msgid "Top spending"
 msgstr ""
 
 #. future usage
-#: ../src/dsp_mainwindow.c:1168
+#: ../src/dsp_mainwindow.c:1202
 #, c-format
 msgid "Top %d spending"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1335 ../src/rep_stats.c:1025 ../src/rep_stats.c:1045
-#: ../src/ui-budget.c:131 ../src/ui-category.c:393 ../src/ui-category.c:594
+#: ../src/dsp_mainwindow.c:1369 ../src/rep_stats.c:1130 ../src/rep_stats.c:1150
+#: ../src/ui-budget.c:131 ../src/ui-category.c:393 ../src/ui-category.c:611
 msgid "(no category)"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1356
+#: ../src/dsp_mainwindow.c:1390
 msgid "Other"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1595
+#: ../src/dsp_mainwindow.c:1631
 msgid "No transaction to add"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1597
+#: ../src/dsp_mainwindow.c:1633
 #, c-format
 msgid "transaction added: %d"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1600
+#: ../src/dsp_mainwindow.c:1636
 msgid "Check scheduled transactions result"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1717 ../src/dsp_mainwindow.c:2049
-#: ../src/rep_vehicle.c:846
+#: ../src/dsp_mainwindow.c:1753 ../src/dsp_mainwindow.c:2155
+#: ../src/rep_vehicle.c:847
 msgid "Total"
 msgstr "Samtals"
 
-#: ../src/dsp_mainwindow.c:1797 ../src/ui-currency.c:1166
+#: ../src/dsp_mainwindow.c:1772
+#, c-format
+msgid ""
+"Your are about to open the backup file '%s'.\n"
+"\n"
+"Are you sure you want to do this ?"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1776
+msgid "Open a backup file ?"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1778
+msgid "_Open backup"
+msgstr ""
+
+#: ../src/dsp_mainwindow.c:1869 ../src/ui-currency.c:1312
 msgid "Unknow error"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1802 ../src/dsp_mainwindow.c:1877
+#: ../src/dsp_mainwindow.c:1874 ../src/dsp_mainwindow.c:1959
 #, c-format
 msgid "I/O error for file '%s'."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1805
+#: ../src/dsp_mainwindow.c:1877
 #, c-format
 msgid "The file '%s' is not a valid HomeBank file."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1808
+#: ../src/dsp_mainwindow.c:1880
 #, c-format
 msgid ""
 "The file '%s' was saved with a higher version of HomeBank\n"
 "and cannot be loaded by the current version."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1813 ../src/dsp_mainwindow.c:1880
-#: ../src/dsp_mainwindow.c:2558
+#: ../src/dsp_mainwindow.c:1885 ../src/dsp_mainwindow.c:1962
+#: ../src/dsp_mainwindow.c:2671
 msgid "File error"
 msgstr "Skráarvilla"
 
-#: ../src/dsp_mainwindow.c:1929
+#: ../src/dsp_mainwindow.c:2018
 msgid "(no institution)"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2081
+#: ../src/dsp_mainwindow.c:2187
 msgid "Grand total"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2559
+#: ../src/dsp_mainwindow.c:2672
 #, c-format
 msgid "The file %s is not a valid HomeBank file."
 msgstr "%s er ekki valin HeimaBanka skrá."
 
-#: ../src/dsp_mainwindow.c:2642 ../src/dsp_mainwindow.c:2731
+#: ../src/dsp_mainwindow.c:2755 ../src/dsp_mainwindow.c:2844
 msgid "Open"
 msgstr "Opna"
 
-#: ../src/dsp_mainwindow.c:2648 ../src/list_operation.c:1032
-#: ../src/list_operation.c:1351 ../src/list_upcoming.c:443
-#: ../src/rep_time.c:121 ../src/ui-account.c:1272 ../src/ui-assist-import.c:60
-#: ../src/ui-dialogs.c:207 ../src/ui-filter.c:1340
+#: ../src/dsp_mainwindow.c:2761 ../src/list_operation.c:1093
+#: ../src/list_operation.c:1412 ../src/list_upcoming.c:462
+#: ../src/rep_time.c:123 ../src/ui-account.c:1341 ../src/ui-assist-import.c:60
+#: ../src/ui-dialogs.c:207
 msgid "Account"
 msgstr "Reikningur"
 
-#: ../src/dsp_mainwindow.c:2651 ../src/list_operation.c:47
-#: ../src/list_operation.c:1067 ../src/list_operation.c:1380
-#: ../src/list_upcoming.c:381 ../src/rep_stats.c:143 ../src/rep_time.c:121
-#: ../src/ui-archive.c:289 ../src/ui-assign.c:40 ../src/ui-dialogs.c:225
-#: ../src/ui-filter.c:1332 ../src/ui-pref.c:132
+#: ../src/dsp_mainwindow.c:2764 ../src/hb-export.c:448
+#: ../src/list_operation.c:1128 ../src/list_operation.c:1441
+#: ../src/list_upcoming.c:400 ../src/rep_stats.c:148 ../src/rep_time.c:123
+#: ../src/ui-archive.c:289 ../src/ui-assign.c:41 ../src/ui-dialogs.c:225
+#: ../src/ui-pref.c:125
 msgid "Payee"
 msgstr "Greiðandi"
 
 #. TRANSLATORS: an archive is stored transaction buffers (kind of bookmark to prefill manual insertion)
-#: ../src/dsp_mainwindow.c:2658
+#: ../src/dsp_mainwindow.c:2771
 msgid "Archive"
 msgstr "Bunki"
 
 #. column: Income
-#: ../src/dsp_mainwindow.c:2661 ../src/dsp_mainwindow.c:2673
-#: ../src/rep_budget.c:74 ../src/rep_budget.c:402 ../src/rep_budget.c:884
-#: ../src/rep_budget.c:1525
+#: ../src/dsp_mainwindow.c:2774 ../src/dsp_mainwindow.c:2786
+#: ../src/rep_budget.c:74 ../src/rep_budget.c:966 ../src/rep_budget.c:1519
+#: ../src/rep_budget.c:1719
 msgid "Budget"
 msgstr "Eyðsluáætlun"
 
-#: ../src/dsp_mainwindow.c:2664
+#: ../src/dsp_mainwindow.c:2777
 msgid "Show"
 msgstr "Sýna"
 
-#: ../src/dsp_mainwindow.c:2670
+#: ../src/dsp_mainwindow.c:2783
 msgid "Statistics"
 msgstr "Tölfræði"
 
 #. column: Balance
-#: ../src/dsp_mainwindow.c:2676 ../src/list_operation.c:54
-#: ../src/list_operation.c:1145 ../src/rep_balance.c:1259
-#: ../src/rep_stats.c:154 ../src/rep_stats.c:705 ../src/rep_stats.c:1928
+#: ../src/dsp_mainwindow.c:2789 ../src/hb-export.c:452
+#: ../src/list_operation.c:1206 ../src/rep_balance.c:1312
+#: ../src/rep_stats.c:159 ../src/rep_stats.c:1943 ../src/rep_stats.c:2126
 msgid "Balance"
 msgstr "Staða"
 
-#: ../src/dsp_mainwindow.c:2679 ../src/ui-hbfile.c:275
+#: ../src/dsp_mainwindow.c:2792 ../src/ui-hbfile.c:275
 msgid "Vehicle cost"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2724 ../src/ui-dialogs.c:476 ../src/ui-dialogs.c:538
-#: ../src/ui-dialogs.c:601
+#: ../src/dsp_mainwindow.c:2837 ../src/ui-dialogs.c:482 ../src/ui-dialogs.c:544
+#: ../src/ui-dialogs.c:608
 msgid "_Open"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2728
+#: ../src/dsp_mainwindow.c:2841
 msgid "Open a recently used file"
 msgstr "Opna fyrrum opnaða skrá"
 
-#: ../src/dsp_mainwindow.c:2823
+#: ../src/dsp_mainwindow.c:2962
 msgid "Your accounts"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2838 ../src/ui-budget.c:1099
-#: ../src/ui-category.c:1973
+#: ../src/dsp_mainwindow.c:2977 ../src/ui-budget.c:1104
+#: ../src/ui-category.c:1990
 msgid "Expand all"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2842 ../src/ui-budget.c:1103
-#: ../src/ui-category.c:1977
+#: ../src/dsp_mainwindow.c:2981 ../src/ui-budget.c:1108
+#: ../src/ui-category.c:1994
 msgid "Collapse all"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2869
-#, fuzzy
+#: ../src/dsp_mainwindow.c:2998
 msgid "Show all"
-msgstr "Sýna_upplýsingar"
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:2874
+#: ../src/dsp_mainwindow.c:3003
 msgid "By type"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2875
+#: ../src/dsp_mainwindow.c:3004
 msgid "By institition"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2926
+#: ../src/dsp_mainwindow.c:3061
 msgid "Where your money goes"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:2985
+#: ../src/dsp_mainwindow.c:3120
 msgid "Scheduled transactions"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:3001
+#: ../src/dsp_mainwindow.c:3136
 msgid "Skip"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:3005
+#: ../src/dsp_mainwindow.c:3140
 msgid "Edit & Post"
 msgstr ""
 
 #. TRANSLATORS: Posting a scheduled transaction is the action to materialize it into its target account.
 #. TRANSLATORS: Before that action the automated transaction occurrence is pending and not yet really existing.
-#: ../src/dsp_mainwindow.c:3011
+#: ../src/dsp_mainwindow.c:3146
 msgid "Post"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:3026
+#: ../src/dsp_mainwindow.c:3161
 msgid "maximum post date"
 msgstr ""
 
-#: ../src/hb-archive.c:163
+#: ../src/hb-archive.c:171
 msgid "(new archive)"
 msgstr "(nýtt skjalasafn)"
 
-#: ../src/hb-category.c:977
+#: ../src/hb-category.c:1007 ../src/hb-payee.c:579
 msgid "invalid CSV format"
 msgstr ""
+
+#: ../src/hb-export.c:446 ../src/list_operation.c:1105
+#: ../src/list_operation.c:1423 ../src/rep_balance.c:1293
+#: ../src/rep_vehicle.c:218 ../src/rep_vehicle.c:1098 ../src/ui-pref.c:1487
+msgid "Date"
+msgstr "Dagsetning"
+
+#: ../src/hb-export.c:447 ../src/list_operation.c:951 ../src/ui-pref.c:2189
+msgid "Info"
+msgstr "Upplýsingar"
+
+#: ../src/hb-export.c:449 ../src/list_operation.c:1136
+#: ../src/list_operation.c:1432 ../src/list_upcoming.c:420
+#: ../src/ui-archive.c:273 ../src/ui-assign.c:40 ../src/ui-pref.c:124
+#: ../src/ui-split.c:410
+msgid "Memo"
+msgstr ""
+
+#. column: Amount
+#: ../src/hb-export.c:450 ../src/list_operation.c:1164
+#: ../src/list_operation.c:1435 ../src/rep_time.c:1793 ../src/rep_time.c:1915
+#: ../src/rep_vehicle.c:222 ../src/rep_vehicle.c:1143 ../src/ui-split.c:414
+msgid "Amount"
+msgstr "Upphæð"
 
 #: ../src/hb-filter.c:74
 #, c-format
 msgid "<i>from</i> %s <i>to</i> %s"
 msgstr "<i>frá</i> %s <i>til</i> %s"
 
-#: ../src/hb-hbfile.c:543
+#: ../src/hb-hbfile.c:569
 msgid "Unknown"
 msgstr ""
 
@@ -1043,28 +1041,28 @@ msgstr ""
 msgid "mi./l"
 msgstr ""
 
-#: ../src/homebank.c:69
+#: ../src/homebank.c:70
 msgid "Output version information and exit"
 msgstr "Úttaka upplýsingar um útgáfu og hætta"
 
-#: ../src/homebank.c:72
+#: ../src/homebank.c:73
 msgid "[FILE]"
 msgstr "[SKRÁ]"
 
-#: ../src/homebank.c:294
+#: ../src/homebank.c:314
 msgid "Browser error."
 msgstr ""
 
-#: ../src/homebank.c:295
+#: ../src/homebank.c:315
 #, c-format
 msgid "Could not display the URL '%s'"
 msgstr "Gat ekki birt vefslóðina '%s'"
 
-#: ../src/homebank.c:900 ../src/homebank.c:901
+#: ../src/homebank.c:904 ../src/homebank.c:905
 msgid "HomeBank options"
 msgstr "Stillingar HeimaBanka"
 
-#: ../src/homebank.c:1030
+#: ../src/homebank.c:1034
 #, c-format
 msgid "Unable to open '%s', the file does not exist.\n"
 msgstr "Get ekki opnað '%s', skráin er ekki til\n"
@@ -1074,183 +1072,156 @@ msgstr "Get ekki opnað '%s', skráin er ekki til\n"
 msgid "(account %d)"
 msgstr "(reikningur %d)"
 
-#: ../src/list_account.c:364 ../src/ui-assist-import.c:2090
+#. gtk_widget_show(GTK_WIDGET(page));
+#: ../src/list_account.c:382 ../src/ui-assist-import.c:2090
+#: ../src/ui-filter.c:558 ../src/ui-filter.c:1486
 msgid "Accounts"
 msgstr ""
 
 #. Bank
-#: ../src/list_account.c:376 ../src/ui-account.c:40
+#: ../src/list_account.c:394 ../src/ui-account.c:41
 msgid "Bank"
 msgstr "Banki"
 
 #. Today
-#: ../src/list_account.c:380
+#: ../src/list_account.c:398
 msgid "Today"
 msgstr "Í dag"
 
 #. Future
-#: ../src/list_account.c:384
+#: ../src/list_account.c:402
 msgid "Future"
 msgstr "Framtíð"
 
-#. datas
-#. status
-#. date
-#: ../src/list_operation.c:46 ../src/list_operation.c:881 ../src/ui-pref.c:2240
-msgid "Info"
-msgstr "Upplýsingar"
-
-#: ../src/list_operation.c:48 ../src/list_operation.c:1075
-#: ../src/list_operation.c:1371 ../src/list_upcoming.c:401
-#: ../src/ui-archive.c:273 ../src/ui-assign.c:39 ../src/ui-pref.c:131
-#: ../src/ui-split.c:410
-msgid "Memo"
+#: ../src/list_operation.c:472
+msgid "- split -"
 msgstr ""
 
-#. column: Amount
-#: ../src/list_operation.c:49 ../src/list_operation.c:1103
-#: ../src/list_operation.c:1374 ../src/rep_time.c:608 ../src/rep_time.c:1751
-#: ../src/rep_vehicle.c:222 ../src/rep_vehicle.c:1142 ../src/ui-filter.c:1317
-#: ../src/ui-split.c:414
-msgid "Amount"
-msgstr "Upphæð"
+#: ../src/list_operation.c:1146
+msgid "Status"
+msgstr ""
 
 #. column: Expense
-#: ../src/list_operation.c:50 ../src/list_operation.c:1111
-#: ../src/list_upcoming.c:415 ../src/rep_balance.c:1251 ../src/rep_budget.c:72
-#: ../src/rep_stats.c:152 ../src/rep_stats.c:1916 ../src/ui-category.c:39
+#: ../src/list_operation.c:1172 ../src/list_upcoming.c:434
+#: ../src/rep_balance.c:1304 ../src/rep_budget.c:72 ../src/rep_stats.c:157
+#: ../src/rep_stats.c:1943 ../src/rep_stats.c:2114 ../src/ui-category.c:39
 #: ../src/ui-filter.c:49
 msgid "Expense"
 msgstr "Útgjöld"
 
 #. column: Income
-#: ../src/list_operation.c:51 ../src/list_operation.c:1119
-#: ../src/list_upcoming.c:426 ../src/rep_balance.c:1255 ../src/rep_budget.c:72
-#: ../src/rep_stats.c:153 ../src/rep_stats.c:705 ../src/rep_stats.c:1922
-#: ../src/ui-category.c:40 ../src/ui-filter.c:50
+#: ../src/list_operation.c:1180 ../src/list_upcoming.c:445
+#: ../src/rep_balance.c:1308 ../src/rep_budget.c:72 ../src/rep_stats.c:158
+#: ../src/rep_stats.c:1943 ../src/rep_stats.c:2120 ../src/ui-category.c:40
+#: ../src/ui-filter.c:50
 msgid "Income"
 msgstr "Innkoma"
 
-#: ../src/list_operation.c:53 ../src/list_operation.c:1135
+#: ../src/list_operation.c:1196
 msgid "Tags"
 msgstr "Merki"
 
-#: ../src/list_operation.c:55 ../src/list_operation.c:1085
-#: ../src/ui-filter.c:1307
-msgid "Status"
-msgstr ""
-
-#: ../src/list_operation.c:478
-msgid "- split -"
-msgstr ""
-
-#. common (date + status + amount)
-#. label = gtk_label_new(_("General"));
-#. page = ui_flt_manage_page_general(&data);
-#. gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
-#.
-#: ../src/list_operation.c:1044 ../src/list_operation.c:1362
-#: ../src/rep_balance.c:1240 ../src/rep_vehicle.c:218 ../src/rep_vehicle.c:1097
-#: ../src/ui-filter.c:1302 ../src/ui-pref.c:1540
-msgid "Date"
-msgstr "Dagsetning"
-
 #. TRANSLATORS: title of list column to inform the scheduled transaction is Late
-#: ../src/list_upcoming.c:335
+#: ../src/list_upcoming.c:354
 msgid "Late"
 msgstr ""
 
-#: ../src/list_upcoming.c:367
+#: ../src/list_upcoming.c:386
 msgid "Next date"
 msgstr ""
 
-#: ../src/rep_balance.c:76 ../src/rep_budget.c:80 ../src/rep_stats.c:65
-#: ../src/rep_time.c:66
+#: ../src/rep_balance.c:76 ../src/rep_budget.c:81 ../src/rep_stats.c:64
+#: ../src/rep_time.c:65
 msgid "List"
 msgstr "Listi"
 
-#: ../src/rep_balance.c:76 ../src/rep_budget.c:80 ../src/rep_stats.c:65
-#: ../src/rep_time.c:66
+#: ../src/rep_balance.c:76 ../src/rep_budget.c:81 ../src/rep_stats.c:64
+#: ../src/rep_time.c:65
 msgid "View results as list"
 msgstr "Skoða niðurstöður sem lista"
 
-#: ../src/rep_balance.c:77 ../src/rep_time.c:67
+#: ../src/rep_balance.c:77 ../src/rep_time.c:66
 msgid "Line"
 msgstr "Lína"
 
-#: ../src/rep_balance.c:77 ../src/rep_time.c:67
+#: ../src/rep_balance.c:77 ../src/rep_time.c:66
 msgid "View results as lines"
 msgstr "Skoða niðurstöður sem línur"
 
-#. { "Column"  , ICONNAME_HB_VIEW_COLUMN, N_("Column") , NULL,    N_("View results as column"), G_CALLBACK (ui_reptime_action_viewcolumn) },
 #. { "Filter"  , ICONNAME_HB_FILTER    , N_("Filter") , NULL,   N_("Edit the filter"), G_CALLBACK (ui_reptime_action_filter) },
-#: ../src/rep_balance.c:78 ../src/rep_budget.c:82 ../src/rep_stats.c:70
-#: ../src/rep_time.c:71 ../src/rep_vehicle.c:65
+#: ../src/rep_balance.c:83 ../src/rep_budget.c:88 ../src/rep_stats.c:73
+#: ../src/rep_time.c:73 ../src/rep_vehicle.c:65
 msgid "Refresh"
 msgstr "Endurhlaða"
 
-#: ../src/rep_balance.c:78 ../src/rep_budget.c:82 ../src/rep_stats.c:70
-#: ../src/rep_time.c:71 ../src/rep_vehicle.c:65
+#: ../src/rep_balance.c:83 ../src/rep_budget.c:88 ../src/rep_stats.c:73
+#: ../src/rep_time.c:73 ../src/rep_vehicle.c:65
 msgid "Refresh results"
 msgstr "Endurhlaða niðurstöðum"
 
 #. name, icon-name
-#: ../src/rep_balance.c:85 ../src/rep_budget.c:91 ../src/rep_stats.c:79
-#: ../src/rep_time.c:79
+#: ../src/rep_balance.c:90 ../src/rep_budget.c:97 ../src/rep_stats.c:82
+#: ../src/rep_time.c:81
 msgid "Detail"
 msgstr "Upplýsingar"
 
 #. label, accelerator
-#: ../src/rep_balance.c:86 ../src/rep_budget.c:92 ../src/rep_stats.c:80
-#: ../src/rep_time.c:80
+#: ../src/rep_balance.c:91 ../src/rep_budget.c:98 ../src/rep_stats.c:83
+#: ../src/rep_time.c:82
 msgid "Toggle detail"
 msgstr "Víxla upplýsingum"
 
 #. //TRANSLATORS: count of transaction in balancedrawn / count of total transaction under abalancedrawn amount threshold
-#: ../src/rep_balance.c:313
+#: ../src/rep_balance.c:331
 #, c-format
 msgid "%d/%d under %s"
 msgstr "%d/%d undir %s"
 
-#: ../src/rep_balance.c:826
+#: ../src/rep_balance.c:874
 msgid "Balance report"
 msgstr ""
 
-#: ../src/rep_balance.c:849 ../src/rep_budget.c:1096 ../src/rep_stats.c:1503
-#: ../src/rep_time.c:1373 ../src/rep_vehicle.c:723
+#: ../src/rep_balance.c:897 ../src/rep_budget.c:1187 ../src/rep_stats.c:1611
+#: ../src/rep_time.c:1453 ../src/rep_vehicle.c:724
 msgid "Display"
 msgstr ""
 
-#: ../src/rep_balance.c:860 ../src/rep_time.c:1408
+#: ../src/rep_balance.c:901 ../src/rep_time.c:1464 ../src/ui-archive.c:1008
+#: ../src/ui-assist-import.c:985 ../src/ui-transaction.c:1078
+#: ../src/ui-txn-multi.c:445
+msgid "A_ccount:"
+msgstr "R_eikningur:"
+
+#: ../src/rep_balance.c:908 ../src/rep_time.c:1488
 msgid "Select _all"
 msgstr "Velja _allt"
 
-#: ../src/rep_balance.c:865
+#: ../src/rep_balance.c:913
 msgid "Each _day"
 msgstr "Hvern _dag"
 
-#: ../src/rep_balance.c:876 ../src/rep_stats.c:1532 ../src/rep_time.c:1430
+#: ../src/rep_balance.c:924 ../src/rep_stats.c:1640 ../src/rep_time.c:1510
 msgid "_Zoom X:"
 msgstr "_Þysja X:"
 
-#: ../src/rep_balance.c:888 ../src/rep_budget.c:1124 ../src/rep_stats.c:1551
-#: ../src/rep_time.c:1443 ../src/rep_vehicle.c:744
+#: ../src/rep_balance.c:936 ../src/rep_budget.c:1220 ../src/rep_stats.c:1659
+#: ../src/rep_time.c:1523 ../src/rep_vehicle.c:745
 msgid "Date filter"
 msgstr ""
 
-#: ../src/rep_balance.c:898 ../src/rep_budget.c:1134 ../src/rep_stats.c:1561
-#: ../src/rep_time.c:1453 ../src/rep_vehicle.c:754 ../src/ui-filter.c:960
-#: ../src/ui-filter.c:1073
+#: ../src/rep_balance.c:946 ../src/rep_budget.c:1230 ../src/rep_stats.c:1669
+#: ../src/rep_time.c:1533 ../src/rep_vehicle.c:755 ../src/ui-filter.c:1163
+#: ../src/ui-filter.c:1266
 msgid "_From:"
 msgstr "_Frá:"
 
-#: ../src/rep_balance.c:904 ../src/rep_budget.c:1140 ../src/rep_stats.c:1567
-#: ../src/rep_time.c:1459 ../src/rep_vehicle.c:760 ../src/ui-filter.c:968
-#: ../src/ui-filter.c:1080
+#: ../src/rep_balance.c:952 ../src/rep_budget.c:1236 ../src/rep_stats.c:1675
+#: ../src/rep_time.c:1539 ../src/rep_vehicle.c:761 ../src/ui-filter.c:1169
+#: ../src/ui-filter.c:1273
 msgid "_To:"
 msgstr "_Til:"
 
-#: ../src/rep_budget.c:72 ../src/rep_stats.c:151
+#: ../src/rep_budget.c:72 ../src/rep_stats.c:156
 msgid "Exp. & Inc."
 msgstr ""
 
@@ -1259,456 +1230,500 @@ msgid "Spent & Budget"
 msgstr "Eyðsla & Eyðsluáætlun"
 
 #. column: Expense
-#: ../src/rep_budget.c:74 ../src/rep_budget.c:402 ../src/rep_budget.c:1521
+#: ../src/rep_budget.c:74 ../src/rep_budget.c:1519 ../src/rep_budget.c:1715
 msgid "Spent"
 msgstr "Eyðsla"
 
 #. column: Result
-#. header
-#: ../src/rep_budget.c:74 ../src/rep_budget.c:402 ../src/rep_budget.c:884
-#: ../src/rep_budget.c:1529 ../src/rep_stats.c:705 ../src/rep_stats.c:1905
+#: ../src/rep_budget.c:74 ../src/rep_budget.c:966 ../src/rep_budget.c:1519
+#: ../src/rep_budget.c:1723 ../src/rep_stats.c:1943 ../src/rep_stats.c:2103
 msgid "Result"
 msgstr "Niðurstaða"
 
-#: ../src/rep_budget.c:81
+#: ../src/rep_budget.c:82
 msgid "Stack"
 msgstr ""
 
-#: ../src/rep_budget.c:81
+#: ../src/rep_budget.c:82
 msgid "View results as stack bars"
 msgstr ""
 
-#: ../src/rep_budget.c:84 ../src/rep_stats.c:72 ../src/rep_time.c:73
-#: ../src/rep_vehicle.c:67
-msgid "Export"
-msgstr "Flytja út"
-
-#: ../src/rep_budget.c:832
+#: ../src/rep_budget.c:906
 msgid " over"
 msgstr ""
 
-#: ../src/rep_budget.c:837
+#: ../src/rep_budget.c:912
 msgid " left"
 msgstr ""
 
-#: ../src/rep_budget.c:839
+#: ../src/rep_budget.c:915
 msgid " under"
 msgstr ""
 
 #. update stack chart
-#: ../src/rep_budget.c:878
+#: ../src/rep_budget.c:960
 #, c-format
 msgid "Budget for %s"
 msgstr ""
 
-#: ../src/rep_budget.c:1071
+#: ../src/rep_budget.c:1162
 msgid "Budget report"
 msgstr "Skýrsla yfir kostnaðaráætlun"
 
-#: ../src/rep_budget.c:1100 ../src/rep_time.c:1377
+#: ../src/rep_budget.c:1191 ../src/rep_time.c:1457
 msgid "_For:"
 msgstr "_Fyrir:"
 
-#: ../src/rep_budget.c:1108
+#: ../src/rep_budget.c:1199
 msgid "_Kind:"
 msgstr "_Tegund:"
 
-#: ../src/rep_budget.c:1209
+#: ../src/rep_budget.c:1206
+msgid "Only out of budget"
+msgstr ""
+
+#. gtk_widget_set_halign (menu, GTK_ALIGN_END);
+#: ../src/rep_budget.c:1300 ../src/rep_stats.c:1748 ../src/rep_time.c:1606
+msgid "_Result to clipboard"
+msgstr ""
+
+#: ../src/rep_budget.c:1304 ../src/rep_stats.c:1752 ../src/rep_time.c:1610
+msgid "_Result to CSV"
+msgstr ""
+
+#: ../src/rep_budget.c:1308 ../src/rep_stats.c:1756 ../src/rep_time.c:1614
+msgid "_Detail to clipboard"
+msgstr ""
+
+#: ../src/rep_budget.c:1313 ../src/rep_stats.c:1761 ../src/rep_time.c:1619
+msgid "_Detail to CSV"
+msgstr ""
+
+#: ../src/rep_budget.c:1347
 msgid "Result:"
 msgstr ""
 
-#: ../src/rep_budget.c:1215
+#: ../src/rep_budget.c:1353
 msgid "Budget:"
 msgstr "Eyðsluáætlun:"
 
-#: ../src/rep_budget.c:1221
+#: ../src/rep_budget.c:1359
 msgid "Spent:"
 msgstr "Eyðsla:"
 
-#: ../src/rep_budget.c:1339
+#: ../src/rep_budget.c:1480
 msgid "No account is defined to be part of the budget."
 msgstr ""
 
-#: ../src/rep_budget.c:1340
+#: ../src/rep_budget.c:1481
 msgid "You should include some accounts from the account dialog."
 msgstr ""
 
-#: ../src/rep_stats.c:66 ../src/ui-pref.c:2446
+#: ../src/rep_stats.c:65
 msgid "Column"
 msgstr "Dálkur"
 
-#: ../src/rep_stats.c:66
+#: ../src/rep_stats.c:65
 msgid "View results as column"
 msgstr ""
 
-#: ../src/rep_stats.c:67
+#: ../src/rep_stats.c:66
 msgid "Donut"
 msgstr ""
 
-#: ../src/rep_stats.c:67
+#: ../src/rep_stats.c:66
 msgid "View results as donut"
 msgstr ""
 
-#: ../src/rep_stats.c:69 ../src/ui-filter.c:1265
+#: ../src/rep_stats.c:72 ../src/ui-filter.c:1403
 msgid "Edit filter"
 msgstr ""
 
 #. is_active
 #. name, icon-name
-#: ../src/rep_stats.c:85
+#: ../src/rep_stats.c:88
 msgid "Legend"
 msgstr "Skýring"
 
 #. label, accelerator
-#: ../src/rep_stats.c:86
+#: ../src/rep_stats.c:89
 msgid "Toggle legend"
 msgstr "Víxla skýringum"
 
 #. is_active
 #. name, icon-name
-#: ../src/rep_stats.c:91
+#: ../src/rep_stats.c:94
 msgid "Rate"
 msgstr "Hlutfall"
 
 #. label, accelerator
-#: ../src/rep_stats.c:92
+#: ../src/rep_stats.c:95
 msgid "Toggle rate"
 msgstr "Víxla hlutfalli"
 
-#: ../src/rep_stats.c:144
+#: ../src/rep_stats.c:149
 msgid "Tag"
 msgstr "Merki"
 
-#: ../src/rep_stats.c:145 ../src/rep_time.c:125 ../src/ui-archive.c:54
+#: ../src/rep_stats.c:150 ../src/rep_time.c:127 ../src/ui-archive.c:54
 msgid "Month"
 msgstr "Mánuður"
 
-#: ../src/rep_stats.c:146 ../src/rep_time.c:125 ../src/ui-archive.c:54
+#: ../src/rep_stats.c:151 ../src/rep_time.c:127 ../src/ui-archive.c:54
 msgid "Year"
 msgstr "Ár"
 
-#: ../src/rep_stats.c:163 ../src/ui-filter.c:91
+#: ../src/rep_stats.c:168 ../src/ui-filter.c:91
 msgid "January"
 msgstr "Janúar"
 
-#: ../src/rep_stats.c:164 ../src/ui-filter.c:92
+#: ../src/rep_stats.c:169 ../src/ui-filter.c:92
 msgid "February"
 msgstr "Febrúar"
 
-#: ../src/rep_stats.c:165 ../src/ui-filter.c:93
+#: ../src/rep_stats.c:170 ../src/ui-filter.c:93
 msgid "March"
 msgstr "Mars"
 
-#: ../src/rep_stats.c:166 ../src/ui-filter.c:94
+#: ../src/rep_stats.c:171 ../src/ui-filter.c:94
 msgid "April"
 msgstr "Apríl"
 
-#: ../src/rep_stats.c:167 ../src/rep_time.c:136 ../src/ui-filter.c:95
+#: ../src/rep_stats.c:172 ../src/rep_time.c:138 ../src/ui-filter.c:95
 msgid "May"
 msgstr "Maí"
 
-#: ../src/rep_stats.c:168 ../src/ui-filter.c:96
+#: ../src/rep_stats.c:173 ../src/ui-filter.c:96
 msgid "June"
 msgstr "Júní"
 
-#: ../src/rep_stats.c:169 ../src/ui-filter.c:97
+#: ../src/rep_stats.c:174 ../src/ui-filter.c:97
 msgid "July"
 msgstr "Júlí"
 
-#: ../src/rep_stats.c:170 ../src/ui-filter.c:98
+#: ../src/rep_stats.c:175 ../src/ui-filter.c:98
 msgid "August"
 msgstr "Ágúst"
 
-#: ../src/rep_stats.c:171 ../src/ui-filter.c:99
+#: ../src/rep_stats.c:176 ../src/ui-filter.c:99
 msgid "September"
 msgstr "September"
 
-#: ../src/rep_stats.c:172 ../src/ui-filter.c:100
+#: ../src/rep_stats.c:177 ../src/ui-filter.c:100
 msgid "October"
 msgstr "Október"
 
-#: ../src/rep_stats.c:173 ../src/ui-filter.c:101
+#: ../src/rep_stats.c:178 ../src/ui-filter.c:101
 msgid "November"
 msgstr "Nóvember"
 
-#: ../src/rep_stats.c:174 ../src/ui-filter.c:102
+#: ../src/rep_stats.c:179 ../src/ui-filter.c:102
 msgid "December"
 msgstr "Desember"
 
-#. set chart title
 #. //TRANSLATORS: example 'Expense by Category'
-#: ../src/rep_stats.c:607
+#: ../src/rep_stats.c:641
 #, c-format
 msgid "%s by %s"
 msgstr ""
 
-#: ../src/rep_stats.c:705
-msgid "expense"
-msgstr "útgjöld"
-
-#: ../src/rep_stats.c:1057 ../src/ui-payee.c:280 ../src/ui-payee.c:485
+#: ../src/rep_stats.c:1162 ../src/ui-payee.c:280 ../src/ui-payee.c:488
 msgid "(no payee)"
 msgstr ""
 
-#: ../src/rep_stats.c:1480
+#: ../src/rep_stats.c:1587
 msgid "Statistics Report"
 msgstr "tölfræðileg skýrsla"
 
-#: ../src/rep_stats.c:1507
+#: ../src/rep_stats.c:1615
 msgid "_View:"
 msgstr "_Skoða:"
 
-#: ../src/rep_stats.c:1514
+#: ../src/rep_stats.c:1622
 msgid "_By:"
 msgstr ""
 
-#: ../src/rep_stats.c:1521
+#: ../src/rep_stats.c:1629
 msgid "By _amount"
 msgstr "Eftir _upphæð"
 
-#: ../src/rep_stats.c:1644
+#: ../src/rep_stats.c:1795
 msgid "Balance:"
 msgstr "Staða:"
 
-#: ../src/rep_stats.c:1650
+#: ../src/rep_stats.c:1801
 msgid "Income:"
 msgstr "Innkoma"
 
-#: ../src/rep_stats.c:1657
+#: ../src/rep_stats.c:1808
 msgid "Expense:"
 msgstr "Útgjöld"
 
-#: ../src/rep_time.c:125 ../src/ui-archive.c:54
+#: ../src/rep_time.c:127 ../src/ui-archive.c:54
 msgid "Day"
 msgstr "Dagur"
 
-#: ../src/rep_time.c:125 ../src/ui-archive.c:54
+#: ../src/rep_time.c:127 ../src/ui-archive.c:54
 msgid "Week"
 msgstr "Vika"
 
-#: ../src/rep_time.c:125
+#: ../src/rep_time.c:127
 msgid "Quarter"
 msgstr "Fjórðungur"
 
-#: ../src/rep_time.c:132
+#: ../src/rep_time.c:134
 msgid "Jan"
 msgstr "Jan"
 
-#: ../src/rep_time.c:133
+#: ../src/rep_time.c:135
 msgid "Feb"
 msgstr "Feb"
 
-#: ../src/rep_time.c:134
+#: ../src/rep_time.c:136
 msgid "Mar"
 msgstr "Mar"
 
-#: ../src/rep_time.c:135
+#: ../src/rep_time.c:137
 msgid "Apr"
 msgstr "Apr"
 
-#: ../src/rep_time.c:137
+#: ../src/rep_time.c:139
 msgid "Jun"
 msgstr "Jún"
 
-#: ../src/rep_time.c:138
+#: ../src/rep_time.c:140
 msgid "Jul"
 msgstr "Júl"
 
-#: ../src/rep_time.c:139
+#: ../src/rep_time.c:141
 msgid "Aug"
 msgstr "Ágú"
 
-#: ../src/rep_time.c:140
+#: ../src/rep_time.c:142
 msgid "Sep"
 msgstr "Sep"
 
-#: ../src/rep_time.c:141
+#: ../src/rep_time.c:143
 msgid "Oct"
 msgstr "Okt"
 
-#: ../src/rep_time.c:142
+#: ../src/rep_time.c:144
 msgid "Nov"
 msgstr "Nóv"
 
-#: ../src/rep_time.c:143
+#: ../src/rep_time.c:145
 msgid "Dec"
 msgstr "Des"
 
 #. //TRANSLATORS: example 'Expense by Category'
-#: ../src/rep_time.c:568
+#: ../src/rep_time.c:588
 #, c-format
 msgid "%s Over Time"
 msgstr ""
 
-#. header
-#: ../src/rep_time.c:608 ../src/rep_time.c:1740
-msgid "Time slice"
-msgstr "Tíma sneið"
-
 #. //TRANSLATORS: count of transaction in balancedrawn / count of total transaction under abalancedrawn amount threshold
-#: ../src/rep_time.c:1031
+#: ../src/rep_time.c:1102
 #, c-format
 msgid "Average: %s"
 msgstr ""
 
-#: ../src/rep_time.c:1350
+#: ../src/rep_time.c:1430
 msgid "Trend Time Report"
 msgstr "Tímaskýrsla yfir hneigð"
 
-#: ../src/rep_time.c:1413
+#: ../src/rep_time.c:1472 ../src/ui-archive.c:1033 ../src/ui-assign.c:875
+#: ../src/ui-hbfile.c:279 ../src/ui-payee.c:926 ../src/ui-transaction.c:1104
+#: ../src/ui-txn-multi.c:477
+msgid "_Category:"
+msgstr "_Flokkur"
+
+#: ../src/rep_time.c:1480 ../src/ui-archive.c:1025 ../src/ui-assign.c:846
+#: ../src/ui-transaction.c:1095 ../src/ui-txn-multi.c:461
+msgid "_Payee:"
+msgstr "_Greiðandi"
+
+#: ../src/rep_time.c:1493
 msgid "_Cumulate"
 msgstr "_Safna saman"
 
-#: ../src/rep_time.c:1418
+#: ../src/rep_time.c:1498
 msgid "_View by:"
 msgstr "_Skoðað af:"
 
-#.
+#: ../src/rep_time.c:1793 ../src/rep_time.c:1904
+msgid "Time slice"
+msgstr "Tíma sneið"
+
+#: ../src/rep_vehicle.c:67
+msgid "Export"
+msgstr "Flytja út"
+
+#. 
 #. LST_CAR_DATE,
-#. LST_CAR_WORDING,
+#. LST_CAR_MEMO,
 #. LST_CAR_METER,
 #. LST_CAR_FUEL,
 #. LST_CAR_PRICE,
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#.
-#.
-#. column: Wording
-#.
+#. 
+#. 
+#. column: Memo
+#. 
 #. column = gtk_tree_view_column_new();
-#. gtk_tree_view_column_set_title(column, _("Wording"));
+#. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 #. renderer = gtk_cell_renderer_text_new();
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
-#. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_WORDING);
+#. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#.
+#. 
 #. column: Meter
-#: ../src/rep_vehicle.c:219 ../src/rep_vehicle.c:1130
+#: ../src/rep_vehicle.c:219 ../src/rep_vehicle.c:1131
 msgid "Meter"
 msgstr "Mælir"
 
 #. column: Fuel load
-#: ../src/rep_vehicle.c:220 ../src/rep_vehicle.c:1134
+#: ../src/rep_vehicle.c:220 ../src/rep_vehicle.c:1135
 msgid "Fuel"
 msgstr "Bensín"
 
 #. column: Price by unit
-#: ../src/rep_vehicle.c:221 ../src/rep_vehicle.c:1138
+#: ../src/rep_vehicle.c:221 ../src/rep_vehicle.c:1139
 msgid "Price"
 msgstr "Verð"
 
 #. column: Distance done
-#: ../src/rep_vehicle.c:223 ../src/rep_vehicle.c:1146
+#: ../src/rep_vehicle.c:223 ../src/rep_vehicle.c:1147
 msgid "Dist."
 msgstr "Vegalengd"
 
-#: ../src/rep_vehicle.c:699
+#: ../src/rep_vehicle.c:700
 msgid "Vehicle cost report"
 msgstr "Skýrsla yfir kostnað ökutækis"
 
-#: ../src/rep_vehicle.c:727
+#: ../src/rep_vehicle.c:728
 msgid "Vehi_cle:"
 msgstr "Ökutæki:"
 
-#: ../src/rep_vehicle.c:813
+#: ../src/rep_vehicle.c:814
 msgid "Meter:"
 msgstr "Mælir:"
 
-#: ../src/rep_vehicle.c:817
+#: ../src/rep_vehicle.c:818
 msgid "Consumption:"
 msgstr "Eyðsla:"
 
-#: ../src/rep_vehicle.c:821
+#: ../src/rep_vehicle.c:822
 msgid "Fuel cost:"
 msgstr "Bensínkostnaður"
 
-#: ../src/rep_vehicle.c:825
+#: ../src/rep_vehicle.c:826
 msgid "Other cost:"
 msgstr "Annar kostnaður:"
 
-#: ../src/rep_vehicle.c:829
+#: ../src/rep_vehicle.c:830
 msgid "Total cost:"
 msgstr "Heildarkostnaður:"
 
-#: ../src/ui-account.c:39
+#: ../src/ui-account.c:40
 msgid "(no type)"
 msgstr ""
 
-#: ../src/ui-account.c:41 ../src/ui-widgets.c:797
+#: ../src/ui-account.c:42 ../src/ui-widgets.c:821
 msgid "Cash"
 msgstr "Reiðufé"
 
-#: ../src/ui-account.c:42
+#: ../src/ui-account.c:43
 msgid "Asset"
 msgstr "Eign"
 
-#: ../src/ui-account.c:43 ../src/ui-widgets.c:795
+#: ../src/ui-account.c:44 ../src/ui-widgets.c:819
 msgid "Credit card"
 msgstr "Kreditkort"
 
-#: ../src/ui-account.c:44
+#: ../src/ui-account.c:45
 msgid "Liability"
 msgstr "Skuld"
 
-#: ../src/ui-account.c:359 ../src/ui-assign.c:100 ../src/ui-currency.c:246
-#: ../src/ui-widgets.c:794
+#: ../src/ui-account.c:385 ../src/ui-assign.c:101 ../src/ui-currency.c:245
+#: ../src/ui-widgets.c:818
 msgid "(none)"
 msgstr "(ekkert)"
 
-#: ../src/ui-account.c:515 ../src/ui-assign.c:249 ../src/ui-category.c:1018
-#: ../src/ui-currency.c:597 ../src/ui-payee.c:657 ../src/ui-pref.c:2435
+#: ../src/ui-account.c:544 ../src/ui-assign.c:252 ../src/ui-category.c:1035
+#: ../src/ui-currency.c:599 ../src/ui-payee.c:660
 msgid "Visible"
 msgstr "Sýnilegt"
 
-#: ../src/ui-account.c:946 ../src/ui-account.c:1053
+#. GTK_FILE_CHOOSER_ACTION_OPEN,
+#: ../src/ui-account.c:694 ../src/ui-assist-import.c:950
+#: ../src/ui-category.c:1324 ../src/ui-category.c:1472 ../src/ui-currency.c:777
+#: ../src/ui-currency.c:1145 ../src/ui-dialogs.c:69 ../src/ui-dialogs.c:330
+#: ../src/ui-dialogs.c:440 ../src/ui-dialogs.c:495 ../src/ui-dialogs.c:555
+#: ../src/ui-dialogs.c:607 ../src/ui-dialogs.c:672 ../src/ui-dialogs.c:716
+#: ../src/ui-dialogs.c:850 ../src/ui-filter.c:1408 ../src/ui-hbfile.c:194
+#: ../src/ui-payee.c:884 ../src/ui-payee.c:1045 ../src/ui-pref.c:1971
+#: ../src/ui-split.c:365 ../src/ui-transaction.c:1194 ../src/ui-txn-multi.c:367
+msgid "_Cancel"
+msgstr ""
+
+#: ../src/ui-account.c:696 ../src/ui-assist-import.c:952
+#: ../src/ui-category.c:1326 ../src/ui-currency.c:779 ../src/ui-currency.c:1147
+#: ../src/ui-dialogs.c:331 ../src/ui-dialogs.c:852 ../src/ui-filter.c:1410
+#: ../src/ui-hbfile.c:196 ../src/ui-payee.c:886 ../src/ui-pref.c:1973
+#: ../src/ui-split.c:383 ../src/ui-transaction.c:1195 ../src/ui-txn-multi.c:369
+msgid "_OK"
+msgstr ""
+
+#: ../src/ui-account.c:982 ../src/ui-account.c:1089
 msgid "Account name"
 msgstr ""
 
-#: ../src/ui-account.c:952 ../src/ui-account.c:1059
-#: ../src/ui-assist-import.c:1045 ../src/ui-category.c:1378
-#: ../src/ui-payee.c:975
+#: ../src/ui-account.c:988 ../src/ui-account.c:1095
+#: ../src/ui-assist-import.c:1045 ../src/ui-category.c:1395
+#: ../src/ui-payee.c:978
 msgid "Error"
 msgstr "Villa"
 
-#: ../src/ui-account.c:953
+#: ../src/ui-account.c:989
 #, c-format
 msgid ""
 "Cannot add an account '%s',\n"
 "this name already exists."
 msgstr ""
 
-#: ../src/ui-account.c:995
+#: ../src/ui-account.c:1031
 #, c-format
 msgid "Cannot delete account '%s'"
 msgstr ""
 
-#: ../src/ui-account.c:999
+#: ../src/ui-account.c:1035
 msgid ""
 "This account contains transactions and/or is part of internal transfers."
 msgstr ""
 
-#: ../src/ui-account.c:1010 ../src/ui-archive.c:389 ../src/ui-assign.c:548
-#: ../src/ui-category.c:1563 ../src/ui-currency.c:1307 ../src/ui-payee.c:1145
+#: ../src/ui-account.c:1046 ../src/ui-archive.c:389 ../src/ui-assign.c:551
+#: ../src/ui-category.c:1580 ../src/ui-currency.c:1539 ../src/ui-payee.c:1148
 #, c-format
 msgid "Are you sure you want to permanently delete '%s'?"
 msgstr ""
 
-#: ../src/ui-account.c:1012
+#: ../src/ui-account.c:1048
 msgid "If you delete an account, it will be permanently lost."
 msgstr ""
 
-#: ../src/ui-account.c:1018 ../src/ui-account.c:1246 ../src/ui-archive.c:397
-#: ../src/ui-archive.c:1227 ../src/ui-assign.c:556 ../src/ui-assign.c:772
-#: ../src/ui-category.c:1127 ../src/ui-category.c:1575
-#: ../src/ui-category.c:1994 ../src/ui-currency.c:1315
-#: ../src/ui-currency.c:1549 ../src/ui-payee.c:748 ../src/ui-payee.c:1157
-#: ../src/ui-payee.c:1329
+#: ../src/ui-account.c:1054 ../src/ui-account.c:1315 ../src/ui-archive.c:397
+#: ../src/ui-archive.c:1218 ../src/ui-assign.c:559 ../src/ui-assign.c:775
+#: ../src/ui-category.c:1144 ../src/ui-category.c:1592
+#: ../src/ui-category.c:2011 ../src/ui-currency.c:1547
+#: ../src/ui-currency.c:1734 ../src/ui-payee.c:751 ../src/ui-payee.c:1160
+#: ../src/ui-payee.c:1332
 msgid "_Delete"
 msgstr ""
 
-#: ../src/ui-account.c:1060 ../src/ui-assist-import.c:1046
+#: ../src/ui-account.c:1096 ../src/ui-assist-import.c:1046
 #, c-format
 msgid ""
 "Cannot rename this Account,\n"
@@ -1719,92 +1734,93 @@ msgstr ""
 "úr '%s' í '%s',\n"
 "nafnið er þegar til."
 
-#: ../src/ui-account.c:1185
+#: ../src/ui-account.c:1254
 msgid "Manage Accounts"
 msgstr "Stjórna reikningum"
 
-#: ../src/ui-account.c:1236
+#: ../src/ui-account.c:1305
 msgid ""
 "Drag & drop to change the order\n"
 "Double-click to rename"
 msgstr ""
 
-#: ../src/ui-account.c:1242 ../src/ui-archive.c:1223 ../src/ui-assign.c:768
-#: ../src/ui-currency.c:1541 ../src/ui-transaction.c:1135
+#: ../src/ui-account.c:1311 ../src/ui-archive.c:1214 ../src/ui-assign.c:771
+#: ../src/ui-currency.c:1726 ../src/ui-transaction.c:1205
 msgid "_Add"
 msgstr ""
 
-#: ../src/ui-account.c:1263 ../src/ui-hbfile.c:222 ../src/ui-pref.c:86
-#: ../src/ui-pref.c:1410 ../src/ui-pref.c:1721
+#: ../src/ui-account.c:1332 ../src/ui-hbfile.c:222 ../src/ui-pref.c:79
+#: ../src/ui-pref.c:1357 ../src/ui-pref.c:1670
 msgid "General"
 msgstr "Almennt"
 
-#: ../src/ui-account.c:1283
+#: ../src/ui-account.c:1352
 msgid "_Currency:"
 msgstr ""
 
-#: ../src/ui-account.c:1290
+#: ../src/ui-account.c:1359
 msgid "Start _balance:"
 msgstr ""
 
-#: ../src/ui-account.c:1298
+#: ../src/ui-account.c:1367
 msgid "Notes:"
 msgstr ""
 
-#: ../src/ui-account.c:1312
+#: ../src/ui-account.c:1383
 msgid "this account was _closed"
 msgstr ""
 
-#: ../src/ui-account.c:1323
+#: ../src/ui-account.c:1394
 msgid "Current check number"
 msgstr ""
 
-#: ../src/ui-account.c:1327
+#: ../src/ui-account.c:1398
 msgid "Checkbook _1:"
 msgstr ""
 
-#: ../src/ui-account.c:1334
+#: ../src/ui-account.c:1405
 msgid "Checkbook _2:"
 msgstr ""
 
-#: ../src/ui-account.c:1346 ../src/ui-budget.c:1189
+#: ../src/ui-account.c:1417 ../src/ui-budget.c:1204
 msgid "Options"
 msgstr ""
 
-#: ../src/ui-account.c:1355
+#: ../src/ui-account.c:1426
 msgid "Institution"
 msgstr ""
 
-#: ../src/ui-account.c:1359 ../src/ui-assist-start.c:364
-#: ../src/ui-assist-import.c:973 ../src/ui-payee.c:906
+#: ../src/ui-account.c:1430 ../src/ui-assist-start.c:380
+#: ../src/ui-assist-import.c:973 ../src/ui-currency.c:1228
+#: ../src/ui-payee.c:909
 msgid "_Name:"
 msgstr "_Nafn:"
 
-#: ../src/ui-account.c:1367 ../src/ui-assist-start.c:384
+#: ../src/ui-account.c:1438 ../src/ui-assist-start.c:400
 msgid "N_umber:"
 msgstr "N_úmer:"
 
-#: ../src/ui-account.c:1380
+#: ../src/ui-account.c:1451
 msgid "Balance limits"
 msgstr ""
 
-#: ../src/ui-account.c:1386
+#: ../src/ui-account.c:1457
 msgid "_Overdraft at:"
 msgstr ""
 
-#: ../src/ui-account.c:1398
+#: ../src/ui-account.c:1469
 msgid "Report exclusion"
 msgstr ""
 
-#: ../src/ui-account.c:1402
+#: ../src/ui-account.c:1473
 msgid "exclude from account _summary"
 msgstr ""
 
-#: ../src/ui-account.c:1407
+#: ../src/ui-account.c:1478
 msgid "exclude from the _budget"
 msgstr ""
 
-#: ../src/ui-account.c:1412
+#: ../src/ui-account.c:1483
 msgid "exclude from any _reports"
 msgstr ""
 
@@ -1837,196 +1853,196 @@ msgstr ""
 msgid "If you delete a scheduled/template, it will be permanently lost."
 msgstr ""
 
-#: ../src/ui-archive.c:983 ../src/ui-transaction.c:968
+#: ../src/ui-archive.c:974 ../src/ui-transaction.c:1038
 msgid "_Amount:"
 msgstr "_Upphæð:"
 
-#: ../src/ui-archive.c:991 ../src/ui-transaction.c:976
+#: ../src/ui-archive.c:982 ../src/ui-transaction.c:1046
 msgid "Toggle amount sign"
 msgstr ""
 
-#: ../src/ui-archive.c:999 ../src/ui-split.c:362 ../src/ui-transaction.c:984
+#: ../src/ui-archive.c:990 ../src/ui-split.c:362 ../src/ui-transaction.c:1054
 msgid "Transaction splits"
 msgstr ""
 
-#: ../src/ui-archive.c:1002 ../src/ui-assign.c:900
+#: ../src/ui-archive.c:993 ../src/ui-assign.c:903
 msgid "Pay_ment:"
 msgstr "Grei_ðsla"
 
-#: ../src/ui-archive.c:1010 ../src/ui-transaction.c:995
+#: ../src/ui-archive.c:1001 ../src/ui-transaction.c:1065
 msgid "Of notebook _2"
 msgstr "Af glósubók _2"
 
-#: ../src/ui-archive.c:1025
+#: ../src/ui-archive.c:1016
 msgid "_To account:"
 msgstr "_Yfir á reikning:"
 
-#: ../src/ui-archive.c:1058 ../src/ui-filter.c:1020
+#: ../src/ui-archive.c:1049 ../src/ui-filter.c:1213
 msgid "_Memo:"
 msgstr ""
 
-#: ../src/ui-archive.c:1082
+#: ../src/ui-archive.c:1073
 msgid "Scheduled insertion"
 msgstr ""
 
-#: ../src/ui-archive.c:1087
+#: ../src/ui-archive.c:1078
 msgid "_Activate"
 msgstr "_Virkja"
 
-#: ../src/ui-archive.c:1092
+#: ../src/ui-archive.c:1083
 msgid "Next _date:"
 msgstr ""
 
-#: ../src/ui-archive.c:1100
+#: ../src/ui-archive.c:1091
 msgid "Ever_y:"
 msgstr "Hver_t"
 
-#: ../src/ui-archive.c:1116
+#: ../src/ui-archive.c:1107
 msgid "Week end:"
 msgstr ""
 
-#: ../src/ui-archive.c:1128
+#: ../src/ui-archive.c:1119
 msgid "_Stop after:"
 msgstr ""
 
-#: ../src/ui-archive.c:1136
+#: ../src/ui-archive.c:1127
 msgid "posts"
 msgstr ""
 
-#: ../src/ui-archive.c:1158
+#: ../src/ui-archive.c:1149
 msgid "Manage scheduled/template transactions"
 msgstr ""
 
-#: ../src/ui-assign.c:268 ../src/ui-filter.c:1322
+#: ../src/ui-assign.c:271
 msgid "Text"
 msgstr ""
 
-#: ../src/ui-assign.c:520
+#: ../src/ui-assign.c:523
 #, c-format
 msgid "(assignment %d)"
 msgstr "(úthlutun %d)"
 
-#: ../src/ui-assign.c:550
+#: ../src/ui-assign.c:553
 msgid "If you delete an assignment, it will be permanently lost."
 msgstr ""
 
-#: ../src/ui-assign.c:696
+#: ../src/ui-assign.c:699
 msgid "Disabled"
 msgstr ""
 
-#: ../src/ui-assign.c:697
+#: ../src/ui-assign.c:700
 msgid "If empty"
 msgstr ""
 
-#: ../src/ui-assign.c:698
+#: ../src/ui-assign.c:701
 msgid "Overwrite"
 msgstr ""
 
-#: ../src/ui-assign.c:717
+#: ../src/ui-assign.c:720
 msgid "Manage Assignments"
 msgstr "Stjórna Úthlutun"
 
-#: ../src/ui-assign.c:794
+#: ../src/ui-assign.c:797
 msgid "Condition"
 msgstr ""
 
-#: ../src/ui-assign.c:798
+#: ../src/ui-assign.c:801
 msgid "Search _in:"
 msgstr ""
 
 #. label = make_label_widget(_("Con_tains:"));
-#: ../src/ui-assign.c:806
+#: ../src/ui-assign.c:809
 msgid "Fi_nd:"
 msgstr ""
 
-#: ../src/ui-assign.c:814
+#: ../src/ui-assign.c:817
 msgid "Match _case"
 msgstr ""
 
-#: ../src/ui-assign.c:819
+#: ../src/ui-assign.c:822
 msgid "Use _regular expressions"
 msgstr ""
 
-#: ../src/ui-assign.c:834
+#: ../src/ui-assign.c:837
 msgid "Assign payee"
 msgstr ""
 
-#: ../src/ui-assign.c:863
+#: ../src/ui-assign.c:866
 msgid "Assign category"
 msgstr ""
 
-#: ../src/ui-assign.c:891
+#: ../src/ui-assign.c:894
 msgid "Assign payment"
 msgstr ""
 
-#: ../src/ui-assist-start.c:129
+#: ../src/ui-assist-start.c:140
 #, c-format
 msgid "New HomeBank file (%d of %d)"
 msgstr ""
 
-#: ../src/ui-assist-start.c:160
+#: ../src/ui-assist-start.c:171
 msgid "Not found"
 msgstr "Fannst ekki"
 
-#: ../src/ui-assist-start.c:252 ../src/ui-hbfile.c:226
+#: ../src/ui-assist-start.c:268 ../src/ui-hbfile.c:226
 msgid "_Owner:"
 msgstr "_Eigandi:"
 
-#: ../src/ui-assist-start.c:260 ../src/ui-dialogs.c:363
+#: ../src/ui-assist-start.c:276 ../src/ui-dialogs.c:369
 msgid "Currency:"
 msgstr ""
 
-#: ../src/ui-assist-start.c:276 ../src/ui-assist-import.c:1812
+#: ../src/ui-assist-start.c:292 ../src/ui-assist-import.c:1812
 #: ../src/ui-hbfile.c:191
 msgid "File properties"
 msgstr ""
 
-#: ../src/ui-assist-start.c:298
+#: ../src/ui-assist-start.c:314
 msgid "System detection"
 msgstr ""
 
-#: ../src/ui-assist-start.c:302
+#: ../src/ui-assist-start.c:318
 msgid "Languages:"
 msgstr "Tungumál"
 
-#: ../src/ui-assist-start.c:309
+#: ../src/ui-assist-start.c:325
 msgid "Preset file:"
 msgstr "Forstilla skrá"
 
-#: ../src/ui-assist-start.c:327
+#: ../src/ui-assist-start.c:343
 msgid "Initialize my categories with this file"
 msgstr "Forsníða flokkana mína með þessari skrá"
 
-#: ../src/ui-assist-start.c:339
+#: ../src/ui-assist-start.c:355
 msgid "Preset categories"
 msgstr "Forstilla flokka"
 
-#: ../src/ui-assist-start.c:360
+#: ../src/ui-assist-start.c:376
 msgid "Informations"
 msgstr ""
 
-#: ../src/ui-assist-start.c:395
+#: ../src/ui-assist-start.c:411
 msgid "Balances"
 msgstr ""
 
-#: ../src/ui-assist-start.c:399
+#: ../src/ui-assist-start.c:415
 msgid "_Initial:"
 msgstr "_Upphaf:"
 
-#: ../src/ui-assist-start.c:406
+#: ../src/ui-assist-start.c:422
 msgid "_Overdrawn at:"
 msgstr "_Yfirdráttur á:"
 
-#: ../src/ui-assist-start.c:415
+#: ../src/ui-assist-start.c:431
 msgid "Create an account"
 msgstr "Stofna reikning"
 
-#: ../src/ui-assist-start.c:425
+#: ../src/ui-assist-start.c:441
 msgid "This is a confirmation page, press 'Apply' to apply changes"
 msgstr ""
 "Þetta er staðfestingarsíða, veldu \"staðfesta\" til að staðfesta breytingar"
 
-#: ../src/ui-assist-start.c:431 ../src/ui-assist-import.c:62
+#: ../src/ui-assist-start.c:447 ../src/ui-assist-import.c:62
 msgid "Confirmation"
 msgstr "Staðfesting"
 
@@ -2164,7 +2180,7 @@ msgstr ""
 msgid "Known files"
 msgstr ""
 
-#: ../src/ui-assist-import.c:1691 ../src/ui-dialogs.c:440
+#: ../src/ui-assist-import.c:1691 ../src/ui-dialogs.c:446
 msgid "QIF files"
 msgstr "QIF skrár"
 
@@ -2172,12 +2188,13 @@ msgstr "QIF skrár"
 msgid "OFX/QFX files"
 msgstr "OFX/QFX skrár"
 
-#: ../src/ui-assist-import.c:1707 ../src/ui-dialogs.c:498
+#: ../src/ui-assist-import.c:1707 ../src/ui-dialogs.c:504
 msgid "CSV files"
 msgstr "CSV skrár"
 
-#: ../src/ui-assist-import.c:1715 ../src/ui-dialogs.c:441
-#: ../src/ui-dialogs.c:499 ../src/ui-dialogs.c:554
+#. ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("Backup files"), "*.[Bb][Aa][Kk]");
+#: ../src/ui-assist-import.c:1715 ../src/ui-dialogs.c:447
+#: ../src/ui-dialogs.c:505 ../src/ui-dialogs.c:561
 msgid "All files"
 msgstr "Allar skrár"
 
@@ -2258,7 +2275,7 @@ msgstr "til að uppfæra"
 msgid "to create"
 msgstr "til að búa til"
 
-#: ../src/ui-assist-import.c:2114 ../src/ui-pref.c:88
+#: ../src/ui-assist-import.c:2114 ../src/ui-pref.c:81
 msgid "Transactions"
 msgstr ""
 
@@ -2274,88 +2291,88 @@ msgstr "að hafna"
 msgid "auto-assigned"
 msgstr "tengja sjálfkrafa"
 
-#: ../src/ui-budget.c:508 ../src/ui-category.c:1167 ../src/ui-payee.c:787
+#: ../src/ui-budget.c:510 ../src/ui-category.c:1184 ../src/ui-payee.c:790
 msgid "File format error"
 msgstr "Forsniðsvilla"
 
-#: ../src/ui-budget.c:509 ../src/ui-category.c:1168 ../src/ui-payee.c:788
+#: ../src/ui-budget.c:511 ../src/ui-category.c:1185 ../src/ui-payee.c:791
 msgid ""
 "The CSV file must contains the exact numbers of column,\n"
 "separated by a semi-colon, please see the help for more details."
 msgstr ""
 
-#: ../src/ui-budget.c:693
+#: ../src/ui-budget.c:695
 msgid "Are you sure you want to clear input?"
 msgstr ""
 
-#: ../src/ui-budget.c:695
+#: ../src/ui-budget.c:697
 msgid "If you proceed, every amount will be set to 0."
 msgstr ""
 
-#: ../src/ui-budget.c:701
+#: ../src/ui-budget.c:703
 msgid "_Clear"
 msgstr ""
 
-#: ../src/ui-budget.c:993
+#: ../src/ui-budget.c:996
 msgid "Manage Budget"
 msgstr "Stjórna Eyðsluáætlun"
 
-#: ../src/ui-budget.c:1036 ../src/ui-category.c:1865 ../src/ui-payee.c:1269
+#: ../src/ui-budget.c:1039 ../src/ui-category.c:1882 ../src/ui-payee.c:1272
 msgid "_Import CSV"
 msgstr ""
 
-#: ../src/ui-budget.c:1040 ../src/ui-category.c:1869 ../src/ui-payee.c:1273
+#: ../src/ui-budget.c:1043 ../src/ui-category.c:1886 ../src/ui-payee.c:1276
 msgid "E_xport CSV"
 msgstr ""
 
-#: ../src/ui-budget.c:1125
+#: ../src/ui-budget.c:1130
 msgid "Budget for each month"
 msgstr ""
 
-#: ../src/ui-budget.c:1130
+#: ../src/ui-budget.c:1137
 msgid "is the same"
 msgstr "er það sama"
 
-#: ../src/ui-budget.c:1142
+#: ../src/ui-budget.c:1151
 msgid "_Clear input"
 msgstr ""
 
-#: ../src/ui-budget.c:1156
+#: ../src/ui-budget.c:1166
 msgid "is different"
 msgstr "er frábrugðið"
 
-#: ../src/ui-budget.c:1194
+#: ../src/ui-budget.c:1209
 msgid "_Force monitoring this category"
 msgstr ""
 
-#: ../src/ui-category.c:1035 ../src/ui-currency.c:614 ../src/ui-currency.c:1112
-#: ../src/ui-payee.c:674
+#: ../src/ui-category.c:1052 ../src/ui-currency.c:616 ../src/ui-currency.c:1209
+#: ../src/ui-payee.c:677
 msgid "Name"
 msgstr ""
 
-#: ../src/ui-category.c:1047 ../src/ui-payee.c:690
+#: ../src/ui-category.c:1064 ../src/ui-payee.c:693
 msgid "Usage"
 msgstr ""
 
-#: ../src/ui-category.c:1125
+#: ../src/ui-category.c:1142
 msgid "Delete unused categories"
 msgstr ""
 
-#: ../src/ui-category.c:1126
+#: ../src/ui-category.c:1143
 msgid ""
 "Are you sure you want to permanently\n"
 "delete unused categories?"
 msgstr ""
 
-#: ../src/ui-category.c:1304 ../src/ui-payee.c:878
+#: ../src/ui-category.c:1321 ../src/ui-payee.c:881
 msgid "Edit..."
 msgstr ""
 
-#: ../src/ui-category.c:1328
+#: ../src/ui-category.c:1345
 msgid "_Income"
 msgstr "_Innkoma"
 
-#: ../src/ui-category.c:1379
+#: ../src/ui-category.c:1396
 #, c-format
 msgid ""
 "Cannot rename this Category,\n"
@@ -2366,143 +2383,147 @@ msgstr ""
 "úr '%s' í '%s',\n"
 "Nafnið er þegar til."
 
-#: ../src/ui-category.c:1444
+#: ../src/ui-category.c:1461
 #, c-format
 msgid "Merge category '%s'"
 msgstr ""
 
-#: ../src/ui-category.c:1456 ../src/ui-payee.c:1043
+#: ../src/ui-category.c:1473 ../src/ui-payee.c:1046
 msgid "Merge"
 msgstr ""
 
-#: ../src/ui-category.c:1465
+#: ../src/ui-category.c:1482
 msgid ""
 "Transactions assigned to this category,\n"
 "will be moved to the category selected below."
 msgstr ""
 
-#: ../src/ui-category.c:1475
+#: ../src/ui-category.c:1492
 #, c-format
 msgid "_Delete the category '%s'"
 msgstr ""
 
-#: ../src/ui-category.c:1567
+#: ../src/ui-category.c:1584
 msgid ""
 "This category is used.\n"
 "Any transaction using that category will be set to (no category)"
 msgstr ""
 
-#: ../src/ui-category.c:1816
+#: ../src/ui-category.c:1833
 msgid "Manage Categories"
 msgstr "Stjórna Flokkum"
 
-#: ../src/ui-category.c:1876 ../src/ui-payee.c:1280
+#: ../src/ui-category.c:1893 ../src/ui-payee.c:1283
 msgid "_Delete unused"
 msgstr ""
 
-#: ../src/ui-category.c:1896
+#: ../src/ui-category.c:1913
 msgid "new category"
 msgstr ""
 
-#: ../src/ui-category.c:1909
+#: ../src/ui-category.c:1926
 msgid "new subcategory"
 msgstr ""
 
-#: ../src/ui-category.c:1991 ../src/ui-payee.c:1326
+#: ../src/ui-category.c:2008 ../src/ui-payee.c:1329
 msgid "_Merge"
 msgstr ""
 
-#: ../src/ui-currency.c:364 ../src/ui-currency.c:371
+#: ../src/ui-currency.c:366 ../src/ui-currency.c:373
 msgid "Base currency"
 msgstr ""
 
-#: ../src/ui-currency.c:625
+#: ../src/ui-currency.c:627
 msgid "Symbol"
 msgstr ""
 
-#: ../src/ui-currency.c:637 ../src/ui-currency.c:814 ../src/ui-pref.c:1452
+#: ../src/ui-currency.c:639 ../src/ui-currency.c:819 ../src/ui-pref.c:1399
 msgid "Exchange rate"
 msgstr ""
 
-#: ../src/ui-currency.c:650
+#: ../src/ui-currency.c:652
 msgid "Last modfied"
 msgstr ""
 
-#: ../src/ui-currency.c:769
+#: ../src/ui-currency.c:774
 msgid "Edit currency"
 msgstr ""
 
-#: ../src/ui-currency.c:800 ../src/ui-pref.c:1425
+#: ../src/ui-currency.c:805 ../src/ui-pref.c:1372
 msgid "Currency"
 msgstr ""
 
-#: ../src/ui-currency.c:833 ../src/ui-pref.c:1470
+#: ../src/ui-currency.c:838 ../src/ui-pref.c:1417
 msgid "Format"
 msgstr ""
 
-#: ../src/ui-currency.c:842 ../src/ui-pref.c:1479 ../src/ui-pref.c:1549
+#: ../src/ui-currency.c:847 ../src/ui-pref.c:1426 ../src/ui-pref.c:1496
 msgid "_Customize"
 msgstr ""
 
-#: ../src/ui-currency.c:851 ../src/ui-pref.c:1488
+#: ../src/ui-currency.c:856 ../src/ui-pref.c:1435
 msgid "_Symbol:"
 msgstr ""
 
-#: ../src/ui-currency.c:858 ../src/ui-pref.c:1495
+#: ../src/ui-currency.c:863 ../src/ui-pref.c:1442
 msgid "Is pre_fix"
 msgstr ""
 
-#: ../src/ui-currency.c:863 ../src/ui-pref.c:1500
+#: ../src/ui-currency.c:868 ../src/ui-pref.c:1447
 msgid "_Decimal char:"
 msgstr ""
 
-#: ../src/ui-currency.c:870 ../src/ui-pref.c:1507
+#: ../src/ui-currency.c:875 ../src/ui-pref.c:1454
 msgid "_Frac digits:"
 msgstr "_Aukastafir:"
 
-#: ../src/ui-currency.c:877 ../src/ui-pref.c:1514
+#: ../src/ui-currency.c:882 ../src/ui-pref.c:1461
 msgid "_Grouping char:"
 msgstr ""
 
-#: ../src/ui-currency.c:1045
+#: ../src/ui-currency.c:1142
 msgid "Select base currency"
 msgstr ""
 
-#: ../src/ui-currency.c:1045
+#: ../src/ui-currency.c:1142
 msgid "Select currency"
 msgstr ""
 
-#: ../src/ui-currency.c:1117
+#: ../src/ui-currency.c:1214
 msgid "ISO Code"
 msgstr ""
 
-#: ../src/ui-currency.c:1174
+#: ../src/ui-currency.c:1222
+msgid "Add a custom _currency"
+msgstr ""
+
+#: ../src/ui-currency.c:1320
 msgid "Update online error"
 msgstr ""
 
-#: ../src/ui-currency.c:1309
+#: ../src/ui-currency.c:1541
 msgid "If you delete a currency, it will be permanently lost."
 msgstr ""
 
-#: ../src/ui-currency.c:1353
+#: ../src/ui-currency.c:1585
 msgid "Change the base currency"
 msgstr ""
 
-#: ../src/ui-currency.c:1354
+#: ../src/ui-currency.c:1586
 msgid ""
 "If you proceed, rates of other currencies\n"
 "will be set to 0, don't forget to update it"
 msgstr ""
 
-#: ../src/ui-currency.c:1470
+#: ../src/ui-currency.c:1655
 msgid "Currencies"
 msgstr ""
 
-#: ../src/ui-currency.c:1520
+#: ../src/ui-currency.c:1705
 msgid "Update online"
 msgstr ""
 
-#: ../src/ui-currency.c:1553
+#: ../src/ui-currency.c:1738
 msgid "Set as base"
 msgstr ""
 
@@ -2514,68 +2535,88 @@ msgstr ""
 msgid "Assignment"
 msgstr ""
 
-#: ../src/ui-dialogs.c:324
+#: ../src/ui-dialogs.c:327
 msgid "Upgrade"
 msgstr ""
 
-#: ../src/ui-dialogs.c:349
+#: ../src/ui-dialogs.c:355
 msgid "Select a base currency"
 msgstr ""
 
-#: ../src/ui-dialogs.c:358
+#: ../src/ui-dialogs.c:364
 msgid ""
 "Starting v5.1, HomeBank can manage several currencies\n"
 "if the currency below is not correct, please change it:"
 msgstr ""
 
-#: ../src/ui-dialogs.c:475
+#: ../src/ui-dialogs.c:481
 msgid "Import from CSV"
 msgstr "Flytja inn frá CSV"
 
-#: ../src/ui-dialogs.c:537
+#: ../src/ui-dialogs.c:543
 msgid "Open HomeBank file"
 msgstr ""
 
-#: ../src/ui-dialogs.c:542
+#: ../src/ui-dialogs.c:548
 msgid "Save HomeBank file as"
 msgstr ""
 
-#: ../src/ui-dialogs.c:553
+#: ../src/ui-dialogs.c:559
 msgid "HomeBank files"
 msgstr "HeimaBanka skrár"
 
-#: ../src/ui-dialogs.c:655
+#: ../src/ui-dialogs.c:662
 msgid "Save changes to the file before closing?"
 msgstr ""
 
-#: ../src/ui-dialogs.c:659
+#: ../src/ui-dialogs.c:666
 #, c-format
 msgid ""
 "If you don't save, changes will be permanently lost.\n"
 "Number of changes: %d."
 msgstr ""
 
-#: ../src/ui-dialogs.c:664
+#: ../src/ui-dialogs.c:671
 msgid "Close _without saving"
 msgstr ""
 
-#: ../src/ui-dialogs.c:748
+#: ../src/ui-dialogs.c:713
+msgid "Export PDF"
+msgstr ""
+
+#: ../src/ui-dialogs.c:717
+msgid "_Export"
+msgstr ""
+
+#: ../src/ui-dialogs.c:744
+msgid "Folder:"
+msgstr ""
+
+#: ../src/ui-dialogs.c:746
+msgid "Pick a Folder"
+msgstr ""
+
+#: ../src/ui-dialogs.c:750
+msgid "Filename:"
+msgstr ""
+
+#: ../src/ui-dialogs.c:847
 msgid "Select among possible transactions..."
 msgstr ""
 
-#: ../src/ui-dialogs.c:784
+#: ../src/ui-dialogs.c:883
 msgid "Select an action:"
 msgstr ""
 
-#: ../src/ui-dialogs.c:788
+#: ../src/ui-dialogs.c:887
 msgid "create a new transaction"
 msgstr ""
 
-#: ../src/ui-dialogs.c:791
+#: ../src/ui-dialogs.c:890
 msgid "select an existing transaction"
 msgstr ""
 
-#: ../src/ui-dialogs.c:796
+#: ../src/ui-dialogs.c:895
 msgid ""
 "HomeBank has found some transaction that may be the associated transaction "
 "for the internal transfer."
@@ -2661,92 +2702,112 @@ msgstr "Allar dagsetningar"
 msgid "All month"
 msgstr "Allir mánuðir"
 
-#: ../src/ui-filter.c:750 ../src/ui-filter.c:799 ../src/ui-filter.c:848
-#: ../src/ui-filter.c:953 ../src/ui-filter.c:1007 ../src/ui-filter.c:1064
-#: ../src/ui-filter.c:1110 ../src/ui-filter.c:1170
-msgid "_Option:"
-msgstr "_Möguleikar:"
+#. gtk_widget_show(GTK_WIDGET(page));
+#: ../src/ui-filter.c:330 ../src/ui-filter.c:1475
+msgid "Categories"
+msgstr ""
 
-#: ../src/ui-filter.c:771 ../src/ui-filter.c:820 ../src/ui-filter.c:869
+#: ../src/ui-filter.c:337 ../src/ui-filter.c:451 ../src/ui-filter.c:565
+msgid "Select:"
+msgstr ""
+
+#: ../src/ui-filter.c:340 ../src/ui-filter.c:454 ../src/ui-filter.c:568
 msgid "All"
 msgstr "Allt"
 
-#: ../src/ui-filter.c:775 ../src/ui-filter.c:824 ../src/ui-filter.c:873
-#: ../src/ui-pref.c:106 ../src/ui-transaction.c:57
+#: ../src/ui-filter.c:345 ../src/ui-filter.c:459 ../src/ui-filter.c:573
+#: ../src/ui-pref.c:99 ../src/ui-transaction.c:57
 msgid "None"
 msgstr "Engin"
 
-#: ../src/ui-filter.c:779 ../src/ui-filter.c:828 ../src/ui-filter.c:877
+#: ../src/ui-filter.c:350 ../src/ui-filter.c:464 ../src/ui-filter.c:578
 msgid "Invert"
 msgstr "Umhverfa"
 
-#: ../src/ui-filter.c:949
-msgid "Filter Date"
+#. gtk_widget_show(GTK_WIDGET(page));
+#: ../src/ui-filter.c:444 ../src/ui-filter.c:1479
+msgid "Payees"
 msgstr ""
 
-#: ../src/ui-filter.c:976
+#: ../src/ui-filter.c:1031 ../src/ui-filter.c:1053 ../src/ui-filter.c:1077
+#: ../src/ui-filter.c:1151 ../src/ui-filter.c:1201 ../src/ui-filter.c:1254
+#: ../src/ui-filter.c:1293 ../src/ui-filter.c:1351
+msgid "_Option:"
+msgstr "_Möguleikar:"
+
+#. gtk_widget_show(GTK_WIDGET(page));
+#: ../src/ui-filter.c:1158 ../src/ui-filter.c:1455
+msgid "Dates"
+msgstr ""
+
+#: ../src/ui-filter.c:1175
 msgid "_Month:"
 msgstr "_Mánuður:"
 
-#: ../src/ui-filter.c:982
+#: ../src/ui-filter.c:1181
 msgid "_Year:"
 msgstr "Ár:"
 
-#: ../src/ui-filter.c:1003
-msgid "Filter Text"
+#. gtk_widget_show(GTK_WIDGET(page));
+#: ../src/ui-filter.c:1208 ../src/ui-filter.c:1471
+msgid "Texts"
 msgstr ""
 
-#: ../src/ui-filter.c:1016
-msgid "Case _sensitive"
-msgstr "Stafréttur"
+#: ../src/ui-filter.c:1220 ../src/ui-transaction.c:1070
+#: ../src/ui-txn-multi.c:431
+msgid "_Info:"
+msgstr "_Upplýsingar"
 
-#: ../src/ui-filter.c:1035
+#: ../src/ui-filter.c:1228
 msgid "_Tag:"
 msgstr "_Merkja:"
 
-#: ../src/ui-filter.c:1060
-msgid "Filter Amount"
+#: ../src/ui-filter.c:1236
+msgid "Case _sensitive"
+msgstr "Stafréttur"
+
+#. gtk_widget_show(GTK_WIDGET(page));
+#: ../src/ui-filter.c:1261 ../src/ui-filter.c:1467
+msgid "Amounts"
 msgstr ""
 
-#: ../src/ui-filter.c:1106
-msgid "Filter Status"
+#. gtk_widget_show(GTK_WIDGET(page));
+#: ../src/ui-filter.c:1300 ../src/ui-filter.c:1459
+msgid "Statuses"
 msgstr ""
 
-#: ../src/ui-filter.c:1121
+#: ../src/ui-filter.c:1309
 msgid "reconciled"
 msgstr ""
 
-#: ../src/ui-filter.c:1125
+#: ../src/ui-filter.c:1313
 msgid "cleared"
 msgstr ""
 
-#: ../src/ui-filter.c:1130
+#: ../src/ui-filter.c:1318
 msgid "Force:"
 msgstr "Knýja"
 
-#: ../src/ui-filter.c:1136
+#: ../src/ui-filter.c:1324
 msgid "display 'Added'"
 msgstr "Sýna 'bætt við'"
 
-#: ../src/ui-filter.c:1140
+#: ../src/ui-filter.c:1328
 msgid "display 'Edited'"
 msgstr "Sýna 'breytt'"
 
-#: ../src/ui-filter.c:1144
+#: ../src/ui-filter.c:1332
 msgid "display 'Remind'"
 msgstr ""
 
-#: ../src/ui-filter.c:1165
-msgid "Filter Payment"
+#. gtk_widget_show(GTK_WIDGET(page));
+#: ../src/ui-filter.c:1358 ../src/ui-filter.c:1463
+msgid "Payments"
 msgstr ""
 
 #. clear button
-#: ../src/ui-filter.c:1268 ../src/ui-pref.c:2058
+#: ../src/ui-filter.c:1406 ../src/ui-pref.c:2007
 msgid "_Reset"
-msgstr ""
-
-#: ../src/ui-filter.c:1312
-msgid "Payment"
 msgstr ""
 
 #: ../src/ui-hbfile.c:239
@@ -2766,29 +2827,33 @@ msgid "add"
 msgstr ""
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
-#: ../src/ui-hbfile.c:265 ../src/ui-pref.c:1652
+#: ../src/ui-hbfile.c:265 ../src/ui-pref.c:1599
 msgid "days in advance the current date"
 msgstr ""
 
-#: ../src/ui-payee.c:708
+#: ../src/ui-payee.c:711
 msgid "Default category"
 msgstr ""
 
-#: ../src/ui-payee.c:746
+#: ../src/ui-payee.c:749
 msgid "Delete unused payee"
 msgstr ""
 
-#: ../src/ui-payee.c:747
+#: ../src/ui-payee.c:750
 msgid ""
 "Are you sure you want to\n"
 "permanently delete unused payee?"
 msgstr ""
 
-#: ../src/ui-payee.c:919
+#: ../src/ui-payee.c:922
 msgid "Default"
 msgstr ""
 
-#: ../src/ui-payee.c:976
+#: ../src/ui-payee.c:934 ../src/ui-transaction.c:1057 ../src/ui-txn-multi.c:417
+msgid "Pa_yment:"
+msgstr ""
+
+#: ../src/ui-payee.c:979
 #, c-format
 msgid ""
 "Cannot rename this Payee,\n"
@@ -2799,234 +2864,234 @@ msgstr ""
 "úr '%s' í '%s',\n"
 "þetta nafn er þegar til."
 
-#: ../src/ui-payee.c:1031
+#: ../src/ui-payee.c:1034
 #, c-format
 msgid "Merge payee '%s'"
 msgstr ""
 
-#: ../src/ui-payee.c:1052
+#: ../src/ui-payee.c:1055
 msgid ""
 "Transactions assigned to this payee,\n"
 "will be moved to the payee selected below."
 msgstr ""
 
-#: ../src/ui-payee.c:1062
+#: ../src/ui-payee.c:1065
 #, c-format
 msgid "_Delete the payee '%s'"
 msgstr ""
 
-#: ../src/ui-payee.c:1149
+#: ../src/ui-payee.c:1152
 msgid ""
 "This payee is used.\n"
 "Any transaction using that payee will be set to (no payee)"
 msgstr ""
 
-#: ../src/ui-payee.c:1229
+#: ../src/ui-payee.c:1232
 msgid "Manage Payees"
 msgstr "Stjórna Greiðendum"
 
-#: ../src/ui-payee.c:1299
+#: ../src/ui-payee.c:1302
 msgid "new payee"
 msgstr ""
 
-#: ../src/ui-pref.c:87
+#: ../src/ui-pref.c:80
 msgid "Interface"
 msgstr "Viðmót"
 
-#: ../src/ui-pref.c:89
+#: ../src/ui-pref.c:82
 msgid "Display format"
 msgstr "Sýna snið"
 
-#: ../src/ui-pref.c:90
+#: ../src/ui-pref.c:83
 msgid "Import/Export"
 msgstr ""
 
-#: ../src/ui-pref.c:91
+#: ../src/ui-pref.c:84
 msgid "Report"
 msgstr ""
 
-#: ../src/ui-pref.c:97
+#: ../src/ui-pref.c:90
 msgid "System defaults"
 msgstr "Sjálfgefnar kerfisstillingar"
 
-#: ../src/ui-pref.c:98
+#: ../src/ui-pref.c:91
 msgid "Icons only"
 msgstr "Bara tákn"
 
-#: ../src/ui-pref.c:99
+#: ../src/ui-pref.c:92
 msgid "Text only"
 msgstr "Bara texti"
 
-#: ../src/ui-pref.c:100
+#: ../src/ui-pref.c:93
 msgid "Text under icons"
 msgstr "Texti undir táknum"
 
-#: ../src/ui-pref.c:101
+#: ../src/ui-pref.c:94
 msgid "Text beside icons"
 msgstr "Texti við hliðina á táknum"
 
-#: ../src/ui-pref.c:107
+#: ../src/ui-pref.c:100
 msgid "Horizontal"
 msgstr ""
 
-#: ../src/ui-pref.c:108
+#: ../src/ui-pref.c:101
 msgid "Vertical"
 msgstr ""
 
-#: ../src/ui-pref.c:109
+#: ../src/ui-pref.c:102
 msgid "Both"
 msgstr ""
 
-#: ../src/ui-pref.c:116
+#: ../src/ui-pref.c:109
 msgid "Tango light"
 msgstr "Tango ljós"
 
-#: ../src/ui-pref.c:117
+#: ../src/ui-pref.c:110
 msgid "Tango medium"
 msgstr "Tango millistig"
 
-#: ../src/ui-pref.c:118
+#: ../src/ui-pref.c:111
 msgid "Tango dark"
 msgstr "Tango dökkur"
 
-#: ../src/ui-pref.c:123
+#: ../src/ui-pref.c:116
 msgid "m-d-y"
 msgstr ""
 
-#: ../src/ui-pref.c:124
+#: ../src/ui-pref.c:117
 msgid "d-m-y"
 msgstr ""
 
-#: ../src/ui-pref.c:125
+#: ../src/ui-pref.c:118
 msgid "y-m-d"
 msgstr ""
 
-#: ../src/ui-pref.c:130 ../src/ui-pref.c:137
+#: ../src/ui-pref.c:123 ../src/ui-pref.c:130
 msgid "Ignore"
 msgstr "Hunsa"
 
-#: ../src/ui-pref.c:138
+#: ../src/ui-pref.c:131
 msgid "Append to Info"
 msgstr ""
 
-#: ../src/ui-pref.c:139
+#: ../src/ui-pref.c:132
 msgid "Append to Memo"
 msgstr ""
 
-#: ../src/ui-pref.c:140
+#: ../src/ui-pref.c:133
 msgid "Append to Payee"
 msgstr ""
 
-#: ../src/ui-pref.c:500
+#: ../src/ui-pref.c:469
 msgid "System Language"
 msgstr ""
 
-#: ../src/ui-pref.c:661
+#: ../src/ui-pref.c:630
 msgid "Choose a default HomeBank files folder"
 msgstr ""
 
-#: ../src/ui-pref.c:666
+#: ../src/ui-pref.c:635
 msgid "Choose a default import folder"
 msgstr ""
 
-#: ../src/ui-pref.c:671
+#: ../src/ui-pref.c:640
 msgid "Choose a default export folder"
 msgstr ""
 
-#: ../src/ui-pref.c:1154
+#: ../src/ui-pref.c:1101
 msgid "Date options"
 msgstr ""
 
-#: ../src/ui-pref.c:1158
+#: ../src/ui-pref.c:1105
 msgid "Date order:"
 msgstr ""
 
-#: ../src/ui-pref.c:1173
+#: ../src/ui-pref.c:1120
 msgid "OFX/QFX options"
 msgstr ""
 
-#: ../src/ui-pref.c:1177
+#: ../src/ui-pref.c:1124
 msgid "_Name field:"
 msgstr ""
 
-#: ../src/ui-pref.c:1186
+#: ../src/ui-pref.c:1133
 msgid "_Memo field:"
 msgstr ""
 
-#: ../src/ui-pref.c:1200
+#: ../src/ui-pref.c:1147
 msgid "QIF options"
 msgstr ""
 
-#: ../src/ui-pref.c:1204
+#: ../src/ui-pref.c:1151
 msgid "Memos:"
 msgstr ""
 
-#: ../src/ui-pref.c:1209
+#: ../src/ui-pref.c:1156
 msgid "_Swap with payees"
 msgstr ""
 
-#: ../src/ui-pref.c:1220 ../src/ui-pref.c:1890
+#: ../src/ui-pref.c:1167 ../src/ui-pref.c:1839
 msgid "Files folder"
 msgstr ""
 
-#: ../src/ui-pref.c:1224
+#: ../src/ui-pref.c:1171
 msgid "_Import:"
 msgstr "_Flytja inn:"
 
-#: ../src/ui-pref.c:1243
+#: ../src/ui-pref.c:1190
 msgid "_Export:"
 msgstr "_Flytja út:"
 
-#: ../src/ui-pref.c:1314
+#: ../src/ui-pref.c:1261
 msgid "Initial filter"
 msgstr ""
 
-#: ../src/ui-pref.c:1318 ../src/ui-pref.c:1635 ../src/ui-pref.c:1878
+#: ../src/ui-pref.c:1265 ../src/ui-pref.c:1582 ../src/ui-pref.c:1827
 msgid "Date _range:"
 msgstr ""
 
-#: ../src/ui-pref.c:1332
+#: ../src/ui-pref.c:1279
 msgid "Charts options"
 msgstr ""
 
-#: ../src/ui-pref.c:1336
+#: ../src/ui-pref.c:1283
 msgid "Color scheme:"
 msgstr ""
 
-#: ../src/ui-pref.c:1358
+#: ../src/ui-pref.c:1305
 msgid "Statistics options"
 msgstr ""
 
-#: ../src/ui-pref.c:1362
+#: ../src/ui-pref.c:1309
 msgid "Show by _amount"
 msgstr "Flokka eftir_upphæð"
 
-#: ../src/ui-pref.c:1367
+#: ../src/ui-pref.c:1314
 msgid "Show _rate column"
 msgstr "Sýna _tíðni dálk"
 
-#: ../src/ui-pref.c:1372 ../src/ui-pref.c:1386
+#: ../src/ui-pref.c:1319 ../src/ui-pref.c:1333
 msgid "Show _details"
 msgstr "Sýna_upplýsingar"
 
-#: ../src/ui-pref.c:1382
+#: ../src/ui-pref.c:1329
 msgid "Budget options"
 msgstr ""
 
-#: ../src/ui-pref.c:1414
+#: ../src/ui-pref.c:1361
 msgid "_Enable"
 msgstr "_Virkja"
 
 #. row++;
-#: ../src/ui-pref.c:1435 ../src/ui-pref.c:1769
+#: ../src/ui-pref.c:1382 ../src/ui-pref.c:1718
 msgid "_Preset:"
 msgstr "_Forstilla:"
 
-#: ../src/ui-pref.c:1558
+#: ../src/ui-pref.c:1505
 msgid "_Format:"
 msgstr ""
 
-#: ../src/ui-pref.c:1571
+#: ../src/ui-pref.c:1518
 msgid ""
 "%a locale's abbreviated weekday name.\n"
 "%A locale's full weekday name. \n"
@@ -3046,136 +3111,128 @@ msgid ""
 "%Y year with century as a decimal number. \n"
 msgstr ""
 
-#: ../src/ui-pref.c:1598
+#: ../src/ui-pref.c:1545
 msgid "Measurement units"
 msgstr ""
 
-#: ../src/ui-pref.c:1602
+#: ../src/ui-pref.c:1549
 msgid "Use _miles for meter"
 msgstr ""
 
-#: ../src/ui-pref.c:1607
+#: ../src/ui-pref.c:1554
 msgid "Use _gallon for fuel"
 msgstr ""
 
-#: ../src/ui-pref.c:1631
+#: ../src/ui-pref.c:1578
 msgid "Transaction window"
 msgstr ""
 
-#: ../src/ui-pref.c:1643
+#: ../src/ui-pref.c:1590
 msgid "_Show:"
 msgstr ""
 
-#: ../src/ui-pref.c:1656
+#: ../src/ui-pref.c:1603
 msgid "Hide reconciled transactions"
 msgstr ""
 
-#: ../src/ui-pref.c:1661
+#: ../src/ui-pref.c:1608
 msgid "Always show remind transactions"
 msgstr ""
 
-#: ../src/ui-pref.c:1671
+#: ../src/ui-pref.c:1618
 msgid "Multiple add"
 msgstr ""
 
-#: ../src/ui-pref.c:1675
+#: ../src/ui-pref.c:1622
 msgid "Keep the last date"
 msgstr ""
 
-#: ../src/ui-pref.c:1685
-msgid "Column list"
-msgstr ""
-
-#: ../src/ui-pref.c:1698
-msgid "Drag & drop to change the order"
-msgstr "Dragðu & slepptu til að breyta röðinni"
-
-#: ../src/ui-pref.c:1725
+#: ../src/ui-pref.c:1674
 msgid "_Language:"
 msgstr ""
 
-#: ../src/ui-pref.c:1732
+#: ../src/ui-pref.c:1681
 msgid "_Toolbar:"
 msgstr "_Tækjastika:"
 
 #. widget = gtk_check_button_new_with_mnemonic (_("Enable rows in alternating colors"));
 #. data->CM_ruleshint = widget;
-#: ../src/ui-pref.c:1742
+#: ../src/ui-pref.c:1691
 msgid "_Grid line:"
 msgstr ""
 
-#: ../src/ui-pref.c:1754
+#: ../src/ui-pref.c:1703
 msgid "Amount colors"
 msgstr ""
 
-#: ../src/ui-pref.c:1758
+#: ../src/ui-pref.c:1707
 msgid "Uses custom colors"
 msgstr "Nota breytta liti"
 
-#: ../src/ui-pref.c:1778
+#: ../src/ui-pref.c:1727
 msgid "_Expense:"
 msgstr "_Útgjöld:"
 
-#: ../src/ui-pref.c:1788
+#: ../src/ui-pref.c:1737
 msgid "_Income:"
 msgstr "_Innkoma:"
 
-#: ../src/ui-pref.c:1795
+#: ../src/ui-pref.c:1744
 msgid "_Warning:"
 msgstr "_Varúð:"
 
-#: ../src/ui-pref.c:1822
+#: ../src/ui-pref.c:1771
 msgid "Program start"
 msgstr ""
 
-#: ../src/ui-pref.c:1826
+#: ../src/ui-pref.c:1775
 msgid "Show splash screen"
 msgstr ""
 
-#: ../src/ui-pref.c:1831
+#: ../src/ui-pref.c:1780
 msgid "Load last opened file"
 msgstr "Opna síðustu skrá sem var opnuð"
 
-#: ../src/ui-pref.c:1841
+#: ../src/ui-pref.c:1790
 msgid "Update currencies online"
 msgstr ""
 
-#: ../src/ui-pref.c:1851
+#: ../src/ui-pref.c:1800
 msgid "Fiscal year"
 msgstr ""
 
 #. TRANSLATORS: (fiscal year) starts on
-#: ../src/ui-pref.c:1856
+#: ../src/ui-pref.c:1805
 msgid "Starts _on:"
 msgstr ""
 
-#: ../src/ui-pref.c:1874
+#: ../src/ui-pref.c:1823
 msgid "Main window reports"
 msgstr ""
 
-#: ../src/ui-pref.c:1894
+#: ../src/ui-pref.c:1843
 msgid "_Default:"
 msgstr ""
 
-#: ../src/ui-pref.c:1999
+#: ../src/ui-pref.c:1948
 msgid "Reset all preferences"
 msgstr ""
 
-#: ../src/ui-pref.c:2000
+#: ../src/ui-pref.c:1949
 msgid ""
 "Do you really want to reset all\n"
 "preferences to default values?"
 msgstr ""
 
-#: ../src/ui-pref.c:2001
+#: ../src/ui-pref.c:1950
 msgid "Reset"
 msgstr ""
 
-#: ../src/ui-pref.c:2019
+#: ../src/ui-pref.c:1968
 msgid "Preferences"
 msgstr "Eiginleikar"
 
-#: ../src/ui-pref.c:2241
+#: ../src/ui-pref.c:2190
 msgid ""
 "You will have to restart HomeBank\n"
 "for the language change to take effect."
@@ -3220,26 +3277,30 @@ msgstr "Breyta færslu"
 msgid "Remind"
 msgstr ""
 
-#: ../src/ui-transaction.c:570
+#: ../src/ui-transaction.c:638
 msgid "From acc_ount:"
 msgstr ""
 
-#: ../src/ui-transaction.c:574 ../src/ui-transaction.c:1016
+#: ../src/ui-transaction.c:642 ../src/ui-transaction.c:1086
 msgid "To acc_ount:"
 msgstr ""
 
-#: ../src/ui-transaction.c:654
+#: ../src/ui-transaction.c:730
 msgid ""
 "Do you want to break the internal transfer ?\n"
 "\n"
 "Proceeding will delete the target transaction."
 msgstr ""
 
-#: ../src/ui-transaction.c:935
+#: ../src/ui-transaction.c:1005
 msgid "Show _scheduled"
 msgstr ""
 
-#: ../src/ui-transaction.c:965
+#: ../src/ui-transaction.c:1029 ../src/ui-txn-multi.c:401
+msgid "_Date:"
+msgstr "_Dagur:"
+
+#: ../src/ui-transaction.c:1035
 msgid ""
 "Date accepted here are:\n"
 "day,\n"
@@ -3251,83 +3312,92 @@ msgstr ""
 "dagur/mánuður eða mánuður/dagur,\n"
 "og full dagsetning í þinni staðsetningu"
 
-#: ../src/ui-transaction.c:1031 ../src/ui-transaction.c:1040
+#: ../src/ui-transaction.c:1101 ../src/ui-transaction.c:1110
 msgid ""
 "Autocompletion and direct seizure\n"
 "is available"
 msgstr ""
 
-#: ../src/ui-transaction.c:1134
+#: ../src/ui-transaction.c:1121 ../src/ui-txn-multi.c:509
+msgid "M_emo:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1129 ../src/ui-txn-multi.c:493
+msgid "Ta_gs:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1204
 msgid "_Add & keep"
 msgstr ""
 
-#: ../src/ui-transaction.c:1142
+#: ../src/ui-transaction.c:1212
 msgid "_Post"
 msgstr ""
 
-#: ../src/ui-transaction.c:1186
+#: ../src/ui-transaction.c:1256
 msgid "Use a _template"
 msgstr ""
 
-#: ../src/ui-transaction.c:1230
+#: ../src/ui-transaction.c:1301
 msgid "Warning: amount and category sign don't match"
 msgstr ""
 
-#: ../src/ui-widgets.c:273
+#: ../src/ui-txn-multi.c:386
+msgid "Multiple edit transactions"
+msgstr ""
+
+#: ../src/ui-widgets.c:288
 msgid "Search..."
 msgstr ""
 
-#: ../src/ui-widgets.c:796
+#: ../src/ui-widgets.c:820
 msgid "Check"
 msgstr "Tékki"
 
-#: ../src/ui-widgets.c:798
+#: ../src/ui-widgets.c:822
 msgid "Transfer"
 msgstr "Færsla"
 
-#: ../src/ui-widgets.c:799
+#: ../src/ui-widgets.c:823
 msgid "Internal transfer"
 msgstr "Innri færslur"
 
-#: ../src/ui-widgets.c:800
+#: ../src/ui-widgets.c:824
 msgid "Debit card"
 msgstr "Debit kort"
 
-#: ../src/ui-widgets.c:801
+#: ../src/ui-widgets.c:825
 msgid "Standing order"
 msgstr "Fastapöntun"
 
-#: ../src/ui-widgets.c:802
+#: ../src/ui-widgets.c:826
 msgid "Electronic payment"
 msgstr "Rafræn greiðsla"
 
-#: ../src/ui-widgets.c:803
+#: ../src/ui-widgets.c:827
 msgid "Deposit"
 msgstr "Innlegg"
 
 #. TRANSLATORS: Financial institution fee
-#: ../src/ui-widgets.c:805
+#: ../src/ui-widgets.c:829
 msgid "FI fee"
 msgstr ""
 
-#: ../src/ui-widgets.c:806
+#: ../src/ui-widgets.c:830
 msgid "Direct Debit"
 msgstr ""
 
-#: ../src/ui-widgets.c:933
+#: ../src/ui-widgets.c:957
 msgid "Inactive"
 msgstr "Óvirkur"
 
-#: ../src/ui-widgets.c:934
+#: ../src/ui-widgets.c:958
 msgid "Include"
 msgstr "Meðtaka"
 
-#: ../src/ui-widgets.c:935
+#: ../src/ui-widgets.c:959
 msgid "Exclude"
 msgstr "Útiloka"
 
-#~ msgid "Edit Filter"
-#~ msgstr "Breyta síu"
-
-#~ msgid "Edit the filter"
-#~ msgstr "Breyta síu"
+#~ msgid "expense"
+#~ msgstr "útgjöld"

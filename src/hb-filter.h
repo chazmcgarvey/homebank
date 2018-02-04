@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -85,7 +85,8 @@ enum
 	FLT_QSEARCH_INFO     = 1<<1,
 	FLT_QSEARCH_PAYEE    = 1<<2,
 	FLT_QSEARCH_CATEGORY = 1<<3,
-	FLT_QSEARCH_TAGS     = 1<<4
+	FLT_QSEARCH_TAGS     = 1<<4,
+	FLT_QSEARCH_AMOUNT   = 1<<5
 };
 
 
@@ -94,6 +95,7 @@ typedef struct _filter	Filter;
 struct _filter
 {
 	guint32		mindate, maxdate;
+	gint		nbdaysfuture;
 	gint		range;
 	gint		type;
 	gint		status;
@@ -108,9 +110,9 @@ struct _filter
 	gdouble		minamount, maxamount;
 	gboolean	exact;
 	gchar		*info;
-	gchar		*wording;
+	gchar		*memo;
 	gchar		*tag;
-	guint		last_tab;
+	gchar		last_tab[8];
 };
 
 

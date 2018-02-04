@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.52)
-AC_INIT([homebank], [5.1.3])
+AC_INIT([homebank], [5.1.7])
 #AC_INIT([homebank], [x.x-rc])
 
 AM_CONFIG_HEADER(config.h)
@@ -26,7 +26,7 @@ AC_PROG_INSTALL
 AC_PROG_INTLTOOL
 
 # Checks for libraries.
-PKG_CHECK_MODULES(DEPS, gtk+-3.0 >= 3.12 glib-2.0 >= 2.39 gmodule-2.0 >= 2.39)
+PKG_CHECK_MODULES(DEPS, gtk+-3.0 >= 3.16 glib-2.0 >= 2.39 gmodule-2.0 >= 2.39)
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 AC_CHECK_LIB(m, pow)
@@ -35,7 +35,7 @@ PKG_CHECK_MODULES(LIBSOUP, [libsoup-2.4 >= 2.26])
 AC_SUBST(LIBSOUP_CFLAGS)
 AC_SUBST(LIBSOUP_LIBS)
 
-# release flags
+# general usage flags
 CFLAGS="${CFLAGS} -Wall -Wmissing-prototypes"
 
 # disable deprecated warnings

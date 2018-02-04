@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -154,8 +154,12 @@ guint kacc, kdst;
 
 		srcacc = da_acc_get(kacc);
 		dstacc = da_acc_get(kdst);
-		if(srcacc->kcur != dstacc->kcur) {
-			sensitive = FALSE;
+		if( srcacc && dstacc )
+		{
+			if(srcacc->kcur != dstacc->kcur)
+			{
+				sensitive = FALSE;
+			}
 		}
 	}
 
@@ -200,6 +204,75 @@ Payee *pay;
 	}
 }
 
+static void deftransaction_set_cheque(GtkWidget *widget, gpointer user_data)
+{
+struct deftransaction_data *data;
+gdouble amount;
+gint kacc;
+Account *acc;
+guint cheque;
+gchar *cheque_str;
+
+	DB( g_print("\n[ui-transaction] set_cheque\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
+	if( amount < 0 )
+	{
+		kacc = ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_acc));
+		//#1410166
+		if( kacc > 0 )
+		{
+			acc = da_acc_get( kacc );
+			if(acc != NULL)
+			{
+				DB( g_print(" - should fill for acc %d '%s'\n", kacc, acc->name) );
+
+				cheque = ( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_cheque))==TRUE ? acc->cheque2 : acc->cheque1 );
+				cheque_str = g_strdup_printf("%d", cheque + 1);
+				gtk_entry_set_text(GTK_ENTRY(data->ST_info), cheque_str);
+				g_free(cheque_str);
+			}
+		}
+	}
+	else
+	if( amount > 0 )
+	{
+		gtk_entry_set_text(GTK_ENTRY(data->ST_info), "");
+	}
+	
+}
+
+
+
+//#1676162 update the nb digits of amount
+static void deftransaction_set_amount_nbdigits(GtkWidget *widget, guint32 kacc)
+{
+struct deftransaction_data *data;
+
+	DB( g_print("\n[ui-transaction] set_amount_nbdigits\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	Account *srcacc = da_acc_get(kacc);
+	if(srcacc != NULL)
+	{
+	Currency *cur = da_cur_get(srcacc->kcur);
+
+		DB( g_print("- acc is %d '%s', curr=%d\n", srcacc->key, srcacc->name, srcacc->kcur) );
+
+		if(cur != NULL)
+		{
+			DB( g_print("- set digits to '%s' %d\n", cur->name, cur->frac_digits) );
+			gtk_spin_button_set_digits (GTK_SPIN_BUTTON(data->ST_amount), cur->frac_digits);
+		}
+		else
+			gtk_spin_button_set_digits (GTK_SPIN_BUTTON(data->ST_amount), 2);
+		
+	}
+}
+
 
 static void deftransaction_update_accto(GtkWidget *widget, gpointer user_data)
 {
@@ -214,6 +287,7 @@ guint kacc;
 
 	DB( g_print(" acc is %d\n", kacc) );
 
+	deftransaction_set_amount_nbdigits(widget, kacc);
 	//g_signal_handlers_block_by_func (G_OBJECT (data->PO_accto), G_CALLBACK (deftransaction_update_transfer), NULL);
 	//ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_accto), 0);
 	//g_signal_handlers_unblock_by_func (G_OBJECT (data->PO_accto), G_CALLBACK (deftransaction_update_transfer), NULL);
@@ -261,7 +335,7 @@ gchar *tagstr, *txt;
 	//g_object_set(GTK_DATE_ENTRY(data->PO_date), "date", (guint32)entry->ope_Date);
 	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_date), (guint)entry->date);
 
-	txt = (entry->wording != NULL) ? entry->wording : "";
+	txt = (entry->memo != NULL) ? entry->memo : "";
 	gtk_entry_set_text(GTK_ENTRY(data->ST_word), txt);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), entry->amount);
 	//gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_amount), (entry->ope_Flags & OF_INCOME) ? 1 : 0);
@@ -284,7 +358,7 @@ gchar *tagstr, *txt;
 	radio_set_active(GTK_CONTAINER(data->RA_status), entry->status );
 	
 	//as we trigger an event on this
-	//let's place it at the end to avoid misvalue on the trigger function
+	//let's place it at the end to avoid missvalue on the trigger function
 	g_signal_handlers_block_by_func (G_OBJECT (data->PO_acc), G_CALLBACK (deftransaction_update_accto), NULL);
 
 	ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_acc), entry->kacc);
@@ -319,16 +393,31 @@ gint active;
 	//g_object_get(GTK_DATE_ENTRY(data->PO_date), "date", entry->ope_Date);
 
 	//free any previous string
-	if(	entry->wording )
+	if(	entry->memo )
 	{
-		g_free(entry->wording);
-		entry->wording = NULL;
+		g_free(entry->memo);
+		entry->memo = NULL;
 	}
 	txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_word));
 	// ignore if entry is empty
 	if (txt && *txt)
 	{
-		entry->wording = g_strdup(txt);
+		entry->memo = g_strdup(txt);
+		
+		//#1716182 add into memo autocomplete
+		if( da_transaction_insert_memo(entry) )
+		{
+		GtkEntryCompletion *completion;
+		GtkTreeModel *model;
+		GtkTreeIter  iter;
+
+			completion = gtk_entry_get_completion (GTK_ENTRY(data->ST_word));
+			model = gtk_entry_completion_get_model (completion);
+			gtk_list_store_insert_with_values(GTK_LIST_STORE(model), &iter, -1,
+				0, txt, 
+				-1);
+		}
+
 	}
 
 	value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
@@ -397,8 +486,6 @@ gint active;
 }
 
 
-
-
 static gboolean deftransaction_amount_focusout(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
 struct deftransaction_data *data;
@@ -409,18 +496,26 @@ gdouble amount;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	paymode    = gtk_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
-
-	// for internal transfer add, amount must be expense by default
-	if( paymode == PAYMODE_INTXFER && data->type == TRANSACTION_EDIT_ADD )
+	//#1681532 not reproduced, so prevent
+	if( GTK_IS_COMBO_BOX(data->NU_mode) )
 	{
+		paymode    = gtk_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
 		amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
-		if(amount > 0)
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), amount *= -1);
-	}
 
-	deftransaction_update_warnsign(widget, NULL);
-	
+		// for internal transfer add, amount must be expense by default
+		if( paymode == PAYMODE_INTXFER && data->type == TRANSACTION_EDIT_ADD )
+		{
+			if(amount > 0)
+				gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), amount *= -1);
+		}
+
+		if( paymode == PAYMODE_CHECK )
+		{
+			deftransaction_set_cheque(widget, NULL);
+		}
+
+		deftransaction_update_warnsign(widget, NULL);
+	}
 	return FALSE;
 }
 
@@ -509,36 +604,9 @@ gboolean sensitive;
 	/* todo: prefill the cheque number ? */
 	if( data->type != TRANSACTION_EDIT_MODIFY )
 	{
-	gboolean expense = (gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount)) > 0 ? FALSE : TRUE);
-
-		DB( g_print(" - payment: %d\n", PAYMODE_CHECK) );
-		DB( g_print(" - expense: %d\n", expense) );
-		DB( g_print(" - acc is: %d\n", ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_acc)) ) );
-
 		if(payment == PAYMODE_CHECK)
 		{
-			if(expense == TRUE)
-			{
-			Account *acc;
-			gint active = ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_acc));
-			guint cheque;
-			gchar *cheque_str;
-
-				DB( g_print(" - should fill cheque number for account %d\n", active) );
-
-				//#1410166
-				if( active > 0 )
-				{
-					acc = da_acc_get( active );
-					if(acc != NULL)
-					{
-						cheque = ( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_cheque))==TRUE ? acc->cheque2 : acc->cheque1 );
-						cheque_str = g_strdup_printf("%d", cheque + 1);
-						gtk_entry_set_text(GTK_ENTRY(data->ST_info), cheque_str);
-						g_free(cheque_str);
-					}
-				}
-			}
+			deftransaction_set_cheque(widget, user_data);
 		}
 	}
 
@@ -596,6 +664,9 @@ gint deftransaction_external_edit(GtkWindow *parent, Transaction *old_txn, Trans
 GtkWidget *dialog;
 gboolean result;
 
+	DB( g_print("\n[ui-transaction] external edit (from out)\n") );
+
+
 	dialog = create_deftransaction_window(GTK_WINDOW(parent), TRANSACTION_EDIT_MODIFY, FALSE);
 	deftransaction_set_transaction(dialog, new_txn);
 
@@ -607,85 +678,85 @@ gboolean result;
 		account_balances_sub(old_txn);
 		account_balances_add(new_txn);
 
+		/* ok different case here
+
+			* new is intxfer
+				a) old was not
+					transaction_xfer_search_or_add_child
+				b) old was
+					sync (acc chnage is inside now)
+
+			* new is not intxfer
+				a) old was
+					manage break intxfer
+
+			* always manage account change
+
+		*/
+
 		if( new_txn->paymode == PAYMODE_INTXFER )
 		{
-			//nota: if kxfer is 0, the user may have just changed the paymode to xfer
-			DB( g_print(" - kxfer = %d\n", new_txn->kxfer) );
-
-			if(new_txn->kxfer > 0)	//1) search a strong linked child
+			if( old_txn->paymode != PAYMODE_INTXFER )
 			{
-			Transaction *ltxn;
-
-				DB( g_print(" - old_txn: kacc=%d kxferacc=%d\n", old_txn->kacc, old_txn->kxferacc) );
-				
-				//#1584342 was faultly old_txn
-				ltxn = transaction_xfer_child_strong_get(new_txn);
-				if(ltxn != NULL) //should never be the case
-				{
-					DB( g_print(" - strong link found, do sync\n") );
-					transaction_xfer_sync_child(new_txn, ltxn);
-				}
-				else
-				{
-					DB( g_print(" - no, somethin' went wrong here...\n") );
-				}
+				// this call can popup a user dialog to choose
+				transaction_xfer_search_or_add_child(GTK_WINDOW(dialog), new_txn, FALSE);
 			}
 			else
 			{
-				//2) any standard transaction that match ?
-				transaction_xfer_search_or_add_child(GTK_WINDOW(dialog), new_txn, FALSE);
+			Transaction *child;
+
+				//use old in case of dst_acc change
+				child = transaction_xfer_child_strong_get(old_txn);
+				//#1584342 was faultly old_txn
+				transaction_xfer_child_sync(new_txn, child);
 			}
-		}
-
-		//#1250061 : manage ability to break an internal xfer
-		if(old_txn->paymode == PAYMODE_INTXFER && new_txn->paymode != PAYMODE_INTXFER)
-		{
-		GtkWidget *p_dialog;
-		gboolean break_result;
-			
-			DB( g_print(" - should break internal xfer\n") );
-
-			p_dialog = gtk_message_dialog_new
-			(
-				GTK_WINDOW(parent),
-				GTK_DIALOG_MODAL,
-				GTK_MESSAGE_WARNING,
-				GTK_BUTTONS_YES_NO,
-				_("Do you want to break the internal transfer ?\n\n"
-				  "Proceeding will delete the target transaction.")
-			);
-
-			break_result = gtk_dialog_run( GTK_DIALOG( p_dialog ) );
-			gtk_widget_destroy( p_dialog );
-
-			if(break_result == GTK_RESPONSE_YES)
-			{
-				transaction_xfer_remove_child(old_txn);
-			}
-			else	//force paymode to internal xfer
-			{
-				new_txn->paymode = PAYMODE_INTXFER;
-			}
-		}
-	}
-	
-	//1638035: manage account change
-	if( old_txn->kacc != new_txn->kacc )
-	{
-		//locked from ui, but test anyway: forbid change for internal transfer
-		if( new_txn->paymode == PAYMODE_INTXFER )
-		{
-			new_txn->kacc = old_txn->kacc;
 		}
 		else
 		{
+			//#1250061 : manage ability to break an internal xfer
+			if(old_txn->paymode == PAYMODE_INTXFER)
+			{
+			GtkWidget *p_dialog;
+			gboolean break_result;
+		
+				DB( g_print(" - should break internal xfer\n") );
+
+				p_dialog = gtk_message_dialog_new
+				(
+					GTK_WINDOW(parent),
+					GTK_DIALOG_MODAL,
+					GTK_MESSAGE_WARNING,
+					GTK_BUTTONS_YES_NO,
+					_("Do you want to break the internal transfer ?\n\n"
+					  "Proceeding will delete the target transaction.")
+				);
+
+				break_result = gtk_dialog_run( GTK_DIALOG( p_dialog ) );
+				gtk_widget_destroy( p_dialog );
+
+				if(break_result == GTK_RESPONSE_YES)
+				{
+					//we must use old_txn to ensure get the child
+					//#1663789 but we must clean new as well
+					transaction_xfer_remove_child(old_txn);
+					new_txn->kxfer = 0;
+					new_txn->kxferacc = 0;
+				}
+				else	//force paymode to internal xfer
+				{
+					new_txn->paymode = PAYMODE_INTXFER;
+				}
+			}
+		}
+
+		//1638035: manage account change
+		if( old_txn->kacc != new_txn->kacc )
+		{
 			//todo: maybe we should restrict this also to same currency account
-			account_balances_sub(new_txn);
+			//=> no pb for normal, and intxfer is restricted by ui (in theory)
 			transaction_acc_move(new_txn, old_txn->kacc, new_txn->kacc);
-			account_balances_add(new_txn);
 		}
 	}
-	
 	
 	deftransaction_dispose(dialog, NULL);
 	gtk_widget_destroy (dialog);
@@ -697,7 +768,6 @@ gboolean result;
 void deftransaction_set_transaction(GtkWidget *widget, Transaction *ope)
 {
 struct deftransaction_data *data;
-
 
 	DB( g_print("\n[ui-transaction] set transaction (from out)\n") );
 
@@ -822,7 +892,7 @@ GList *list;
 		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 		gtk_list_store_set (GTK_LIST_STORE(model), &iter, 
 			LST_DSPTPL_DATAS, entry,
-			LST_DSPTPL_NAME, entry->wording,
+			LST_DSPTPL_NAME, entry->memo,
 			 -1);
 
 		//DB( g_print(" populate_treeview: %d %08x\n", i, list->data) );
@@ -960,7 +1030,7 @@ gint row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	widget = gtk_date_entry_new();
 	data->PO_date = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 	gtk_widget_set_halign (widget, GTK_ALIGN_START);
 	gtk_widget_set_tooltip_text(widget, _("Date accepted here are:\nday,\nday/month or month/day,\nand complete date into your locale"));
 
@@ -989,12 +1059,12 @@ gint row;
 	widget = make_paymode(label);
 	data->NU_mode = widget;
 	gtk_widget_set_halign (widget, GTK_ALIGN_START);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
 	row++;
 	widget = gtk_check_button_new_with_mnemonic(_("Of notebook _2"));
 	data->CM_cheque = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
 
 	row++;
 	label = make_label_widget(_("_Info:"));
@@ -1002,7 +1072,7 @@ gint row;
 	widget = make_string(label);
 	data->ST_info = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
 	row++;
 	label = make_label_widget(_("A_ccount:"));
@@ -1010,7 +1080,7 @@ gint row;
 	widget = ui_acc_comboboxentry_new(label);
 	data->PO_acc = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
 	row++;
 	label = make_label_widget(_("To acc_ount:"));
@@ -1019,7 +1089,7 @@ gint row;
 	widget = ui_acc_comboboxentry_new(label);
 	data->PO_accto = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
 	row++;
 	label = make_label_widget(_("_Payee:"));
@@ -1027,7 +1097,7 @@ gint row;
 	widget = ui_pay_comboboxentry_new(label);
 	data->PO_pay = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 	gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
 
 	row++;
@@ -1036,7 +1106,7 @@ gint row;
 	widget = ui_cat_comboboxentry_new(label);
 	data->PO_grp = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 	gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
 
 	row++;
@@ -1045,7 +1115,7 @@ gint row;
 	widget = make_radio(CYA_TXN_STATUS, TRUE, GTK_ORIENTATION_HORIZONTAL);
 	data->RA_status = widget;
 	gtk_widget_set_halign (widget, GTK_ALIGN_START);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
 	row++;
 	label = make_label_widget(_("M_emo:"));
@@ -1053,7 +1123,7 @@ gint row;
 	widget = make_memo_entry(label);
 	data->ST_word = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
 	row++;
 	label = make_label_widget(_("Ta_gs:"));
@@ -1061,7 +1131,7 @@ gint row;
 	widget = make_string(label);
 	data->ST_tags = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
 	return group_grid;
 }
@@ -1191,15 +1261,16 @@ gint crow;
 
 		gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_DOWN );
 		gtk_widget_set_halign (menubutton, GTK_ALIGN_END);
-		gtk_grid_attach (GTK_GRID (content_grid), menubutton, 0, crow, 1, 1);
+		gtk_widget_set_hexpand (menubutton, TRUE);
+		gtk_grid_attach (GTK_GRID (content_grid), menubutton, 1, crow, 1, 1);
 		gtk_widget_show_all(menubutton);
 
 
 		GtkWidget *template = deftransaction_template_popover_create(data);
 		GtkWidget *popover = create_popover (menubutton, template, GTK_POS_BOTTOM);
-		gtk_widget_set_size_request (popover, HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
-		gtk_widget_set_vexpand (popover, TRUE);
-		gtk_widget_set_hexpand (popover, TRUE);
+		gtk_widget_set_size_request (popover, 2*HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
+		//gtk_widget_set_vexpand (popover, TRUE);
+		//gtk_widget_set_hexpand (popover, TRUE);
 
 		/*gtk_widget_set_margin_start (popover, 10);
 		gtk_widget_set_margin_end (popover, 10);
@@ -1214,13 +1285,13 @@ gint crow;
 	crow++;
 	group_grid = deftransaction_make_block1(data);
 	//gtk_widget_set_hexpand (GTK_WIDGET(group_grid), TRUE);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 2, 1);
 	gtk_widget_show_all(group_grid);
 	
 	/*crow++;
 	group_grid = deftransaction_make_block2(data);
 	gtk_widget_set_hexpand (GTK_WIDGET(group_grid), TRUE);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 1, crow, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 1, crow, 2, 1);
 	gtk_widget_show_all(group_grid);*/
 
 	crow++;
@@ -1229,7 +1300,7 @@ gint crow;
 	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_WARNING);
 	label = gtk_label_new (_("Warning: amount and category sign don't match"));
     gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label, TRUE, TRUE, 0);
-	gtk_grid_attach (GTK_GRID (content_grid), bar, 0, crow, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), bar, 0, crow, 2, 1);
 
 	
 	//connect all our signals

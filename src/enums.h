@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -100,7 +100,7 @@ enum
 	LST_DSPOPE_DATE,	/*  2 fake column */
 	LST_DSPOPE_INFO,	/*  3 fake column */
 	LST_DSPOPE_PAYEE,	/*  4 fake column */
-	LST_DSPOPE_WORDING,	/*  5 fake column */
+	LST_DSPOPE_MEMO,	/*  5 fake column */
 	LST_DSPOPE_AMOUNT,	/*  6 fake column */
 	LST_DSPOPE_EXPENSE,	/*  7 fake column */
 	LST_DSPOPE_INCOME,	/*  8 fake column */

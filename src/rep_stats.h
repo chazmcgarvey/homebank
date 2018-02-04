@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -93,7 +93,9 @@ struct ui_repdist_data
 	GtkWidget	*GR_detail;
 	GtkWidget	*LV_detail;
 
-
+	GtkWidget	*BT_export;
+	GtkWidget	*MI_detailtoclip;
+	GtkWidget	*MI_detailtocsv;
 
 	gulong		handler_id[MAX_REPDIST_HID];
 

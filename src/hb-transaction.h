@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -35,7 +35,7 @@ struct _transaction
 	gushort		flags;
 	guint32		kpay;
 	guint32		kcat;
-	gchar		*wording;
+	gchar		*memo;
 
 	guint32		date;
 	gushort		pos;
@@ -44,13 +44,14 @@ struct _transaction
 	guint32		*tags;
 	guint32		kxfer;		//strong link xfer key
 	guint32		kxferacc;
-	
+
 	Split		*splits[TXN_MAX_SPLIT+1];
 
 	/* unsaved datas */
-	GList		*same;		//used for import todo: change this
 	guint32		kcur;
 	gdouble		balance;
+	gboolean	overdraft;
+	GList		*same;		//used for import todo: change this
 };
 
 #include "hb-archive.h"
@@ -102,15 +103,17 @@ enum
 
 
 guint da_transaction_length(void);
-void transaction_add_treeview(Transaction *ope, GtkWidget *treeview, guint32 accnum);
-void transaction_add(Transaction *ope, GtkWidget *treeview, guint32 accnum);
+
+void transaction_remove(Transaction *ope);
+gboolean da_transaction_insert_memo(Transaction *item);
+Transaction *transaction_add(Transaction *ope);
 
 gboolean transaction_acc_move(Transaction *txn, guint32 okacc, guint32 nkacc);
 
 Transaction *transaction_xfer_child_strong_get(Transaction *src);
 void transaction_xfer_search_or_add_child(GtkWindow *parentwindow, Transaction *ope, gboolean manual);
 void transaction_xfer_change_to_child(Transaction *ope, Transaction *child);
-void transaction_xfer_sync_child(Transaction *ope, Transaction *child);
+void transaction_xfer_child_sync(Transaction *s_txn, Transaction *child);
 void transaction_xfer_remove_child(Transaction *src);
 Transaction *transaction_old_get_child_transfer(Transaction *src);
 

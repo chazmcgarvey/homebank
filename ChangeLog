@@ -1,21 +1,122 @@
 
+
+2018-01-06  Maxime Doyen
+
+ Made 5.1.7 release.
+ * new   : added an icon for closed accounts
+ * new   : rewritten partially the charts and removed the treeview for legend
+ * new   : chart line have now a vertical line on active item
+ * new   : chart now display the 0 scale text
+ * new   : rewritten the dateentry widget to use a popover
+ * new   : reports enable to copy to clipboard in addition to export as CSV
+ * change: chart bar/line now span automatically
+ * change: chart donut hole do not trigger overlay anymore
+ * change: preferences, txn column list removed, as there is a now a context menu
+ * change: top spending is now display top 10 items
+ * change: fixer.io is now used to get currencies exchange rate (replace yahoo)
+ * change: changes and new entries into the help menu
+ * wish  : #1709374 enable to export detail list from reports
+ * wish  : #1697241 allow custom currencies for cryptocurrency and discontinued
+ * wish  : #1674018 usability and UX improvements for the reports dialog's toolbars
+ * wish  : #1661986 separate view of out of budget categories in budget report
+ * wish  : #1656589 add highlighting on legend text for report graph
+ * wish  : (#300380 beta: add pdf export for transaction)
+ * bugfix: chart x-scale labels were sometime overriding each others
+ * bugfix: balance report: overdrawn was not displayed if the threshold was 0
+ * bugfix: balance report: the amount scale was faulty offset to left at first draw
+ * bugfix: budget report: chart bar was not showing over state
+ * bugfix: report: fixed a bad empty detail list problem
+ * bugfix: fixed some minor memory leak
+ * bugfix: #1734449 date range in Trend Time Report
+ * bugfix: #1734210 date/calendar popup registers keyboard bindings (Gnome asks)
+ * bugfix: #1730527 currencies update fail due to yahoo discontinued service
+ * bugfix: #1721980 group internal xfer when sort by payee
+ * bugfix: #1720377 title bar close do not backup a new file
+ * bugfix: #1688744 euro minor converts Euro to Euro wrong 
+
+
+2017-09-14  Maxime Doyen
+
+ Made 5.1.6 release.
+ * change: win32: upgraded to gtk+ 3.22.16
+ * wish  : #1710955 warn when opening a backup file
+ * bugfix: #1716182 New memo doesn't get added to quick list
+ * bugfix: #1716181 New/deleted transactions and search box show inconsistency
+ * bugfix: #1715532 "All date" range remains as is after "Select All" in Report
+ * bugfix: #1713413 Un-editable category
+ * bugfix: #1710800 Manage budget window do not expand properly
+ * bugfix: #1708956 Automatic check numbering issue
+ * bugfix: #1707201 Anonymize dialog change accounts if user close window
+ * bugfix: #1697174 Months in Manage Budget should allow tabbing from consecutive months
+ * bugfix: #1697171 'Notes' field in 'Manage Accounts' should wrap text
+ * bugfix: #1694520 Windows 10 x64 5.1.5 cannot start application
+ * bugfix: #1693998 Start Balance not shown after new file assistant
+ * bugfix: #1691992 The "other" side of an internal transfer is not marked as changed when an internal transfer is deleted
+ * bugfix: #1690555 Internal transfers with a status of "Remind" are not created correctly
+ * bugfix: #1664012 libofx: macos, cannot import newer OFX versions 
+
+
+2017-05-10  Maxime Doyen
+
+ Made 5.1.5 release.
+ * change: win32: upgraded to gtk+ 3.22.7
+ * bugfix: updating currency rate was not updating file changes (and enable save)
+ * bugfix: #1689308 category usage count does not get updated for split transactions
+ * bugfix: #1687117 statistic report filter do not update date range
+ * bugfix: #1683646 only one changed icon is displayed in accounts window when an internal transfer is edited
+ * bugfix: #1681532 segfault when pressing escape while editing a new transaction
+ * bugfix: #1678476 french translation is missing in filter
+ * bugfix: #1678230 time report show all category may be wrong if split
+ * bugfix: #1676162 can't set transaction amount to 6 decimal points
+ * bugfix: #1674020 statistics Report: sorting by amount does not work with "Expenses and Income"
+ * bugfix: #1672209 account window "0.00" balance sometimes displayed in warning color
+ * bugfix: #1672205 "Show # days in advance the current date" preference doesn't work
+ * bugfix: #1672135 BYN - new Belorussian currency is not in the list
+ * bugfix: #1668036 cannot filter on memo if split transaction
+ * bugfix: #1667201 original account shows edits when inheriting transaction into another account
+ * bugfix: #1664916 balance report does not include accounts with no transactions 
+
+
+2017-02-16  Maxime Doyen
+
+ Made 5.1.4 release.
+
+ * change: filter, reworked the layout
+ * change: filter, category select change now propagate to subcategories
+ * wish  : #1661806 show overdraft amount in account window (balance column)
+ * wish  : #1655542 improve handling of end of month scheduled transactions
+ * bugfix: sanity was not checking dst_account
+ * bugfix: sanity orphaned account was not working
+ * bugfix: #1663795 "show all" shows as enabled after opening another file
+ * bugfix: #1663789 both sides of internal transfers' accounts not changed
+ * bugfix: #1663399 display Order of Account Types (5.1.3)
+ * bugfix: #1662197 main window's upcoming transactions pane shifts downwards on every startup
+ * bugfix: #1662189 main window size/position saved only when using wm close (X) button
+ * bugfix: #1661279 memory Fault on homebank-5.1.1-1.fc25.x86_64 and later
+ * bugfix: #1660910 main window layout is not persisted
+ * bugfix: #1658538 balance Report crash when no txn at all
+ * bugfix: #1656720 save button in main window disabled despite pending changes
+ * bugfix: #1655626 libofx for windows bad utf-8 char import corrupt xml file 
+
+
 2017-01-22  Maxime Doyen
 
  Made 5.1.3 release.
+
  * new   : your account, added expand/collapse button
  * wish  : #1653350 cvs import default category for payee
  * wish  : #1645126 remember the size of columns listview in the main window
  * wish  : #1530784 easy way to see closed accounts in account list
  * wish  : #1164643 totals per Financial Institution in account summary
- * bugfix: #1658047 Euro major Lithuanian template corrections
- * bugfix: #1658045 Euro major settings: list countries alphabetically
- * bugfix: #1658043 Euro major feature calculates amounts incorrectly
+ * bugfix: #1658047 euro major Lithuanian template corrections
+ * bugfix: #1658045 euro major settings: list countries alphabetically
+ * bugfix: #1658043 euro major feature calculates amounts incorrectly
  * bugfix: #1656531 account combobox can be default set to disabled account
- * bugfix: #1653957 Importing QIF file with existing accounts 
- * bugfix: #1652994 Sorting for account in Statistics Report doen't work 
- * bugfix: #1652527 Balance report crash when no result
- * bugfix: #1649081 Exclude from budget option seems ignored
- * bugfix: #1649078 Remind operations are included in "today" balance calculation
+ * bugfix: #1653957 importing QIF file with existing accounts 
+ * bugfix: #1652994 sorting for account in Statistics Report doesn't work 
+ * bugfix: #1652527 balance report crash when no result
+ * bugfix: #1649081 exclude from budget option seems ignored
+ * bugfix: #1649078 remind operations are included in "today" balance calculation
  * bugfix: #1648856 balance report "select all" is not working 
 
 
@@ -45,7 +146,7 @@
  * wish  : #1634182 template chooser popover could be wider by default
  * wish  : #1629647 'Multiple Edit' to include account
  * bugfix: #1638035 moving txn between account hide it into destination
- * bugfix: #1637805 overwrite assignment doesnt work
+ * bugfix: #1637805 overwrite assignment doesn't work
  * bugfix: #1635857 balance report crash when no selection in main window
  * bugfix: #1635260 win: missing .dll for windows 7, vista, XP
  * bugfix: #1635053 must enter Payment method twice in Add Transaction dialog
@@ -62,7 +163,7 @@
  * change: transaction dialog, changed the layout
  * change: template/scheduled dialog, changed the layout
  * change: register, refactored toolbar grouping single and multiple actions
- * change: listview, removed deprecated rule hint (alternate row color)
+ * change: listview, removed deprecated rule hint (alternate row colour)
  * change: listview, added line grid (new GTK+ option)
  * change: preferences, reworked layout
  * wish  : #1610672 multiple edit should allow clearing fields
@@ -71,7 +172,7 @@
  * wish  : #1500220 allow auto assignments to overwrite payee
  * wish  : #1484449 warn when amount sign and category don't match
  * wish  : #1448613 display full category name in autocompletion
- * wish  : #1424365 separe scheduled transaction from template transaction
+ * wish  : #1424365 separate scheduled transaction from template transaction
  * wish  : #1242312 category split for template/scheduled transaction
  * wish  : #1102981 add comment bloc for accounts
  * wish  : #1094528 auto-assign Payment
@@ -100,7 +201,7 @@
  * bugfix: #1594152 zillion questions importing from QIF file
  * bugfix: #1583406 changes in settings -> format-> numbers options is never saved
  * bugfix: #1562372 statistics filtered on category with split display wrong results
- * bugfix: #1535483 importing cvs file silently skips a line!
+ * bugfix: #1535483 importing CSV file silently skips a line!
 
 
 2016-05-21  Maxime Doyen
@@ -119,7 +220,7 @@
  * wish  : #1509485 quicksearch split transactions memo/category
  * wish  : #1507252 ability to batch-edit selected transactions easily
  * wish  : #1501125 export to CSV for all reports list view
- * wish  : #1501111 double-click on sheduled txn in main window to open template editor
+ * wish  : #1501111 double-click on scheduled txn in main window to open template editor
  * wish  : #1292377 enable edit transactions from report detail list
  * wish  : #880846  hide/show txn list column on right click
  * bugfix: #1577555 scheduled transaction edit doesn't enable file save
@@ -167,7 +268,7 @@
  * change: win32: upgraded to gtk+ 3.16.6
  * change: amount toggle sign button changed from text button to entry icon
  * change: added/changed transaction are always showed by default filter
- * bugfix: #1492634 using memo filter does not list memos in split catagories
+ * bugfix: #1492634 using memo filter does not list memos in split categories
  * bugfix: #1475969 no help file. F1 does nothing. Windows 10
  * bugfix: #1473717 year on statistics is preset to 1900 instead of e.g. current year
  * bugfix: #1464961 inconsistency in internal xfer
@@ -225,7 +326,7 @@
  * bugfix: #1425986 QIF import sometimes fails in v5.0
  * bugfix: #1424437 gtk warning from console
  * bugfix: #1422617 trend time report shows dates from closed accounts
- * bugfix: #1420859 alternate row colors not working
+ * bugfix: #1420859 alternate row colours not working
  * bugfix: #1420495 typo problem in chart tooltip (apos)
  * bugfix: #1420098 ctrl+w no longer closes account window
  * bugfix: #1419992 visible column names are not localized in preferences dialog
@@ -267,7 +368,7 @@
  * change: replaced 'remove' string by 'delete' (more relevant)
  * change: import process reworked and refactored to ease import and enable future evolution
  * change: lot of small visual changes (disable state, reworked texts and sentences)
- * change: splitted import menu by file type and presetted the file filter on the type
+ * change: split import menu by file type and preset the file filter on the type
  * change: removed the currency symbol into transaction list
  * change: doc entirely updated with new screenshots
  * wish  : #1388402 'Pinned' remind transaction (with no set date)
@@ -277,7 +378,7 @@
  * wish  : #1231865 win32 add version in EXE properties
  * wish  : #1202500 top5 spending for subcategories
  * wish  : #995436  average in Trendtime Report
- * wish  : #706600  euro major convertion feature
+ * wish  : #706600  euro major conversion feature
  * bugfix: #1412200 Text fields to input a new category name (or subcategories) writes in reverse (right to left)
  * bugfix: #1410166 add transaction crash after selecting cheque payment
  * bugfix: #1400403 5.0-rc Reconciled status lost at reload <=4.6.3 converted file
@@ -290,7 +391,7 @@
  * bugfix: #1411898 win32: (libofx 0.9.9) Incorrect encoding when reading .QFX files
  * bugfix: #1408966 move a category still display it in the list just after
  * bugfix: #1407091 5.0-rc cannot sort by clicking on C column
- * bugfix: #1400381 5.0-rc Memo column empty in OFX import assitant
+ * bugfix: #1400381 5.0-rc Memo column empty in OFX import assistant
  * bugfix: #1388520 5.0-rc Internal Transfer linked choose dialog box too small
  * bugfix: #1384202 Alphabetical category sorting does not work when there are spaces in the name
  * bugfix: #1378836 Scheduled transaction display is not complete in case of internal transfer
@@ -577,8 +678,8 @@
  * change: xhb data file format (v0.6)
  * change: upgraded to gtk 2.20 / glib 2.24
  * change: auto assign is done when payee or category is empty (both were necessary)
- * change: rewritten the managment of internal transfer
- * change: rewritten the old overdrawn report to a new more powerfull balance report
+ * change: rewritten the management of internal transfer
+ * change: rewritten the old overdrawn report to a new more powerful balance report
  * change: date range information above the listview in all report window
  * change: #695790 compile problem with gtk 2.23 with deprecated flags
  * change: #690024 remove deprecated gdk stuffs from gtkchart.c
@@ -628,7 +729,7 @@
 
  Made 4.3 release.
  * new   : welcome dialog at first run and available later from the help menu
- * new   : a new wallet assisant to initialize categories and the first account
+ * new   : a new wallet assistant to initialize categories and the first account
  * new   : preset categories files for some languages loaded when creating a new wallet
  * new   : account column in upcoming listview and report detail listview
  * new   : utf-8 validation for csv import of payee, category, budget
@@ -640,7 +741,7 @@
  * bugfix: #378992 win32: libofx not always convert string to utf-8 causes partial load on file reopen
  * bugfix: #528923 slackware64+kde4: crashes on start / load saved files
  * bugfix: #528993 opening other wallet with account window open causes a crash
- * bugfix: #527260 trend time report for category dont sum subcategories
+ * bugfix: #527260 trend time report for category don't sum subcategories
  * bugfix: #530290 budget problem with category and subcategories
  * bugfix: #492755 transfer validation validate both source + destination
  * bugfix: #512046 links broken and file permissions changed
@@ -740,7 +841,7 @@
  * bugfix: #396964 The automatic cheque numbering is no more working
  * bugfix: #395254 Colours not as selected
  * bugfix: #380642 Budget report shows an inverted Decay (screenshot Attached)
- * bugfix: #329897 transaction list sort by payee doesnt work
+ * bugfix: #329897 transaction list sort by payee doesn't work
  * bugfix: using the clear button on filter was not refreshing data's
  * bugfix: dropping a non-homebank file was causing to close the current file
  * bugfix: imperial measurement units display in carcost
@@ -855,7 +956,7 @@
  * bugfix: #152556 balance for new ofx created account using import feature was not computed
  * bugfix: #238571 account window bank balances was false when modifying transaction amount
  * bugfix: #239939 crash was occurred when loading file with orphans transactions (deleted account)
- * bugfix: #240247 editing a transaction to transfert, the invert transaction was not created
+ * bugfix: #240247 editing a transaction to transfer, the invert transaction was not created
  * bugfix: #244621 transfer inverted transaction was not validated if the source was
  * bugfix: #263024 removed obsolete GtkType and GtkSignalFunc *
  * bugfix: #207203 untranslatable string "Bank Account" and "%/%d under %s"

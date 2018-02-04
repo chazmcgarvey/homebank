@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -27,13 +27,14 @@ typedef struct _archive		Archive;
 
 struct _archive
 {
+
 	gdouble		amount;
 	guint32		kacc;
 	gushort		paymode;
 	gushort		flags;
 	guint32		kpay;
 	guint32		kcat;
-	gchar		*wording;
+	gchar		*memo;
 
 	//guint32		date;
 	//gushort		pos;
@@ -46,6 +47,7 @@ struct _archive
 	Split		*splits[TXN_MAX_SPLIT+1];
 
 	guint32		nextdate;
+	gushort		daygap;
 	gushort		every;
 	gushort		unit;
 	gushort		limit;

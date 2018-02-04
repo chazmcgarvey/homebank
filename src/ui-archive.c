@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -156,7 +156,7 @@ gint retval = 0;
 			retval = (entry1->flags & GF_INCOME) - (entry2->flags & GF_INCOME);
 			if(!retval)
 			{
-				retval = hb_string_utf8_compare(entry1->wording, entry2->wording);
+				retval = hb_string_utf8_compare(entry1->memo, entry2->memo);
 			}
 			break;
 		case LST_DEFARC_SORT_PAYEE:
@@ -209,7 +209,7 @@ gchar *name;
 
 	gtk_tree_model_get(model, iter, LST_DEFARC_DATAS, &item, -1);
 
-	name = item->wording;
+	name = item->memo;
 
 	g_object_set(renderer, "text", name, NULL);
 }
@@ -341,7 +341,7 @@ gint type;
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_arc));
 
 	item = da_archive_malloc();
-	item->wording = g_strdup_printf(_("(template %d)"), g_list_length(GLOBALS->arc_list) + 1);
+	item->memo = g_strdup_printf(_("(template %d)"), g_list_length(GLOBALS->arc_list) + 1);
 	item->unit = 2;
 
 	type = radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? ARC_TYPE_TEMPLATE : ARC_TYPE_SCHEDULED;
@@ -386,7 +386,7 @@ gint result;
 		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &item, -1);
 
 		title = g_strdup_printf (
-			_("Are you sure you want to permanently delete '%s'?"), item->wording);
+			_("Are you sure you want to permanently delete '%s'?"), item->memo);
 
 		secondtext = _("If you delete a scheduled/template, it will be permanently lost.");
 		
@@ -435,14 +435,14 @@ Archive *item;
 	{
 		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &item, -1);
 
-		DB( g_print(" -> %s\n", item->wording) );
+		DB( g_print(" -> %s\n", item->memo) );
 
 		txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_word));
 		// ignore if entry is empty
 		if (txt && *txt)
 		{
-			g_free(item->wording);
-			item->wording = g_strdup(txt);
+			g_free(item->memo);
+			item->memo = g_strdup(txt);
 		}
 
 		gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_arc));
@@ -463,7 +463,6 @@ struct ui_arc_manage_data *data;
 GtkTreeSelection *selection;
 GtkTreeModel		 *model;
 GtkTreeIter			 iter;
-
 Archive *item;
 
 	DB( g_print("\n[ui_scheduled] set\n") );
@@ -477,12 +476,10 @@ Archive *item;
 		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &item, -1);
 
 		g_signal_handler_block(data->ST_word, data->handler_id[HID_ARC_MEMO]);
-		gtk_entry_set_text(GTK_ENTRY(data->ST_word), item->wording);
+		gtk_entry_set_text(GTK_ENTRY(data->ST_word), item->memo);
 		g_signal_handler_unblock(data->ST_word, data->handler_id[HID_ARC_MEMO]);
 
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), item->amount);
-
-
 		
 		radio_set_active(GTK_CONTAINER(data->RA_status), item->status );
 
@@ -502,35 +499,26 @@ Archive *item;
 
 		ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_grp), item->kcat);
 
-	DB( g_print(" -> set payee %d\n", item->kpay) );
+		DB( g_print(" -> set payee %d\n", item->kpay) );
 		ui_pay_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_pay), item->kpay);
 
-	DB( g_print(" -> PO_acc %d\n", item->kacc) );
+		DB( g_print(" -> PO_acc %d\n", item->kacc) );
 		ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_acc), item->kacc);
 
-	DB( g_print(" -> PO_accto %d\n", item->kxferacc) );
+		DB( g_print(" -> PO_accto %d\n", item->kxferacc) );
 		ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_accto), item->kxferacc);
 
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_auto), (item->flags & OF_AUTO) ? 1 : 0);
-
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_every), item->every);
-
 		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_unit), item->unit);
-
 		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_next), item->nextdate);
-
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_limit), (item->flags & OF_LIMIT) ? 1 : 0);
-
-
 		DB( g_print("nb_limit = %d %g\n", item->limit, (gdouble)item->limit) );
-		
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_limit), (gdouble)item->limit);
-
 		radio_set_active(GTK_CONTAINER(data->CY_weekend), item->weekend);
-
 	}
-
 }
+
 
 /*
 ** get widgets contents to the selected account
@@ -549,7 +537,7 @@ gint active;
 
 	if( item != NULL )
 	{
-		DB( g_print(" -> %s\n", item->wording) );
+		DB( g_print(" -> %s\n", item->memo) );
 
 		gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_arc));
 
@@ -557,8 +545,8 @@ gint active;
 		// ignore if entry is empty
 		if (txt && *txt)
 		{
-			g_free(item->wording);
-			item->wording = g_strdup(txt);
+			g_free(item->memo);
+			item->memo = g_strdup(txt);
 		}
 
 		gtk_spin_button_update(GTK_SPIN_BUTTON(data->ST_amount));
@@ -746,8 +734,8 @@ gboolean selected, sensitive;
 
 static void ui_arc_manage_update_post_split(GtkWidget *widget, gdouble amount)
 {
-	struct ui_arc_manage_data *data;
-	gboolean sensitive = TRUE;
+struct ui_arc_manage_data *data;
+gboolean sensitive = TRUE;
 
 	DB( g_print("(ui_arc_manage) update _post_split\n") );
 
@@ -775,6 +763,8 @@ static void ui_arc_manage_update_post_split(GtkWidget *widget, gdouble amount)
 	gtk_widget_set_sensitive(data->PO_grp, sensitive);
 
 }
+
+
 /*
 ** update the widgets status and contents from action/selection value
 */
@@ -802,6 +792,7 @@ Archive *arcitem;
 	sensitive = (selected == TRUE) ? TRUE : FALSE;
 
 	gtk_widget_set_sensitive(data->GR_txnleft, sensitive);
+	gtk_widget_set_sensitive(data->LB_schedinsert, sensitive);
 
 	gtk_widget_set_sensitive(data->CM_auto, sensitive);
 
@@ -813,7 +804,7 @@ Archive *arcitem;
 
 		if(data->lastarcitem != NULL && arcitem != data->lastarcitem)
 		{
-			DB( g_print(" -> should do a get for last selected (%s)\n", data->lastarcitem->wording) );
+			DB( g_print(" -> should do a get for last selected (%s)\n", data->lastarcitem->memo) );
 			ui_arc_manage_getlast(data);
 		}
 		data->lastarcitem = arcitem;
@@ -930,7 +921,7 @@ gboolean doupdate = FALSE;
 
 	if(data->lastarcitem != NULL)
 	{
-		DB( g_print(" -> should do a get for last selected (%s)\n", data->lastarcitem->wording) );
+		DB( g_print(" -> should do a get for last selected (%s)\n", data->lastarcitem->memo) );
 		ui_arc_manage_getlast(data);
 	}
 

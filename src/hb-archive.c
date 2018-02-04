@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -39,13 +39,11 @@
 extern struct HomeBank *GLOBALS;
 
 
-/* = = = = = = = = = = = = = = = = = = = = */
-/* Archive */
-
 Archive *da_archive_malloc(void)
 {
 	return rc_alloc(sizeof(Archive));
 }
+
 
 Archive *da_archive_clone(Archive *src_item)
 {
@@ -54,20 +52,21 @@ Archive *new_item = rc_dup(src_item, sizeof(Archive));
 	if(new_item)
 	{
 		//duplicate the string
-		new_item->wording = g_strdup(src_item->wording);
-		
+		new_item->memo = g_strdup(src_item->memo);
+
 		if( da_splits_clone(src_item->splits, new_item->splits) > 0)
 			new_item->flags |= OF_SPLIT; //Flag that Splits are active
 	}
 	return new_item;
 }
 
+
 void da_archive_free(Archive *item)
 {
 	if(rc_unref(item))
 	{
-		if(item->wording != NULL)
-			g_free(item->wording);
+		if(item->memo != NULL)
+			g_free(item->memo);
 
 		da_splits_free(item->splits);
 		//item->flags &= ~(OF_SPLIT); //Flag that Splits are cleared		
@@ -75,6 +74,7 @@ void da_archive_free(Archive *item)
 		rc_free(item);
 	}
 }
+
 
 void da_archive_destroy(GList *list)
 {
@@ -89,9 +89,13 @@ GList *tmplist = g_list_first(list);
 	g_list_free(list);
 }
 
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
 static gint da_archive_glist_compare_func(Archive *a, Archive *b)
 {
-	return hb_string_utf8_compare(a->wording, b->wording);
+	return hb_string_utf8_compare(a->memo, b->memo);
 }
 
 
@@ -100,10 +104,12 @@ GList *da_archive_sort(GList *list)
 	return g_list_sort(list, (GCompareFunc)da_archive_glist_compare_func);
 }
 
+
 guint da_archive_length(void)
 {
 	return g_list_length(GLOBALS->arc_list);
 }
+
 
 void da_archive_consistency(Archive *item)
 {
@@ -151,19 +157,21 @@ Payee *pay;
 
 Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn)
 {
+	DB( g_print("\n[scheduled] init from txn\n") );
+
 	//fill it
 	arc->amount		= txn->amount;
 	arc->kacc		= txn->kacc;
 	arc->kxferacc	= txn->kxferacc;
-	arc->paymode		= txn->paymode;
-	arc->flags			= txn->flags	& (OF_INCOME);
+	arc->paymode	= txn->paymode;
+	arc->flags		= txn->flags	& (OF_INCOME);
 	arc->status		= txn->status;
-	arc->kpay			= txn->kpay;
+	arc->kpay		= txn->kpay;
 	arc->kcat		= txn->kcat;
-	if(txn->wording != NULL)
-		arc->wording 		= g_strdup(txn->wording);
+	if(txn->memo != NULL)
+		arc->memo 	= g_strdup(txn->memo);
 	else
-		arc->wording 		= g_strdup(_("(new archive)"));
+		arc->memo 	= g_strdup(_("(new archive)"));
 
 	if( da_splits_clone(txn->splits, arc->splits) > 0)
 		arc->flags |= OF_SPLIT; //Flag that Splits are active
@@ -172,16 +180,16 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn)
 }
 
 
-
-
-static guint32 _sched_date_get_next_post(Archive *arc, guint32 nextdate)
+static guint32 _sched_date_get_next_post(GDate *tmpdate, Archive *arc, guint32 nextdate)
 {
-GDate *tmpdate;
 guint32 nextpostdate = nextdate;
 
-	DB( g_print("\n[scheduled] _sched_date_get_next_post\n") );
+	//DB( g_print("\n[scheduled] date_get_next_post\n") );
 
-	tmpdate = g_date_new_julian(nextpostdate);
+	g_date_set_julian(tmpdate, nextpostdate);
+
+	//DB( g_print("in : %2d-%2d-%4d\n", g_date_get_day(tmpdate), g_date_get_month (tmpdate), g_date_get_year(tmpdate) ) );
+
 	switch(arc->unit)
 	{
 		case AUTO_UNIT_DAY:
@@ -198,9 +206,11 @@ guint32 nextpostdate = nextdate;
 			break;
 	}
 
+	//DB( g_print("out: %2d-%2d-%4d\n", g_date_get_day(tmpdate), g_date_get_month (tmpdate), g_date_get_year(tmpdate) ) );
+
+
 	/* get the final post date and free */
 	nextpostdate = g_date_get_julian(tmpdate);
-	g_date_free(tmpdate);
 	
 	return nextpostdate;
 }
@@ -225,7 +235,7 @@ GDateWeekday wday;
 guint32 finalpostdate;
 gint shift;
 
-	DB( g_print("\n[scheduled] scheduled_get_postdate\n") );
+	DB( g_print("\n[scheduled] get_postdate\n") );
 
 
 	finalpostdate = postdate;
@@ -236,7 +246,7 @@ gint shift;
 	{
 		wday = g_date_get_weekday(tmpdate);
 
-		DB( g_print(" %s wday=%d\n", arc->wording, wday) );
+		DB( g_print(" %s wday=%d\n", arc->memo, wday) );
 
 		if( wday >= G_DATE_SATURDAY )
 		{
@@ -267,10 +277,14 @@ gint shift;
 
 guint32 scheduled_get_latepost_count(Archive *arc, guint32 jrefdate)
 {
-guint32 curdate = jrefdate - arc->nextdate;
+GDate *post_date;
+guint32 curdate;
 guint32 nblate = 0;
 
+	//DB( g_print("\n[scheduled] get_latepost_count\n") );
+
 	/*
+	curdate = jrefdate - arc->nextdate;
 	switch(arc->unit)
 	{
 		case AUTO_UNIT_DAY:
@@ -306,15 +320,20 @@ guint32 nblate = 0;
 	
 
 	// pre 5.1 way
+	post_date = g_date_new();
 	curdate = arc->nextdate;
 	while(curdate <= jrefdate)
 	{
-		curdate = _sched_date_get_next_post(arc, curdate);
+		curdate = _sched_date_get_next_post(post_date, arc, curdate);
 		nblate++;
 		// break if over limit or at 11 max (to display +10)
 		if(nblate >= arc->limit || nblate >= 11)
 			break;
 	}
+
+	//DB( g_print(" nblate=%d\n", nblate) );
+
+	g_date_free(post_date);
 
 	return nblate;
 }
@@ -323,8 +342,45 @@ guint32 nblate = 0;
 /* return 0 is max number of post is reached */
 guint32 scheduled_date_advance(Archive *arc)
 {
-	arc->nextdate = _sched_date_get_next_post(arc, arc->nextdate);
-	
+GDate *post_date;
+gushort lastday;
+
+	DB( g_print("\n[scheduled] date_advance\n") );
+
+	DB( g_print(" arc: '%s'\n", arc->memo ) );
+
+	post_date = g_date_new();
+	g_date_set_julian(post_date, arc->nextdate);
+	// saved the current day number
+	lastday = g_date_get_day(post_date);
+
+	arc->nextdate = _sched_date_get_next_post(post_date, arc, arc->nextdate);
+
+	DB( g_print(" raw next post date: %2d-%2d-%4d\n", g_date_get_day(post_date), g_date_get_month (post_date), g_date_get_year(post_date) ) );
+
+	//for day > 28 we might have a gap to compensate later
+	if( (arc->unit==AUTO_UNIT_MONTH) || (arc->unit==AUTO_UNIT_YEAR) )
+	{
+		if( lastday >= 28 )
+		{
+			DB( g_print(" lastday:%d, daygap:%d\n", lastday, arc->daygap) );
+			if( arc->daygap > 0 )
+			{
+				g_date_add_days (post_date, arc->daygap);
+				arc->nextdate = g_date_get_julian (post_date);
+				lastday += arc->daygap;
+				DB( g_print(" adjusted post date: %2d-%2d-%4d\n", g_date_get_day(post_date), g_date_get_month (post_date), g_date_get_year(post_date) ) );
+			}
+
+			arc->daygap = CLAMP(lastday - g_date_get_day(post_date), 0, 3);
+		
+			DB( g_print(" daygap is %d\n", arc->daygap) );
+		}
+		else
+			arc->daygap = 0;
+	}
+
+
 	//#1556289
 	/* check limit, update and maybe break */
 	if(arc->flags & OF_LIMIT)
@@ -336,7 +392,9 @@ guint32 scheduled_date_advance(Archive *arc)
 			arc->nextdate = 0;
 		}
 	}
-	
+
+	g_date_free(post_date);
+
 	return arc->nextdate;
 }
 
@@ -402,7 +460,7 @@ Transaction *txn;
 	{
 	Archive *arc = list->data;
 
-		DB( g_print("\n eval %d for '%s'\n", scheduled_is_postable(arc), arc->wording) );
+		DB( g_print("\n eval %d for '%s'\n", scheduled_is_postable(arc), arc->memo) );
 
 		if(scheduled_is_postable(arc) == TRUE)
 		{
@@ -415,13 +473,13 @@ Transaction *txn;
 
 				while(mydate < maxpostdate)
 				{
-					DB( hb_print_date(mydate, arc->wording) );
+					DB( hb_print_date(mydate, arc->memo) );
 					
 					da_transaction_init_from_template(txn, arc);
 					txn->date = scheduled_get_postdate(arc, mydate);
 					/* todo: ? fill in cheque number */
 
-					transaction_add(txn, NULL, 0);
+					transaction_add(txn);
 					GLOBALS->changes_count++;
 					count++;
 

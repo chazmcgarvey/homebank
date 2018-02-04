@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -369,7 +369,7 @@ gint i;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_DATE;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_INFO;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_PAYEE;
-	PREFS->lst_ope_columns[i++] = LST_DSPOPE_WORDING;
+	PREFS->lst_ope_columns[i++] = LST_DSPOPE_MEMO;
 	PREFS->lst_ope_columns[i++] = -LST_DSPOPE_AMOUNT;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_EXPENSE;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_INCOME;
@@ -387,7 +387,7 @@ gint i;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_EXPENSE;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_INCOME;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_BALANCE;
-	PREFS->lst_ope_columns[i++] = LST_DSPOPE_WORDING;
+	PREFS->lst_ope_columns[i++] = LST_DSPOPE_MEMO;
 
 	PREFS->lst_ope_sort_id    = LST_DSPOPE_DATE;
 	PREFS->lst_ope_sort_order = GTK_SORT_ASCENDING;
@@ -565,7 +565,9 @@ gchar *string;
 		string = g_key_file_get_string(key_file, group_name, key, NULL);
 		if( string != NULL )
 		{
-			*storage = g_strdup(string);
+			//*storage = g_strdup(string);
+			//leak
+			*storage = string;	//already a new allocated string
 
 			//DB( g_print(" store '%s' for %s at %x\n", string, key, *storage) );
 		}
@@ -785,6 +787,10 @@ GError *error = NULL;
 						DB( g_print(" - copying column width from pref file\n") );
 						memcpy(PREFS->lst_ope_col_size, src, length*sizeof(gint));
 					}
+
+					//leak
+					g_free(src);
+					
 				}
 			
 				homebank_pref_get_integer(keyfile, group, "OpeSortId", &PREFS->lst_ope_sort_id);
@@ -949,6 +955,7 @@ GError *error = NULL;
 				DB( g_print(" -> ** Exchange\n") );
 
 				//homebank_pref_get_boolean(keyfile, group, "DoIntro", &PREFS->dtex_nointro);
+
 				homebank_pref_get_integer(keyfile, group, "DateFmt", &PREFS->dtex_datefmt);
 				homebank_pref_get_integer(keyfile, group, "OfxName", &PREFS->dtex_ofxname);
 				homebank_pref_get_integer(keyfile, group, "OfxMemo", &PREFS->dtex_ofxmemo);
@@ -1044,6 +1051,8 @@ gsize length;
 		g_key_file_set_integer (keyfile, group, "BarStyle", PREFS->toolbar_style);
 		//g_key_file_set_integer (keyfile, group, "BarImageSize", PREFS->image_size);
 
+
+
 		g_key_file_set_boolean (keyfile, group, "CustomColors", PREFS->custom_colors);
 		g_key_file_set_string (keyfile, group, "ColorExp" , PREFS->color_exp);
 		g_key_file_set_string (keyfile, group, "ColorInc" , PREFS->color_inc);
@@ -1055,6 +1064,9 @@ gsize length;
 		homebank_pref_set_string  (keyfile, group, "ImportPath"   , PREFS->path_import);
 		homebank_pref_set_string  (keyfile, group, "ExportPath"   , PREFS->path_export);
 		//g_key_file_set_string  (keyfile, group, "NavigatorPath", PREFS->path_navigator);
+
+
+
 
 		g_key_file_set_boolean (keyfile, group, "ShowSplash", PREFS->showsplash);
 		g_key_file_set_boolean (keyfile, group, "LoadLast", PREFS->loadlast);
@@ -1119,7 +1131,7 @@ gsize length;
 		group = "Filter";
 		g_key_file_set_integer (keyfile, group, "DateRangeWal", PREFS->date_range_wal);
 		g_key_file_set_integer (keyfile, group, "DateRangeTxn", PREFS->date_range_txn);
-		g_key_file_set_integer (keyfile, group, "DateFutureNbdays", PREFS->date_future_nbdays);
+		g_key_file_set_integer (keyfile, group, "DateFutureNbDays", PREFS->date_future_nbdays);
 		g_key_file_set_integer (keyfile, group, "DateRangeRep", PREFS->date_range_rep);
 
 		DB( g_print(" -> ** euro\n") );
@@ -1156,6 +1168,7 @@ gsize length;
 
 		group = "Exchange";
 		//g_key_file_set_boolean (keyfile, group, "DoIntro", PREFS->dtex_nointro);
+
 		g_key_file_set_integer (keyfile, group, "DateFmt", PREFS->dtex_datefmt);
 		g_key_file_set_integer (keyfile, group, "OfxName", PREFS->dtex_ofxname);
 		g_key_file_set_integer (keyfile, group, "OfxMemo", PREFS->dtex_ofxmemo);

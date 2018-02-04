@@ -157,7 +157,7 @@ sub on_enter_main_loop {
         use DateTime;
         my $num = $xc->date;
         my $date = DateTime->new($xc->date)->datetime;
-        print "transaction of amount: ", $xc->amount, "\t", $xc->wording, ", ", $xc->info, ", $num, $date\n";
+        print "transaction of amount: ", $xc->amount, "\t", $xc->memo, ", ", $xc->info, ", $num, $date\n";
     }
 
     HomeBank::File->owner('Billy Murphy');

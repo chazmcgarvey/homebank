@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -280,6 +280,9 @@ gchar *name;
 		g_object_set(cell, "text", _("(no payee)"), NULL);
 	else
 		g_object_set(cell, "text", name, NULL);
+
+	//leak
+	g_free(name);
 
 }
 

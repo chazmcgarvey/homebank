@@ -980,13 +980,13 @@ date(Transaction* SELF, ...)
 		}
 
 const gchar*
-wording(Transaction* SELF, ...)
+memo(Transaction* SELF, ...)
 	CODE:
 		if (1 < items) {
-			if (SELF->wording) g_free(SELF->wording);
-			SELF->wording = g_strdup(SvGchar_ptr(ST(1)));
+			if (SELF->memo) g_free(SELF->memo);
+			SELF->memo = g_strdup(SvGchar_ptr(ST(1)));
 		}
-		RETVAL = SELF->wording ? SELF->wording : "";
+		RETVAL = SELF->memo ? SELF->memo : "";
 	OUTPUT:
 		RETVAL
 
@@ -1039,5 +1039,5 @@ void
 dump(Transaction* SELF)
 	CODE:
 		g_print("txn: %p (%s) at %u (%d/%d) flags:%d, paymode:%d, kpay:%d, kcat:%d", SELF,
-			SELF->wording, SELF->date, SELF->kacc, SELF->kxferacc, SELF->flags, SELF->paymode, SELF->kpay, SELF->kcat);
+			SELF->memo, SELF->date, SELF->kacc, SELF->kxferacc, SELF->flags, SELF->paymode, SELF->kpay, SELF->kcat);
 

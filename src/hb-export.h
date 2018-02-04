@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -28,8 +28,10 @@
 typedef struct _pdfprintcontext		PdfPrintContext;
 
 struct _pdfprintcontext {
-	gdouble	   column_width[PDF_NUMCOL];
-	gchar      *column_txt[PDF_NUMCOL];
+	gdouble		w, h;
+	gdouble		mt, mb, ml, mr;
+	gdouble		column_width[PDF_NUMCOL];
+	gchar		*column_txt[PDF_NUMCOL];
 
 	PangoFontDescription *desc;
 };
@@ -41,7 +43,7 @@ struct _pdfprintcontext {
 void hb_export_qif_account_all(gchar *filename);
 void hb_export_qif_account_single(gchar *filename, Account *acc);
 
-void hb_export_pdf_listview(GtkTreeView *treeview);
+void hb_export_pdf_listview(GtkTreeView *treeview, gchar *filepath, gchar *accname);
 
 #endif
 

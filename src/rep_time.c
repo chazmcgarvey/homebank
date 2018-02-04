@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -57,20 +57,22 @@ static void ui_reptime_action_viewline(GtkAction *action, gpointer user_data);
 static void ui_reptime_action_detail(GtkAction *action, gpointer user_data);
 //static void ui_reptime_action_filter(GtkAction *action, gpointer user_data);
 static void ui_reptime_action_refresh(GtkAction *action, gpointer user_data);
-static void ui_reptime_action_export(GtkAction *action, gpointer user_data);
 
 static void ui_reptime_list_set_cur(GtkTreeView *treeview, guint32 kcur);
 
 
-static GtkActionEntry entries[] = {
-  { "List"    , ICONNAME_HB_VIEW_LIST  , N_("List")   , NULL,    N_("View results as list")  , G_CALLBACK (ui_reptime_action_viewlist) },
-  { "Line"    , ICONNAME_HB_VIEW_LINE  , N_("Line")   , NULL,    N_("View results as lines") , G_CALLBACK (ui_reptime_action_viewline) },
-//  { "Column"  , ICONNAME_HB_VIEW_COLUMN, N_("Column") , NULL,    N_("View results as column"), G_CALLBACK (ui_reptime_action_viewcolumn) },
+static GtkRadioActionEntry radio_entries[] = {
+  { "List"    , ICONNAME_HB_VIEW_LIST  , N_("List")   , NULL,    N_("View results as list")  , 0 },
+  { "Line"    , ICONNAME_HB_VIEW_LINE  , N_("Line")   , NULL,    N_("View results as lines") , 1 },
+//  { "Column"  , ICONNAME_HB_VIEW_COLUMN, N_("Column") , NULL,    N_("View results as column"), 2 },
+};
+static guint n_radio_entries = G_N_ELEMENTS (radio_entries);
 
+static GtkActionEntry entries[] = {
 //  { "Filter"  , ICONNAME_HB_FILTER    , N_("Filter") , NULL,   N_("Edit the filter"), G_CALLBACK (ui_reptime_action_filter) },
   { "Refresh" , ICONNAME_REFRESH   , N_("Refresh"), NULL,   N_("Refresh results"), G_CALLBACK (ui_reptime_action_refresh) },
 
-  { "Export" , ICONNAME_HB_FILE_EXPORT, N_("Export")  , NULL,   N_("Export as CSV"), G_CALLBACK (ui_reptime_action_export) },
+//  { "Export" , ICONNAME_HB_FILE_EXPORT, N_("Export")  , NULL,   N_("Export as CSV"), G_CALLBACK (ui_reptime_action_export) },
 };
 static guint n_entries = G_N_ELEMENTS (entries);
 
@@ -97,7 +99,8 @@ static const gchar *ui_info =
 //"    <toolitem action='Filter'/>"
 "    <toolitem action='Refresh'/>"
 "      <separator/>"
-"    <toolitem action='Export'/>"
+//"    <toolitem action='Export'/>"
+//		replaced by a menubutton
 "  </toolbar>"
 "</ui>";
 
@@ -106,7 +109,6 @@ static void ui_reptime_date_change(GtkWidget *widget, gpointer user_data);
 static void ui_reptime_range_change(GtkWidget *widget, gpointer user_data);
 static void ui_reptime_detail(GtkWidget *widget, gpointer user_data);
 static void ui_reptime_update(GtkWidget *widget, gpointer user_data);
-static void ui_reptime_export_csv(GtkWidget *widget, gpointer user_data);
 static void ui_reptime_compute(GtkWidget *widget, gpointer user_data);
 static void ui_reptime_sensitive(GtkWidget *widget, gpointer user_data);
 static void ui_reptime_toggle_detail(GtkWidget *widget, gpointer user_data);
@@ -115,7 +117,7 @@ static void ui_reptime_update_daterange(GtkWidget *widget, gpointer user_data);
 static GtkWidget *ui_list_reptime_create(void);
 
 static gint ui_list_reptime_compare_func (GtkTreeModel *model, GtkTreeIter  *a, GtkTreeIter  *b, gpointer      userdata);
-
+static GString *ui_list_reptime_to_string(GtkTreeView *treeview, gboolean clipboard);
 
 
 gchar *CYA_TIMESELECT[] = { N_("Account"), N_("Category"), N_("Payee"), NULL };
@@ -177,6 +179,23 @@ struct ui_reptime_data *data = user_data;
 }*/
 
 
+static void ui_reptime_action_mode (GtkRadioAction *action, GtkRadioAction *current, gpointer user_data)
+{
+gint value;
+
+	value = gtk_radio_action_get_current_value(GTK_RADIO_ACTION(action));
+	switch( value )
+	{
+		case 0:
+			ui_reptime_action_viewlist(GTK_ACTION(action), user_data);
+			break;
+		case 1:
+			ui_reptime_action_viewline(GTK_ACTION(action), user_data);
+			break;
+	}
+}
+
+
 static void ui_reptime_action_detail(GtkAction *action, gpointer user_data)
 {
 struct ui_reptime_data *data = user_data;
@@ -204,12 +223,12 @@ struct ui_reptime_data *data = user_data;
 	ui_reptime_compute(data->window, NULL);
 }
 
-static void ui_reptime_action_export(GtkAction *action, gpointer user_data)
+/*static void ui_reptime_action_export(GtkAction *action, gpointer user_data)
 {
 struct ui_reptime_data *data = user_data;
 
 	ui_reptime_export_csv(data->window, NULL);
-}
+}*/
 
 
 
@@ -288,6 +307,7 @@ gint year_from, year_ope, pos;
 
 	return(pos);
 }
+
 
 static void ui_reptime_date_change(GtkWidget *widget, gpointer user_data)
 {
@@ -578,24 +598,97 @@ gchar *title;
 	
 }
 
-static void ui_reptime_export_csv(GtkWidget *widget, gpointer user_data)
+
+static void ui_reptime_export_result_clipboard(GtkWidget *widget, gpointer user_data)
 {
 struct ui_reptime_data *data;
-GtkTreeModel *model;
-GtkTreeIter	iter;
-gboolean valid;
+GtkClipboard *clipboard;
+GString *node;
+
+	DB( g_print("\n[reptime] export result clipboard\n") );
+
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	node = ui_list_reptime_to_string(GTK_TREE_VIEW(data->LV_report), TRUE);
+
+	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+	gtk_clipboard_set_text(clipboard, node->str, node->len);
+
+	g_string_free(node, TRUE);
+}
+
+
+static void ui_reptime_export_result_csv(GtkWidget *widget, gpointer user_data)
+{
+struct ui_reptime_data *data;
 gchar *filename = NULL;
+GString *node;
 GIOChannel *io;
-gchar *outstr, *name;
+gchar *name;
 gint tmpfor;
 
-	DB( g_print("\n[reptime] export csv\n") );
+	DB( g_print("\n[reptime] export result csv\n") );
 
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	tmpfor  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_for));
-
 	name = g_strdup_printf("hb-reptime_%s.csv", CYA_TIMESELECT[tmpfor]);
+
+	if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filename, name) == TRUE )
+	{
+		DB( g_print(" + filename is %s\n", filename) );
+		io = g_io_channel_new_file(filename, "w", NULL);
+		if(io != NULL)
+		{
+			node = ui_list_reptime_to_string(GTK_TREE_VIEW(data->LV_report), FALSE);
+			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
+			g_io_channel_unref (io);
+			g_string_free(node, TRUE);
+		}
+		g_free( filename );
+	}
+	g_free(name);
+}
+
+
+static void ui_reptime_export_detail_clipboard(GtkWidget *widget, gpointer user_data)
+{
+struct ui_reptime_data *data;
+GtkClipboard *clipboard;
+GString *node;
+
+	DB( g_print("\n[reptime] export detail clipboard\n") );
+
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), TRUE);
+
+	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+	gtk_clipboard_set_text(clipboard, node->str, node->len);
+
+	g_string_free(node, TRUE);
+}
+
+
+static void ui_reptime_export_detail_csv(GtkWidget *widget, gpointer user_data)
+{
+struct ui_reptime_data *data;
+gchar *filename = NULL;
+GString *node;
+GIOChannel *io;
+gchar *name;
+gint tmpfor;
+
+	DB( g_print("\n[reptime] export detail csv\n") );
+
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	tmpfor  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_for));
+	name = g_strdup_printf("hb-reptime-detail_%s.csv", CYA_TIMESELECT[tmpfor]);
 
 	if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filename, name) == TRUE )
 	{
@@ -604,44 +697,17 @@ gint tmpfor;
 		io = g_io_channel_new_file(filename, "w", NULL);
 		if(io != NULL)
 		{
-			// header
-			outstr = g_strdup_printf("%s;%s;\n", _("Time slice"), _("Amount"));
-			g_io_channel_write_chars(io, outstr, -1, NULL, NULL);
-
-			model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
-			valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
-
-			while (valid)
-			{
-			gchar *name;
-			gdouble amount;
-
-				gtk_tree_model_get (model, &iter,
-					//LST_REPTIME_KEY, i,
-					LST_REPTIME_TITLE  , &name,
-					LST_REPTIME_AMOUNT , &amount,
-
-					-1);
-
-				outstr = g_strdup_printf("%s;%.2f\n", name, amount);
-				g_io_channel_write_chars(io, outstr, -1, NULL, NULL);
-
-				DB( g_print("%s", outstr) );
-
-				g_free(outstr);
-
-				valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
-			}
+			node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), FALSE);
+			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
 
 			g_io_channel_unref (io);
+			g_string_free(node, TRUE);
 		}
 
 		g_free( filename );
 	}
 
 	g_free(name);
-
-
 }
 
 
@@ -736,8 +802,12 @@ guint32 selkey;
 	DB( g_print(" for=%d, view by=%d :: key=%d\n", tmpfor, tmpslice, selkey) );
 
 	//to remove > 5.0.2
-	//filter_preset_daterange_set(data->filter, data->filter->range, data->accnum);
-	//ui_reptime_update_quickdate(widget, NULL);
+	//#1715532 5.0.5: no... but only showall
+	if(showall == TRUE)
+	{
+		filter_preset_daterange_set(data->filter, data->filter->range, data->accnum);
+		ui_reptime_update_quickdate(widget, NULL);
+	}
 
 	//get our min max date
 	from = data->filter->mindate;
@@ -815,7 +885,7 @@ guint32 selkey;
 		gboolean include = FALSE;
 
 			//debug
-			DB( g_print("** testing '%s', cat=%d==> %d\n", ope->wording, ope->kcat, filter_test(data->filter, ope)) );
+			DB( g_print("** testing '%s', cat=%d==> %d\n", ope->memo, ope->kcat, filter_test(data->filter, ope)) );
 
 			// add usage of payee or category
 			switch(tmpfor)
@@ -892,7 +962,7 @@ guint32 selkey;
 
 				trn_amount = 0.0;
 				
-				if( tmpfor == FOR_REPTIME_CATEGORY && ope->flags & OF_SPLIT )
+				if( (tmpfor == FOR_REPTIME_CATEGORY) && (ope->flags & OF_SPLIT) )
 				{
 				guint nbsplit = da_splits_count(ope->splits);
 				Split *split;
@@ -904,7 +974,8 @@ guint32 selkey;
 						catentry = da_cat_get(split->kcat);
 						if(catentry != NULL)	//#1340142
 						{
-							if( selkey == catentry->parent || selkey == catentry->key )
+							//#1678230 miss showall
+							if( showall == TRUE || selkey == catentry->parent || selkey == catentry->key )
 								trn_amount += split->amount;
 						}
 					}
@@ -914,7 +985,7 @@ guint32 selkey;
 
 				trn_amount = hb_amount_base(trn_amount, ope->kcur);
 
-				DB( g_print("** pos=%d will add %.2f to \n", pos, trn_amount) );
+				DB( g_print("** pos=%d : add of %.2f\n", pos, trn_amount) );
 
 				tmp_amount[pos] += trn_amount;
 
@@ -1051,25 +1122,32 @@ guint32 selkey;
 static void ui_reptime_sensitive(GtkWidget *widget, gpointer user_data)
 {
 struct ui_reptime_data *data;
-gboolean active;
-gboolean sensitive;
+GtkAction *action;
+gboolean visible, sensitive;
 gint page;
 
 	DB( g_print("\n[reptime] sensitive\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	active = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report)), NULL, NULL);
-
 	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
 
-	sensitive = page == 0 ? active : FALSE;
-//	gtk_widget_set_sensitive(data->TB_buttons[ACTION_REPBUDGET_DETAIL], sensitive);
-	gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/ToolBar/Detail"), sensitive);
+	visible = page == 0 ? TRUE : FALSE;
+	action = gtk_ui_manager_get_action(data->ui, "/ToolBar/Detail");
+	gtk_action_set_visible (action, visible);
+	//action = gtk_ui_manager_get_action(data->ui, "/ToolBar/Export");
+	//gtk_action_set_visible (action, visible);
+	//sensitive = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report)), NULL, NULL);
+	//gtk_action_set_sensitive(action, sensitive);
+	hb_widget_visible (data->BT_export, visible);
 
-	sensitive = page == 0 ? FALSE : TRUE;
-	gtk_widget_set_sensitive(data->LB_zoomx, sensitive);
-	gtk_widget_set_sensitive(data->RG_zoomx, sensitive);
+	visible = page == 0 ? FALSE : TRUE;
+	hb_widget_visible(data->LB_zoomx, visible);
+	hb_widget_visible(data->RG_zoomx, visible);
+
+	sensitive = gtk_tree_model_iter_n_children(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail)), NULL) > 0 ? TRUE : FALSE;
+	gtk_widget_set_sensitive(data->MI_detailtoclip, sensitive);
+	gtk_widget_set_sensitive(data->MI_detailtocsv, sensitive);
 
 }
 
@@ -1327,7 +1405,7 @@ GtkWidget *label, *widget, *table;
 gint row;
 GtkUIManager *ui;
 GtkActionGroup *actions;
-GtkAction *action;
+//GtkAction *action;
 GError *error = NULL;
 
 	data = g_malloc0(sizeof(struct ui_reptime_data));
@@ -1338,7 +1416,7 @@ GError *error = NULL;
 
 	//disable define windows
 	GLOBALS->define_off++;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(2));
+	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
     /* create window, etc */
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -1346,6 +1424,8 @@ GError *error = NULL;
 
 	//store our window private data
 	g_object_set_data(G_OBJECT(window), "inst_data", (gpointer)data);
+	DB( g_print(" - new window=%p, inst_data=%p\n", window, data) );
+
 
 	gtk_window_set_title (GTK_WINDOW (window), _("Trend Time Report"));
 
@@ -1467,34 +1547,36 @@ GError *error = NULL;
     gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
 
 	//ui manager
-	actions = gtk_action_group_new ("Account");
+	actions = gtk_action_group_new ("default");
 
 	//as we use gettext
    	gtk_action_group_set_translation_domain(actions, GETTEXT_PACKAGE);
 
 	// data to action callbacks is set here (data)
+	gtk_action_group_add_radio_actions (actions, radio_entries, n_radio_entries, 0, G_CALLBACK(ui_reptime_action_mode), data);
+
 	gtk_action_group_add_actions (actions, entries, n_entries, data);
 
-     gtk_action_group_add_toggle_actions (actions,
+	gtk_action_group_add_toggle_actions (actions,
 					   toggle_entries, n_toggle_entries,
 					   data);
 
 
 	/* set which action should have priority in the toolbar */
-	action = gtk_action_group_get_action(actions, "List");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "List");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
-	action = gtk_action_group_get_action(actions, "Line");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Line");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
 	/*action = gtk_action_group_get_action(actions, "Column");
 	g_object_set(action, "is_important", TRUE, NULL);*/
 
-	action = gtk_action_group_get_action(actions, "Detail");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Detail");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
-	action = gtk_action_group_get_action(actions, "Refresh");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Refresh");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
 
 	ui = gtk_ui_manager_new ();
@@ -1513,6 +1595,46 @@ GError *error = NULL;
 	//toolbar
 	data->TB_bar = gtk_ui_manager_get_widget (ui, "/ToolBar");
 	gtk_box_pack_start (GTK_BOX (vbox), data->TB_bar, FALSE, FALSE, 0);
+
+	//add export menu button
+	GtkToolItem *toolitem;
+	GtkWidget *menu, *menuitem, *image;
+
+	menu = gtk_menu_new ();
+	//gtk_widget_set_halign (menu, GTK_ALIGN_END);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Result to clipboard"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_reptime_export_result_clipboard), data);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Result to CSV"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_reptime_export_result_csv), data);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Detail to clipboard"));
+	data->MI_detailtoclip = menuitem;
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_reptime_export_detail_clipboard), data);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Detail to CSV"));
+	data->MI_detailtocsv = menuitem;
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_reptime_export_detail_csv), data);
+
+	gtk_widget_show_all (menu);
+
+	widget = gtk_menu_button_new();
+	data->BT_export = widget;
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_FLAT);
+
+	//gtk_menu_button_set_direction (GTK_MENU_BUTTON(widget), GTK_ARROW_DOWN);
+	//gtk_widget_set_halign (widget, GTK_ALIGN_END);
+	image = gtk_image_new_from_icon_name (ICONNAME_HB_FILE_EXPORT, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	g_object_set (widget, "image", image, "popup", GTK_MENU(menu),  NULL);
+
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), widget);
+	gtk_toolbar_insert(GTK_TOOLBAR(data->TB_bar), GTK_TOOL_ITEM(toolitem), -1);
 
 	//infos
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
@@ -1654,6 +1776,48 @@ GError *error = NULL;
 /*
 ** ============================================================================
 */
+
+
+static GString *ui_list_reptime_to_string(GtkTreeView *treeview, gboolean clipboard)
+{
+GString *node;
+GtkTreeModel *model;
+GtkTreeIter	iter;
+gboolean valid;
+const gchar *format;
+
+	node = g_string_new(NULL);
+
+	// header
+	format = (clipboard == TRUE) ? "%s\t%s\n" : "%s;%s\n";
+	g_string_append_printf(node, format, _("Time slice"), _("Amount"));
+
+	model = gtk_tree_view_get_model(treeview);
+	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+	while (valid)
+	{
+	gchar *name;
+	gdouble amount;
+
+		gtk_tree_model_get (model, &iter,
+			//LST_REPTIME_KEY, i,
+			LST_REPTIME_TITLE  , &name,
+			LST_REPTIME_AMOUNT , &amount,
+			-1);
+
+		format = (clipboard == TRUE) ? "%s\t%.2f\n" : "%s;%.2f\n";
+		g_string_append_printf(node, format, name, amount);
+
+		//leak
+		g_free(name);
+		
+		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+	}
+
+	//DB( g_print("text is:\n%s", node->str) );
+
+	return node;
+}
 
 
 static void ui_reptime_amount_cell_data_function (GtkTreeViewColumn *col,

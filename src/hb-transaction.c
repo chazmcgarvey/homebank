@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -49,10 +49,10 @@ da_transaction_clean(Transaction *item)
 {
 	if(item != NULL)
 	{
-		if(item->wording != NULL)
+		if(item->memo != NULL)
 		{
-			g_free(item->wording);
-			item->wording = NULL;
+			g_free(item->memo);
+			item->memo = NULL;
 		}
 		if(item->info != NULL)
 		{
@@ -76,7 +76,6 @@ da_transaction_clean(Transaction *item)
 		}
 	}
 }
-
 
 
 void
@@ -106,7 +105,7 @@ Transaction *da_transaction_copy(Transaction *src_txn, Transaction *dst_txn)
 	memmove(dst_txn, src_txn, sizeof(Transaction));
 	
 	//duplicate the string
-	dst_txn->wording = g_strdup(src_txn->wording);
+	dst_txn->memo = g_strdup(src_txn->memo);
 	dst_txn->info = g_strdup(src_txn->info);
 
 	//duplicate tags
@@ -132,7 +131,7 @@ Transaction *da_transaction_init_from_template(Transaction *txn, Archive *arc)
 	txn->kpay		= arc->kpay;
 	txn->kcat		= arc->kcat;
 	txn->kxferacc	= arc->kxferacc;
-	txn->wording	= g_strdup(arc->wording);
+	txn->memo       = g_strdup(arc->memo);
 	txn->info		= NULL;
 	if( da_splits_clone(arc->splits, txn->splits) > 0)
 		txn->flags |= OF_SPLIT; //Flag that Splits are active
@@ -150,7 +149,7 @@ Transaction *new_item = rc_dup(src_item, sizeof(Transaction));
 	if(new_item)
 	{
 		//duplicate the string
-		new_item->wording = g_strdup(src_item->wording);
+		new_item->memo = g_strdup(src_item->memo);
 		new_item->info = g_strdup(src_item->info);
 
 		//duplicate tags
@@ -238,16 +237,19 @@ GList *da_transaction_sort(GList *list)
 }
 
 
-static void da_transaction_insert_memo(Transaction *item)
+gboolean da_transaction_insert_memo(Transaction *item)
 {
+gboolean retval = FALSE;
+
 	// append the memo if new
-	if( item->wording != NULL )
+	if( item->memo != NULL )
 	{
-		if( g_hash_table_lookup(GLOBALS->h_memo, item->wording) == NULL )
+		if( g_hash_table_lookup(GLOBALS->h_memo, item->memo) == NULL )
 		{
-			g_hash_table_insert(GLOBALS->h_memo, g_strdup(item->wording), NULL);
+			retval = g_hash_table_insert(GLOBALS->h_memo, g_strdup(item->memo), NULL);
 		}
 	}
+	return retval;
 }
 
 
@@ -285,8 +287,11 @@ gboolean da_transaction_prepend(Transaction *item)
 Account *acc;
 
 	acc = da_acc_get(item->kacc);
-	if(acc)
-		item->kcur = acc->kcur;
+	//#1661279
+	if(!acc) 
+		return FALSE;
+	
+	item->kcur = acc->kcur;
 	g_queue_push_tail(acc->txn_queue, item);
 	da_transaction_insert_memo(item);
 	return TRUE;
@@ -335,7 +340,12 @@ guint32 max_key = 0;
 static void da_transaction_goto_orphan(Transaction *txn)
 {
 const gchar *oatn = "orphaned transactions";
-Account *acc;
+Account *ori_acc, *acc;
+gboolean found;
+
+	DB( g_print("\n[transaction] goto orphan\n") );
+
+	g_warning("txn consistency: moving to orphan %d '%s' %.2f", txn->date, txn->memo, txn->amount);
 
 	acc = da_acc_get_by_name((gchar *)oatn);
 	if(acc == NULL)
@@ -343,8 +353,21 @@ Account *acc;
 		acc = da_acc_malloc();
 		acc->name = g_strdup(oatn);
 		da_acc_append(acc);
+		DB( g_print(" - created orphan acc %d\n", acc->key) );
 	}
-	txn->kacc = acc->key;
+
+	ori_acc = da_acc_get(txn->kacc);
+	if( ori_acc )
+	{
+		found = g_queue_remove(ori_acc->txn_queue, txn);
+		DB( g_print(" - found in origin ? %d\n", found) );
+		if(found)
+		{
+			txn->kacc = acc->key;
+			da_transaction_insert_sorted (txn);
+			DB( g_print("moved txn to %d\n", txn->kacc) );
+		}
+	}
 }
 
 
@@ -354,6 +377,8 @@ Account *acc;
 Category *cat;
 Payee *pay;
 gint nbsplit;
+
+	DB( g_print("\n[transaction] consistency\n") );
 
 	// ensure date is between range
 	item->date = CLAMP(item->date, HB_MINDATE, HB_MAXDATE);
@@ -399,7 +424,27 @@ gint nbsplit;
 
 	// reset dst acc for non xfer transaction
 	if( item->paymode != PAYMODE_INTXFER )
+	{
+		item->kxfer = 0;
 		item->kxferacc = 0;
+	}
+
+	// check dst account exists
+	if( item->paymode == PAYMODE_INTXFER )
+	{
+	gint tak = item->kxferacc;
+
+		item->kxferacc = ABS(tak);  //I crossed negative here one day
+		acc = da_acc_get(item->kxferacc);
+		if(acc == NULL)
+		{
+			g_warning("txn consistency: fixed invalid dst_acc %d", item->kxferacc);
+			da_transaction_goto_orphan(item);
+			item->kxfer = 0;
+			item->paymode = PAYMODE_XFER;
+			GLOBALS->changes_count++;
+		}
+	}
 
 	//#1628678 tags for internal xfer should be checked as well
 
@@ -437,8 +482,9 @@ gchar swap;
 
 		child->amount = -child->amount;
 		child->flags ^= (OF_INCOME);	// invert flag
-		//#1268026
-		child->status = TXN_STATUS_NONE;
+		//#1268026 #1690555
+		if( child->status != TXN_STATUS_REMIND )
+			child->status = TXN_STATUS_NONE;
 		//child->flags &= ~(OF_VALID);	// delete reconcile state
 
 		swap = child->kacc;
@@ -539,7 +585,7 @@ GList *list, *matchlist = NULL;
 		
 				if( transaction_xfer_child_might(ope, item, 0) == TRUE )
 				{
-					//DB( g_print(" - match : %d %s %f %d=>%d\n", item->date, item->wording, item->amount, item->account, item->kxferacc) );
+					//DB( g_print(" - match : %d %s %f %d=>%d\n", item->date, item->memo, item->amount, item->account, item->kxferacc) );
 					matchlist = g_list_append(matchlist, item);
 				}
 				list = g_list_previous(list);
@@ -610,7 +656,7 @@ GList *list;
 	if( !dstacc || src->kxfer <= 0 )
 		return NULL;
 
-	DB( g_print(" - search: %d %s %f %d=>%d - %d\n", src->date, src->wording, src->amount, src->kacc, src->kxferacc, src->kxfer) );
+	DB( g_print(" - search: %d %s %f %d=>%d - %d\n", src->date, src->memo, src->amount, src->kacc, src->kxferacc, src->kxfer) );
 
 	list = g_queue_peek_tail_link(dstacc->txn_queue);
 	while (list != NULL)
@@ -625,7 +671,7 @@ GList *list;
 		 && item->kxfer == src->kxfer 
 		 && item != src )
 		{
-			DB( g_print(" - found : %d %s %f %d=>%d - %d\n", item->date, item->wording, item->amount, item->kacc, item->kxferacc, src->kxfer) );
+			DB( g_print(" - found : %d %s %f %d=>%d - %d\n", item->date, item->memo, item->amount, item->kacc, item->kxferacc, src->kxfer) );
 			return item;
 		}
 		list = g_list_previous(list);
@@ -668,10 +714,24 @@ Account *dstacc;
 }
 
 
-void transaction_xfer_sync_child(Transaction *s_txn, Transaction *child)
+void transaction_xfer_child_sync(Transaction *s_txn, Transaction *child)
 {
+Account *acc;
 
-	DB( g_print("\n[transaction] xfer_sync_child\n") );
+	DB( g_print("\n[transaction] xfer_child_sync\n") );
+
+	if( child == NULL )
+	{
+		DB( g_print(" - no child found\n") );
+		return;
+	}
+
+	DB( g_print(" - found do sync\n") );
+
+	/* update acc flags */
+	acc = da_acc_get( child->kacc);
+	if(acc != NULL)
+		acc->flags |= AF_CHANGED;
 
 	account_balances_sub (child);
 
@@ -684,19 +744,29 @@ void transaction_xfer_sync_child(Transaction *s_txn, Transaction *child)
 	  child->flags |= (OF_INCOME);
 	child->kpay		= s_txn->kpay;
 	child->kcat		= s_txn->kcat;
-	if(child->wording)
-		g_free(child->wording);
-	child->wording	= g_strdup(s_txn->wording);
+	if(child->memo)
+		g_free(child->memo);
+	child->memo	= g_strdup(s_txn->memo);
 	if(child->info)
 		g_free(child->info);
 	child->info		= g_strdup(s_txn->info);
 
-	//#1252230 sync account also
-	child->kacc		= s_txn->kxferacc;
-	child->kxferacc = s_txn->kacc;
-
 	account_balances_add (child);
-	
+
+	//#1252230 sync account also
+	//#1663789 idem after 5.1
+	//source changed: update child key (move of s_txn is done in external_edit)
+	if( s_txn->kacc != child->kxferacc )
+	{
+		child->kxferacc = s_txn->kacc;
+	}
+
+	//dest changed: move child & update child key
+	if( s_txn->kxferacc != child->kacc )
+	{
+		transaction_acc_move(child, child->kacc, s_txn->kxferacc);
+	}
+
 	//synchronise tags since 5.1
 	if(child->tags)
 		g_free(child->tags);
@@ -712,20 +782,26 @@ Transaction *dst;
 	DB( g_print("\n[transaction] xfer_remove_child\n") );
 
 	dst = transaction_xfer_child_strong_get( src );
-
-	DB( g_print(" -> return is %s, %p\n", dst->wording, dst) );
-
 	if( dst != NULL )
 	{
 	Account *acc = da_acc_get(dst->kacc);
 
-		DB( g_print("deleting...") );
-		src->kxfer = 0;
-		src->kxferacc = 0;
-		account_balances_sub(dst);
-		g_queue_remove(acc->txn_queue, dst);
-		da_transaction_free (dst);
+		if( acc != NULL )
+		{
+			DB( g_print("deleting...") );
+			account_balances_sub(dst);
+			g_queue_remove(acc->txn_queue, dst);
+			//#1419304 we keep the deleted txn to a trash stack	
+			//da_transaction_free (dst);
+			g_trash_stack_push(&GLOBALS->txn_stk, dst);
+
+			//#1691992
+			acc->flags |= AF_CHANGED;
+		}
 	}
+	
+	src->kxfer = 0;
+	src->kxferacc = 0;
 }
 
 
@@ -737,31 +813,34 @@ GList *list;
 
 	DB( g_print("\n[transaction] get_child_transfer\n") );
 
-	//DB( g_print(" search: %d %s %f %d=>%d\n", src->date, src->wording, src->amount, src->account, src->kxferacc) );
+	//DB( g_print(" search: %d %s %f %d=>%d\n", src->date, src->memo, src->amount, src->account, src->kxferacc) );
 	acc = da_acc_get(src->kxferacc);
 
-	list = g_queue_peek_head_link(acc->txn_queue);
-	while (list != NULL)
+	if( acc != NULL )
 	{
-	Transaction *item = list->data;
-
-		// no need to go higher than src txn date
-		if(item->date > src->date)
-			break;
-
-		if( item->paymode == PAYMODE_INTXFER)
+		list = g_queue_peek_head_link(acc->txn_queue);
+		while (list != NULL)
 		{
-			if( src->date == item->date &&
-			    src->kacc == item->kxferacc &&
-			    src->kxferacc == item->kacc &&
-			    ABS(src->amount) == ABS(item->amount) )
-			{
-				//DB( g_print(" found : %d %s %f %d=>%d\n", item->date, item->wording, item->amount, item->account, item->kxferacc) );
+		Transaction *item = list->data;
 
-				return item;
+			// no need to go higher than src txn date
+			if(item->date > src->date)
+				break;
+
+			if( item->paymode == PAYMODE_INTXFER)
+			{
+				if( src->date == item->date &&
+					src->kacc == item->kxferacc &&
+					src->kxferacc == item->kacc &&
+					ABS(src->amount) == ABS(item->amount) )
+				{
+					//DB( g_print(" found : %d %s %f %d=>%d\n", item->date, item->memo, item->amount, item->account, item->kxferacc) );
+
+					return item;
+				}
 			}
+			list = g_list_next(list);
 		}
-		list = g_list_next(list);
 	}
 
 	DB( g_print(" not found...\n") );
@@ -773,7 +852,30 @@ GList *list;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-void transaction_add(Transaction *ope, GtkWidget *treeview, guint32 accnum)
+void transaction_remove(Transaction *ope)
+{
+Account *acc;
+
+	//controls accounts valid (archive scheduled maybe bad)
+	acc = da_acc_get(ope->kacc);
+	if(acc == NULL) return;
+
+	account_balances_sub(ope);
+
+	if( ope->paymode == PAYMODE_INTXFER )
+	{
+		transaction_xfer_remove_child( ope );
+	}
+	
+	g_queue_remove(acc->txn_queue, ope);
+	acc->flags |= AF_CHANGED;
+	//#1419304 we keep the deleted txn to a trash stack	
+	//da_transaction_free(entry);
+	g_trash_stack_push(&GLOBALS->txn_stk, ope);
+}
+
+
+Transaction *transaction_add(Transaction *ope)
 {
 Transaction *newope;
 Account *acc;
@@ -782,7 +884,7 @@ Account *acc;
 
 	//controls accounts valid (archive scheduled maybe bad)
 	acc = da_acc_get(ope->kacc);
-	if(acc == NULL) return;
+	if(acc == NULL) return NULL;
 
 	DB( g_print(" acc is '%s' %d\n", acc->name, acc->key) );
 
@@ -791,7 +893,7 @@ Account *acc;
 	if(ope->paymode == PAYMODE_INTXFER)
 	{
 		acc = da_acc_get(ope->kxferacc);
-		if(acc == NULL) return;
+		if(acc == NULL) return NULL;
 		
 		// delete any splits
 		da_splits_free(ope->splits);
@@ -818,16 +920,19 @@ Account *acc;
 
 		/* get the active account and the corresponding cheque number */
 		acc = da_acc_get( newope->kacc);
-		cheque = atol(newope->info);
+		if( acc != NULL )
+		{
+			cheque = atol(newope->info);
 
-		//DB( g_print(" -> should store cheque number %d to %d", cheque, newope->account) );
-		if( newope->flags & OF_CHEQ2 )
-		{
-			acc->cheque2 = MAX(acc->cheque2, cheque);
-		}
-		else
-		{
-			acc->cheque1 = MAX(acc->cheque1, cheque);
+			//DB( g_print(" -> should store cheque number %d to %d", cheque, newope->account) );
+			if( newope->flags & OF_CHEQ2 )
+			{
+				acc->cheque2 = MAX(acc->cheque2, cheque);
+			}
+			else
+			{
+				acc->cheque1 = MAX(acc->cheque1, cheque);
+			}
 		}
 	}
 
@@ -841,9 +946,6 @@ Account *acc;
 		//da_transaction_append(newope);
 		da_transaction_insert_sorted(newope);
 
-		if(treeview != NULL)
-			transaction_add_treeview(newope, treeview, accnum);
-
 		account_balances_add(newope);
 
 		if(newope->paymode == PAYMODE_INTXFER)
@@ -854,37 +956,8 @@ Account *acc;
 		GValue txn_value = G_VALUE_INIT;
 		ext_hook("transaction_inserted", EXT_TRANSACTION(&txn_value, newope), NULL);
 	}
-}
-
-
-void transaction_add_treeview(Transaction *ope, GtkWidget *treeview, guint32 accnum)
-{
-GtkTreeModel *model;
-GtkTreeIter  iter;
-//GtkTreePath *path;
-//GtkTreeSelection *sel;
-
-	DB( g_print("\n[transaction] add_treeview\n") );
-
-	if(ope->kacc == accnum)
-	{
-		model = gtk_tree_view_get_model(GTK_TREE_VIEW(treeview));
-		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
-
-		gtk_list_store_set (GTK_LIST_STORE(model), &iter,
-				LST_DSPOPE_DATAS, ope,
-				-1);
-
-		//activate that new line
-		//path = gtk_tree_model_get_path(model, &iter);
-		//gtk_tree_view_expand_to_path(GTK_TREE_VIEW(treeview), path);
-
-		//sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
-		//gtk_tree_selection_select_iter(sel, &iter);
-
-		//gtk_tree_path_free(path);
-
-	}
+	
+	return newope;
 }
 
 
@@ -894,21 +967,29 @@ Account *oacc, *nacc;
 
 	DB( g_print("\n[transaction] acc_move\n") );
 
+	if( okacc == nkacc )
+		return TRUE;
+
 	oacc = da_acc_get(okacc);
 	nacc = da_acc_get(nkacc);
 	if( oacc && nacc )
 	{
+		account_balances_sub(txn);
 		if( g_queue_remove(oacc->txn_queue, txn) )
 		{
 			g_queue_push_tail(nacc->txn_queue, txn);
 			txn->kacc = nacc->key;
 			txn->kcur = nacc->kcur;
 			nacc->flags |= AF_CHANGED;
+			account_balances_add(txn);
 			return TRUE;
 		}
 		else
+		{
 			//ensure to keep txn into current account
 			txn->kacc = okacc;
+			account_balances_add(txn);
+		}
 	}
 	return FALSE;
 }
@@ -924,7 +1005,7 @@ gboolean match = FALSE;
 	if(text == NULL)
 		return FALSE;
 	
-	//DB( g_print("search %s in %s\n", rul->name, ope->wording) );
+	//DB( g_print("search %s in %s\n", rul->name, ope->memo) );
 	if( searchtext != NULL )
 	{
 		if( exact == TRUE )
@@ -985,7 +1066,7 @@ GList *list;
 	Assign *rul = list->data;
 	gchar *text;
 
-		text = txn->wording;
+		text = txn->memo;
 		if(rul->field == 1) //payee
 		{
 		Payee *pay = da_pay_get(txn->kpay);
@@ -1061,7 +1142,7 @@ gint changes = 0;
 	Transaction *ope = l_ope->data;
 	gboolean changed = FALSE; 
 
-		DB( g_print("- eval ope '%s' : acc=%d, pay=%d, cat=%d\n", ope->wording, ope->kacc, ope->kpay, ope->kcat) );
+		DB( g_print("- eval ope '%s' : acc=%d, pay=%d, cat=%d\n", ope->memo, ope->kacc, ope->kpay, ope->kcat) );
 
 		//#1215521: added kacc == 0
 		if( (kacc == ope->kacc || kacc == 0) )

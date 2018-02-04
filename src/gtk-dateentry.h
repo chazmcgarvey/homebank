@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -63,20 +63,15 @@ struct _GtkDateEntryPrivate
 	GtkWidget *entry;
     GtkWidget *button;
     GtkWidget *arrow;
-	GtkWidget *popup_window;
-	GtkWidget *frame;
+    GtkWidget *popover;
 	GtkWidget *calendar;
 
 	GDate	*date;
 	guint32	lastdate;
 
 	GDate	mindate, maxdate;
-	GdkDevice   *device;
-	gboolean	has_grab;
-	gboolean    popup_in_progress;
-
-	GdkDevice *grab_pointer;
-	GdkDevice *grab_keyboard;
+	
+	gulong	hid_dayselect;
 };
 
 
