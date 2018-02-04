@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -72,9 +72,14 @@ static void ui_repbalance_list_set_cur(GtkTreeView *treeview, guint32 kcur);
 //prev
 //next
 
+static GtkRadioActionEntry radio_entries[] = {
+  { "List"    , ICONNAME_HB_VIEW_LIST  , N_("List")   , NULL,    N_("View results as list")  , 0 },
+  { "Line"    , ICONNAME_HB_VIEW_LINE  , N_("Line")   , NULL,    N_("View results as lines") , 1 },
+//  { "Column"  , ICONNAME_HB_VIEW_COLUMN, N_("Column") , NULL,    N_("View results as column"), 2 },
+};
+static guint n_radio_entries = G_N_ELEMENTS (radio_entries);
+
 static GtkActionEntry entries[] = {
-  { "List"    , ICONNAME_HB_VIEW_LIST , N_("List")   , NULL,   N_("View results as list"), G_CALLBACK (repbalance_action_viewlist) },
-  { "Line"    , ICONNAME_HB_VIEW_LINE , N_("Line")   , NULL,   N_("View results as lines"), G_CALLBACK (repbalance_action_viewline) },
   { "Refresh" , ICONNAME_REFRESH   , N_("Refresh"), NULL,   N_("Refresh results"), G_CALLBACK (repbalance_action_refresh) },
 };
 
@@ -123,6 +128,23 @@ struct repbalance_data *data = user_data;
 	repbalance_sensitive(data->window, NULL);
 }
 
+
+static void ui_repbalance_action_mode (GtkRadioAction *action, GtkRadioAction *current, gpointer user_data)
+{
+gint value;
+
+	value = gtk_radio_action_get_current_value(GTK_RADIO_ACTION(action));
+	switch( value )
+	{
+		case 0:
+			repbalance_action_viewlist(GTK_ACTION(action), user_data);
+			break;
+		case 1:
+			repbalance_action_viewline(GTK_ACTION(action), user_data);
+			break;
+	}
+}
+
 static void repbalance_action_detail(GtkAction *action, gpointer user_data)
 {
 struct repbalance_data *data = user_data;
@@ -150,7 +172,7 @@ static void repbalance_date_change(GtkWidget *widget, gpointer user_data)
 {
 struct repbalance_data *data;
 
-	DB( g_print("(repbalance) date change\n") );
+	DB( g_print(" \n[repbalance] date change\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -176,7 +198,7 @@ static void repbalance_update_quickdate(GtkWidget *widget, gpointer user_data)
 {
 struct repbalance_data *data;
 
-	DB( g_print("(repbalance) update quickdate\n") );
+	DB( g_print(" \n[repbalance] update quickdate\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -198,7 +220,7 @@ static void repbalance_range_change(GtkWidget *widget, gpointer user_data)
 struct repbalance_data *data;
 gint range;
 
-	DB( g_print("(repbalance) range change\n") );
+	DB( g_print(" \n[repbalance] range change\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -221,7 +243,7 @@ static void repbalance_update_daterange(GtkWidget *widget, gpointer user_data)
 struct repbalance_data *data;
 gchar *daterange;
 
-	DB( g_print("(repbalance) update daterange\n") );
+	DB( g_print(" \n[repbalance] update daterange\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -237,17 +259,16 @@ GtkTreeModel *model;
 GtkTreeIter iter;
 guint key = -1;
 
-	DB( g_print("(repbalance) selection\n") );
+	DB( g_print(" \n[repbalance] selection\n") );
 
 	if (gtk_tree_selection_get_selected(treeselection, &model, &iter))
 	{
 		gtk_tree_model_get(model, &iter, LST_OVER_DATE, &key, -1);
-
-		DB( g_print(" - active is %d\n", key) );
-
-		repbalance_detail(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), GINT_TO_POINTER(key));
 	}
 
+	DB( g_print(" - active is %d\n", key) );
+
+	repbalance_detail(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), GINT_TO_POINTER(key));
 	repbalance_sensitive(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), NULL);
 }
 
@@ -258,30 +279,27 @@ guint key = -1;
 static void repbalance_sensitive(GtkWidget *widget, gpointer user_data)
 {
 struct repbalance_data *data;
-gboolean active;
-gboolean sensitive;
+GtkAction *action;
+gboolean visible;
 gint page;
 
-	DB( g_print("(repbalance) sensitive\n") );
+	DB( g_print(" \n[repbalance] sensitive\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	active = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report)), NULL, NULL);
-
 	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
 
-	sensitive = page == 0 ? active : FALSE;
-//	gtk_widget_set_sensitive(data->TB_buttons[ACTION_REPBUDGET_DETAIL], sensitive);
-	gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/ToolBar/Detail"), sensitive);
+	action = gtk_ui_manager_get_action(data->ui, "/ToolBar/Detail");
+	visible = page == 0 ? TRUE : FALSE;
+	gtk_action_set_visible (action, visible);
+	//sensitive = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report)), NULL, NULL);
+	//gtk_action_set_sensitive(action, sensitive);
 
-	sensitive = page == 0 ? FALSE : TRUE;
-	gtk_widget_set_sensitive(data->LB_zoomx, sensitive);
-	gtk_widget_set_sensitive(data->RG_zoomx, sensitive);
-
+	visible = page == 0 ? FALSE : TRUE;
+	hb_widget_visible(data->LB_zoomx, visible);
+	hb_widget_visible(data->RG_zoomx, visible);
 
 }
-
-
 
 
 static void repbalance_update_info(GtkWidget *widget, gpointer user_data)
@@ -291,7 +309,7 @@ gchar *info;
 gchar   buf[128];
 Account *acc;
 
-	DB( g_print("(repbalance) update info\n") );
+	DB( g_print(" \n[repbalance] update info\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -329,7 +347,7 @@ guint32 acckey;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	DB( g_print("(repbalance) detail\n") );
+	DB( g_print(" \n[repbalance] detail\n") );
 
 	/* clear and detach our model */
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail));
@@ -451,7 +469,7 @@ struct repbalance_data *data;
 
 	data->detail ^= 1;
 
-	DB( g_print("(repbalance) toggledetail to %d\n", (int)data->detail) );
+	DB( g_print(" \n[repbalance] toggledetail to %d\n", (int)data->detail) );
 
 	repbalance_update_detail(widget, user_data);
 
@@ -480,7 +498,7 @@ static void repbalance_toggle_minor(GtkWidget *widget, gpointer user_data)
 {
 struct repbalance_data *data;
 
-	DB( g_print("(repbalance) toggle\n") );
+	DB( g_print(" \n[repbalance] toggle\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -497,8 +515,9 @@ struct repbalance_data *data;
 static void repbalance_compute_full_datas(guint32 selkey, gboolean selectall, struct repbalance_data *data)
 {
 GList *list;
+GList *lst_acc, *lnk_acc;
 
-	DB( g_print("(repbalance) compute_full\n") );
+	DB( g_print(" \n[repbalance] compute_full\n") );
 
 	g_list_free(data->ope_list);
 	data->ope_list = hbfile_transaction_get_all();
@@ -521,13 +540,44 @@ GList *list;
 
 	if(data->tmp_income && data->tmp_expense)
 	{
+	gdouble trn_amount;
+
+		/* account initial amount */
+		lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+		lnk_acc = g_list_first(lst_acc);
+		while (lnk_acc != NULL)
+		{
+		Account *acc = lnk_acc->data;
+
+			//#1674045 ony rely on nosummary
+			//if( (acc->flags & (AF_CLOSED|AF_NOREPORT)) )
+			if( (acc->flags & (AF_NOREPORT)) )
+				goto next_acc;
+
+			trn_amount = 0.0;
+			if(selectall)
+				trn_amount = hb_amount_base(acc->initial, acc->kcur);
+			else
+				if( selkey == acc->key )
+					trn_amount = acc->initial;
+
+			if(trn_amount < 0)
+				data->tmp_expense[0] += trn_amount;
+			else
+				data->tmp_income[0] += trn_amount;
+
+			DB( g_print(" - stored initial %.2f for account %d:%s\n", trn_amount, acc->key, acc->name) );
+
+		next_acc:
+			lnk_acc = g_list_next(lnk_acc);
+		}
+		g_list_free(lst_acc);
 
 		/* compute the balance */
 		list = g_list_first(data->ope_list);
 		while (list != NULL)
 		{
 		gint pos;
-		gdouble trn_amount;
 		Transaction *ope = list->data;
 
 			if(selkey == ope->kacc || selectall == TRUE)
@@ -539,7 +589,7 @@ GList *list;
 					pos = ope->date - omin->date;
 
 					// deal with account initial balance
-					if(accounts[ope->kacc] == 0)
+					/*if(accounts[ope->kacc] == 0)
 					{
 						if(selectall)
 							trn_amount = hb_amount_base(acc->initial, acc->kcur);
@@ -554,7 +604,7 @@ GList *list;
 						DB( g_print(" - stored initial %.2f for account %d\n", trn_amount, ope->kacc) );
 
 						accounts[ope->kacc] = 1;
-					}
+					}*/
 
 					if(selectall)
 						trn_amount = hb_amount_base(ope->amount, acc->kcur);
@@ -588,7 +638,7 @@ guint32 acckey, i;
 gboolean selectall, eachday;
 Account *acc;
 
-	DB( g_print("(repbalance) compute\n") );
+	DB( g_print(" \n[repbalance] compute\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -625,8 +675,12 @@ Account *acc;
 	}
 
 	//to remove > 5.0.2
-	//filter_preset_daterange_set(data->filter, data->filter->range, data->accnum);
-	//repbalance_update_quickdate(widget, NULL);
+	//#1715532 5.0.5: no... but only selectall
+	if(selectall == TRUE)
+	{
+		filter_preset_daterange_set(data->filter, data->filter->range, data->accnum);
+		repbalance_update_quickdate(widget, NULL);
+	}
 
 	repbalance_compute_full_datas(acckey, selectall, data);
 
@@ -652,7 +706,7 @@ Account *acc;
 
 		posdate = omin->date + i;
 		
-		DB( g_print("omin->date=%d posdate=%d\n", omin->date, posdate) );
+		//DB( g_print("omin->date=%d posdate=%d\n", omin->date, posdate) );
 		
 
 		balance += data->tmp_expense[i];
@@ -664,7 +718,7 @@ Account *acc;
 		if( (posdate >= data->filter->mindate) && (posdate <= data->filter->maxdate) )
 		{
 			if(!selectall)
-				is_balance = balance < data->minimum ? TRUE : FALSE;
+				is_balance = (balance < data->minimum) ? TRUE : FALSE;
 
 			date = g_date_new_julian (posdate);
 			g_date_strftime (buf, 256-1, PREFS->date_format, date);
@@ -724,7 +778,7 @@ static void repbalance_toggle_selectall(GtkWidget *widget, gpointer user_data)
 struct repbalance_data *data;
 gboolean selectall;
 
-	DB( g_print("(repbalance) toggle selectall\n") );
+	DB( g_print(" \n[repbalance] toggle selectall\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -739,7 +793,7 @@ gboolean selectall;
 
 static void repbalance_setup(struct repbalance_data *data, guint32 accnum)
 {
-	DB( g_print("(repbalance) setup\n") );
+	DB( g_print(" \n[repbalance] setup\n") );
 
 	data->ope_list = NULL;
 
@@ -748,16 +802,8 @@ static void repbalance_setup(struct repbalance_data *data, guint32 accnum)
 
 	data->accnum = accnum;
 	filter_preset_daterange_set(data->filter, PREFS->date_range_rep, data->accnum);
+	repbalance_update_quickdate(data->window, NULL);
 	
-	g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPBALANCE_MINDATE]);
-	g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPBALANCE_MAXDATE]);
-
-	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), data->filter->mindate);
-	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->maxdate);
-
-	g_signal_handler_unblock(data->PO_mindate, data->handler_id[HID_REPBALANCE_MINDATE]);
-	g_signal_handler_unblock(data->PO_maxdate, data->handler_id[HID_REPBALANCE_MAXDATE]);
-
 	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_acc), GLOBALS->h_acc, ACC_LST_INSERT_REPORT);
 	if( accnum )
 		ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_acc), accnum);
@@ -772,7 +818,7 @@ static gboolean repbalance_window_dispose(GtkWidget *widget, GdkEvent *event, gp
 struct repbalance_data *data = user_data;
 struct WinGeometry *wg;
 
-	DB( g_print("(repbalance) dispose\n") );
+	DB( g_print(" \n[repbalance] dispose\n") );
 
 	g_list_free (data->ope_list);
 
@@ -805,17 +851,17 @@ GtkWidget *label, *widget, *table;
 gint row;
 GtkUIManager *ui;
 GtkActionGroup *actions;
-GtkAction *action;
+//GtkAction *action;
 GError *error = NULL;
 
 	data = g_malloc0(sizeof(struct repbalance_data));
 	if(!data) return NULL;
 
-	DB( g_print("(repbalance) new\n") );
+	DB( g_print(" \n[repbalance] new\n") );
 
 	//disable define windows
 	GLOBALS->define_off++;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(2));
+	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
     /* create window, etc */
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -823,6 +869,7 @@ GError *error = NULL;
 
 	//store our window private data
 	g_object_set_data(G_OBJECT(window), "inst_data", (gpointer)data);
+	DB( g_print(" - new window=%p, inst_data=%p\n", window, data) );
 
 	gtk_window_set_title (GTK_WINDOW (window), _("Balance report"));
 
@@ -913,12 +960,14 @@ GError *error = NULL;
     gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
 
 	//ui manager
-	actions = gtk_action_group_new ("Account");
+	actions = gtk_action_group_new ("default");
 
 	//as we use gettext
    	gtk_action_group_set_translation_domain(actions, GETTEXT_PACKAGE);
 
 	// data to action callbacks is set here (data)
+	gtk_action_group_add_radio_actions (actions, radio_entries, n_radio_entries, 0, G_CALLBACK(ui_repbalance_action_mode), data);
+
 	gtk_action_group_add_actions (actions, entries, n_entries, data);
 
 	gtk_action_group_add_toggle_actions (actions,
@@ -927,17 +976,17 @@ GError *error = NULL;
 
 
 	/* set which action should have priority in the toolbar */
-	action = gtk_action_group_get_action(actions, "List");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "List");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
-	action = gtk_action_group_get_action(actions, "Line");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Line");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
-	action = gtk_action_group_get_action(actions, "Detail");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Detail");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
-	action = gtk_action_group_get_action(actions, "Refresh");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Refresh");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
 
 
@@ -964,15 +1013,15 @@ GError *error = NULL;
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 
+	label = gtk_label_new(NULL);
+	data->TX_info = label;
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
 	widget = make_label(NULL, 0.5, 0.5);
 	gimp_label_set_attributes (GTK_LABEL (widget), PANGO_ATTR_SCALE,  PANGO_SCALE_SMALL, -1);
 	data->TX_daterange = widget;
 	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
 
-
-	label = gtk_label_new(NULL);
-	data->TX_info = label;
-	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	notebook = gtk_notebook_new();
 	data->GR_result = notebook;
@@ -1122,6 +1171,9 @@ gint weight;
 		"foreground",  color,
 		"text", datestr,
 		NULL);
+
+	//leak
+	g_free(datestr);
 }
 
 

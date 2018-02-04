@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -32,6 +32,7 @@
 
 /* our global datas */
 extern struct HomeBank *GLOBALS;
+extern struct Preferences *PREFS;
 
 
 gchar *CYA_ACC_TYPE[] = 
@@ -44,6 +45,13 @@ gchar *CYA_ACC_TYPE[] =
 	N_("Liability"),
 	NULL
 };
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+
+
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
@@ -341,6 +349,24 @@ Account *entry1, *entry2;
     return retval;
 }
 
+
+static void
+ui_acc_listview_icon_cell_data_function (GtkTreeViewColumn *col,
+				GtkCellRenderer *renderer,
+				GtkTreeModel *model,
+				GtkTreeIter *iter,
+				gpointer user_data)
+{
+Account *entry;
+gchar *iconname = NULL;
+
+	gtk_tree_model_get(model, iter, LST_DEFACC_DATAS, &entry, -1);
+	if( entry->flags & AF_CLOSED )
+		iconname = ICONNAME_CHANGES_PREVENT;
+	g_object_set(renderer, "icon-name", iconname, NULL);
+}
+
+
 static void
 ui_acc_listview_name_cell_data_function (GtkTreeViewColumn *col,
 				GtkCellRenderer *renderer,
@@ -468,7 +494,8 @@ GList *lacc, *list;
 	
 		if( insert_type == ACC_LST_INSERT_REPORT )
 		{
-			if( (item->flags & AF_CLOSED) ) goto next1;
+			//#1674045 ony rely on nosummary
+			//if( (item->flags & AF_CLOSED) ) goto next1;
 			if( (item->flags & AF_NOREPORT) ) goto next1;
 		}
 		
@@ -508,6 +535,8 @@ GtkTreeViewColumn	*column;
 	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(store);
 
+	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (treeview), PREFS->grid_lines);
+
 	// column 1: toggle
 	if( withtoggle == TRUE )
 	{
@@ -524,15 +553,22 @@ GtkTreeViewColumn	*column;
 	}
 
 	// column 2: name
+	column = gtk_tree_view_column_new();
+
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set(renderer, 
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
 	    NULL);
 
-	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_acc_listview_name_cell_data_function, GINT_TO_POINTER(LST_DEFACC_DATAS), NULL);
+
+    renderer = gtk_cell_renderer_pixbuf_new ();
+    gtk_tree_view_column_pack_start(column, renderer, TRUE);
+    gtk_tree_view_column_set_cell_data_func(column, renderer, ui_acc_listview_icon_cell_data_function, GINT_TO_POINTER(LST_DEFACC_DATAS), NULL);
+
+
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
@@ -1080,6 +1116,39 @@ gboolean bool;
 }
 
 
+static void ui_acc_manage_toggled_closed(GtkWidget *widget, gpointer user_data)
+{
+struct ui_acc_manage_data *data;
+GtkTreeModel		 *model;
+GtkTreeIter			 iter;
+GtkTreePath			*path;
+Account 	*accitem;
+gboolean selected, bool;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	DB( g_print("\n(ui_acc_manage_toggled_closed) (data=%x)\n", (guint)data) );
+
+	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_acc)), &model, &iter);
+
+	if(selected)
+	{
+		gtk_tree_model_get(model, &iter, LST_DEFACC_DATAS, &accitem, -1);
+		accitem->flags &= ~(AF_CLOSED);
+		bool = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_closed));
+		if(bool) accitem->flags |= AF_CLOSED;
+
+		/* redraw the row to display/hide the icon */
+		path = gtk_tree_model_get_path(model, &iter);
+		gtk_tree_model_row_changed(model, path, &iter);
+		gtk_tree_path_free (path);
+
+		//	gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_arc));
+		//gtk_widget_queue_draw (GTK_WIDGET(data->LV_arc));
+	}	
+
+}
+
+
 static void ui_acc_manage_rowactivated (GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *col, gpointer userdata)
 {
 //struct account_data *data;
@@ -1298,9 +1367,11 @@ gint w, h, row;
 	label = make_label_widget(_("Notes:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = gtk_text_view_new ();
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	//#1697171 add wrap
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(widget), GTK_WRAP_WORD);
+    scrollwin = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_set_size_request (scrollwin, -1, 48);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 	gtk_container_add (GTK_CONTAINER (scrollwin), widget);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
@@ -1418,6 +1489,8 @@ gint w, h, row;
 	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data.LV_acc)), "changed", G_CALLBACK (ui_acc_manage_selection), NULL);
 	g_signal_connect (GTK_TREE_VIEW(data.LV_acc), "row-activated", G_CALLBACK (ui_acc_manage_rowactivated), GINT_TO_POINTER(2));
+	
+	g_signal_connect (data.CM_closed, "toggled", G_CALLBACK (ui_acc_manage_toggled_closed), NULL);	
 	
 	g_signal_connect (G_OBJECT (data.BT_add), "clicked", G_CALLBACK (ui_acc_manage_add), NULL);
 	g_signal_connect (G_OBJECT (data.BT_rem), "clicked", G_CALLBACK (ui_acc_manage_delete), NULL);

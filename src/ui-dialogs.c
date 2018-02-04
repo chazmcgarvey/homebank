@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -277,15 +277,18 @@ struct dialog_currency_data
 static void ui_dialog_upgrade_choose_currency_change_action(GtkWidget *widget, gpointer user_data)
 {
 struct dialog_currency_data *data = user_data;
-Currency4217 *curfmt;
+struct curSelectContext selectCtx;
 
 	data->curfmt = NULL;
 
-	curfmt = ui_cur_select_dialog_new(GTK_WINDOW(data->window), CUR_SELECT_MODE_BASE);
-	if( curfmt != NULL )
+	ui_cur_select_dialog_new(GTK_WINDOW(data->window), CUR_SELECT_MODE_BASE, &selectCtx);
+	if( selectCtx.cur_4217 != NULL )
 	{
+	Currency4217 *curfmt;
 	gchar label[128];
 	gchar *name;
+	
+		curfmt = selectCtx.cur_4217;	
 		
 		DB( g_printf("- user selected: '%s' '%s'\n", curfmt->curr_iso_code, curfmt->name) );
 
@@ -329,6 +332,9 @@ gint crow, row;
 		NULL);
 
 	data.window = dialog;
+
+	widget = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+	gtk_window_set_focus(GTK_WINDOW(dialog), widget);
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 
@@ -445,7 +451,7 @@ gboolean retval;
 	{
 	gchar *tmpfilename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
 	
-		*storage_ptr = hb_util_filename_new_with_extension(tmpfilename, "qif");
+		*storage_ptr = hb_filename_new_with_extension(tmpfilename, "qif");
 		g_free(tmpfilename);
 		retval = TRUE;
 	}
@@ -505,7 +511,7 @@ gchar *path;
 	
 		if( action == GTK_FILE_CHOOSER_ACTION_SAVE )
 		{
-			*storage_ptr = hb_util_filename_new_with_extension(tmpfilename, "csv");
+			*storage_ptr = hb_filename_new_with_extension(tmpfilename, "csv");
 			g_free(tmpfilename);
 		}
 		else
@@ -551,6 +557,7 @@ gboolean retval;
 					NULL);
 
 	ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("HomeBank files"), "*.[Xx][Hh][Bb]");
+	//ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("Backup files"), "*.[Bb][Aa][Kk]");
 	ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("All files"), "*");
 
 	if( action == GTK_FILE_CHOOSER_ACTION_OPEN )
@@ -668,27 +675,119 @@ GtkWidget *dialog = NULL;
 
 		gtk_dialog_set_default_response(GTK_DIALOG( dialog ), 2);
 
-	  result = gtk_dialog_run( GTK_DIALOG( dialog ) );
-	  gtk_widget_destroy( dialog );
+		result = gtk_dialog_run( GTK_DIALOG( dialog ) );
+		gtk_widget_destroy( dialog );
 
-	  if(result == 1 || result == GTK_RESPONSE_DELETE_EVENT)
+		if(result == 1 || result == GTK_RESPONSE_DELETE_EVENT)
 		{
-	  	retval = FALSE;
+			retval = FALSE;
 		}
 		else
 		{
-	  if(result == 2)
-	  {
-		DB( g_print(" + should quick save %s\n", GLOBALS->xhb_filepath) );
-		homebank_save_xml(GLOBALS->xhb_filepath);
-	  }
+			if(result == 2)
+			{
+				DB( g_print(" + should quick save %s\n", GLOBALS->xhb_filepath) );
+				//todo: should migrate this
+				//#1720377 also backup 
+				homebank_file_ensure_xhb(NULL);
+				homebank_backup_current_file();
+				homebank_save_xml(GLOBALS->xhb_filepath);
+			}
 		}
-
-
 
 	}
 	return retval;
 }
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+gint ui_dialog_export_pdf(GtkWindow *parent, gchar **storage_ptr)
+{
+GtkWidget *dialog, *content_area, *content_grid, *group_grid;
+GtkWidget *label, *widget, *BT_folder, *ST_name;
+gchar *tmpstr;
+gint crow, row;
+
+	dialog = gtk_dialog_new_with_buttons (_("Export PDF"),
+		GTK_WINDOW (parent),
+		0,
+		_("_Cancel"), GTK_RESPONSE_CANCEL,
+		_("_Export"), GTK_RESPONSE_ACCEPT,
+		NULL);
+
+	gtk_window_set_default_size (GTK_WINDOW(dialog), HB_MINWIDTH_LIST, -1);
+	
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
+
+	content_grid = gtk_grid_new();
+	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+	gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_MEDIUM);
+	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
+
+	crow = 0;
+	// group :: file title
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+
+	row = 0;
+	widget = gtk_image_new_from_icon_name (ICONNAME_WARNING, GTK_ICON_SIZE_DIALOG);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 0, row, 1, 1);
+	label = gtk_label_new("This feature is still in development state,\n(maybe not stable) so use it at your own risk!");
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+
+	row++;
+	label = make_label_widget(_("Folder:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	BT_folder = gtk_file_chooser_button_new (_("Pick a Folder"), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+	gtk_grid_attach (GTK_GRID (group_grid), BT_folder, 1, row, 1, 1);
+
+	row++;
+	label = make_label_widget(_("Filename:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	ST_name = make_string (label);
+	gtk_grid_attach (GTK_GRID (group_grid), ST_name, 1, row, 1, 1);
+
+
+	//setup
+	tmpstr = g_path_get_dirname(*storage_ptr);
+	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(BT_folder), tmpstr);
+	g_free(tmpstr);
+	
+	tmpstr = g_path_get_basename(*storage_ptr);
+	gtk_entry_set_text(GTK_ENTRY(ST_name), tmpstr);
+	g_free(tmpstr);
+
+
+	gtk_widget_show_all(content_grid);
+
+	//wait for the user
+	gint result = gtk_dialog_run (GTK_DIALOG (dialog));
+
+	if(result == GTK_RESPONSE_ACCEPT)
+	{
+	gchar *nufolder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(BT_folder));
+	gchar *nufilename = hb_filename_new_with_extension((gchar *)gtk_entry_get_text (GTK_ENTRY(ST_name)), "pdf");
+		
+		g_free(*storage_ptr);
+		*storage_ptr = g_build_filename(nufolder, nufilename, NULL);
+
+		g_free(nufilename);
+		g_free(nufolder);
+	}
+
+	// cleanup and destroy
+	gtk_widget_destroy (dialog);
+
+	return result;
+}
+
+
+
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
@@ -841,7 +940,7 @@ Transaction *retval = NULL;
 			LST_DSPOPE_DATAS, tmp,
 			-1);
 
-		//DB( g_print(" - fill: %s %.2f %x\n", item->wording, item->amount, (unsigned int)item->same) );
+		//DB( g_print(" - fill: %s %.2f %x\n", item->memo, item->amount, (unsigned int)item->same) );
 
 		tmplist = g_list_next(tmplist);
 	}

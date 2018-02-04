@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -49,10 +49,9 @@ extern struct Preferences *PREFS;
 
 
 static void repbudget_action_viewlist(GtkAction *action, gpointer user_data);
-static void repbudget_action_viewbar(GtkAction *action, gpointer user_data);
+static void repbudget_action_viewstack(GtkAction *action, gpointer user_data);
 static void repbudget_action_detail(GtkAction *action, gpointer user_data);
 static void repbudget_action_refresh(GtkAction *action, gpointer user_data);
-static void repbudget_action_export(GtkAction *action, gpointer user_data);
 
 static void repbudget_date_change(GtkWidget *widget, gpointer user_data);
 static void repbudget_range_change(GtkWidget *widget, gpointer user_data);
@@ -65,7 +64,8 @@ static void repbudget_toggle(GtkWidget *widget, gpointer user_data);
 static GtkWidget *create_list_budget(void);
 static void repbudget_update_detail(GtkWidget *widget, gpointer user_data);
 static void repbudget_update_daterange(GtkWidget *widget, gpointer user_data);
-static void repbudget_export_csv(GtkWidget *widget, gpointer user_data);
+
+static GString *ui_list_repbudget_to_string(GtkTreeView *treeview, gboolean clipboard);
 
 gchar *CYA_BUDGSELECT[] = { N_("Category"), N_("Subcategory"), NULL };
 
@@ -76,12 +76,18 @@ gchar *CYA_BUDGETSELECT[] = { N_("Spent & Budget"), N_("Spent"), N_("Budget"), N
 
 //extern gchar *CYA_FLT_SELECT[];
 
+
+static GtkRadioActionEntry radio_entries[] = {
+  { "List"    , ICONNAME_HB_VIEW_LIST , N_("List")  , NULL,    N_("View results as list")      , 0 },
+  { "Stack"   , ICONNAME_HB_VIEW_STACK, N_("Stack") , NULL,    N_("View results as stack bars"), 1 },
+};
+static guint n_radio_entries = G_N_ELEMENTS (radio_entries);
+
+
 static GtkActionEntry entries[] = {
-  { "List"    , ICONNAME_HB_VIEW_LIST , N_("List")  , NULL,    N_("View results as list"), G_CALLBACK (repbudget_action_viewlist) },
-  { "Stack"     , ICONNAME_HB_VIEW_STACK, N_("Stack")   , NULL,    N_("View results as stack bars"), G_CALLBACK (repbudget_action_viewbar) },
   { "Refresh" , ICONNAME_REFRESH, N_("Refresh"), NULL,   N_("Refresh results"), G_CALLBACK (repbudget_action_refresh) },
 
-  { "Export"  , ICONNAME_HB_FILE_EXPORT , N_("Export")  , NULL,   N_("Export as CSV"), G_CALLBACK (repbudget_action_export) },
+//  { "Export"  , ICONNAME_HB_FILE_EXPORT , N_("Export")  , NULL,   N_("Export as CSV"), G_CALLBACK (repbudget_action_export) },
 };
 static guint n_entries = G_N_ELEMENTS (entries);
 
@@ -107,7 +113,8 @@ static const gchar *ui_info =
 "      <separator/>"
 "    <toolitem action='Refresh'/>"
 "      <separator/>"
-"    <toolitem action='Export'/>"
+//"    <toolitem action='Export'/>"
+//		replaced by a menubutton
 "  </toolbar>"
 "</ui>";
 
@@ -122,13 +129,31 @@ struct repbudget_data *data = user_data;
 	repbudget_sensitive(data->window, NULL);
 }
 
-static void repbudget_action_viewbar(GtkAction *action, gpointer user_data)
+static void repbudget_action_viewstack(GtkAction *action, gpointer user_data)
 {
 struct repbudget_data *data = user_data;
 
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(data->GR_result), 1);
 	repbudget_sensitive(data->window, NULL);
 }
+
+
+static void repbudget_action_mode (GtkRadioAction *action, GtkRadioAction *current, gpointer user_data)
+{
+gint value;
+
+	value = gtk_radio_action_get_current_value(GTK_RADIO_ACTION(action));
+	switch( value )
+	{
+		case 0:
+			repbudget_action_viewlist(GTK_ACTION(action), user_data);
+			break;
+		case 1:
+			repbudget_action_viewstack(GTK_ACTION(action), user_data);
+			break;
+	}
+}
+
 
 static void repbudget_action_detail(GtkAction *action, gpointer user_data)
 {
@@ -145,12 +170,12 @@ struct repbudget_data *data = user_data;
 	repbudget_compute(data->window, NULL);
 }
 
-static void repbudget_action_export(GtkAction *action, gpointer user_data)
+/*static void repbudget_action_export(GtkAction *action, gpointer user_data)
 {
 struct repbudget_data *data = user_data;
 
 	repbudget_export_csv(data->window, NULL);
-}
+}*/
 
 /* ======================== */
 
@@ -372,24 +397,96 @@ struct repbudget_data *data;
 }
 
 
-static void repbudget_export_csv(GtkWidget *widget, gpointer user_data)
+static void repbudget_export_result_clipboard(GtkWidget *widget, gpointer user_data)
 {
 struct repbudget_data *data;
-GtkTreeModel *model;
-GtkTreeIter	iter;
-gboolean valid;
+GtkClipboard *clipboard;
+GString *node;
+
+	DB( g_print("\n[repbudget] export result clipboard\n") );
+
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	node = ui_list_repbudget_to_string(GTK_TREE_VIEW(data->LV_report), TRUE);
+
+	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+	gtk_clipboard_set_text(clipboard, node->str, node->len);
+
+	g_string_free(node, TRUE);
+}
+
+
+static void repbudget_export_result_csv(GtkWidget *widget, gpointer user_data)
+{
+struct repbudget_data *data;
 gchar *filename = NULL;
+GString *node;
 GIOChannel *io;
-gchar *outstr, *name;
+gchar *name;
 gint tmpfor;
 
-	DB( g_print("\n[repbudget] export csv\n") );
+	DB( g_print("\n[repbudget] export result csv\n") );
 
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	tmpfor  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_for));
+	name = g_strdup_printf("hb-repbudget_%s.csv", CYA_BUDGSELECT[tmpfor]);
 
-	name = g_strdup_printf("hb-budget_%s.csv", CYA_BUDGSELECT[tmpfor]);
+	if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filename, name) == TRUE )
+	{
+		DB( g_print(" + filename is %s\n", filename) );
+		io = g_io_channel_new_file(filename, "w", NULL);
+		if(io != NULL)
+		{
+			node = ui_list_repbudget_to_string(GTK_TREE_VIEW(data->LV_report), FALSE);
+			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
+			g_io_channel_unref (io);
+			g_string_free(node, TRUE);
+		}
+		g_free( filename );
+	}
+	g_free(name);
+}
+
+
+static void repbudget_export_detail_clipboard(GtkWidget *widget, gpointer user_data)
+{
+struct repbudget_data *data;
+GtkClipboard *clipboard;
+GString *node;
+
+	DB( g_print("\n[repbudget] export detail clipboard\n") );
+
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), TRUE);
+
+	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+	gtk_clipboard_set_text(clipboard, node->str, node->len);
+
+	g_string_free(node, TRUE);
+}
+
+
+static void repbudget_export_detail_csv(GtkWidget *widget, gpointer user_data)
+{
+struct repbudget_data *data;
+gchar *filename = NULL;
+GString *node;
+GIOChannel *io;
+gchar *name;
+gint tmpfor;
+
+	DB( g_print("\n[repbudget] export detail csv\n") );
+
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	tmpfor  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_for));
+	name = g_strdup_printf("hb-repstat-detail_%s.csv", CYA_BUDGSELECT[tmpfor]);
 
 	if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filename, name) == TRUE )
 	{
@@ -398,46 +495,20 @@ gint tmpfor;
 		io = g_io_channel_new_file(filename, "w", NULL);
 		if(io != NULL)
 		{
-			// header
-			outstr = g_strdup_printf("%s;%s;%s;%s;\n", _("Category"), _("Spent"), _("Budget"), _("Result"));
-			g_io_channel_write_chars(io, outstr, -1, NULL, NULL);
-
-			model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
-			valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
-			while (valid)
-			{
-			gchar *name, *status;
-			gdouble spent, budget, result;
-
-				gtk_tree_model_get (model, &iter,
-					//LST_REPDIST_KEY, i,
-					LST_BUDGET_NAME, &name,
-					LST_BUDGET_SPENT, &spent,
-					LST_BUDGET_BUDGET, &budget,
-					LST_BUDGET_RESULT, &result,
-				    LST_BUDGET_STATUS, &status,
-					-1);
-
-				outstr = g_strdup_printf("%s;%.2f;%.2f;%.2f;%s\n", name, spent, budget, result, status);
-				g_io_channel_write_chars(io, outstr, -1, NULL, NULL);
-
-				DB( g_print("%s", outstr) );
-
-				g_free(outstr);
-
-				valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
-			}
+			node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), FALSE);
+			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
 
 			g_io_channel_unref (io);
+			g_string_free(node, TRUE);
 		}
 
 		g_free( filename );
 	}
 
 	g_free(name);
-
-
 }
+
+
 
 
 static void repbudget_detail(GtkWidget *widget, gpointer user_data)
@@ -558,7 +629,7 @@ static void repbudget_compute(GtkWidget *widget, gpointer user_data)
 {
 struct repbudget_data *data;
 
-gint tmpfor, tmpkind;
+gint tmpfor, tmpkind, tmponlyout;
 guint32 mindate, maxdate;
 
 GtkTreeModel *model;
@@ -573,8 +644,9 @@ gchar *title;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	tmpfor   = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_for));
-	tmpkind  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_kind));
+	tmpfor     = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_for));
+	tmpkind    = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_kind));
+	tmponlyout = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_onlyout));
 
 	mindate = data->filter->mindate;
 	maxdate = data->filter->maxdate;
@@ -685,7 +757,7 @@ gchar *title;
 		gint pos = 0;
 		gdouble trn_amount;
 
-			//DB( g_print("%d, get ope: %s :: acc=%d, cat=%d, mnt=%.2f\n", i, ope->wording, ope->account, ope->category, ope->amount) );
+			//DB( g_print("%d, get ope: %s :: acc=%d, cat=%d, mnt=%.2f\n", i, ope->memo, ope->account, ope->category, ope->amount) );
 
 			if( ope->flags & OF_SPLIT )
 			{
@@ -761,6 +833,7 @@ gchar *title;
 		for(i=1, id=0; i<=n_result; i++)
 		{
 		gchar *name, *fullcatname;
+		gboolean outofbudget;
 		Category *entry;
 
 			fullcatname = NULL;
@@ -810,7 +883,7 @@ gchar *title;
 				if( tmpkind == 2 && tmp_budget[pos] < 0)
 					continue;
 
-				DB( g_print(" eval %d '%s' : spen=%.2f bud=%.2f \n", i, name, tmp_spent[pos], tmp_budget[pos] ) );
+				//DB( g_print(" eval %d '%s' : spen=%.2f bud=%.2f \n", i, name, tmp_spent[pos], tmp_budget[pos] ) );
 
 				if((entry->flags & (GF_BUDGET|GF_FORCED)) || tmp_budget[pos] /*|| tmp_spent[pos]*/)
 				{
@@ -827,19 +900,27 @@ gchar *title;
 						rawrate = ABS(tmp_spent[pos]);
 
 					status = "";
+					outofbudget = FALSE;
 					if(rawrate > 1.0)
 					{
 						status = _(" over");
+						outofbudget = TRUE;
 					}
 					else
 					{
 						if(tmp_budget[pos] < 0.0)
 							status = _(" left");
 						else if(tmp_budget[pos] > 0.0)
+						{
 							status = _(" under");
+							outofbudget = TRUE;
+						}
 					}
 
-					DB( g_print(" => insert %.2f | %.2f = %.2f '%s'\n", tmp_spent[pos], tmp_budget[pos], result, status ) );
+					if(tmponlyout == TRUE && outofbudget == FALSE)
+						goto nextins;
+
+					DB( g_print(" => insert %.2f | %.2f = %.2f (%.2f) '%s'\n\n", tmp_spent[pos], tmp_budget[pos], result, rawrate, status ) );
 
 					gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 			 		gtk_list_store_set (GTK_LIST_STORE(model), &iter,
@@ -852,6 +933,7 @@ gchar *title;
 						LST_BUDGET_STATUS, status,
 						-1);
 
+				nextins:
 					data->total_spent  += tmp_spent[pos];
 					data->total_budget += tmp_budget[pos];
 				}
@@ -919,21 +1001,28 @@ struct repbudget_data *data;
 static void repbudget_sensitive(GtkWidget *widget, gpointer user_data)
 {
 struct repbudget_data *data;
-gboolean active;
-gboolean sensitive;
+GtkAction *action;
+gboolean visible, sensitive;
 gint page;
 
 	DB( g_print("\n[repbudget] sensitive\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	active = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report)), NULL, NULL);
-
 	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
 
-	sensitive = page == 0 ? active : FALSE;
-//	gtk_widget_set_sensitive(data->TB_buttons[ACTION_REPBUDGET_DETAIL], sensitive);
-	gtk_action_set_sensitive(gtk_ui_manager_get_action(data->ui, "/ToolBar/Detail"), sensitive);
+	visible = page == 0 ? TRUE : FALSE;
+	action = gtk_ui_manager_get_action(data->ui, "/ToolBar/Detail");
+	gtk_action_set_visible (action, visible);
+	//sensitive = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report)), NULL, NULL);
+	//gtk_action_set_sensitive(action, sensitive);
+	//action = gtk_ui_manager_get_action(data->ui, "/ToolBar/Export");
+	//gtk_action_set_visible (action, visible);
+	hb_widget_visible (data->BT_export, visible);
+	
+	sensitive = gtk_tree_model_iter_n_children(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail)), NULL) > 0 ? TRUE : FALSE;
+	gtk_widget_set_sensitive(data->MI_detailtoclip, sensitive);
+	gtk_widget_set_sensitive(data->MI_detailtocsv, sensitive);
 
 }
 
@@ -991,21 +1080,22 @@ static void repbudget_selection(GtkTreeSelection *treeselection, gpointer user_d
 {
 GtkTreeModel *model;
 GtkTreeIter iter;
-guint key;
+guint key = -1;
 
 	DB( g_print("\n[repbudget] selection\n") );
 
 	if (gtk_tree_selection_get_selected(treeselection, &model, &iter))
 	{
 		gtk_tree_model_get(model, &iter, LST_BUDGET_KEY, &key, -1);
-
-		DB( g_print(" - active is %d\n", key) );
-
-		repbudget_detail(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), GINT_TO_POINTER(key));
 	}
 
+	DB( g_print(" - active is %d\n", key) );
+
+	repbudget_detail(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), GINT_TO_POINTER(key));
 	repbudget_sensitive(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), NULL);
 }
+
+
 /*
 **
 */
@@ -1059,7 +1149,7 @@ GError *error = NULL;
 
 	//disable define windows
 	GLOBALS->define_off++;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(2));
+	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
     /* create window, etc */
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -1067,6 +1157,7 @@ GError *error = NULL;
 
 	//store our window private data
 	g_object_set_data(G_OBJECT(window), "inst_data", (gpointer)data);
+	DB( g_print(" - new window=%p, inst_data=%p\n", window, data) );
 
 	gtk_window_set_title (GTK_WINDOW (window), _("Budget report"));
 
@@ -1112,6 +1203,11 @@ GError *error = NULL;
 	gtk_grid_attach (GTK_GRID (table), data->CY_kind, 2, row, 1, 1);
 
 	row++;
+	widget = gtk_check_button_new_with_mnemonic (_("Only out of budget"));
+	data->CM_onlyout = widget;
+	gtk_grid_attach (GTK_GRID (table), widget, 2, row, 1, 1);
+
+	row++;
 	widget = gtk_check_button_new_with_mnemonic (_("Euro _minor"));
 	data->CM_minor = widget;
 	gtk_grid_attach (GTK_GRID (table), widget, 2, row, 1, 1);
@@ -1148,12 +1244,14 @@ GError *error = NULL;
     gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
 
 	//ui manager
-	actions = gtk_action_group_new ("Account");
+	actions = gtk_action_group_new ("default");
 
 	//as we use gettext
    	gtk_action_group_set_translation_domain(actions, GETTEXT_PACKAGE);
 
 	// data to action callbacks is set here (data)
+	gtk_action_group_add_radio_actions (actions, radio_entries, n_radio_entries, 0, G_CALLBACK(repbudget_action_mode), data);
+
 	gtk_action_group_add_actions (actions, entries, n_entries, data);
 
 	gtk_action_group_add_toggle_actions (actions,
@@ -1162,18 +1260,18 @@ GError *error = NULL;
 
 
 	/* set which action should have priority in the toolbar */
-	action = gtk_action_group_get_action(actions, "List");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "List");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
-	action = gtk_action_group_get_action(actions, "Stack");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Stack");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
 	action = gtk_action_group_get_action(actions, "Detail");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//g_object_set(action, "is_important", TRUE, NULL);
 	g_object_set(action, "active", PREFS->budg_showdetail, NULL);
 
-	action = gtk_action_group_get_action(actions, "Refresh");
-	g_object_set(action, "is_important", TRUE, NULL);
+	//action = gtk_action_group_get_action(actions, "Refresh");
+	//g_object_set(action, "is_important", TRUE, NULL);
 
 
  	ui = gtk_ui_manager_new ();
@@ -1191,6 +1289,46 @@ GError *error = NULL;
 	//toolbar
 	data->TB_bar = gtk_ui_manager_get_widget (ui, "/ToolBar");
 	gtk_box_pack_start (GTK_BOX (vbox), data->TB_bar, FALSE, FALSE, 0);
+
+	//add export menu button
+	GtkToolItem *toolitem;
+	GtkWidget *menu, *menuitem, *image;
+
+	menu = gtk_menu_new ();
+	//gtk_widget_set_halign (menu, GTK_ALIGN_END);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Result to clipboard"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (repbudget_export_result_clipboard), data);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Result to CSV"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (repbudget_export_result_csv), data);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Detail to clipboard"));
+	data->MI_detailtoclip = menuitem;
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (repbudget_export_detail_clipboard), data);
+
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Detail to CSV"));
+	data->MI_detailtocsv = menuitem;
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (repbudget_export_detail_csv), data);
+
+	gtk_widget_show_all (menu);
+
+	widget = gtk_menu_button_new();
+	data->BT_export = widget;
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_FLAT);
+
+	//gtk_menu_button_set_direction (GTK_MENU_BUTTON(widget), GTK_ARROW_DOWN);
+	//gtk_widget_set_halign (widget, GTK_ALIGN_END);
+	image = gtk_image_new_from_icon_name (ICONNAME_HB_FILE_EXPORT, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	g_object_set (widget, "image", image, "popup", GTK_MENU(menu),  NULL);
+
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), widget);
+	gtk_toolbar_insert(GTK_TOOLBAR(data->TB_bar), GTK_TOOL_ITEM(toolitem), -1);
 
 	//infos
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
@@ -1271,6 +1409,7 @@ GError *error = NULL;
 	/* signal connect */
     g_signal_connect (window, "delete-event", G_CALLBACK (repbudget_window_dispose), (gpointer)data);
 
+	g_signal_connect (data->CM_onlyout, "toggled", G_CALLBACK (repbudget_compute), NULL);
 	g_signal_connect (data->CM_minor, "toggled", G_CALLBACK (repbudget_toggle), NULL);
 
 
@@ -1325,7 +1464,9 @@ GError *error = NULL;
 		{
 		Account *acc;
 			acc = list->data;
-			if((acc->flags & (AF_CLOSED|AF_NOREPORT))) goto next1;
+			//#1674045 ony rely on nosummary
+			//if((acc->flags & (AF_CLOSED|AF_NOREPORT))) goto next1;
+			if((acc->flags & (AF_NOREPORT))) goto next1;
 			if(!(acc->flags & AF_NOBUDGET))
 				count++;
 		next1:
@@ -1363,6 +1504,53 @@ GError *error = NULL;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+static GString *ui_list_repbudget_to_string(GtkTreeView *treeview, gboolean clipboard)
+{
+GString *node;
+GtkTreeModel *model;
+GtkTreeIter	iter;
+gboolean valid;
+const gchar *format;
+
+	node = g_string_new(NULL);
+
+	// header
+	format = (clipboard == TRUE) ? "%s\t%s\t%s\t%s\t\n" : "%s;%s;%s;%s;\n";
+	g_string_append_printf(node, format, _("Category"), _("Spent"), _("Budget"), _("Result"));
+
+	model = gtk_tree_view_get_model(treeview);
+	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+	while (valid)
+	{
+	gchar *name, *status;
+	gdouble spent, budget, result;
+
+		gtk_tree_model_get (model, &iter,
+			//LST_REPDIST_KEY, i,
+			LST_BUDGET_NAME, &name,
+			LST_BUDGET_SPENT, &spent,
+			LST_BUDGET_BUDGET, &budget,
+			LST_BUDGET_RESULT, &result,
+		    LST_BUDGET_STATUS, &status,
+			-1);
+
+		format = (clipboard == TRUE) ? "%s\t%.2f\t%.2f\t%.2f\t%s\n" : "%s;%.2f;%.2f;%.2f;%s\n";
+		g_string_append_printf(node, format, name, spent, budget, result, status);
+		
+		//leak
+		g_free(name);
+		g_free(status);
+		
+		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+	}
+
+	//DB( g_print("text is:\n%s", node->str) );
+
+	return node;
+}
+
+
+
 
 /*
 **
@@ -1386,6 +1574,9 @@ gchar *entry1, *entry2;
 	//{
 	//	retval = hb_string_utf8_compare(entry1->name, entry2->name);
 	//}
+	//leak
+	g_free(entry2);
+	g_free(entry1);
 
     return retval;
 }
@@ -1454,6 +1645,9 @@ gint column_id = GPOINTER_TO_INT(user_data);
 	{
 		g_object_set(renderer, "text", "", NULL);
 	}
+	
+	//leak
+	g_free(status);
 }
 
 

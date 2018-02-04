@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2012 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -46,7 +46,6 @@ extern struct Preferences *PREFS;
 extern Currency4217 iso4217cur[];
 extern guint n_iso4217cur;
 
-Currency4217 *iso4217format_get(gchar *code);
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -110,6 +109,16 @@ Currency4217 *curfmt;
 static void da_cur_max_key_ghfunc(gpointer key, Currency *item, guint32 *max_key)
 {
 	*max_key = MAX(*max_key, item->key);
+}
+
+static gboolean da_cur_name_grfunc(gpointer key, Currency *item, gchar *name)
+{
+	if( name && item->name )
+	{
+		if(!strcasecmp(name, item->name))
+			return TRUE;
+	}
+	return FALSE;
 }
 
 static gboolean da_cur_iso_grfunc(gpointer key, Currency *item, gchar *iso)
@@ -193,27 +202,21 @@ guint32 *new_key;
 	DB( g_print("da_cur_append\n") );
 
 	/* ensure no duplicate */
-	//g_strstrip(item->name);
-	if(item->iso_code != NULL)
+	existitem = da_cur_get_by_name( item->name );
+	if( existitem == NULL )
 	{
-		existitem = da_cur_get_by_iso_code( item->iso_code );
-		if( existitem == NULL )
-		{
-			new_key = g_new0(guint32, 1);
-			*new_key = da_cur_get_max_key() + 1;
-			item->key = *new_key;
-			//item->pos = da_cur_length() + 1;
+		new_key = g_new0(guint32, 1);
+		*new_key = da_cur_get_max_key() + 1;
+		item->key = *new_key;
+		//item->pos = da_cur_length() + 1;
 
-			DB( g_print(" -> insert id: %d\n", *new_key) );
+		DB( g_print(" -> insert id: %d\n", *new_key) );
 
-			g_hash_table_insert(GLOBALS->h_cur, new_key, item);	
+		g_hash_table_insert(GLOBALS->h_cur, new_key, item);	
 
-			da_cur_initformat(item);
+		da_cur_initformat(item);
 
-			return TRUE;
-		}
-
-		
+		return TRUE;
 	}
 
 	DB( g_print(" -> %s already exist: %d\n", item->iso_code, item->key) );
@@ -231,6 +234,14 @@ guint32 max_key = 0;
 	return max_key;
 }
 
+
+Currency *
+da_cur_get_by_name(gchar *name)
+{
+	DB( g_print("da_cur_get_by_name\n") );
+
+	return g_hash_table_find(GLOBALS->h_cur, (GHRFunc)da_cur_name_grfunc, name);
+}
 
 
 Currency *
@@ -435,8 +446,6 @@ Currency *item;
 	
 	DB( g_printf("\n[(currency] found adding %s\n", curfmt->curr_iso_code) );
 
-	//item = da_cur_get_by_iso_code(curfmt->curr_iso_code);
-	
 	item = da_cur_malloc();
 	//no mem alloc here
 	//item->key = i;
@@ -478,113 +487,95 @@ Currency *item;
 }
 
 
-
-
-
-static void
-start_element_handler (GMarkupParseContext *context, const gchar *element_name, const gchar **attribute_names,
-						const gchar **attribute_values, gpointer user_data, GError **error)
+static gboolean currency_rate_update(gchar *isocode, gdouble rate, guint32 date)
 {
-ParseExchangeContext *ctx = user_data;
-gint i;
-
-	//DB( g_print("** start element: '%s' iso=%s\n", element_name, ctx->iso) );
-
-	ctx->elt_name = element_name;
-
-	switch(element_name[0])
-	{
-		case 'r':
-		{
-			if(!strcmp (element_name, "rate"))
-			{
-				i = 0;
-				//DB( g_print(" att='%s' val='%s'\n", attribute_names[i], attribute_values[i]) );
-				//we have only 1 attribute id :: store isocode pair
-				if(attribute_names[i] != NULL && !strcmp (attribute_names[i], "id"))
-				{
-					g_stpcpy (ctx->iso, attribute_values[i]);		
-				}
-			}
-		}
-		break;
-	}
-}
-
-
-static void 
-text_handler(GMarkupParseContext *context, const gchar *text, gsize text_len, gpointer user_data, GError **error)
-{
-ParseExchangeContext *ctx = user_data;
-
-	if(text_len == 0)
-		return;
-
-	//DB( g_print("** text: '%s' %d\n", text, text_len) );
-
-	if(!strcmp (ctx->elt_name, "Rate"))
-	{
-		ctx->rate = g_ascii_strtod(text, NULL);
-		//DB( g_print(" stored '%s' %.2f\n", text, ctx->rate) );
-	}
-}
-
-
-static void 
-end_element_handler (GMarkupParseContext *context, const gchar *element_name, gpointer user_data, GError **error)
-{
-ParseExchangeContext *ctx = user_data;
+gboolean retval = FALSE;
 Currency *cur;
 
-	DB( g_print("** end element: '%s'\n", element_name) );
-
-	if(!strcmp (element_name, "rate"))
+	cur = da_cur_get_by_iso_code (isocode);
+	if(cur)
 	{
-		DB( g_print(" should store here !!\n") );
-		DB( g_print(" %s %f\n", ctx->iso, ctx->rate) );
-		cur = da_cur_get_by_iso_code (ctx->iso + 3);
-		if(cur)
-		{
-			DB( g_print(" found cur='%s'\n", cur->iso_code) );
-			cur->rate = ctx->rate;
-			cur->mdate = GLOBALS->today;
-		}
-		
-		//clean all
-		ctx->elt_name = NULL;
-		*ctx->iso = '\0';
-		ctx->rate = 0.0;
+		DB( g_print(" found cur='%s'\n", cur->iso_code) );
+		cur->rate = rate;
+		cur->mdate = date;
+		GLOBALS->changes_count++;
+		retval = TRUE;
 	}
-}
-       
-
-static GMarkupParser hb_xchange_parser = {
-	start_element_handler,
-	end_element_handler,
-	text_handler,
-	NULL,
-	NULL  //cleanup
-};
-
-
-static gboolean currency_online_parse(const gchar *buffer, GError **error)
-{
-GMarkupParseContext *context;
-ParseExchangeContext ctx;
-gboolean retval;
-
-	memset(&ctx, 0, sizeof(ParseExchangeContext));
-	context = g_markup_parse_context_new (&hb_xchange_parser, 0, &ctx, NULL);
-
-	retval = g_markup_parse_context_parse (context, buffer, -1, error);
-	//retval = g_markup_parse_context_parse (context, badyahooxml, -1, error);
-	g_markup_parse_context_free (context);
 
 	return retval;
 }
 
 
-static gchar *currency_get_query(void)
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+/* 
+//test API
+gchar fixeriojson[] = 
+"{    }";
+"	{	\r	\"base\"	:	\"EUR\", \
+\"date\":	\n\r		\"2017-12-04\", \
+\"rates\"	\n\n		:{\"AUD\":1.5585,\"CAD\":1.5034,\"CHF\":1.1665,\"CNY\":7.8532,\"GBP\":0.87725,\"JPY\":133.91,\"USD\":1.1865 \
+}  	}";
+*/
+
+
+static gboolean api_fixerio_parse(const gchar *body, GError **error)
+{
+gchar *rawjson;
+gchar *p;
+gchar strbuf[48];
+gchar isocode[8];
+gdouble rate;
+guint32 date = GLOBALS->today;
+guint count = 0;
+
+	if(body)
+	{
+		//there is no need of a complex JSON parser here, so let's hack !
+		rawjson = g_strdup(body);
+		hb_string_inline(rawjson);
+
+		DB( g_printf("\nbody: '%s'\n", rawjson ) );
+
+		//get date
+		p = g_strstr_len(rawjson, -1, "\"date\"");
+		if(p)
+		{
+			strncpy(strbuf, p+8, 10);
+			strbuf[10]='\0';
+			date = hb_date_get_julian(strbuf, PRF_DATEFMT_YMD);
+			DB( g_printf("\n-date: %.10s %d\n", strbuf, date) );
+		}
+
+		//get rates
+		p = g_strstr_len(rawjson, -1, "\"rates\"");
+		if(p)
+		{
+			p = p+8;
+			do
+			{
+				p = hb_string_copy_jsonpair(strbuf, p);
+				strncpy(isocode, strbuf, 3);
+				isocode[3]='\0';
+				rate = g_ascii_strtod(strbuf+4, NULL);
+				DB( g_printf("\npair: '%s' '%s' %f\n", strbuf, isocode, rate ) );
+
+				if( currency_rate_update(isocode, rate, date) )
+					count++;
+			}			
+			while( p != NULL );
+		}
+
+		g_free(rawjson);
+
+	}
+
+	return( (count > 0) ? TRUE : FALSE);
+}
+
+
+static gchar *api_fixerio_query_build(void)
 {
 GList *list;
 GString *node;
@@ -592,43 +583,38 @@ Currency *base;
 Currency *item;
 gint i;
 
-//http://query.yahooapis.com/v1/public/yql
-//?q=select * from yahoo.finance.xchange where pair in ("EURGBP","EURUSD")
-//&env=store://datatables.org/alltableswithkeys
-	
-	node = g_string_sized_new(1024);
-	g_string_append(node, "http://query.yahooapis.com/v1/public/yql");
-	g_string_append(node, "?q=select * from yahoo.finance.xchange where pair in (");
-
 	base = da_cur_get (GLOBALS->kcur);
 
+	node = g_string_sized_new(512);
+	g_string_append_printf(node, "https://api.fixer.io/latest?base=%s&symbols=", base->iso_code);
+
 	list = g_hash_table_get_values(GLOBALS->h_cur);
-	i = g_list_length (list) - 1;
-	
+	i = g_list_length (list);
 	while (list != NULL)
 	{
 	item = list->data;
 
-		if(item->key != GLOBALS->kcur)
+		if( (item->key != GLOBALS->kcur) && (strlen(item->iso_code) == 3) )
 		{
-			g_string_append_printf(node, "\"%s%s\"", base->iso_code, item->iso_code);
+			g_string_append_printf(node, "%s", item->iso_code);
 			if(i > 1)
 			{
 				g_string_append(node, ",");
 			}
-			i--;
 		}
+		i--;
 		list = g_list_next(list);
 	}
 	g_list_free(list);
-
-	g_string_append(node, ")&env=store://datatables.org/alltableswithkeys");
 
 	return g_string_free(node, FALSE);
 }
 
 
-gboolean currency_sync_online(GError **error)
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+gboolean currency_online_sync(GError **error)
 {
 SoupSession *session;
 SoupMessage *msg;
@@ -637,9 +623,14 @@ gboolean retval = TRUE;
 
 	DB( g_printf("\n[currency] sync online\n") );
 
-	query = currency_get_query();
-	DB( g_printf(" - query is '%s'\n", query) );
-	
+	query = api_fixerio_query_build();
+	DB( g_printf("query: '%s'\n", query) );
+
+	/* 
+	//test API
+	retval = api_fixerio_parse(fixeriojson, error);
+	*/
+
 	session = soup_session_new ();
 	msg = soup_message_new ("GET", query);
 	if(msg != NULL)
@@ -651,7 +642,8 @@ gboolean retval = TRUE;
 		
 		if( SOUP_STATUS_IS_SUCCESSFUL(msg->status_code) == TRUE )
 		{
-			retval = currency_online_parse(msg->response_body->data, error);
+			retval = api_fixerio_parse(msg->response_body->data, error);
+			//retval = api_yahoo_parse(msg->response_body->data, error);
 		}
 		else
 		{
@@ -672,7 +664,6 @@ gboolean retval = TRUE;
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
 
 
 //struct iso_4217_currency iso_4217_currencies[];
@@ -732,7 +723,8 @@ Currency4217 iso4217cur[] =
 	{ "BSD", 2, ".", ",", TRUE, "$", "Bahamian Dollar" },
 	{ "BTN", 2, ".", ",", TRUE, "Nu.", "Ngultrum" },
 	{ "BWP", 2, ".", " ", TRUE, "P", "Pula" },
-	{ "BYR", 0, ",", " ", FALSE, "Br", "Belarussian Ruble" },
+	{ "BYN", 0, ",", " ", FALSE, "Br", "Belarussian Ruble" },
+	{ "BYR", 0, ",", " ", FALSE, "Br", "Old Belarussian Ruble" },
 	{ "BZD", 2, ".", ",", TRUE, "$", "Belize Dollar" },
 	{ "CAD", 2, ",", " ", TRUE, "$", "Canadian Dollar" },
 	{ "CDF", 2, ",", " ", TRUE, "FC", "Congolese Franc" },

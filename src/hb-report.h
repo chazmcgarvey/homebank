@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -26,7 +26,7 @@ typedef struct _carcost	CarCost;
 struct _carcost
 {
 	guint32		date;
-	gchar		*wording;
+	gchar		*memo;
 	gdouble		amount;
 	gboolean	partial;
 	guint		meter;

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -618,7 +618,7 @@ GList *lnk_txn;
 	gdouble oldamount = txn->amount;
 
 		txn->amount = hb_amount_to_euro(oldamount);
-		DB( g_print("%10.6f => %10.6f, %s\n", oldamount, txn->amount, txn->wording) );
+		DB( g_print("%10.6f => %10.6f, %s\n", oldamount, txn->amount, txn->memo) );
 		//todo: sync child xfer
 		lnk_txn = g_list_next(lnk_txn);
 	}

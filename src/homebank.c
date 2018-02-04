@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 #include "homebank.h"
 
 #include "dsp_mainwindow.h"
@@ -24,12 +25,12 @@
 #include "language.h"
 
 
-
 #ifdef G_OS_WIN32
 #include <windows.h>
 #endif
 
 #define APPLICATION_NAME "HomeBank"
+
 
 /****************************************************************************/
 /* Debug macros                                                             */
@@ -106,7 +107,7 @@ static gint csvtype[7] = {
 	{
 		g_io_channel_set_encoding(io, NULL, NULL);	/* set to binary mode */
 
-		for(i=0;i<4;i++)
+		for(i=0;i<25;i++)
 		{
 			if( retval != FILETYPE_UNKNOW )
 				break;
@@ -140,7 +141,7 @@ static gint csvtype[7] = {
 					    g_str_has_prefix(tmpstr, "!option") ||
 					    g_str_has_prefix(tmpstr, "!Account") ||
 					    g_str_has_prefix(tmpstr, "!account")
-					    )
+					  )
 					{
 						DB( g_print(" type is QIF\n") );
 						retval = FILETYPE_QIF;
@@ -148,7 +149,10 @@ static gint csvtype[7] = {
 					else
 
 					/* is it OFX ? */
-					if( g_strstr_len(tmpstr, 10, "OFX") != NULL)
+					if( g_strstr_len(tmpstr, -1, "<OFX>") != NULL 
+					 || g_strstr_len(tmpstr, -1, "<ofx>") != NULL
+					 /*||	strcasestr(tmpstr, "<OFC>") != NULL*/
+					  )
 					{
 						DB( g_print(" type is OFX\n") );
 						retval = FILETYPE_OFX;
@@ -199,7 +203,7 @@ void homebank_file_ensure_xhb(gchar *filename)
 	{
 	gchar *newfilename;
 	
-		newfilename = hb_util_filename_new_with_extension(filename, "xhb");
+		newfilename = hb_filename_new_with_extension(filename, "xhb");
 		hbfile_change_filepath(newfilename);
 		DB( g_print(" - changed to: '%s'\n", GLOBALS->xhb_filepath) );
 	}
@@ -211,12 +215,14 @@ void homebank_file_ensure_xhb(gchar *filename)
 }
 
 
-static gboolean homebank_copy_file(gchar *srcfile, gchar *dstfile)
+static gboolean homebank_file_copy(gchar *srcfile, gchar *dstfile)
 {
 gchar *buffer;
 gsize length;
 //GError *error = NULL;
 gboolean retval = FALSE;
+
+	DB( g_print("\n[homebank] file copy\n") );
 
 	if (g_file_get_contents (srcfile, &buffer, &length, NULL))
 	{
@@ -226,6 +232,25 @@ gboolean retval = FALSE;
 		}
 		g_free(buffer);
 	}
+
+	DB( g_print(" - copied '%s' => '%s' :: %d\n", srcfile, dstfile, retval) );
+	return retval;
+}
+
+
+static gboolean homebank_file_delete_existing(gchar *filepath)
+{
+gboolean retval = FALSE;
+
+	DB( g_print("\n[homebank] file delete existing\n") );
+
+	if( g_file_test(filepath, G_FILE_TEST_EXISTS) )
+	{
+		g_remove(filepath);
+		retval = TRUE;
+	}
+
+	DB( g_print(" - deleted: '%s' :: %d\n", filepath, retval) );
 	return retval;
 }
 
@@ -236,21 +261,16 @@ gchar *bakfilename;
 
 	DB( g_print("\n[homebank] backup_current_file\n") );
 
-	bakfilename = hb_util_filename_new_with_extension (GLOBALS->xhb_filepath, "xhb~");
-	if( g_file_test(bakfilename, G_FILE_TEST_EXISTS) )
-	{
-		DB( g_print(" - delete existing: '%s'\n", bakfilename) );
-		g_remove(bakfilename);
-	}
-
-	DB( g_print(" - copy '%s' => '%s'\n", GLOBALS->xhb_filepath, bakfilename) );
-
+	//do normal linux backup file
+	DB( g_print(" normal backup with ~\n") );
+	bakfilename = hb_filename_new_with_extension (GLOBALS->xhb_filepath, "xhb~");
+	homebank_file_delete_existing(bakfilename);
 	//#512046 copy file not to broke potential links
 	//retval = g_rename(pathname, newname);
-	homebank_copy_file (GLOBALS->xhb_filepath, bakfilename);
-	
+	homebank_file_copy (GLOBALS->xhb_filepath, bakfilename);
 	g_free(bakfilename);
 }
+
 
 /* = = = = = = = = = = = = = = = = = = = = */
 /* url open */
@@ -330,43 +350,29 @@ homebank_util_url_show (const gchar *url)
 /*
 ** load lastopenedfiles from homedir/.homebank
 */
-gboolean homebank_lastopenedfiles_load(void)
+gchar *homebank_lastopenedfiles_load(void)
 {
 GKeyFile *keyfile;
-gboolean retval = FALSE;
-gchar *group, *filename, *lastfilename;
+gchar *group, *filename, *tmpfilename;
+gchar *lastfilename = NULL;
 
 	DB( g_print("\n[homebank] lastopenedfiles load\n") );
 
 	keyfile = g_key_file_new();
 	if(keyfile)
 	{
-
 		filename = g_build_filename(homebank_app_get_config_dir(), "lastopenedfiles", NULL );
-
-		DB( g_print(" - filename: %s\n", filename) );
-
 		if(g_key_file_load_from_file (keyfile, filename, G_KEY_FILE_NONE, NULL))
 		{
 			group = "HomeBank";
 
-            DB( g_print(" - load keyfile ok\n") );
-
 			if(g_key_file_has_key(keyfile, group, "LastOpenedFile", NULL))
 			{
-                DB( g_print(" - keyfile has key ok\n") );
-
-				lastfilename = g_key_file_get_string  (keyfile, group, "LastOpenedFile", NULL);
-
-				DB( g_print(" - lastfile loaded: %s\n", lastfilename ) );
+				tmpfilename = g_key_file_get_string  (keyfile, group, "LastOpenedFile", NULL);
 				// #593082
-				if (g_file_test (lastfilename, G_FILE_TEST_EXISTS) != FALSE)
+				if (g_file_test (tmpfilename, G_FILE_TEST_EXISTS) != FALSE)
 				{
-					DB( g_print(" - file exists\n") );
-
-					hbfile_change_filepath(lastfilename);
-
-					retval = TRUE;
+					lastfilename = tmpfilename;
 				}
 			}
 		}
@@ -374,9 +380,7 @@ gchar *group, *filename, *lastfilename;
 		g_key_file_free (keyfile);
 	}
 
-	DB( g_print(" - return: %d\n", retval) );
-
-	return retval;
+	return lastfilename;
 }
 
 
@@ -1038,19 +1042,42 @@ gboolean openlast;
 
 			if( openlast )
 			{
-				if( homebank_lastopenedfiles_load() == TRUE )
+			gchar *lastfilepath;
+			
+				lastfilepath = homebank_lastopenedfiles_load();
+				if( lastfilepath != NULL )
+				{
+					//#1710955 test for backup open
+					if( hbfile_file_isbackup(lastfilepath) )
+					{
+						if( ui_mainwindow_open_backup_check_confirm(lastfilepath) == TRUE )
+						{
+							GLOBALS->hbfile_is_bak = TRUE;
+						}
+						else
+						{
+							g_free(lastfilepath);
+							goto nobak;
+						}
+					}
+
+					hbfile_change_filepath(lastfilepath);
 					ui_mainwindow_open_internal(mainwin, NULL);
+
+				}
 			}
 
 			/* -- hack to generate a big file -- */
-
+nobak:
 
 			/* update the mainwin display */
 			ui_mainwindow_update(mainwin, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_BALANCE+UF_VISUAL));
 
-		DB( g_print(" - gtk_main()\n" ) );
-
+			DB( g_print(" - gtk_main()\n" ) );
 			gtk_main ();
+	
+			DB( g_print(" - call destroy mainwin\n" ) );
+			gtk_widget_destroy(mainwin);
 		}
 
 	}

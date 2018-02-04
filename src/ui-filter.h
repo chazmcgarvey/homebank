@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -36,7 +36,7 @@ struct ui_flt_manage_data
 {
 	Filter		*filter;
 
-	GtkWidget	*notebook;
+	GtkWidget	*stack;
 
 	GtkWidget	*CY_option[FILTER_MAX];
 
@@ -53,7 +53,7 @@ struct ui_flt_manage_data
 	GtkWidget	*ST_minamount, *ST_maxamount;
 
 	GtkWidget	*CM_exact;
-	GtkWidget	*ST_info, *ST_wording, *ST_tag;
+	GtkWidget	*ST_info, *ST_memo, *ST_tag;
 
 	GtkWidget	*LV_acc, *BT_acc[MAX_BUTTON];
 	GtkWidget	*LV_pay, *BT_pay[MAX_BUTTON];

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -61,6 +61,7 @@ struct repbudget_data
 
 	GtkWidget	*TX_info;
 	GtkWidget	*TX_daterange;
+	GtkWidget	*CM_onlyout;
 	GtkWidget	*CM_minor;
 	GtkWidget	*CY_for;
 	GtkWidget	*CY_kind;
@@ -78,6 +79,10 @@ struct repbudget_data
 
 	GtkWidget	*GR_detail;
 	GtkWidget	*LV_detail;
+
+	GtkWidget	*BT_export;
+	GtkWidget	*MI_detailtoclip;
+	GtkWidget	*MI_detailtocsv;
 
 	gulong		handler_id[MAX_REPBUDGET_HID];
 };

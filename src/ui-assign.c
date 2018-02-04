@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal ruleing for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -34,6 +34,7 @@
 
 /* our global datas */
 extern struct HomeBank *GLOBALS;
+extern struct Preferences *PREFS;
 
 gchar *CYA_ASG_FIELD[] = { 
 	N_("Memo"), 
@@ -241,6 +242,8 @@ GtkTreeViewColumn	*column;
 	// treeview
 	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(store);
+
+	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (treeview), PREFS->grid_lines);
 
 	// column 1: toggle
 	if( withtoggle == TRUE )

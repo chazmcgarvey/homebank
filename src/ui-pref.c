@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -50,13 +50,6 @@ enum {
 	LST_PREF_MAX
 };
 
-enum
-{
-  COLUMN_VISIBLE,
-  COLUMN_NAME,
-  COLUMN_ID,
-  NUM_COLUMNS
-};
 
 enum
 {
@@ -145,20 +138,7 @@ NULL
 extern gchar *CYA_CHART_COLORSCHEME[];
 extern gchar *CYA_MONTHS[];
 
-typedef struct
-{
-	gshort		id;
-	gchar		*iso;
-	gchar		*name;
-	gdouble		value;
-	//gchar		*prefix_symbol;		/* max symbol is 3 digits in unicode */
-	//gchar		*suffix_symbol;		/* but mostly is 1 digit */
-	gchar		*symbol;
-	gboolean	sym_prefix;
-	gchar		*decimal_char;
-	gchar		*grouping_char;
-	gshort		frac_digits;
-} EuroParams;
+
 
 
 /*
@@ -205,22 +185,8 @@ static EuroParams euro_params[] =
 };
 
 
-GtkWidget *pref_list_create(void);
-GtkWidget *list_txn_colprefcreate(void);
-
-static void list_txn_colpref_get(GtkTreeView *treeview, gboolean *columns);
-
-
-
-
-
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
-typedef struct 
-{
-	gchar   *locale;
-	gchar   *name;
-	
-} LangName;
+
 
 static LangName languagenames[] =
 {
@@ -416,6 +382,9 @@ static LangName languagenames[] =
 	{ "zu", "Zulu" }
 
 };
+
+
+static GtkWidget *pref_list_create(void);
 
 
 static gint
@@ -930,99 +899,88 @@ GdkRGBA rgba;
 
 	DB( g_print("\n[ui-pref] set\n") );
 
+	// general
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_show_splash), PREFS->showsplash);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_load_last), PREFS->loadlast);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_append_scheduled), PREFS->appendscheduled);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_do_update_currency), PREFS->do_update_currency);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_daterange_wal), PREFS->date_range_wal);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_fiscyearday), PREFS->fisc_year_day );
+	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_fiscyearmonth), PREFS->fisc_year_month - 1);
+
+	// files/backup
+	gtk_entry_set_text(GTK_ENTRY(data->ST_path_hbfile), PREFS->path_hbfile);
+
+
+
+	// interface
 	if(PREFS->language != NULL)
 		gtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_language), PREFS->language);
 	else
 		gtk_combo_box_set_active (GTK_COMBO_BOX(data->CY_language), 0);
-
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_toolbar), PREFS->toolbar_style);
 	//gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_image_size), PREFS->image_size);
 
-
-
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_custom_colors), PREFS->custom_colors);
-
 	gdk_rgba_parse(&rgba, PREFS->color_exp);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_exp_color), &rgba);
-
 	gdk_rgba_parse(&rgba, PREFS->color_inc);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_inc_color), &rgba);
-
 	gdk_rgba_parse(&rgba, PREFS->color_warn);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_warn_color), &rgba);
-
 	//gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_ruleshint), PREFS->rules_hint);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_gridlines), PREFS->grid_lines);
 
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_fiscyearday), PREFS->fisc_year_day );
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_fiscyearmonth), PREFS->fisc_year_month - 1);
-	
-	gtk_entry_set_text(GTK_ENTRY(data->ST_path_hbfile), PREFS->path_hbfile);
-	gtk_entry_set_text(GTK_ENTRY(data->ST_path_import), PREFS->path_import);
-	gtk_entry_set_text(GTK_ENTRY(data->ST_path_export), PREFS->path_export);
-	//gtk_entry_set_text(GTK_ENTRY(data->ST_path_navigator), PREFS->path_navigator);
-
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_load_last), PREFS->loadlast);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_append_scheduled), PREFS->appendscheduled);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_do_update_currency), PREFS->do_update_currency);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_show_splash), PREFS->showsplash);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_herit_date), PREFS->heritdate);
+	// transactions
+	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_daterange_txn), PREFS->date_range_txn);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_datefuture_nbdays), PREFS->date_future_nbdays);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_hide_reconciled), PREFS->hidereconciled);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_show_remind), PREFS->showremind);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_herit_date), PREFS->heritdate);
 
-	/* display */
+	// display format
 	gtk_entry_set_text(GTK_ENTRY(data->ST_datefmt), PREFS->date_format);
-
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_unitismile), PREFS->vehicle_unit_ismile);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_unitisgal), PREFS->vehicle_unit_isgal);
 
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_daterange_wal), PREFS->date_range_wal);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_daterange_txn), PREFS->date_range_txn);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_datefuture_nbdays), PREFS->date_future_nbdays);
+	// import/export
+	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_dtex_datefmt), PREFS->dtex_datefmt);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_dtex_ofxname), PREFS->dtex_ofxname);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_dtex_ofxmemo), PREFS->dtex_ofxmemo);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_dtex_qifmemo), PREFS->dtex_qifmemo);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_dtex_qifswap), PREFS->dtex_qifswap);
+	gtk_entry_set_text(GTK_ENTRY(data->ST_path_import), PREFS->path_import);
+	gtk_entry_set_text(GTK_ENTRY(data->ST_path_export), PREFS->path_export);
+
+	// report
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_daterange_rep), PREFS->date_range_rep);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_color_scheme), PREFS->report_color_scheme);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_stat_byamount), PREFS->stat_byamount);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_stat_showrate), PREFS->stat_showrate);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_stat_showdetail), PREFS->stat_showdetail);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_budg_showdetail), PREFS->budg_showdetail);
 
 	/* euro */
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_euro_enable), PREFS->euro_active);
 	//gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_euro_preset), PREFS->euro_country);
 	data->country = PREFS->euro_country;
 	defpref_eurosetcurrency(data->window, data->country);
-
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_value), PREFS->euro_value);
-
 	ui_gtk_entry_set_text(data->ST_euro_symbol, PREFS->minor_cur.symbol);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_euro_isprefix), PREFS->minor_cur.sym_prefix);
 	ui_gtk_entry_set_text(data->ST_euro_decimalchar, PREFS->minor_cur.decimal_char);
 	ui_gtk_entry_set_text(data->ST_euro_groupingchar, PREFS->minor_cur.grouping_char);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_fracdigits), PREFS->minor_cur.frac_digits);
 
-
 	//gtk_entry_set_text(GTK_ENTRY(data->ST_euro_symbol), PREFS->euro_symbol);
 	//gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_nbdec), PREFS->euro_nbdec);
 	//gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_euro_thsep), PREFS->euro_thsep);
-
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_stat_byamount), PREFS->stat_byamount);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_stat_showrate), PREFS->stat_showrate);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_stat_showdetail), PREFS->stat_showdetail);
-
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_budg_showdetail), PREFS->budg_showdetail);
-
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_color_scheme), PREFS->report_color_scheme);
-
-	/* import */
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_dtex_datefmt), PREFS->dtex_datefmt);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_dtex_ofxname), PREFS->dtex_ofxname);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_dtex_ofxmemo), PREFS->dtex_ofxmemo);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_dtex_qifmemo), PREFS->dtex_qifmemo);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_dtex_qifswap), PREFS->dtex_qifswap);
-
-
 }
 
 
 /*
 ** get :: fill PREFS structure from widgets
 */
-
 #define RGBA_TO_INT(x) (int)(x*255)
 
 static gchar *gdk_rgba_to_hex(GdkRGBA *rgba)
@@ -1038,6 +996,21 @@ const gchar *lang;
 
 	DB( g_print("\n[ui-pref] get\n") );
 
+	// general
+	PREFS->showsplash  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_show_splash));
+	PREFS->loadlast  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_load_last));
+	PREFS->appendscheduled  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_append_scheduled));
+	PREFS->do_update_currency  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_do_update_currency));
+	PREFS->date_range_wal = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_daterange_wal));
+	PREFS->fisc_year_day = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_fiscyearday));
+	PREFS->fisc_year_month = 1 + gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_fiscyearmonth));
+
+	// files/backup
+	g_free(PREFS->path_hbfile);
+	PREFS->path_hbfile = g_strdup(gtk_entry_get_text(GTK_ENTRY(data->ST_path_hbfile)));
+
+
+
 	g_free(PREFS->language);
 	PREFS->language = NULL;
 	lang = gtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_language));
@@ -1050,88 +1023,62 @@ const gchar *lang;
 	//PREFS->image_size = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_image_size));
 
 	PREFS->custom_colors = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_custom_colors));
-
 	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(data->CP_exp_color), &rgba);
 	g_free(PREFS->color_exp);
 	PREFS->color_exp = gdk_rgba_to_hex(&rgba);
-
 	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(data->CP_inc_color), &rgba);
 	g_free(PREFS->color_inc);
 	PREFS->color_inc = gdk_rgba_to_hex(&rgba);
-
 	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(data->CP_warn_color), &rgba);
 	g_free(PREFS->color_warn);
 	PREFS->color_warn = gdk_rgba_to_hex(&rgba);
-
 	//PREFS->rules_hint = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_ruleshint));
 	PREFS->grid_lines = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_gridlines));
+	//list_txn_colpref_get(GTK_TREE_VIEW(data->LV_opecolumns), PREFS->lst_ope_columns);
 
-	PREFS->fisc_year_day = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_fiscyearday));
-	PREFS->fisc_year_month = 1 + gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_fiscyearmonth));
-
-	list_txn_colpref_get(GTK_TREE_VIEW(data->LV_opecolumns), PREFS->lst_ope_columns);
-
-	g_free(PREFS->path_hbfile);
-	PREFS->path_hbfile = g_strdup(gtk_entry_get_text(GTK_ENTRY(data->ST_path_hbfile)));
-
-	ui_gtk_entry_replace_text(data->ST_path_import, &PREFS->path_import);
-
-	ui_gtk_entry_replace_text(data->ST_path_export, &PREFS->path_export);
-
-	PREFS->loadlast  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_load_last));
-	PREFS->appendscheduled  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_append_scheduled));
-	PREFS->do_update_currency  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_do_update_currency));
-		
-	PREFS->showsplash  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_show_splash));
-	PREFS->heritdate = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_herit_date));
+	// transaction 
+	PREFS->date_range_txn = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_daterange_txn));
+	PREFS->date_future_nbdays  = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_datefuture_nbdays));
 	PREFS->hidereconciled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_hide_reconciled));
 	PREFS->showremind = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_show_remind));
+	PREFS->heritdate = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_herit_date));
 
-	//g_free(PREFS->path_navigator);
-	//PREFS->path_navigator = g_strdup(gtk_entry_get_text(GTK_ENTRY(data->ST_path_navigator)));
-
+	// display format
 	g_free(PREFS->date_format);
 	PREFS->date_format = g_strdup(gtk_entry_get_text(GTK_ENTRY(data->ST_datefmt)));
-
 	PREFS->vehicle_unit_ismile = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_unitismile));
 	PREFS->vehicle_unit_isgal = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_unitisgal));
 
-	PREFS->date_range_wal = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_daterange_wal));
-	PREFS->date_range_txn = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_daterange_txn));
-	PREFS->date_future_nbdays  = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_datefuture_nbdays));
-	PREFS->date_range_rep = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_daterange_rep));
-
-	PREFS->euro_active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_euro_enable));
-
-	PREFS->euro_country = data->country;
-	PREFS->euro_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_euro_value));
-	//strcpy(PREFS->euro_symbol, gtk_entry_get_text(GTK_ENTRY(data->ST_euro_symbol)));
-	//PREFS->euro_nbdec = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_euro_nbdec));
-	//PREFS->euro_thsep = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_euro_thsep));
-
-	ui_gtk_entry_replace_text(data->ST_euro_symbol, &PREFS->minor_cur.symbol);
-	PREFS->minor_cur.sym_prefix = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_euro_isprefix));
-	ui_gtk_entry_replace_text(data->ST_euro_decimalchar, &PREFS->minor_cur.decimal_char);
-	ui_gtk_entry_replace_text(data->ST_euro_groupingchar, &PREFS->minor_cur.grouping_char);
-	PREFS->minor_cur.frac_digits = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_euro_fracdigits));
-
-	PREFS->stat_byamount   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_stat_byamount));
-	PREFS->stat_showrate   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_stat_showrate));
-	PREFS->stat_showdetail = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_stat_showdetail));
-
-	PREFS->budg_showdetail = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_budg_showdetail));
-
-	PREFS->report_color_scheme = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_color_scheme));
-
-	/* import */
+	// import/export
 	PREFS->dtex_datefmt = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_dtex_datefmt));
 	PREFS->dtex_ofxname = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_dtex_ofxname));
 	PREFS->dtex_ofxmemo = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_dtex_ofxmemo));
 	PREFS->dtex_qifmemo = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_dtex_qifmemo));
 	PREFS->dtex_qifswap = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_dtex_qifswap));
+	ui_gtk_entry_replace_text(data->ST_path_import, &PREFS->path_import);
+	ui_gtk_entry_replace_text(data->ST_path_export, &PREFS->path_export);
 
+	// report
+	PREFS->date_range_rep = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_daterange_rep));
+	PREFS->report_color_scheme = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_color_scheme));
+	PREFS->stat_byamount   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_stat_byamount));
+	PREFS->stat_showrate   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_stat_showrate));
+	PREFS->stat_showdetail = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_stat_showdetail));
+	PREFS->budg_showdetail = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_budg_showdetail));
+
+	// euro minor
+	PREFS->euro_active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_euro_enable));
+	PREFS->euro_country = data->country;
+	PREFS->euro_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_euro_value));
+	//strcpy(PREFS->euro_symbol, gtk_entry_get_text(GTK_ENTRY(data->ST_euro_symbol)));
+	//PREFS->euro_nbdec = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_euro_nbdec));
+	//PREFS->euro_thsep = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_euro_thsep));
+	ui_gtk_entry_replace_text(data->ST_euro_symbol, &PREFS->minor_cur.symbol);
+	PREFS->minor_cur.sym_prefix = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_euro_isprefix));
+	ui_gtk_entry_replace_text(data->ST_euro_decimalchar, &PREFS->minor_cur.decimal_char);
+	ui_gtk_entry_replace_text(data->ST_euro_groupingchar, &PREFS->minor_cur.grouping_char);
+	PREFS->minor_cur.frac_digits = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_euro_fracdigits));
 	//PREFS->chart_legend = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_chartlegend));
-
 }
 
 
@@ -1614,7 +1561,7 @@ gint crow, row;
 
 static GtkWidget *defpref_page_transactions (struct defpref_data *data)
 {
-GtkWidget *content_grid, *group_grid, *sw, *label, *widget;
+GtkWidget *content_grid, *group_grid, *label, *widget;
 gint crow, row;
 
 	content_grid = gtk_grid_new();
@@ -1677,6 +1624,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 	// group :: Column list
+	/*
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
@@ -1696,6 +1644,7 @@ gint crow, row;
 	gtk_widget_set_vexpand (sw, TRUE);
 	gtk_grid_attach (GTK_GRID (group_grid), sw, 1, row, 2, 1);
 	gtk_widget_set_tooltip_text(widget, _("Drag & drop to change the order"));
+	*/
 
 	return content_grid;
 }
@@ -2258,7 +2207,7 @@ GtkWidget *hbox, *vbox, *sw, *widget, *notebook, *page, *ebox, *image, *label;
 // -------------------------------
 
 
-GtkWidget *pref_list_create(void)
+static GtkWidget *pref_list_create(void)
 {
 GtkListStore *store;
 GtkWidget *view;
@@ -2313,7 +2262,7 @@ gint i;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
 
-
+/*
 extern gchar *list_txn_column_label[];
 
 
@@ -2327,17 +2276,17 @@ GtkTreeIter  iter;
 GtkTreePath *path = gtk_tree_path_new_from_string (path_str);
 gboolean fixed;
 
-	/* get toggled iter */
+	// get toggled iter 
 	gtk_tree_model_get_iter (model, &iter, path);
 	gtk_tree_model_get (model, &iter, COLUMN_VISIBLE, &fixed, -1);
 
-	/* do something with the value */
+	// do something with the value
 	fixed ^= 1;
 
-	/* set new value */
+	// set new value
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter, COLUMN_VISIBLE, fixed, -1);
 
-	/* clean up */
+	// clean up
 	gtk_tree_path_free (path);
 }
 
@@ -2351,7 +2300,6 @@ gboolean visible;
 gint i, id;
 
 	DB( g_print("[lst_txn-colpref] store column order \n") );
-
 	
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(treeview));
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
@@ -2367,13 +2315,10 @@ gint i, id;
 		// start at index 2 (status, date always displayed
 		columns[i+2] = visible == TRUE ? id : -id;
 
-		 /* Make iter point to the next row in the list store */
+		 // Make iter point to the next row in the list store
 		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
 		i++;
 	}
-
-
-
 }
 
 
@@ -2389,7 +2334,7 @@ gint i;
 	DB( g_print("[lst_txn-colpref] create\n") );
 
 
-	/* create list store */
+	// create list store
 	store = gtk_list_store_new(
 	  	3,
 		G_TYPE_BOOLEAN,
@@ -2397,7 +2342,7 @@ gint i;
 		G_TYPE_UINT
 		);
 
-	/* populate */
+	// populate
 	for(i=0 ; i < NUM_LST_DSPOPE-1; i++ )   //-1 cause account column avoid
 	{
 	gint id;
@@ -2454,4 +2399,5 @@ gint i;
 
 	return(view);
 }
+*/
 

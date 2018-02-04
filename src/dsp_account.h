@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -19,25 +19,6 @@
 
 #ifndef __HB_DSPACCOUNT_H__
 #define __HB_DSPACCOUNT_H__
-
-
-
-struct ui_multipleedit_dialog_data
-{
-	GtkWidget	*window;
-
-	GtkWidget	*CM_date, *PO_date;
-	GtkWidget	*LB_mode, *CM_mode, *NU_mode;
-	GtkWidget	*CM_info, *ST_info;
-	GtkWidget	*LB_acc, *CM_acc, *PO_acc;
-	GtkWidget	*CM_pay, *PO_pay;
-	GtkWidget	*CM_cat, *PO_cat;
-	GtkWidget	*CM_tags, *ST_tags;
-	GtkWidget	*CM_memo, *ST_memo;
-	
-	GtkTreeView	*treeview;
-	gboolean	has_xfer;
-};
 
 
 enum
@@ -78,6 +59,7 @@ struct register_panel_data
 
 	GtkWidget   *ST_search;
 	
+	GtkWidget	*IM_closed;
 	GtkWidget   *LB_name;
 	GtkWidget	*CM_minor;
 	GtkWidget	*TX_balance[3];

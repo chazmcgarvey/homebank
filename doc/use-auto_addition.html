@@ -39,8 +39,12 @@
     <p>By default the scheduled transactions will be automatically inserted at their due date every time you open your HomeBank file.</p>
     <p>You can change this behavior from the <a href="dlg-wall.html">file properties dialog</a> with 2 options:</p>
     <ul>
-      <li>Add until xx of each month (excluded)</li>
-      <li>Add x days in advance the current date</li>
+      <li>Add until xx of each month (excluded)<br>
+      set this to until 25 of each month, will not post until we get over that date (so starting the 26th)
+      </li>
+      <li>Add x days in advance the current date<br>
+      set this to 30 days in advance, rely that the day is over (so current day is excluded)
+      </li>
     </ul>
     <p>To insert transaction to their due date again, insert 0 days in advance the current date. You can also reach this configuration dialog from the main-window menu Transaction/Set scheduler...</p>
     <p>The insertion at program start can be changed from the <a href="dlg-pref.html#tab1">preferences dialog</a></p>

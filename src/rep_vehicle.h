@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -78,7 +78,7 @@ struct repvehicle_data
 enum
 {
 	LST_CAR_DATE,
-	LST_CAR_WORDING,
+	LST_CAR_MEMO,
 	LST_CAR_METER,
 	LST_CAR_FUEL,
 	LST_CAR_PRICE,

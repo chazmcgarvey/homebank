@@ -118,6 +118,8 @@ homebank_SOURCES =  \
 	ui-split.h \
 	ui-transaction.c \
 	ui-transaction.h \
+	ui-txn-multi.c \
+	ui-txn-multi.h \
 	ui-widgets.c \
 	ui-widgets.h
 

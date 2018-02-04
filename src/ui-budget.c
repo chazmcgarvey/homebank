@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -231,6 +231,8 @@ GtkTreeViewColumn  *column;
 	//treeview
 	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(store);
+
+	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (treeview), PREFS->grid_lines);
 
 	/* column 1 */
 	renderer = gtk_cell_renderer_text_new ();
@@ -984,6 +986,7 @@ GtkWidget *content_grid, *group_grid, *table, *scrollwin, *label;
 GtkWidget *treeview, *hpaned, *bbox, *vbox, *hbox;
 GtkWidget *menu, *menuitem, *widget, *image, *tbar;
 GtkToolItem *toolitem;
+GList *fchain;
 guint i;
 gint w, h;
 gint crow, row;
@@ -1067,7 +1070,7 @@ gint crow, row;
 	//list
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_set_margin_right(vbox, SPACING_SMALL);
-	gtk_paned_pack1 (GTK_PANED(hpaned), vbox, TRUE, FALSE);
+	gtk_paned_pack1 (GTK_PANED(hpaned), vbox, FALSE, FALSE);
 	
 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
     gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
@@ -1076,6 +1079,8 @@ gint crow, row;
  	data.LV_cat = treeview;
 	gtk_widget_set_size_request(treeview, HB_MINWIDTH_LIST, -1);
 	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
+	gtk_widget_set_hexpand (scrollwin, TRUE);
+	gtk_widget_set_vexpand (scrollwin, TRUE);
 	gtk_box_pack_start (GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0);
 
 	//list toolbar
@@ -1125,17 +1130,21 @@ gint crow, row;
 	label = make_label_group(_("Budget for each month"));
 	data.label_budget = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	fchain = NULL;
 	
 	row = 1;
 	widget = gtk_radio_button_new_with_label (NULL, _("is the same"));
 	data.CM_type[0] = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
  	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
+	fchain = g_list_append(fchain, widget);
 
 	row++;
 	widget = make_amount(label);
 	data.spinner[0] = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	fchain = g_list_append(fchain, widget);
 
 	g_signal_connect (G_OBJECT (data.spinner[0]), "value-changed", G_CALLBACK (ui_bud_manage_has_budget), NULL);
 	
@@ -1144,6 +1153,7 @@ gint crow, row;
 	gtk_widget_set_hexpand (widget, TRUE);
 	gtk_widget_set_halign(widget, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 4, row, 1, 1);
+	fchain = g_list_append(fchain, widget);
 
 	
 	// propagate button
@@ -1157,6 +1167,7 @@ gint crow, row;
 	data.CM_type[1] = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
+	fchain = g_list_append(fchain, widget);
 
 	row++;
 	for(i=0;i<12;i++)
@@ -1172,6 +1183,7 @@ gint crow, row;
 
 		widget = make_amount(label);
 		data.spinner[i+1] = widget;
+		fchain = g_list_append(fchain, widget);
 		gtk_widget_set_hexpand (widget, TRUE);
 		gtk_grid_attach (GTK_GRID (group_grid), widget, l+1, t, 1, 1);
 
@@ -1179,6 +1191,9 @@ gint crow, row;
 		
 		//DB( g_print("(ui_bud_manage) %s, col=%d, row=%d", months[i], col, row) );
 	}
+
+	gtk_container_set_focus_chain(GTK_CONTAINER(group_grid), fchain);
+	g_list_free(fchain);
 
 	// group :: Options
     group_grid = gtk_grid_new ();

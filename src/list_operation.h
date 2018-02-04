@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -44,6 +44,8 @@ GtkWidget *create_list_import_transaction(gboolean enable_choose);
 gboolean list_txn_column_id_isvisible(GtkTreeView *treeview, gint sort_id);
 
 Transaction *list_txn_get_active_transaction(GtkTreeView *treeview);
+
+GString *list_txn_to_string(GtkTreeView *treeview, gboolean clipboard);
 
 void list_txn_set_save_column_width(GtkTreeView *treeview, gboolean save_column_width);
 void list_txn_sort_force(GtkTreeSortable *sortable, gpointer user_data);

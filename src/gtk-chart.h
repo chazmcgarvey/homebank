@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2017 Maxime DOYEN
+ *  Copyright (C) 1995-2018 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -48,34 +48,44 @@ typedef gchar (* GtkChartPrintDoubleFunc) (gdouble value, gboolean minor);
 
 
 /* default zoomx for charts */
-#define GTK_CHART_BARW 			24
+#define GTK_CHART_BARW 			41	//24
 
-#define GTK_CHART_MINBARW 		 4
-#define GTK_CHART_MAXBARW 		128
+#define GTK_CHART_MINBARW 		 8	//4
+#define GTK_CHART_MAXBARW 		41	//128
+#define GTK_CHART_SPANBARW		GTK_CHART_MAXBARW+1
 
 #define GTK_CHART_MINRADIUS 	64
 
-
 #define CHART_BUFFER_LENGTH 128
 
-// for cairo pie
-#define PIE_LINE_SLICE 0
-#define SOFT_LIGHT  0
-#define GRADIENT	0
-#define CHART_PIE_DONUT	 1
+
+// char draw options
+#define CHART_PARAM_PIE_DONUT		TRUE
+#define CHART_PARAM_PIE_LINE		FALSE
+#define CHART_PARAM_PIE_MARK		FALSE
+#define CHART_PARAM_PIE_HOLEVALUE	0.5
+
+
 
 
 /* new stuff */
-#define CHART_MARGIN	18 //standard a4 margin
+#define CHART_MARGIN	12 //standard a4 margin is 18
 #define CHART_SPACING   6
+
+#define CHART_LINE_SPACING  1.25
 
 //#define PROP_SHOW_MINOR		6
 //#define PROP_SHOW_LEGEND	7
 
+#define ROUNDHALF(x) floor(x *2) / 2
+
+
+	
 enum
 {
 	CHART_TYPE_NONE,
 	CHART_TYPE_COL,
+
 	CHART_TYPE_PIE,
 	CHART_TYPE_LINE,
 	CHART_TYPE_MAX
@@ -123,9 +133,7 @@ struct _GtkChart
 	GtkAdjustment	*adjustment;
 	GtkWidget		*scrollbar;
 
-	GtkWidget		*scrollwin;
-	GtkWidget		*treeview;
-	GtkTreeModel	*legend;
+	GtkTreeModel	*model;
 
 	/* data storage */
 	gint		nb_items;
@@ -135,9 +143,12 @@ struct _GtkChart
 	gchar		*subtitle;
 
 	/* chart properties */
-	gint		type;
+	gint		type;	   // column/pie/line
+	
 	gboolean	dual;
 	gboolean	abs;
+	gboolean	show_legend;
+	gboolean	show_legend_wide;
 	gboolean	show_over;
 	gboolean	show_xval;
 	gboolean	show_mono;
@@ -157,15 +168,25 @@ struct _GtkChart
 	/* buffer surface */
 	cairo_surface_t	 *surface;
 	
-	/* draw area coordinates */
-	double	l, t, b, r, w, h;
-	/* our drawing rectangle with margin */
-	double		label_w;
-	double		legend_w;
+	/* drawing datas */
+	double	font_h;
+	int		l, t, b, r, w, h;
+	cairo_rectangle_t	graph;
+	cairo_rectangle_t	legend;
+	
+	/* legend dimension */
+	double	label_w;
+	double  legend_font_h;
+	double  legend_label_w;
+	double	legend_value_w;
+	double	legend_rate_w;
 
 	/* zones height */
-	double		title_zh;
+	double  title_zh;
 	double  subtitle_zh, subtitle_y;
+	double  header_zh, header_y;
+	double  item_zh;
+
 
 
 	double		ox, oy;
@@ -176,22 +197,26 @@ struct _GtkChart
 
 	/* pie specifics */
 	gdouble		total;
-	gint		rayon, left, top;
+	gint		rayon, mark, left, top;
+	gint		leg_nb_l, leg_width_l, leg_vspace_l;
+	gint		leg_nb_r, leg_width_r, leg_vspace_r;
 
 	/* bar specifics */
 	double	rawmin, rawmax, range, min, max, unit, minimum;
 	gint	div;
 	gint	visible;
 
-	double font_h;
+
 
 	double scale_x, scale_y, scale_w, scale_h;
-	double graph_x, graph_y, graph_width, graph_height;	//graph dimension
+	double item_x, item_y, item_w;
 	double barw, blkw, posbarh, negbarh;
+	double usrbarw;
 
 	gchar			buffer1[CHART_BUFFER_LENGTH];
 	gchar			buffer2[CHART_BUFFER_LENGTH];
 };
+
 
 struct _GtkChartClass
 {
@@ -221,7 +246,7 @@ void gtk_chart_set_minor_prefs(GtkChart * chart, gdouble rate, gchar *symbol);
 void gtk_chart_set_currency(GtkChart * chart, guint32 kcur);
 
 void gtk_chart_set_overdrawn(GtkChart * chart, gdouble minimum);
-void gtk_chart_set_every_xval(GtkChart * chart, gint decay);
+//void gtk_chart_set_every_xval(GtkChart * chart, gint decay);
 void gtk_chart_set_barw(GtkChart * chart, gdouble barw);
 void gtk_chart_set_showmono(GtkChart * chart, gboolean mono);
 
