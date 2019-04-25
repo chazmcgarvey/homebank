@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -56,7 +56,6 @@ gint count, i;
 	Transaction *txn = list->data;
 	Payee *payee;
 	Category *cat;
-	gchar *txt;
 
 		g_date_set_julian (date, txn->date);
 		//#1270876
@@ -125,24 +124,20 @@ gint count, i;
 			cat = da_cat_get(txn->kcat);
 			if(cat)
 			{
-				txt = da_cat_get_fullname(cat);
-				g_string_append_printf (elt, "L%s\n", txt);
-				g_free(txt);
+				g_string_append_printf (elt, "L%s\n", cat->fullname);
 			}
 		}
 
 		// splits
-		count = da_splits_count(txn->splits);
+		count = da_splits_length(txn->splits);
 		for(i=0;i<count;i++)
 		{
-		Split *s = txn->splits[i];
+		Split *s = da_splits_get(txn->splits, i);
 				
 			cat = da_cat_get(s->kcat);
 			if(cat)
 			{
-				txt = da_cat_get_fullname(cat);
-				g_string_append_printf (elt, "S%s\n", txt);
-				g_free(txt);
+				g_string_append_printf (elt, "S%s\n", cat->fullname);
 			}	
 				
 			g_string_append_printf (elt, "E%s\n", s->memo);

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -33,6 +33,9 @@ typedef struct _GtkDateEntry		GtkDateEntry;
 typedef struct _GtkDateEntryClass	GtkDateEntryClass;
 typedef struct _GtkDateEntryPrivate	GtkDateEntryPrivate;
 
+
+#define HB_MINDATE  693596	  //01/01/1900
+#define HB_MAXDATE  803533	  //31/12/2200
 
 struct _GtkDateEntry
 {

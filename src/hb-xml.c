@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -357,6 +357,27 @@ GList *lst_acc, *lnk_acc;
 }
 
 
+static void homebank_upgrade_to_v13(void)
+{
+GList *tmplist;
+guint32 newkey;
+
+	DB( g_print("\n[hb-xml] homebank_upgrade_to_v13\n") );
+
+	//#1008629 assign a key to each archive
+	newkey = 1;
+	tmplist = g_list_first(GLOBALS->arc_list);
+	while (tmplist != NULL)
+	{
+	Archive *item = tmplist->data;
+		
+		item->key = newkey++;
+		tmplist = g_list_next(tmplist);
+	}
+
+}
+
+
 // lower v0.6 : we must assume categories/payee exists
 // and strong link to xfer
 // #632496
@@ -407,14 +428,14 @@ GList *lrul, *list;
 		cat = da_cat_get(entry->kcat);
 		if(cat == NULL)
 		{
-			DB( g_print(" !! fixing cat for rul: %d is unknow\n", entry->kcat) );
+			DB( g_print(" !! fixing cat for rul: %d is unknown\n", entry->kcat) );
 			entry->kcat = 0;
 		}
 
 		pay = da_pay_get(entry->kpay);
 		if(pay == NULL)
 		{
-			DB( g_print(" !! fixing pay for rul: %d is unknow\n", entry->kpay) );
+			DB( g_print(" !! fixing pay for rul: %d is unknown\n", entry->kpay) );
 			entry->kpay = 0;
 		}
 
@@ -451,6 +472,7 @@ gint i;
 		else if(!strcmp (attribute_names[i], "cheque1" )) { entry->cheque1 = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "cheque2" )) { entry->cheque2 = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "notes"   )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->notes = g_strdup(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "tpl" )) { entry->karc = atoi(attribute_values[i]); }
 	}
 
 	//all attribute loaded: append
@@ -594,7 +616,7 @@ gint i;
 }
 
 
-static void homebank_load_xml_tag(ParseContext *ctx, const gchar **attribute_names, const gchar **attribute_values)
+/*static void homebank_load_xml_tag(ParseContext *ctx, const gchar **attribute_names, const gchar **attribute_values)
 {
 Tag *entry = da_tag_malloc();
 gint i;
@@ -610,7 +632,7 @@ gint i;
 
 	//all attribute loaded: append
 	da_tag_insert(entry);
-}
+}*/
 
 
 static void homebank_load_xml_fav(ParseContext *ctx, const gchar **attribute_names, const gchar **attribute_values)
@@ -626,8 +648,8 @@ gint i;
 	{
 		//DB( g_print(" att='%s' val='%s'\n", attribute_names[i], attribute_values[i]) );
 
-
-		     if(!strcmp (attribute_names[i], "amount"     )) { entry->amount = g_ascii_strtod(attribute_values[i], NULL); }
+		     if(!strcmp (attribute_names[i], "key"        )) { entry->key = atoi(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "amount"     )) { entry->amount = g_ascii_strtod(attribute_values[i], NULL); }
 		else if(!strcmp (attribute_names[i], "account"    )) { entry->kacc = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "dst_account")) { entry->kxferacc = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "paymode"    )) { entry->paymode = atoi(attribute_values[i]); }
@@ -636,13 +658,13 @@ gint i;
 		else if(!strcmp (attribute_names[i], "payee"      )) { entry->kpay = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "category"   )) { entry->kcat = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "wording"    )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->memo = g_strdup(attribute_values[i]); }
-
-
-
-
-
-
-
+		else if(!strcmp (attribute_names[i], "tags"       ))
+		{
+			if(attribute_values[i] != NULL && strlen(attribute_values[i]) > 0 && strcmp(attribute_values[i],"(null)") != 0 )
+			{
+				entry->tags = tags_parse(attribute_values[i]);
+			}
+		}
 		else if(!strcmp (attribute_names[i], "nextdate"   )) { entry->nextdate = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "every"      )) { entry->every = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "unit"       )) { entry->unit = atoi(attribute_values[i]); }
@@ -657,6 +679,7 @@ gint i;
 
 	if(split == TRUE)
 	{
+		entry->splits = da_split_new ();
 		if (da_splits_parse(entry->splits, scat, samt, smem) > 0)
 		{
 			entry->flags |= OF_SPLIT; //Flag that Splits are active
@@ -664,7 +687,8 @@ gint i;
 	}
 
 	//all attribute loaded: append
-	GLOBALS->arc_list = g_list_append(GLOBALS->arc_list, entry);
+	//GLOBALS->arc_list = g_list_append(GLOBALS->arc_list, entry);
+	da_archive_append(entry);
 }
 
 
@@ -696,7 +720,7 @@ gint i;
 		{
 			if(attribute_values[i] != NULL && strlen(attribute_values[i]) > 0 && strcmp(attribute_values[i],"(null)") != 0 )
 			{
-				transaction_tags_parse(entry, attribute_values[i]);
+				entry->tags = tags_parse(attribute_values[i]);
 			}
 		}
 		else if(!strcmp (attribute_names[i], "kxfer"    )) { entry->kxfer = atoi(attribute_values[i]); }
@@ -711,6 +735,7 @@ gint i;
 
 	if(split == TRUE)
 	{
+		entry->splits = da_split_new ();
 		if (da_splits_parse(entry->splits, scat, samt, smem) > 0)
 		{
 			entry->flags |= OF_SPLIT; //Flag that Splits are active
@@ -736,7 +761,7 @@ start_element_handler (GMarkupParseContext *context,
 ParseContext *ctx = user_data;
 //GtkUIManager *self = ctx->self;
 
-	//DB( g_print("** start element: %s\n", element_name) );
+	//DB( g_print("** start element: '%s'\n", element_name) );
 
 	switch(element_name[0])
 	{
@@ -766,6 +791,15 @@ ParseContext *ctx = user_data;
 		}
 		break;
 
+
+
+
+
+
+
+
+
+
 		case 'c':
 		{
 			if(!strcmp (element_name, "cat"))
@@ -779,14 +813,16 @@ ParseContext *ctx = user_data;
 		}
 		break;
 
-		case 't':
+		//TODO: < 5.2 misstyped here, should be tag without a s
+		//commented > 5.2 useless not loaded, but no side effect
+		/*case 't':
 		{
 			if(!strcmp (element_name, "tags"))
 			{
 				homebank_load_xml_tag(ctx, attribute_names, attribute_values);
 			}
 		}
-		break;
+		break;*/
 
 		case 'f':
 		{
@@ -885,9 +921,12 @@ gboolean rc;
 	retval = XML_OK;
 	if (!g_file_get_contents (filename, &buffer, &length, &error))
 	{
-		//g_message ("%s", error->message);
-		retval = XML_IO_ERROR;
-		g_error_free (error);
+		if(error)
+		{
+			g_warning("unable to load file %s: %s", filename, error->message);
+			g_error_free(error);
+			retval = XML_IO_ERROR;
+		}
 	}
 	else
 	{
@@ -921,15 +960,22 @@ gboolean rc;
 			rc = g_markup_parse_context_parse (context, buffer, length, &error);
 
 			if( error )
+			{
 				g_print("failed: %s\n", error->message);
+				g_error_free (error);
+			}
 
+				
 			if( rc == FALSE )
 			{
 				error = NULL;
 				g_markup_parse_context_end_parse(context, &error);
 
 				if( error )
+				{
 					g_print("failed: %s\n", error->message);
+					g_error_free (error);
+				}
 			}
 
 			g_markup_parse_context_free (context);
@@ -996,6 +1042,15 @@ gboolean rc;
 			{
 				homebank_upgrade_to_v12_7();
 			}
+			if( ctx.file_version < 1.3 )	// <= 5.2 
+			{
+				hbfile_sanity_check();
+				homebank_upgrade_to_v13();
+			}
+			if( ctx.data_version <= 50203 )
+			{
+				hbfile_sanity_check();
+			}
 
 			// next ?
 			
@@ -1016,7 +1071,7 @@ static void hb_xml_append_txt(GString *gstring, gchar *attrname, gchar *value)
 	if(value != NULL && *value != 0)
 	{
 		gchar *escaped = g_markup_escape_text(value, -1);
-		g_string_append_printf(gstring, "%s=\"%s\" ", attrname, escaped);
+		g_string_append_printf(gstring, " %s=\"%s\"", attrname, escaped);
 		g_free(escaped);
 	}
 }
@@ -1089,14 +1144,14 @@ static void hb_xml_append_txt_crlf(GString *gstring, gchar *attrname, gchar *val
 		length = strlen (value);
 		escaped = g_string_sized_new (length);
 		append_escaped_text (escaped, value, length);
-		g_string_append_printf(gstring, "%s=\"%s\" ", attrname, escaped->str);
+		g_string_append_printf(gstring, " %s=\"%s\"", attrname, escaped->str);
 		g_string_free (escaped, TRUE);
 	}
 }
 
 static void hb_xml_append_int0(GString *gstring, gchar *attrname, guint32 value)
 {
-	g_string_append_printf(gstring, "%s=\"%d\" ", attrname, value);
+	g_string_append_printf(gstring, " %s=\"%d\"", attrname, value);
 }
 	
 static void hb_xml_append_int(GString *gstring, gchar *attrname, guint32 value)
@@ -1113,7 +1168,7 @@ char buf[G_ASCII_DTOSTR_BUF_SIZE];
 
 	//we must use this, as fprintf use locale decimal settings and not '.'
 	g_ascii_dtostr (buf, sizeof (buf), amount);
-	g_string_append_printf(gstring, "%s=\"%s\" ", attrname, buf);
+	g_string_append_printf(gstring, " %s=\"%s\"", attrname, buf);
 }
 
 
@@ -1134,7 +1189,7 @@ GError *error = NULL;
 
 	node = g_string_sized_new(255);
 
-	g_string_assign(node, "<properties ");
+	g_string_assign(node, "<properties");
 	
 	hb_xml_append_txt(node, "title", title);
 	hb_xml_append_int(node, "curr", GLOBALS->kcur);
@@ -1217,7 +1272,7 @@ GError *error = NULL;
 
 		item->flags &= ~(AF_ADDED|AF_CHANGED);	//delete flag
 
-		g_string_assign(node, "<account ");
+		g_string_assign(node, "<account");
 		
 		hb_xml_append_int(node, "key", item->key);
 		hb_xml_append_int(node, "flags", item->flags);
@@ -1233,6 +1288,8 @@ GError *error = NULL;
 		hb_xml_append_int(node, "cheque1", item->cheque1);
 		hb_xml_append_int(node, "cheque2", item->cheque2);
 		hb_xml_append_txt_crlf(node, "notes", item->notes);
+		hb_xml_append_int(node, "tpl", item->karc);
+
 
 		g_string_append(node, "/>\n");
 
@@ -1271,7 +1328,7 @@ GError *error = NULL;
 
 		if(item->key != 0)
 		{
-			g_string_assign(node, "<pay ");
+			g_string_assign(node, "<pay");
 
 			hb_xml_append_int(node, "key", item->key);
 			hb_xml_append_txt(node, "name", item->name);
@@ -1318,7 +1375,7 @@ GError *error = NULL;
 
 		if(item->key != 0)
 		{
-			g_string_assign(node, "<cat ");
+			g_string_assign(node, "<cat");
 		
 			hb_xml_append_int(node, "key", item->key);
 			hb_xml_append_int(node, "parent", item->parent);
@@ -1329,7 +1386,7 @@ GError *error = NULL;
 			{
 				if(item->budget[i] != 0)
 				{
-					g_string_append_printf(node,"b%d=\"%s\" ", i, g_ascii_dtostr (buf, sizeof (buf), item->budget[i]));
+					g_string_append_printf(node," b%d=\"%s\"", i, g_ascii_dtostr (buf, sizeof (buf), item->budget[i]));
 				}
 			}
 
@@ -1355,7 +1412,7 @@ GError *error = NULL;
 /*
 ** XML tag save
 */
-static gint homebank_save_xml_tag(GIOChannel *io)
+/*static gint homebank_save_xml_tag(GIOChannel *io)
 {
 GList *ltag, *list;
 gchar *tmpstr;
@@ -1388,7 +1445,7 @@ GError *error = NULL;
 	}
 	g_list_free(ltag);
 	return retval;
-}
+}*/
 
 
 /*
@@ -1408,7 +1465,7 @@ GError *error = NULL;
 	{
 	Assign *item = list->data;
 
-		g_string_assign(node, "<asg ");
+		g_string_assign(node, "<asg");
 
 		hb_xml_append_int(node, "key"     , item->key);
 		hb_xml_append_int(node, "flags"   , item->flags);
@@ -1445,6 +1502,7 @@ static gint homebank_save_xml_arc(GIOChannel *io)
 {
 GList *list;
 GString *node;
+gchar *tagstr;
 gint retval = XML_OK;
 GError *error = NULL;
 
@@ -1455,8 +1513,11 @@ GError *error = NULL;
 	{
 	Archive *item = list->data;
 
-		g_string_assign(node, "<fav ");
+		tagstr = tags_tostring(item->tags);
 
+		g_string_assign(node, "<fav");
+
+		hb_xml_append_int(node, "key", item->key);
 		hb_xml_append_amt(node, "amount", item->amount);
 		hb_xml_append_int(node, "account", item->kacc);
 		hb_xml_append_int(node, "dst_account", item->kxferacc);
@@ -1465,7 +1526,8 @@ GError *error = NULL;
 		hb_xml_append_int(node, "flags", item->flags);
 		hb_xml_append_int(node, "payee", item->kpay);
 		hb_xml_append_int(node, "category", item->kcat);
-		hb_xml_append_txt(node, "wording", item->memo);	
+		hb_xml_append_txt(node, "wording", item->memo);
+		hb_xml_append_txt(node, "tags", tagstr);	
 		hb_xml_append_int(node, "nextdate", item->nextdate);
 		hb_xml_append_int(node, "every", item->every);
 		hb_xml_append_int(node, "unit", item->unit);
@@ -1473,17 +1535,17 @@ GError *error = NULL;
 		hb_xml_append_int(node, "weekend", item->weekend);
 		hb_xml_append_int(node, "gap", item->daygap);
 
-		if(da_splits_count(item->splits) > 0)
+		if(da_splits_length(item->splits) > 0)
 		{
-			gchar *cats, *amounts, *memos;
+		gchar *cats, *amounts, *memos;
 		
 			da_splits_tostring(item->splits, &cats, &amounts, &memos);
-			g_string_append_printf(node, "scat=\"%s\" ", cats);
-			g_string_append_printf(node, "samt=\"%s\" ", amounts);
+			g_string_append_printf(node, " scat=\"%s\"", cats);
+			g_string_append_printf(node, " samt=\"%s\"", amounts);
 
 			//fix #1173910
 			gchar *escaped = g_markup_escape_text(memos, -1);
-			g_string_append_printf(node, "smem=\"%s\" ", escaped);
+			g_string_append_printf(node, " smem=\"%s\"", escaped);
 			g_free(escaped);
 
 			g_free(cats);
@@ -1492,6 +1554,8 @@ GError *error = NULL;
 		}
 
 		g_string_append(node, "/>\n");
+		
+		g_free(tagstr);
 
 		error = NULL;
 		g_io_channel_write_chars(io, node->str, -1, NULL, &error);
@@ -1534,9 +1598,9 @@ GError *error = NULL;
 		Transaction *item = list->data;
 
 			item->flags &= ~(OF_AUTO|OF_ADDED|OF_CHANGED);	//delete flag
-			tagstr = transaction_tags_tostring(item);
+			tagstr = tags_tostring(item->tags);
 
-			g_string_assign(node, "<ope ");
+			g_string_assign(node, "<ope");
 		
 			hb_xml_append_int(node, "date", item->date);
 			hb_xml_append_amt(node, "amount", item->amount);
@@ -1552,17 +1616,17 @@ GError *error = NULL;
 			hb_xml_append_txt(node, "tags", tagstr);	
 			hb_xml_append_int(node, "kxfer", item->kxfer);
 
-			if(da_splits_count(item->splits) > 0)
+			if(da_splits_length(item->splits) > 0)
 			{
 			gchar *cats, *amounts, *memos;
 		
 				da_splits_tostring(item->splits, &cats, &amounts, &memos);
-				g_string_append_printf(node, "scat=\"%s\" ", cats);
-				g_string_append_printf(node, "samt=\"%s\" ", amounts);
+				g_string_append_printf(node, " scat=\"%s\"", cats);
+				g_string_append_printf(node, " samt=\"%s\"", amounts);
 
 				//fix #1173910
 				gchar *escaped = g_markup_escape_text(memos, -1);
-				g_string_append_printf(node, "smem=\"%s\" ", escaped);
+				g_string_append_printf(node, " smem=\"%s\"", escaped);
 				g_free(escaped);
 
 				g_free(cats);
@@ -1609,38 +1673,34 @@ GError *error = NULL;
 	ext_hook("save_file", EXT_STRING(&filename_val, filename), NULL);
 
 	io = g_io_channel_new_file(filename, "w", &error);
-	if(io == NULL)
+	if(error)
 	{
-		g_message("file error on: %s", filename);
-		retval = XML_IO_ERROR;
-		
-		if(error)
-			g_print("failed: %s\n", error->message);
-		
+		g_warning("unable to save file %s: %s", filename, error->message);
 		g_error_free(error);
+		return(XML_IO_ERROR);
 	}
-	else
-	{
-		g_io_channel_write_chars(io, "<?xml version=\"1.0\"?>\n", -1, NULL, NULL);
 
-		outstr = g_strdup_printf("<homebank v=\"%s\" d=\"%06d\">\n", g_ascii_dtostr (buf1, sizeof (buf1), FILE_VERSION), HB_VERSION_NUM);
-		g_io_channel_write_chars(io, outstr, -1, NULL, NULL);
-		g_free(outstr);
+	g_io_channel_write_chars(io, "<?xml version=\"1.0\"?>\n", -1, NULL, NULL);
 
-		retval = homebank_save_xml_prop(io);
-		retval = homebank_save_xml_cur(io);
-		retval = homebank_save_xml_acc(io);
-		retval = homebank_save_xml_pay(io);
-		retval = homebank_save_xml_cat(io);
-		retval = homebank_save_xml_tag(io);
-		retval = homebank_save_xml_asg(io);
-		retval = homebank_save_xml_arc(io);
-		retval = homebank_save_xml_ope(io);
+	outstr = g_strdup_printf("<homebank v=\"%s\" d=\"%06d\">\n", g_ascii_dtostr (buf1, sizeof (buf1), FILE_VERSION), HB_VERSION_NUM);
+	g_io_channel_write_chars(io, outstr, -1, NULL, NULL);
+	g_free(outstr);
 
-		g_io_channel_write_chars(io, "</homebank>\n", -1, NULL, NULL);
+	retval = homebank_save_xml_prop(io);
+	retval = homebank_save_xml_cur(io);
+	retval = homebank_save_xml_acc(io);
+	retval = homebank_save_xml_pay(io);
+	retval = homebank_save_xml_cat(io);
+	//retval = homebank_save_xml_tag(io);
+	retval = homebank_save_xml_asg(io);
+	retval = homebank_save_xml_arc(io);
 
-		g_io_channel_unref (io);
-	}
+	retval = homebank_save_xml_ope(io);
+
+	g_io_channel_write_chars(io, "</homebank>\n", -1, NULL, NULL);
+
+	g_io_channel_unref (io);
+
 	return retval;
 }
 

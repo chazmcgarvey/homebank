@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -27,6 +27,8 @@
 typedef struct _transaction	Transaction;
 
 
+#include "hb-account.h"
+
 struct _transaction
 {
 	gdouble		amount;
@@ -45,10 +47,12 @@ struct _transaction
 	guint32		kxfer;		//strong link xfer key
 	guint32		kxferacc;
 
-	Split		*splits[TXN_MAX_SPLIT+1];
+	GPtrArray	*splits;
 
 	/* unsaved datas */
 	guint32		kcur;
+	gushort		marker;
+	gushort		pad1;
 	gdouble		balance;
 	gboolean	overdraft;
 	GList		*same;		//used for import todo: change this
@@ -74,10 +78,18 @@ typedef enum {
 	//TXN_VOID
 } HbTxnStatus;
 
+enum {
+	TXN_MARK_NONE,
+	TXN_MARK_DUPSRC,
+	TXN_MARK_DUPDST
+};
+
+
 
 Transaction *da_transaction_malloc(void);
-Transaction *da_transaction_copy(Transaction *src_txn, Transaction *dst_txn);
+//Transaction *da_transaction_copy(Transaction *src_txn, Transaction *dst_txn);
 Transaction *da_transaction_init_from_template(Transaction *txn, Archive *arc);
+Transaction *da_transaction_set_default_template(Transaction *txn);
 Transaction *da_transaction_clone(Transaction *src_item);
 void da_transaction_clean(Transaction *item);
 void da_transaction_free(Transaction *item);
@@ -105,24 +117,26 @@ enum
 guint da_transaction_length(void);
 
 void transaction_remove(Transaction *ope);
+void transaction_changed(Transaction *txn);
 gboolean da_transaction_insert_memo(Transaction *item);
-Transaction *transaction_add(Transaction *ope);
+Transaction *transaction_add(GtkWindow *parent, Transaction *ope);
 
 gboolean transaction_acc_move(Transaction *txn, guint32 okacc, guint32 nkacc);
 
 Transaction *transaction_xfer_child_strong_get(Transaction *src);
-void transaction_xfer_search_or_add_child(GtkWindow *parentwindow, Transaction *ope, gboolean manual);
+void transaction_xfer_search_or_add_child(GtkWindow *parent, Transaction *ope, guint32 kdstacc);
 void transaction_xfer_change_to_child(Transaction *ope, Transaction *child);
 void transaction_xfer_child_sync(Transaction *s_txn, Transaction *child);
 void transaction_xfer_remove_child(Transaction *src);
 Transaction *transaction_old_get_child_transfer(Transaction *src);
 
-guint transaction_tags_count(Transaction *ope);
-void transaction_tags_clone(Transaction *src_txn, Transaction *dst_txn);
-guint transaction_tags_parse(Transaction *ope, const gchar *tagstring);
-gchar *transaction_tags_tostring(Transaction *ope);
-gint transaction_auto_assign(GList *ope_list, guint32 key);
+guint transaction_auto_assign(GList *ope_list, guint32 key);
 
 void da_transaction_consistency(Transaction *item);
+
+
+gint transaction_similar_mark(Account *acc, guint32 daygap);
+void transaction_similar_unmark(Account *acc);
+
 
 #endif

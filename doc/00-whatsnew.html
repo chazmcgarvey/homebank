@@ -11,23 +11,42 @@
     HomeBank User manual
   </div>
   <div class="title">
-    <h1>Previously on HomeBank...</h1><b>New features in v5.1</b>
+    <h1>Previously on HomeBank...</h1>
+    <p>To review the complete list of changes, please use the <i>Help > Release Notes</i> menu from HomeBank program.</p>
+
+    <b>New features in v5.2</b>
+    <ul class="toc">
+      <li><a href="#52print">Export transaction as PDF (for print)</a></li>
+      <li><a href="#52alltxn">List of all transactions</a></li>
+      <li><a href="#52newimport">Import of multiple file with more option</a></li>
+      <li><a href="#52backup">A real backup mechanism</a></li>
+      <li><a href="#52duplicate">Duplicate transaction finder</a></li>
+      <li><a href="#52template">Default template for each account</a></li>
+    </ul>
+
+    <b>New features in v5.1</b>
     <ul class="toc">
       <li><a href="#51multicurr">Multiple currencies</a></li>
       <li><a href="#51paydef">Payee default category and payment type</a></li>
       <li><a href="#51autoassign">New feature for automatic assignments</a></li>
-    </ul><b>New features in v5.0</b>
+    </ul>
+
+    <b>New features in v5.0</b>
     <ul class="toc">
       <li><a href="#50txnstatus">Cleared status to enrich transaction status</a></li>
       <li><a href="#50stackbudget">Stack chart for budget</a></li>
       <li><a href="#50search">Quick search for list</a></li>
-    </ul><b>New features in v4.6</b>
+    </ul>
+
+    <b>New features in v4.6</b>
     <ul class="toc">
       <li><a href="#46search">Quick search for transaction</a></li>
       <li><a href="#46fiscyear">Configure fiscal year boundaries</a></li>
       <li><a href="#46schedwe">Scheduled transaction date before or after weekend</a></li>
       <li><a href="#46schedplay">Ability to individually play scheduled transactions from the list</a></li>
-    </ul><b>New features in v4.5</b>
+    </ul>
+
+    <b>New features in v4.5</b>
     <ul class="toc">
       <li><a href="#language">Ability to change language</a></li>
       <li><a href="#mainreport">Where your money goes</a></li>
@@ -35,7 +54,55 @@
       <li><a href="#accflt">New filters for account window</a></li>
       <li><a href="#schedul">Scheduled append until a day of month</a></li>
     </ul>
-  </div><!-- = = = = separator = = = = -->
+  </div>
+  <!-- = = = = separator = = = = -->
+  <h2>New features in v5.2</h2>
+
+  <div class="rounded content">
+    <h3><a id="52print" name="52print"></a> <!-- = = = = separator = = = = -->Export transaction as PDF (for print)</h3>
+    <p>You can now export the transaction of a single account to a PDF file. This is the first part of the print support into HomeBank.</p>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="52alltxn" name="52alltxn"></a> <!-- = = = = separator = = = = -->List of all transactions</h3>
+    <p>From the main window transaction menu you can now open a register with all transaction of all accounts.<br>
+    Most of the action are available here, except:</p>
+    <ul>
+      <li>export to qif, pdf
+      <li>the duplicate finder
+      <li>convert to Euro
+      <li>auto assignment
+      <li>the running balance is not showed
+      </ul>    
+
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+
+  <div class="rounded content">
+    <h3><a id="52newimport" name="52newimport"></a> <!-- = = = = separator = = = = -->Import of multiple file with more option</h3>
+    <p>The import process was completely rewritten starting from zero, with all your wishes in mind. The goal was to enable more flexibility, like import several files at a time and to simplify the access to the option. Adding to this, I added some more duplicate/similar option and a few other refinements. See <a href="use-import.html">the import process</a> for details.
+      </p>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+  <div class="rounded content">
+    <h3><a id="52backup" name="52backup"></a> <!-- = = = = separator = = = = -->A real backup mechanism</h3>
+    <p>A real backup mechanism is now available and enable to create a real backup file once a day, with a configurable occurrence.</p>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+  <div class="rounded content">
+    <h3><a id="52duplicate" name="52duplicate"></a> <!-- = = = = separator = = = = -->Duplicate transaction finder</h3>
+    <p>A duplicate finder is now available from a single account register window in the tools menu. The feature just mark in place the transaction, in bold for the one to keep and strike the potential duplicate called similar.<br>
+    the similarity is evaluated on amount, date (+gap) and memo.</p>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+  <div class="rounded content">
+    <h3><a id="52template" name="52template"></a> <!-- = = = = separator = = = = -->Default template for each account</h3>
+    <p>On each account you can set a default template transaction, so that every time you create a transaction on that account, the template is used.</p>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
   <h2>New features in v5.1</h2>
   <div class="rounded content">
     <h3><a id="51multicurr" name="51multicurr"></a> <!-- = = = = separator = = = = -->Multiple currencies</h3>
@@ -82,7 +149,7 @@
     <h3><a id="50stackbudget" name="50stackbudget"></a> <!-- = = = = separator = = = = -->Stack chart for budget</h3>
     <table class="t2col">
       <tr>
-        <td>I finally found some time to code a new graph report dedicated to budget, please welcom the stack chart that clarify so much the budget report !</td>
+        <td>I finally found some time to code a new graph report dedicated to budget, please welcome the stack chart that clarify so much the budget report !</td>
         <td><img class="gtkshot" src="images/50stackbudget.png"></td>
       </tr>
     </table>
@@ -201,7 +268,7 @@
     <h2><a id="schedul" name="schedul"></a> <!-- = = = = separator = = = = -->Scheduled append until a day of month</h2>
     <p>You can now insert transaction within a specific day in the next month.<br>
     So for example, you can add until the 28th of each month, the selected date excluded, which mean transaction that should occurs on 28 will not be inserted.</p>
-    <p>You can keep the previous behavior to add xx days into the future from today's date.</p>
+    <p>You can keep the previous behaviour to add xx days into the future from today's date.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 </body>

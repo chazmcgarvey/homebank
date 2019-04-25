@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -45,7 +45,8 @@ struct ui_flt_manage_data
 
 	GtkWidget	*CM_reconciled;
 	GtkWidget   *CM_cleared;
-
+	GtkWidget	*LB_force, *GR_force;
+	
 	GtkWidget	*CM_forceadd, *CM_forcechg, *CM_forceremind;
 
 	GtkWidget	*CM_paymode[NUM_PAYMODE_MAX];
@@ -65,7 +66,7 @@ struct ui_flt_manage_data
 };
 
 
-gint ui_flt_manage_dialog_new(GtkWidget *widget, Filter *filter, gboolean show_account);
+gint ui_flt_manage_dialog_new(GtkWindow *parentwindow, Filter *filter, gboolean show_account, gboolean txnmode);
 
 
 #endif

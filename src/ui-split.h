@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -23,37 +23,42 @@
 #include "ui-transaction.h"
 #include "hb-split.h"
 
-enum {
-	TXN_SPLIT_NEW,
-	TXN_SPLIT_AMOUNT
-};
-
 
 struct ui_split_dialog_data
 {
 	GtkWidget	*dialog;
-	GtkWidget	*BT_rem[TXN_MAX_SPLIT];
-	GtkWidget	*BT_add[TXN_MAX_SPLIT];
-	GtkWidget	*PO_cat[TXN_MAX_SPLIT];
-	GtkWidget	*ST_amount[TXN_MAX_SPLIT];
-	GtkWidget	*ST_memo[TXN_MAX_SPLIT];
+	
+	GtkWidget	*LV_split;
+	GtkWidget	*PO_cat;
+	GtkWidget	*ST_amount;
+	GtkWidget	*ST_memo;
+	GtkWidget	*BT_edit;
+	GtkWidget	*BT_rem;
+	GtkWidget	*BT_remall;
+	GtkWidget	*BT_add;
+	GtkWidget	*BT_apply;
+	GtkWidget	*BT_cancel;
 
+	GtkWidget	*IM_edit;
 	GtkWidget	*LB_sumsplit;
 	GtkWidget	*LB_remain;
 	GtkWidget	*LB_txnamount;
 
 	//Transaction *ope;
-	Split		**splits;
-	
+	GPtrArray	*src_splits;
+	GPtrArray	*tmp_splits;
+
 	gdouble		amount;
 	gdouble		sumsplit;
 	gdouble		remsplit;
 
+	gboolean	isedited;
 	gint		nbsplit;
-	gint		splittype;
 	gint		activeline;
+
+	gulong		hid_cat;
+	gulong		hid_amt;
 	
-	gulong		handler_id[TXN_MAX_SPLIT];
 };
 
 
@@ -63,6 +68,6 @@ void ui_split_dialog_inactiveline(GtkWidget *widget, gpointer user_data);
 void ui_split_dialog_activeline(GtkWidget *widget, gpointer user_data);
 void ui_split_dialog_get(struct ui_split_dialog_data *data);
 void ui_split_dialog_set(struct ui_split_dialog_data *data);
-GtkWidget *ui_split_dialog (GtkWidget *parent, Split *ope_splits[], gdouble amount, void (update_callbackFunction(GtkWidget*, gdouble)));
+GtkWidget *ui_split_dialog (GtkWidget *parent, GPtrArray **src_splits, gdouble amount, void (update_callbackFunction(GtkWidget*, gdouble)));
 
 #endif

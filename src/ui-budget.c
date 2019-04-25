@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -41,22 +41,8 @@ extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
 
+extern gchar *CYA_ABMONTHS[];
 
-
-gchar *months[] = {
-"Jan",
-"Feb",
-"Mar",
-"Apr",
-"May",
-"Jun",
-"Jul",
-"Aug",
-"Sep",
-"Oct",
-"Nov",
-"Dec"
-};
 
 static gchar *ui_bud_manage_getcsvbudgetstr(Category *item);
 static void ui_bud_manage_update(GtkWidget *treeview, gpointer user_data);
@@ -132,7 +118,7 @@ gchar type;
 	else
 		name = entry->name;
 
-type = (entry->flags & GF_INCOME) ? '+' : '-';
+	type = category_get_type_char(entry);
 
 	#if MYDEBUG
 		string = g_markup_printf_escaped("%s ::(f=%d, %c)", name, entry->flags, type );
@@ -233,7 +219,8 @@ GtkTreeViewColumn  *column;
 	g_object_unref(store);
 
 	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (treeview), PREFS->grid_lines);
-
+	gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW (treeview), TRUE);
+	
 	/* column 1 */
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set(renderer, 
@@ -285,7 +272,9 @@ char buf[G_ASCII_DTOSTR_BUF_SIZE];
 	{
 		if( item->budget[0] )
 		{
-			g_ascii_dtostr (buf, sizeof (buf), item->budget[0]);
+			//g_ascii_dtostr (buf, sizeof (buf), item->budget[0]);
+			//#1750257 use locale numdigit
+			g_snprintf(buf, sizeof (buf), "%.2f", item->budget[0]);
 			retval = g_strdup(buf);
 
 			//DB( g_print(" => %d: %s\n", 0, retval) );
@@ -301,7 +290,9 @@ char buf[G_ASCII_DTOSTR_BUF_SIZE];
 			//{
 			gchar *tmp = retval;
 
-				g_ascii_dtostr (buf, sizeof (buf), item->budget[i]);
+				//g_ascii_dtostr (buf, sizeof (buf), item->budget[i]);
+				//#1750257 use locale numdigit
+				g_snprintf(buf, sizeof (buf), "%.2f", item->budget[i]);
 
 				if(retval != NULL)
 				{
@@ -460,7 +451,9 @@ const gchar *encoding;
 							tmpitem->flags &= ~(GF_CUSTOM);		//delete flag
 							if( *str_array[1] == '*' )
 							{
-								tmpitem->budget[0] = g_ascii_strtod(str_array[3], NULL);
+								//tmpitem->budget[0] = g_ascii_strtod(str_array[3], NULL);
+								//#1750257 use locale numdigit
+								tmpitem->budget[0] = g_strtod(str_array[3], NULL);
 
 								DB( g_print(" monthly '%.2f'\n", tmpitem->budget[0]) );
 							}
@@ -470,7 +463,9 @@ const gchar *encoding;
 
 								for(i=1;i<=12;i++)
 								{
-									tmpitem->budget[i] = g_ascii_strtod(str_array[2+i], NULL);
+									//tmpitem->budget[i] = g_ascii_strtod(str_array[2+i], NULL);
+									//#1750257 use locale numdigit
+									tmpitem->budget[i] = g_strtod(str_array[2+i], NULL);
 									DB( g_print(" month %d '%.2f'\n", i, tmpitem->budget[i]) );
 								}
 							}
@@ -720,7 +715,8 @@ gint result, i;
 		}
 
 		data->cat->flags &= ~(GF_BUDGET);	//delete flag
-
+		data->change++;
+		
 		gtk_widget_queue_draw (data->LV_cat);
 	}
 		
@@ -845,7 +841,7 @@ gdouble oldvalue;
 		if(budget == TRUE || active == 1)
 			item->flags |= GF_BUDGET;
 
-		// compute chnages
+		// compute changes
 		if( (old_flags != item->flags) || change )
 			data->change++;
 
@@ -946,7 +942,7 @@ static void ui_bud_manage_populate_listview(struct ui_bud_manage_data *data)
 {
 gint type;
 
-	type = radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
+	type = hbtk_radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
 
 	ui_cat_listview_populate(data->LV_cat, type);
 	gtk_tree_view_expand_all (GTK_TREE_VIEW(data->LV_cat));
@@ -1024,14 +1020,12 @@ gint crow, row;
 	gtk_box_pack_start (GTK_BOX (content_area), table, TRUE, TRUE, 0);
 
 	crow = 0;
-	bbox = make_radio(CYA_CAT_TYPE, TRUE, GTK_ORIENTATION_HORIZONTAL);
+	bbox = hbtk_radio_new(CYA_CAT_TYPE, TRUE);
 	data.RA_type = bbox;
 	gtk_widget_set_halign (bbox, GTK_ALIGN_CENTER);
 	gtk_grid_attach (GTK_GRID (table), bbox, 0, crow, 1, 1);
 
-	widget = radio_get_nth_widget(GTK_CONTAINER(bbox), 1);
-	if(widget)
-		g_signal_connect (widget, "toggled", G_CALLBACK (ui_bud_manage_type_changed_cb), &data);
+	hbtk_radio_connect (GTK_CONTAINER(bbox), "toggled", G_CALLBACK (ui_bud_manage_type_changed_cb), &data);
 
 	menu = gtk_menu_new ();
 	gtk_widget_set_halign (menu, GTK_ALIGN_END);
@@ -1177,7 +1171,7 @@ gint crow, row;
 		l = ((i<6) ? 1 : 3);
 		t = row + ((i<6) ? i : i-6);
 
-		label = make_label_widget(months[i]);
+		label = make_label_widget(_(CYA_ABMONTHS[i]));
 		data.label[i+1] = label;
 		gtk_grid_attach (GTK_GRID (group_grid), label, l, t, 1, 1);
 
@@ -1189,7 +1183,7 @@ gint crow, row;
 
 		g_signal_connect (G_OBJECT (data.spinner[i+1]), "value-changed", G_CALLBACK (ui_bud_manage_has_budget), NULL);
 		
-		//DB( g_print("(ui_bud_manage) %s, col=%d, row=%d", months[i], col, row) );
+		//DB( g_print("(ui_bud_manage) %s, col=%d, row=%d", CYA_ABMONTHS[i], col, row) );
 	}
 
 	gtk_container_set_focus_chain(GTK_CONTAINER(group_grid), fchain);

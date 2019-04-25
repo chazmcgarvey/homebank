@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -21,7 +21,7 @@
 #include "homebank.h"
 #include "ext.h"
 
-#include "dsp_mainwindow.h"
+#include "dsp-mainwindow.h"
 #include "hb-preferences.h"
 #include "language.h"
 
@@ -86,7 +86,7 @@ static GOptionEntry option_entries[] =
 gint homebank_alienfile_recognize(gchar *filename)
 {
 GIOChannel *io;
-gint i, retval = FILETYPE_UNKNOW;
+gint i, retval = FILETYPE_UNKNOWN;
 gchar *tmpstr;
 gint io_stat;
 GError *err = NULL;
@@ -111,7 +111,7 @@ static gint csvtype[7] = {
 
 		for(i=0;i<25;i++)
 		{
-			if( retval != FILETYPE_UNKNOW )
+			if( retval != FILETYPE_UNKNOWN )
 				break;
 
 			io_stat = g_io_channel_read_line(io, &tmpstr, NULL, NULL, &err);
@@ -248,11 +248,15 @@ gboolean retval = FALSE;
 
 	if( g_file_test(filepath, G_FILE_TEST_EXISTS) )
 	{
+		DB( g_print(" - deleting: '%s'\n", filepath) );
 		g_remove(filepath);
 		retval = TRUE;
 	}
-
-	DB( g_print(" - deleted: '%s' :: %d\n", filepath, retval) );
+	else
+	{
+		DB( g_print(" - cannot delete: '%s'\n", filepath) );
+	}
+	
 	return retval;
 }
 
@@ -260,6 +264,8 @@ gboolean retval = FALSE;
 void homebank_backup_current_file(void)
 {
 gchar *bakfilename;
+GPtrArray *array;
+gint i;
 
 	DB( g_print("\n[homebank] backup_current_file\n") );
 
@@ -271,6 +277,47 @@ gchar *bakfilename;
 	//retval = g_rename(pathname, newname);
 	homebank_file_copy (GLOBALS->xhb_filepath, bakfilename);
 	g_free(bakfilename);
+
+	//do safe backup according to user preferences
+	DB( g_print(" user pref backup\n") );	
+	if( PREFS->bak_is_automatic == TRUE )
+	{
+		bakfilename = hb_filename_new_for_backup(GLOBALS->xhb_filepath);
+		if( g_file_test(bakfilename, G_FILE_TEST_EXISTS) == FALSE )
+		{
+			homebank_file_copy (GLOBALS->xhb_filepath, bakfilename);
+		}
+		g_free(bakfilename);
+
+		//delete any offscale backup
+		DB( g_print(" clean old backup\n") );
+		array = hb_filename_backup_list(GLOBALS->xhb_filepath);
+
+		DB( g_print(" found %d match\n", array->len) );
+
+		gchar *dirname = g_path_get_dirname(GLOBALS->xhb_filepath);
+		
+		for(i=0;i<(gint)array->len;i++)
+		{
+		gchar *offscalefilename = g_ptr_array_index(array, i);
+	
+			DB( g_print(" %d : '%s'\n", i, offscalefilename) );
+			if( i >= PREFS->bak_max_num_copies )
+			{
+			gchar *bakdelfilepath = g_build_filename(dirname, offscalefilename, NULL);
+
+				DB( g_print(" - should delete '%s'\n", bakdelfilepath) );
+			
+				homebank_file_delete_existing(bakdelfilepath);
+
+				g_free(bakdelfilepath);
+			}
+		}
+		g_ptr_array_free(array, TRUE);
+
+		g_free(dirname);
+	}
+
 }
 
 
@@ -357,6 +404,7 @@ gchar *homebank_lastopenedfiles_load(void)
 GKeyFile *keyfile;
 gchar *group, *filename, *tmpfilename;
 gchar *lastfilename = NULL;
+GError *error = NULL;
 
 	DB( g_print("\n[homebank] lastopenedfiles load\n") );
 
@@ -364,7 +412,7 @@ gchar *lastfilename = NULL;
 	if(keyfile)
 	{
 		filename = g_build_filename(homebank_app_get_config_dir(), "lastopenedfiles", NULL );
-		if(g_key_file_load_from_file (keyfile, filename, G_KEY_FILE_NONE, NULL))
+		if(g_key_file_load_from_file (keyfile, filename, G_KEY_FILE_NONE, &error))
 		{
 			group = "HomeBank";
 
@@ -378,6 +426,13 @@ gchar *lastfilename = NULL;
 				}
 			}
 		}
+
+		if( error )
+		{
+			g_print("failed: %s\n", error->message);
+			g_error_free (error);
+		}
+
 		g_free(filename);
 		g_key_file_free (keyfile);
 	}
@@ -395,29 +450,41 @@ GKeyFile *keyfile;
 gboolean retval = FALSE;
 gchar *group, *filename;
 gsize length;
+GError *error = NULL;
 
 	DB( g_print("\n[homebank] lastopenedfiles save\n") );
 
 	if( GLOBALS->xhb_filepath != NULL )
 	{
-		keyfile = g_key_file_new();
-		if(keyfile )
+		//don't save bakup files
+		if( hbfile_file_isbackup(GLOBALS->xhb_filepath) == FALSE )
 		{
-			DB( g_print(" - saving '%s'\n", GLOBALS->xhb_filepath) );
+			keyfile = g_key_file_new();
+			if(keyfile )
+			{
+				DB( g_print(" - saving '%s'\n", GLOBALS->xhb_filepath) );
 
-			group = "HomeBank";
-			g_key_file_set_string  (keyfile, group, "LastOpenedFile", GLOBALS->xhb_filepath);
+				group = "HomeBank";
+				g_key_file_set_string  (keyfile, group, "LastOpenedFile", GLOBALS->xhb_filepath);
 
-			gchar *contents = g_key_file_to_data( keyfile, &length, NULL);
+				gchar *contents = g_key_file_to_data( keyfile, &length, NULL);
 
-			//DB( g_print(" keyfile:\n%s\nlen=%d\n", contents, length) );
+				//DB( g_print(" keyfile:\n%s\nlen=%d\n", contents, length) );
 
-			filename = g_build_filename(homebank_app_get_config_dir(), "lastopenedfiles", NULL );
-			g_file_set_contents(filename, contents, length, NULL);
-			g_free(filename);
+				filename = g_build_filename(homebank_app_get_config_dir(), "lastopenedfiles", NULL );
 
-			g_free(contents);
-			g_key_file_free (keyfile);
+				g_file_set_contents(filename, contents, length, &error);
+				g_free(filename);
+
+				if( error )
+				{
+					g_print("failed: %s\n", error->message);
+					g_error_free (error);
+				}
+				
+				g_free(contents);
+				g_key_file_free (keyfile);
+			}
 		}
 	}
 

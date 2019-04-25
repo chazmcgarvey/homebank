@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -289,6 +289,7 @@ void homebank_pref_free(void)
 
 	g_free(PREFS->language);
 
+	g_free(PREFS->pnl_list_tab);
 
 	g_free(PREFS->minor_cur.symbol);
 	g_free(PREFS->minor_cur.decimal_char);
@@ -323,9 +324,15 @@ gint i;
 	PREFS->appendscheduled = FALSE;
 	PREFS->do_update_currency = FALSE;
 
+	PREFS->bak_is_automatic = TRUE;
+	PREFS->bak_max_num_copies = 5;
+
 	PREFS->heritdate = FALSE;
 	PREFS->hidereconciled = FALSE;
 	PREFS->showremind = TRUE;
+	//#1673048
+	PREFS->txn_memoacp = TRUE;
+	PREFS->txn_memoacp_days = 365;
 
 	PREFS->toolbar_style = 4;	//text beside icons
 	PREFS->custom_colors = TRUE;
@@ -362,20 +369,22 @@ gint i;
 	PREFS->pnl_upc_col_pay_width = -1;
 	PREFS->pnl_upc_col_mem_width = -1;
 
+	i = 0;
+	PREFS->lst_impope_columns[i++] = LST_DSPOPE_DATE;	  //always displayed
+	PREFS->lst_impope_columns[i++] = LST_DSPOPE_MEMO;
+	PREFS->lst_impope_columns[i++] = LST_DSPOPE_AMOUNT;
+	PREFS->lst_impope_columns[i++] = LST_DSPOPE_INFO;
+	PREFS->lst_impope_columns[i++] = LST_DSPOPE_PAYEE;
+	PREFS->lst_impope_columns[i++] = LST_DSPOPE_CATEGORY;
+	PREFS->lst_impope_columns[i++] = -LST_DSPOPE_TAGS;
+	PREFS->lst_impope_columns[i++] = -LST_DSPOPE_CLR;
+	PREFS->lst_impope_columns[i++] = -LST_DSPOPE_STATUS;  //always displayed
+	PREFS->lst_impope_columns[i++] = -LST_DSPOPE_EXPENSE;
+	PREFS->lst_impope_columns[i++] = -LST_DSPOPE_INCOME;
+	PREFS->lst_impope_columns[i++] = -LST_DSPOPE_BALANCE;
+	PREFS->lst_impope_columns[i++] = -LST_DSPOPE_ACCOUNT;
 
 	i = 0;
-	/* prior v4.5
-	PREFS->lst_ope_columns[i++] = LST_DSPOPE_STATUS;
-	PREFS->lst_ope_columns[i++] = LST_DSPOPE_DATE;
-	PREFS->lst_ope_columns[i++] = LST_DSPOPE_INFO;
-	PREFS->lst_ope_columns[i++] = LST_DSPOPE_PAYEE;
-	PREFS->lst_ope_columns[i++] = LST_DSPOPE_MEMO;
-	PREFS->lst_ope_columns[i++] = -LST_DSPOPE_AMOUNT;
-	PREFS->lst_ope_columns[i++] = LST_DSPOPE_EXPENSE;
-	PREFS->lst_ope_columns[i++] = LST_DSPOPE_INCOME;
-	PREFS->lst_ope_columns[i++] = LST_DSPOPE_CATEGORY;
-	PREFS->lst_ope_columns[i++] = LST_DSPOPE_TAGS;
-	*/
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_STATUS;  //always displayed
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_DATE;	  //always displayed
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_INFO;
@@ -388,23 +397,30 @@ gint i;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_INCOME;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_BALANCE;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_MEMO;
+	PREFS->lst_ope_columns[i++] = -LST_DSPOPE_ACCOUNT;
 
 	PREFS->lst_ope_sort_id    = LST_DSPOPE_DATE;
 	PREFS->lst_ope_sort_order = GTK_SORT_ASCENDING;
 
 	for( i=0;i<NUM_LST_DSPOPE;i++)
-		PREFS->lst_ope_col_size[i] = -1;
+		PREFS->lst_ope_col_width[i] = -1;
 
 	//PREFS->base_cur.nbdecimal = 2;
 	//PREFS->base_cur.separator = TRUE;
 
-	PREFS->date_range_wal = FLT_RANGE_LASTMONTH;
-	PREFS->date_range_txn = FLT_RANGE_LAST12MONTHS;
+	//PREFS->date_range_wal = FLT_RANGE_LASTMONTH;
+	//PREFS->date_range_txn = FLT_RANGE_LAST12MONTHS;
+	//PREFS->date_range_rep = FLT_RANGE_THISYEAR;
+
+	//v5.2 change to let the example file show things
+	PREFS->date_range_wal = FLT_RANGE_ALLDATE;
+	PREFS->date_range_txn = FLT_RANGE_ALLDATE;
+	PREFS->date_range_rep = FLT_RANGE_ALLDATE;
 	PREFS->date_future_nbdays = 0;
-	PREFS->date_range_rep = FLT_RANGE_THISYEAR;
 
 	//import/export
 	PREFS->dtex_nointro = TRUE;
+	PREFS->dtex_ucfirst = FALSE;
 	//PREFS->dtex_datefmt
 	PREFS->dtex_ofxname = 1;
 	PREFS->dtex_ofxmemo = 2;
@@ -491,10 +507,12 @@ static void homebank_pref_get_boolean(
     const gchar *key,
 	gboolean *storage)
 {
+	DB( g_print(" search %s in %s\n", key, group_name) );
 
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		*storage = g_key_file_get_boolean(key_file, group_name, key, NULL);
+		DB( g_print(" stored boolean %d for %s at %x\n", *storage, key, *storage) );
 	}
 }
 
@@ -504,15 +522,12 @@ static void homebank_pref_get_integer(
     const gchar *key,
 	gint *storage)
 {
-
 	DB( g_print(" search %s in %s\n", key, group_name) );
-
 
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		*storage = g_key_file_get_integer(key_file, group_name, key, NULL);
-
-		DB( g_print(" store integer %d for %s at %x\n", *storage, key, *storage) );
+		DB( g_print(" stored integer %d for %s at %x\n", *storage, key, *storage) );
 	}
 }
 
@@ -522,10 +537,12 @@ static void homebank_pref_get_guint32(
     const gchar *key,
 	guint32 *storage)
 {
+	DB( g_print(" search %s in %s\n", key, group_name) );
 
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		*storage = g_key_file_get_integer(key_file, group_name, key, NULL);
+		DB( g_print(" stored guint32 %d for %s at %x\n", *storage, key, *storage) );
 	}
 }
 
@@ -535,10 +552,12 @@ static void homebank_pref_get_short(
     const gchar *key,
 	gshort *storage)
 {
+	DB( g_print(" search %s in %s\n", key, group_name) );
 
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		*storage = (gshort)g_key_file_get_integer(key_file, group_name, key, NULL);
+		DB( g_print(" stored short %d for %s at %x\n", *storage, key, *storage) );
 	}
 }
 
@@ -608,6 +627,7 @@ GKeyFile *keyfile;
 gboolean retval = FALSE;
 gchar *group, *filename;
 guint32 version;
+gboolean loaded;
 GError *error = NULL;
 
 	DB( g_print("\n[preferences] pref load\n") );
@@ -619,8 +639,15 @@ GError *error = NULL;
 
 		DB( g_print(" - filename: %s\n", filename) );
 
-
-		if(g_key_file_load_from_file (keyfile, filename, G_KEY_FILE_NONE, NULL))
+		error = NULL;
+		loaded = g_key_file_load_from_file (keyfile, filename, G_KEY_FILE_NONE, &error);
+		if( error )
+		{
+			g_warning("unable to load file %s: %s", filename, error->message);
+			g_error_free (error);
+		}
+			
+		if( loaded == TRUE )
 		{
 
 			group = "General";
@@ -696,9 +723,15 @@ GError *error = NULL;
 				homebank_pref_get_boolean(keyfile, group, "AppendScheduled", &PREFS->appendscheduled);
 				homebank_pref_get_boolean(keyfile, group, "UpdateCurrency", &PREFS->do_update_currency);	
 
+				homebank_pref_get_boolean(keyfile, group, "BakIsAutomatic", &PREFS->bak_is_automatic);
+				homebank_pref_get_short(keyfile, group, "BakMaxNumCopies", &PREFS->bak_max_num_copies);
+
 				homebank_pref_get_boolean(keyfile, group, "HeritDate", &PREFS->heritdate);
 				homebank_pref_get_boolean(keyfile, group, "HideReconciled", &PREFS->hidereconciled);
 				homebank_pref_get_boolean(keyfile, group, "ShowRemind", &PREFS->showremind);
+				homebank_pref_get_boolean(keyfile, group, "TxnMemoAcp", &PREFS->txn_memoacp);
+				homebank_pref_get_short(keyfile, group, "TxnMemoAcpDays", &PREFS->txn_memoacp_days);
+
 
 				if( g_key_file_has_key(keyfile, group, "ColumnsOpe", NULL) )
 				{
@@ -708,7 +741,7 @@ GError *error = NULL;
 
 					if(version <= 2)	//retrieve old 0.1 or 0.2 visibility boolean
 					{
-						bsrc = g_key_file_get_boolean_list(keyfile, group, "ColumnsOpe", &length, &error);
+						bsrc = g_key_file_get_boolean_list(keyfile, group, "ColumnsOpe", &length, NULL);
 						if( length == NUM_LST_DSPOPE-1 )
 						{
 							//and convert
@@ -721,11 +754,11 @@ GError *error = NULL;
 					}
 					else
 					{
-						src = g_key_file_get_integer_list(keyfile, group, "ColumnsOpe", &length, &error);
+						src = g_key_file_get_integer_list(keyfile, group, "ColumnsOpe", &length, NULL);
 
 						DB( g_print(" - length %d (max=%d)\n", length, NUM_LST_DSPOPE) );
 
-						if( length == NUM_LST_DSPOPE-1 )
+						if( length == NUM_LST_DSPOPE )
 						{
 							DB( g_print(" - copying column order from pref file\n") );
 							memcpy(PREFS->lst_ope_columns, src, length*sizeof(gint));
@@ -778,14 +811,14 @@ GError *error = NULL;
 				gint *src;
 				gsize length;
 
-					src = g_key_file_get_integer_list(keyfile, group, "ColumnsOpeWidth", &length, &error);
+					src = g_key_file_get_integer_list(keyfile, group, "ColumnsOpeWidth", &length, NULL);
 
 					DB( g_print(" - length %d (max=%d)\n", length, NUM_LST_DSPOPE) );
 
-					if( length == NUM_LST_DSPOPE-1 )
+					if( length == NUM_LST_DSPOPE )
 					{
 						DB( g_print(" - copying column width from pref file\n") );
-						memcpy(PREFS->lst_ope_col_size, src, length*sizeof(gint));
+						memcpy(PREFS->lst_ope_col_width, src, length*sizeof(gint));
 					}
 
 					//leak
@@ -844,6 +877,7 @@ GError *error = NULL;
 				homebank_pref_get_short(keyfile, group, "UpcColPayW", &PREFS->pnl_upc_col_pay_width);
 				homebank_pref_get_short(keyfile, group, "UpcColMemW", &PREFS->pnl_upc_col_mem_width);
 
+				homebank_pref_get_string(keyfile, group, "PnlLstTab", &PREFS->pnl_list_tab);
 
 			group = "Format";
 
@@ -954,8 +988,8 @@ GError *error = NULL;
 
 				DB( g_print(" -> ** Exchange\n") );
 
-				//homebank_pref_get_boolean(keyfile, group, "DoIntro", &PREFS->dtex_nointro);
-
+				homebank_pref_get_boolean(keyfile, group, "DoIntro", &PREFS->dtex_nointro);
+				homebank_pref_get_boolean(keyfile, group, "UcFirst", &PREFS->dtex_ucfirst);
 				homebank_pref_get_integer(keyfile, group, "DateFmt", &PREFS->dtex_datefmt);
 				homebank_pref_get_integer(keyfile, group, "OfxName", &PREFS->dtex_ofxname);
 				homebank_pref_get_integer(keyfile, group, "OfxMemo", &PREFS->dtex_ofxmemo);
@@ -1007,6 +1041,7 @@ GError *error = NULL;
 	return retval;
 }
 
+
 static void homebank_pref_set_string(
 	GKeyFile *key_file,
     const gchar *group_name,
@@ -1033,6 +1068,7 @@ GKeyFile *keyfile;
 gboolean retval = FALSE;
 gchar *group, *filename;
 gsize length;
+GError *error = NULL;
 
 	DB( g_print("\n[preferences] pref save\n") );
 
@@ -1065,8 +1101,8 @@ gsize length;
 		homebank_pref_set_string  (keyfile, group, "ExportPath"   , PREFS->path_export);
 		//g_key_file_set_string  (keyfile, group, "NavigatorPath", PREFS->path_navigator);
 
-
-
+		g_key_file_set_boolean (keyfile, group, "BakIsAutomatic", PREFS->bak_is_automatic);
+		g_key_file_set_integer (keyfile, group, "BakMaxNumCopies", PREFS->bak_max_num_copies);
 
 		g_key_file_set_boolean (keyfile, group, "ShowSplash", PREFS->showsplash);
 		g_key_file_set_boolean (keyfile, group, "LoadLast", PREFS->loadlast);
@@ -1076,9 +1112,11 @@ gsize length;
 		g_key_file_set_boolean (keyfile, group, "HeritDate", PREFS->heritdate);
 		g_key_file_set_boolean (keyfile, group, "HideReconciled", PREFS->hidereconciled);
 		g_key_file_set_boolean (keyfile, group, "ShowRemind", PREFS->showremind);
+		g_key_file_set_boolean (keyfile, group, "TxnMemoAcp", PREFS->txn_memoacp);
+		g_key_file_set_integer (keyfile, group, "TxnMemoAcpDays" , PREFS->txn_memoacp_days);
 
-		g_key_file_set_integer_list(keyfile, group, "ColumnsOpe", PREFS->lst_ope_columns, NUM_LST_DSPOPE-1);
-		g_key_file_set_integer_list(keyfile, group, "ColumnsOpeWidth", PREFS->lst_ope_col_size, NUM_LST_DSPOPE-1);
+		g_key_file_set_integer_list(keyfile, group, "ColumnsOpe", PREFS->lst_ope_columns, NUM_LST_DSPOPE);
+		g_key_file_set_integer_list(keyfile, group, "ColumnsOpeWidth", PREFS->lst_ope_col_width, NUM_LST_DSPOPE);
 		g_key_file_set_integer     (keyfile, group, "OpeSortId" , PREFS->lst_ope_sort_id);
 		g_key_file_set_integer     (keyfile, group, "OpeSortOrder" , PREFS->lst_ope_sort_order);
 
@@ -1115,6 +1153,7 @@ gsize length;
 		g_key_file_set_integer(keyfile, group, "UpcColPayW", PREFS->pnl_upc_col_pay_width);
 		g_key_file_set_integer(keyfile, group, "UpcColMemW", PREFS->pnl_upc_col_mem_width);
 
+		homebank_pref_set_string  (keyfile, group, "PnlLstTab", PREFS->pnl_list_tab);
 
 		DB( g_print(" -> ** format\n") );
 
@@ -1167,8 +1206,8 @@ gsize length;
 
 
 		group = "Exchange";
-		//g_key_file_set_boolean (keyfile, group, "DoIntro", PREFS->dtex_nointro);
-
+		g_key_file_set_boolean (keyfile, group, "DoIntro", PREFS->dtex_nointro);
+		g_key_file_set_boolean (keyfile, group, "UcFirst", PREFS->dtex_ucfirst);
 		g_key_file_set_integer (keyfile, group, "DateFmt", PREFS->dtex_datefmt);
 		g_key_file_set_integer (keyfile, group, "OfxName", PREFS->dtex_ofxname);
 		g_key_file_set_integer (keyfile, group, "OfxMemo", PREFS->dtex_ofxmemo);
@@ -1208,8 +1247,14 @@ gsize length;
 
 		DB( g_print(" -> filename: %s\n", filename) );
 
-		g_file_set_contents(filename, contents, length, NULL);
-
+		g_file_set_contents(filename, contents, length, &error);
+		if( error )
+		{
+			g_warning("unable to save file %s: %s", filename, error->message);
+			g_error_free (error);
+			error = NULL;
+		}
+		
 		DB( g_print(" -> contents: %s\n", contents) );
 
 		DB( g_print(" -> freeing filename\n") );

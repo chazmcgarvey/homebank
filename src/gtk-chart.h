@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -150,6 +150,7 @@ struct _GtkChart
 	gboolean	show_legend;
 	gboolean	show_legend_wide;
 	gboolean	show_over;
+	gboolean	show_average;
 	gboolean	show_xval;
 	gboolean	show_mono;
 	gint		every_xval;
@@ -202,7 +203,7 @@ struct _GtkChart
 	gint		leg_nb_r, leg_width_r, leg_vspace_r;
 
 	/* bar specifics */
-	double	rawmin, rawmax, range, min, max, unit, minimum;
+	double	rawmin, rawmax, range, min, max, unit, minimum, average;
 	gint	div;
 	gint	visible;
 
@@ -245,6 +246,7 @@ void gtk_chart_set_dualdatas(GtkChart *chart, GtkTreeModel *model, guint column1
 void gtk_chart_set_minor_prefs(GtkChart * chart, gdouble rate, gchar *symbol);
 void gtk_chart_set_currency(GtkChart * chart, guint32 kcur);
 
+void gtk_chart_show_average(GtkChart * chart, gdouble value, gboolean visible);
 void gtk_chart_set_overdrawn(GtkChart * chart, gdouble minimum);
 //void gtk_chart_set_every_xval(GtkChart * chart, gint decay);
 void gtk_chart_set_barw(GtkChart * chart, gdouble barw);

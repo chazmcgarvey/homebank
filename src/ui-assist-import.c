@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2018 Maxime DOYEN
+ *	Copyright (C) 1995-2019 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -21,13 +21,8 @@
 
 #include "hb-import.h"
 #include "ui-assist-import.h"
-
-#include "list_account.h"
-#include "list_operation.h"
-
-#include "ui-account.h"
-#include "dsp_mainwindow.h"
-
+#include "dsp-mainwindow.h"
+#include "list-operation.h"
 
 
 /****************************************************************************/
@@ -41,159 +36,590 @@
 #define DB(x);
 #endif
 
-#define FORCE_SIZE 1
-#define HEAD_IMAGE 0
-#define SIDE_IMAGE 0
-
 
 /* our global datas */
 extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
 
-static gchar *page_titles[] =
-{
-	N_("Welcome"),
-	N_("Select file"),
-	N_("Import"),
-	N_("Properties"),
-	N_("Account"),
-	N_("Transaction"),
-	N_("Confirmation")
-};
-
 
 extern gchar *CYA_IMPORT_DATEORDER[];
 
+extern gchar *CYA_IMPORT_OFXNAME[];
+extern gchar *CYA_IMPORT_OFXMEMO[];
+
+
+static void ui_import_page_filechooser_eval(GtkWidget *widget, gpointer user_data);
+
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-/* account affect listview */
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-static guint32
-ui_acc_affect_listview_get_selected_key(GtkTreeView *treeview)
+#if MYDEBUG == 1
+static void list_txn_cell_data_function_debug (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
-GtkTreeSelection *selection;
-GtkTreeModel		 *model;
-GtkTreeIter			 iter;
+GenTxn *gentxn;
+gchar *text;
 
-	selection = gtk_tree_view_get_selection(treeview);
-	if (gtk_tree_selection_get_selected(selection, &model, &iter))
-	{
-	Account *item;
+	gtk_tree_model_get(model, iter, 
+		LST_GENTXN_POINTER, &gentxn, 
+		-1);
 
-		gtk_tree_model_get(model, &iter, 0, &item, -1);
-
-		if( item!= NULL	 )
-			return item->key;
-	}
-	return 0;
+	text = g_strdup_printf("%d %d > %d", gentxn->is_imp_similar, gentxn->is_dst_similar, gentxn->to_import);
+	
+	g_object_set(renderer, 
+		"text", text, 
+		NULL);
+	
+	g_free(text);
 }
-
-
-static void
-ui_acc_affect_listview_srcname_cell_data_function (GtkTreeViewColumn *col,
-				GtkCellRenderer *renderer,
-				GtkTreeModel *model,
-				GtkTreeIter *iter,
-				gpointer user_data)
-{
-Account *entry;
-gchar *name;
-gchar *string;
-
-	gtk_tree_model_get(model, iter, 0, &entry, -1);
-
-	name = entry->imp_name;
-
-	#if MYDEBUG
-		string = g_markup_printf_escaped("<i>[%d] %s</i>", entry->key, name );
-	#else
-		string = g_markup_printf_escaped("<i>%s</i>", name);
-	#endif
-	g_object_set(renderer, "markup", string, NULL);
-	g_free(string);
-}
-
-static void
-ui_acc_affect_listview_new_cell_data_function (GtkTreeViewColumn *col,
-				GtkCellRenderer *renderer,
-				GtkTreeModel *model,
-				GtkTreeIter *iter,
-				gpointer user_data)
-{
-Account *entry;
-gchar *name;
-
-	gtk_tree_model_get(model, iter, 0, &entry, -1);
-	name = NULL;
-	if(entry->imp_key == 0)
-		name = _("create new");
-	else
-		name = _("use existing");
-
-	g_object_set(renderer, "markup", name, NULL);
-
-}
-
-static void
-ui_acc_affect_listview_dstname_cell_data_function (GtkTreeViewColumn *col,
-				GtkCellRenderer *renderer,
-				GtkTreeModel *model,
-				GtkTreeIter *iter,
-				gpointer user_data)
-{
-Account *entry, *dst_entry;
-gchar *name;
-#if MYDEBUG
-gchar *string;
 #endif
 
-	gtk_tree_model_get(model, iter, 0, &entry, -1);
-	name = NULL;
-	if(entry->imp_key == 0)
-		name = entry->name;
-	else
+
+static void list_txn_cell_data_function_toggle (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+GenTxn *gentxn;
+
+	gtk_tree_model_get(model, iter, 
+		LST_GENTXN_POINTER, &gentxn, 
+		-1);
+
+	g_object_set(renderer, "active", gentxn->to_import, NULL);
+}
+
+
+static void list_txn_cell_data_function_warning (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+GenTxn *gentxn;
+gchar *iconname = NULL;
+
+	// get the transaction
+	gtk_tree_model_get(model, iter, 
+		LST_GENTXN_POINTER, &gentxn, 
+		-1);
+
+	//iconname = ( gentxn->julian == 0 ) ? ICONNAME_WARNING : NULL;
+	//if(iconname == NULL)
+	iconname = ( gentxn->is_dst_similar || gentxn->is_imp_similar ) ? ICONNAME_HB_OPE_SIMILAR : NULL;
+
+	g_object_set(renderer, "icon-name", iconname, NULL);
+}
+
+
+static void list_txn_cell_data_function_error (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+GenTxn *gentxn;
+gchar *iconname = NULL;
+
+	// get the transaction
+	gtk_tree_model_get(model, iter, 
+		LST_GENTXN_POINTER, &gentxn, 
+		-1);
+
+	iconname = ( gentxn->julian == 0 ) ? ICONNAME_ERROR : NULL;
+
+	g_object_set(renderer, "icon-name", iconname, NULL);
+}
+
+
+static void list_txn_cell_data_function_text (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+gint colid = GPOINTER_TO_INT(user_data);
+gchar buf[12];
+GDate date;
+gchar *text = "";
+GenTxn *item;
+
+	gtk_tree_model_get(model, iter, 
+		LST_GENTXN_POINTER, &item, 
+		-1);
+
+	switch(colid)
 	{
-		dst_entry = da_acc_get(entry->imp_key);
-		if( dst_entry != NULL )
-			name = dst_entry->name;
+		case LST_DSPOPE_DATE: //date
+			{
+			gchar *color = NULL;
+			
+				if(item->julian > 0)
+				{	
+					g_date_set_julian(&date, item->julian);
+					//#1794170 %F is ignored under ms windows
+					//g_date_strftime (buf, 12-1, "%F", &date);
+					g_date_strftime (buf, 12-1, "%Y-%m-%d", &date);
+					text = buf;
+				}
+				else
+				{
+					text = item->date;
+					color = PREFS->color_warn;
+				}
+
+				g_object_set(renderer, 
+					"foreground", color,
+					NULL);
+			}
+			//g_object_set(renderer, "text", item->date, NULL);
+			break;
+		case LST_DSPOPE_MEMO: //memo
+			text = item->memo;
+			break;
+		case LST_DSPOPE_PAYEE: //payee
+			text = item->payee;
+			break;
+		case LST_DSPOPE_CATEGORY: //category
+			text = item->category;
+			break;
 	}
 
-	#if MYDEBUG
-		string = g_strdup_printf ("[%d] %s", entry->imp_key, name );
-		g_object_set(renderer, "text", string, NULL);
-		g_free(string);
-	#else
-		g_object_set(renderer, "text", name, NULL);
-	#endif
+	g_object_set(renderer, 
+		"text", text, 
+		//"scale-set", TRUE,
+		//"scale", item->to_import ? 1.0 : 0.8,
+		"strikethrough-set", TRUE,
+		"strikethrough", item->to_import ? FALSE : TRUE,
+		NULL);
 
 }
 
-static void
-ui_acc_affect_listview_add(GtkTreeView *treeview, Account *item)
+
+/*
+** amount cell function
+*/
+static void list_txn_cell_data_function_amount (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
-	if( item->name != NULL )
+GenTxn *item;
+gchar formatd_buf[G_ASCII_DTOSTR_BUF_SIZE];
+gchar *color;
+
+	gtk_tree_model_get(model, iter, 
+		LST_GENTXN_POINTER, &item, 
+		-1);
+
+	//todo: we could use digit and currency of target account
+	//hb_strfnum(buf, G_ASCII_DTOSTR_BUF_SIZE-1, item->amount, GLOBALS->kcur, FALSE);
+	//hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, ope->amount, GLOBALS->minor);
+	g_ascii_formatd(formatd_buf, G_ASCII_DTOSTR_BUF_SIZE-1, "%.2f", item->amount);
+
+	color = get_normal_color_amount(item->amount);
+
+	g_object_set(renderer,
+			"foreground",  color,
+			"text", formatd_buf,
+			NULL);
+
+}
+
+
+static void list_txn_cell_data_function_info (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+GenTxn *item;
+
+	gtk_tree_model_get(model, iter, 
+		LST_GENTXN_POINTER, &item, 
+		-1);
+
+	switch(GPOINTER_TO_INT(user_data))
 	{
-	GtkTreeModel *model;
-	GtkTreeIter	iter;
+		case 1:
+			g_object_set(renderer, "icon-name", get_paymode_icon_name(item->paymode), NULL);
+			break;
+		case 2:
+		    g_object_set(renderer, "text", item->info, NULL);
+			break;
+	}
+}
 
-		model = gtk_tree_view_get_model(treeview);
 
-		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
-		gtk_list_store_set (GTK_LIST_STORE(model), &iter,
-			0, item,
+static void list_txn_importfixed_toggled (GtkCellRendererToggle *cell, gchar *path_str, gpointer data)
+{
+GtkTreeModel *model = (GtkTreeModel *)data;
+GtkTreeIter  iter;
+GtkTreePath *path = gtk_tree_path_new_from_string (path_str);
+GenTxn *gentxn;
+
+	gtk_tree_model_get_iter (model, &iter, path);
+	gtk_tree_model_get (model, &iter, LST_GENTXN_POINTER, &gentxn, -1);
+	gentxn->to_import ^= 1;
+	gtk_tree_path_free (path);
+}
+
+
+static gint list_txn_import_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
+{
+gint sortcol = GPOINTER_TO_INT(userdata);
+gint retval = 0;
+GenTxn *gentxn1, *gentxn2;
+
+    gtk_tree_model_get(model, a, LST_GENTXN_POINTER, &gentxn1, -1);
+    gtk_tree_model_get(model, b, LST_GENTXN_POINTER, &gentxn2, -1);
+
+	switch(sortcol)
+	{
+		case LST_DSPOPE_MEMO:
+			retval = hb_string_utf8_compare(gentxn1->memo, gentxn2->memo);
+			break;
+		case LST_DSPOPE_AMOUNT:
+			retval = (gentxn1->amount - gentxn2->amount) > 0 ? 1 : -1;
+			break;
+		case LST_DSPOPE_PAYEE:
+			retval = hb_string_utf8_compare(gentxn1->payee, gentxn2->payee);
+			break;
+		case LST_DSPOPE_CATEGORY:
+			retval = hb_string_utf8_compare(gentxn1->category, gentxn2->category);
+			break;
+		case LST_DSPOPE_DATE:
+		default:
+			retval = gentxn1->julian - gentxn2->julian;
+			break;
+	}
+
+    return retval;
+}
+
+
+static GtkTreeViewColumn *
+list_txn_import_column_text_create(gchar *title, gint sortcolumnid, gpointer user_data)
+{
+GtkTreeViewColumn  *column;
+GtkCellRenderer    *renderer;
+
+	renderer = gtk_cell_renderer_text_new ();
+	/*g_object_set(renderer, 
+		"ellipsize", PANGO_ELLIPSIZE_END,
+	    "ellipsize-set", TRUE,
+	    NULL);*/
+	if( sortcolumnid == LST_DSPOPE_AMOUNT )
+	   g_object_set(renderer, "xalign", 1.0, NULL);
+	
+	column = gtk_tree_view_column_new_with_attributes(title, renderer, NULL);
+	gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tree_view_column_set_sort_column_id (column, sortcolumnid);
+
+	if(sortcolumnid == LST_DSPOPE_AMOUNT )
+		gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_function_amount, GINT_TO_POINTER(sortcolumnid), NULL);
+	else
+		gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_function_text, GINT_TO_POINTER(sortcolumnid), NULL);
+
+	return column;
+}
+
+
+
+static GtkWidget *list_txn_import_create(void)
+{
+GtkListStore *store;
+GtkWidget *treeview;
+GtkCellRenderer    *renderer;
+GtkTreeViewColumn  *column;
+
+	/* create list store */
+	store = gtk_list_store_new(
+	  	NUM_LST_GENTXN,
+		G_TYPE_POINTER
+		);
+
+	//treeview
+	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+
+	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (treeview), PREFS->grid_lines|GTK_TREE_VIEW_GRID_LINES_VERTICAL);
+
+	// debug/import checkbox
+	column = gtk_tree_view_column_new();
+	#if MYDEBUG  == 1
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_function_debug, NULL, NULL);
+	#endif
+	renderer = gtk_cell_renderer_toggle_new ();
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_function_toggle, NULL, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	g_signal_connect (renderer, "toggled", G_CALLBACK (list_txn_importfixed_toggled), store);
+
+	// icons
+	column = gtk_tree_view_column_new();
+	//gtk_tree_view_column_set_title(column, _("Import ?"));
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	//gtk_cell_renderer_set_fixed_size(renderer, 16, -1);
+	//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_function_warning, NULL, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
+	// date	
+	column = gtk_tree_view_column_new();
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_function_error, NULL, NULL);
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_function_text, GINT_TO_POINTER(LST_DSPOPE_DATE), NULL);
+	gtk_tree_view_column_set_title (column, _("Date"));
+	gtk_tree_view_column_set_sort_column_id (column, LST_DSPOPE_DATE);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
+	// memo
+	column = list_txn_import_column_text_create(_("Memo"), LST_DSPOPE_MEMO, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
+	// amount
+	column = list_txn_import_column_text_create(_("Amount"), LST_DSPOPE_AMOUNT, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
+	// info
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(column, _("Info"));
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_function_info, GINT_TO_POINTER(1), NULL);
+	renderer = gtk_cell_renderer_text_new ();
+	/*g_object_set(renderer, 
+		"ellipsize", PANGO_ELLIPSIZE_END,
+	    "ellipsize-set", TRUE,
+	    NULL);*/
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_function_info, GINT_TO_POINTER(2), NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
+	// payee
+	column = list_txn_import_column_text_create(_("Payee"), LST_DSPOPE_PAYEE, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
+	// category
+	column = list_txn_import_column_text_create(_("Category"), LST_DSPOPE_CATEGORY, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
+	// empty 
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
+	//gtk_tree_sortable_set_default_sort_func(GTK_TREE_SORTABLE(store), list_txn_import_compare_func, NULL, NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DSPOPE_DATE    , list_txn_import_compare_func, GINT_TO_POINTER(LST_DSPOPE_DATE), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DSPOPE_MEMO    , list_txn_import_compare_func, GINT_TO_POINTER(LST_DSPOPE_MEMO), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DSPOPE_AMOUNT  , list_txn_import_compare_func, GINT_TO_POINTER(LST_DSPOPE_AMOUNT), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DSPOPE_PAYEE   , list_txn_import_compare_func, GINT_TO_POINTER(LST_DSPOPE_PAYEE), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DSPOPE_CATEGORY, list_txn_import_compare_func, GINT_TO_POINTER(LST_DSPOPE_CATEGORY), NULL);
+
+	return(treeview);
+}
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+static gint ui_genacc_comboboxtext_get_active(GtkWidget *widget)
+{
+GtkTreeModel *model;
+GtkTreeIter	iter;
+gint key = -1;
+
+	g_return_val_if_fail(GTK_IS_COMBO_BOX(widget), key);
+
+	if( gtk_combo_box_get_active_iter(GTK_COMBO_BOX(widget), &iter))
+	{
+		model = gtk_combo_box_get_model (GTK_COMBO_BOX(widget));
+
+		gtk_tree_model_get(model, &iter,
+			LST_GENACC_KEY, &key,
+			-1);
+	}
+	return key;
+}
+
+
+static void ui_genacc_comboboxtext_set_active(GtkWidget *widget, gint active_key)
+{
+GtkTreeModel *model;
+GtkTreeIter	iter;
+gboolean valid;
+gint key;
+
+	g_return_if_fail(GTK_IS_COMBO_BOX(widget));
+
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
+	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+	while (valid)
+	{
+		gtk_tree_model_get(model, &iter,
+			LST_GENACC_KEY, &key,
+			-1);
+		if(key == active_key)
+			gtk_combo_box_set_active_iter (GTK_COMBO_BOX(widget), &iter);
+
+		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+	}
+}
+
+
+static GtkWidget *ui_genacc_comboboxtext_new(struct import_data *data, GtkWidget *label)
+{
+GtkListStore *store;
+GtkCellRenderer *renderer;
+GtkWidget *combobox;
+GtkTreeIter  iter;
+GList *lacc, *list;
+
+	store = gtk_list_store_new (NUM_LST_GENACC, G_TYPE_STRING, G_TYPE_INT);
+	combobox = gtk_combo_box_new_with_model (GTK_TREE_MODEL(store));
+	
+	renderer = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer, FALSE);
+	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT(combobox), renderer, "text", LST_GENACC_NAME);
+
+	g_object_unref(store);
+
+	gtk_list_store_insert_with_values (GTK_LIST_STORE(store), &iter, -1,
+			LST_GENACC_NAME, _("<New account (global)>"),
+			LST_GENACC_KEY, DST_ACC_GLOBAL,
 			-1);
 
-		//gtk_tree_selection_select_iter (gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), &iter);
-
+	gtk_list_store_insert_with_values (GTK_LIST_STORE(store), &iter, -1,
+			LST_GENACC_NAME, _("<New account>"),
+			LST_GENACC_KEY, DST_ACC_NEW,
+			-1);
+	
+	lacc = list = account_glist_sorted(0);
+	while (list != NULL)
+	{
+	Account *item = list->data;
+	
+		if( !(item->flags & AF_CLOSED) )
+		{
+			gtk_list_store_insert_with_values (GTK_LIST_STORE(store), &iter, -1,
+					LST_GENACC_NAME, item->name,
+					LST_GENACC_KEY, item->key,
+					-1);
+		}
+		list = g_list_next(list);
 	}
+	g_list_free(lacc);
+
+	gtk_list_store_insert_with_values (GTK_LIST_STORE(store), &iter, -1,
+			LST_GENACC_NAME, _("<Skip this account>"),
+			LST_GENACC_KEY, DST_ACC_SKIP,
+			-1);
+
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), 0);
+
+	if(label)
+		gtk_label_set_mnemonic_widget (GTK_LABEL(label), combobox);
+
+
+	return combobox;
+}
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+enum
+{
+	TARGET_URI_LIST
+};
+
+static GtkTargetEntry drop_types[] =
+{
+	{"text/uri-list", 0, TARGET_URI_LIST}
+};
+
+
+static void
+list_file_add(GtkWidget *treeview, GenFile *genfile)
+{
+char *basename;
+GtkTreeModel *model;
+GtkTreeIter	iter;
+
+	basename = g_path_get_basename(genfile->filepath);
+
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(treeview));
+
+	gtk_list_store_append (GTK_LIST_STORE(model), &iter);
+	gtk_list_store_set (GTK_LIST_STORE(model), &iter,
+		LST_GENFILE_POINTER, genfile,
+		LST_GENFILE_NAME, g_strdup(basename),
+		-1);
+
+	g_free(basename);
+}
+
+
+static void list_file_drag_data_received (GtkWidget *widget,
+			GdkDragContext *context,
+			gint x, gint y,
+			GtkSelectionData *selection_data,
+			guint info, guint time, GtkWindow *window)
+{
+struct import_data *data;
+	gchar **uris, **str;
+	gchar *newseldata;
+	gint slen;
+
+	if (info != TARGET_URI_LIST)
+		return;
+
+	DB( g_print("\n[ui-treeview] drag_data_received\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	/* On MS-Windows, it looks like `selection_data->data' is not NULL terminated. */
+	slen = gtk_selection_data_get_length(selection_data);
+	newseldata = g_new (gchar, slen + 1);
+	memcpy (newseldata, gtk_selection_data_get_data(selection_data), slen);
+	newseldata[slen] = 0;
+
+	uris = g_uri_list_extract_uris (newseldata);
+
+	ImportContext *ictx = &data->ictx;
+
+	str = uris;
+	for (str = uris; *str; str++)
+	//if( *str )
+	{
+		GError *error = NULL;
+		gchar *path = g_filename_from_uri (*str, NULL, &error);
+
+		if (path)
+		{
+		GenFile *genfile;
+		
+			genfile = da_gen_file_append_from_filename(ictx, path);
+			if(genfile)
+				list_file_add(data->LV_file, genfile);
+		}
+		else
+		{
+			g_warning ("Could not convert uri to local path: %s", error->message);
+			g_error_free (error);
+		}
+		g_free (path);
+	}
+	g_strfreev (uris);
+	
+	g_free(newseldata);
+	
+	ui_import_page_filechooser_eval(widget,  NULL);
+}
+
+
+static void
+list_file_valid_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+GenFile *genfile;
+gchar *iconname = NULL;
+
+	gtk_tree_model_get(model, iter, 
+		LST_GENFILE_POINTER, &genfile,
+		-1);
+
+	iconname = (genfile->filetype == FILETYPE_UNKNOWN) ? ICONNAME_HB_FILE_INVALID : ICONNAME_HB_FILE_VALID;
+	
+	g_object_set(renderer, "icon-name", iconname, NULL);
 }
 
 
 static GtkWidget *
-ui_acc_affect_listview_new(void)
+list_file_new(void)
 {
 GtkListStore *store;
 GtkWidget *treeview;
@@ -201,1480 +627,120 @@ GtkCellRenderer		*renderer;
 GtkTreeViewColumn	*column;
 
 	// create list store
-	store = gtk_list_store_new(1,
-		G_TYPE_POINTER
+	store = gtk_list_store_new(NUM_LST_FILE,
+		G_TYPE_POINTER,
+		G_TYPE_STRING
 		);
 
 	// treeview
 	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(store);
 
-	// column: import account
-	renderer = gtk_cell_renderer_text_new ();
+	//column: valid
 	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_title(column, _("Name in the file"));
-	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_acc_affect_listview_srcname_cell_data_function, NULL, NULL);
+    gtk_tree_view_column_set_title(column, _("Valid"));
+    renderer = gtk_cell_renderer_pixbuf_new ();
+    //gtk_cell_renderer_set_fixed_size(renderer, 16, -1);
+    gtk_tree_view_column_pack_start(column, renderer, TRUE);
+    gtk_tree_view_column_set_cell_data_func(column, renderer, list_file_valid_cell_data_function, NULL, NULL);
+	gtk_tree_view_column_set_alignment (column, 0.5);
+    gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	g_object_set(renderer, "stock-size", GTK_ICON_SIZE_LARGE_TOOLBAR, NULL);
+ 
+	// column: name
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Name"),
+                                                     renderer,
+                                                     "text",
+                                                     LST_GENFILE_NAME,
+                                                     NULL);
+	gtk_tree_view_column_set_sort_column_id (column, LST_GENFILE_NAME);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
-	// column: target account
-	renderer = gtk_cell_renderer_text_new ();
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_title(column, _("Action"));
-	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_acc_affect_listview_new_cell_data_function, NULL, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-
-	// column: target account
-	renderer = gtk_cell_renderer_text_new ();
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_title(column, _("Name in HomeBank"));
-	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_acc_affect_listview_dstname_cell_data_function, NULL, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-
-
-
+	
 	// treeviewattribute
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(treeview), TRUE);
 
 	//gtk_tree_sortable_set_default_sort_func(GTK_TREE_SORTABLE(store), ui_acc_listview_compare_func, NULL, NULL);
 	//gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
 
+	gtk_drag_dest_set (GTK_WIDGET (treeview),
+			   GTK_DEST_DEFAULT_ALL,
+			   drop_types,
+	           G_N_ELEMENTS (drop_types),
+			   GDK_ACTION_COPY);
+
+	g_signal_connect (G_OBJECT (treeview), "drag-data-received",
+			  G_CALLBACK (list_file_drag_data_received), treeview);
+
+
 	return treeview;
-}
-
-
-
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
-//old stuf for transition waiting import rewrite
-static void da_obsolete_transaction_destroy(GList *list)
-{
-GList *tmplist = g_list_first(list);
-
-	while (tmplist != NULL)
-	{
-	Transaction *item = tmplist->data;
-		da_transaction_free(item);
-		tmplist = g_list_next(tmplist);
-	}
-	g_list_free(list);
-}
-
-static GQueue *da_obsolete_transaction_get_partial(guint32 minjulian)
-{
-GList *lst_acc, *lnk_acc;
-GList *lnk_txn;
-GQueue *txn_queue;
-
-	txn_queue = g_queue_new ();
-
-	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
-	lnk_acc = g_list_first(lst_acc);
-	while (lnk_acc != NULL)
-	{
-	Account *acc = lnk_acc->data;
-
-		lnk_txn = g_queue_peek_tail_link(acc->txn_queue);
-		while (lnk_txn != NULL)
-		{
-		Transaction *txn = lnk_txn->data;
-
-			if( txn->date < minjulian ) //no need to go below mindate
-				break;
-
-			g_queue_push_head (txn_queue, txn);
-			
-			lnk_txn = g_list_previous(lnk_txn);
-		}
-	
-		lnk_acc = g_list_next(lnk_acc);
-	}
-	g_list_free(lst_acc);
-
-	return txn_queue;
-}
-
-
-
-
-/* count account to be imported */
-static void _import_context_count(struct import_data *data)
-{
-ImportContext *ictx = &data->ictx;
-GList *lacc, *list;
-
-	DB( g_print("\n[import] context count\n") );
-
-	ictx->nb_src_acc = ictx->nb_new_acc = 0;
-
-	ictx->cnt_new_ope = 0;
-
-	/* count account */
-	lacc = list = g_hash_table_get_values(GLOBALS->h_acc);
-	while (list != NULL)
-	{
-	Account *item = list->data;
-
-		if( item->imported == TRUE )
-		{
-			ictx->nb_src_acc++;
-			if( item->imp_key == 0 )
-				ictx->nb_new_acc++;
-		}
-		list = g_list_next(list);
-	}
-	g_list_free(lacc);
-
-	/* count transaction */
-	ictx->cnt_new_ope = g_list_length(ictx->trans_list);
-
-}
-
-
-static void _import_context_clear(ImportContext *ictx)
-{
-	DB( g_print("\n[import] context clear\n") );
-
-	if(ictx->trans_list)
-		da_obsolete_transaction_destroy(ictx->trans_list);
-	ictx->trans_list  = NULL;
-	ictx->next_acc_key = da_acc_length();
-	ictx->datefmt  = PREFS->dtex_datefmt;
-	ictx->encoding = NULL;
-
-	ictx->cnt_err_date  = 0;
-	ictx->cnt_new_pay = 0;
-	ictx->cnt_new_cat = 0;
-}
-
-
-#if MYDEBUG
-static void _import_context_debug(ImportContext *ictx)
-{
-	DB( g_print("\n[import] context debug\n") );
-
-	DB( g_print(
-	    " -> txnlist=%p, maxacckey=%d\n"
-	    " -> nb-acc=%d, nb-newacc=%d\n"
-	    " -> ntxn=%d, npay=%d, ncat=%d\n"
-		" -> datefmt=%d, encoding='%s', errdate=%d, ndup=%d\n",
-	    ictx->trans_list, ictx->next_acc_key,
-		ictx->nb_src_acc, ictx->nb_new_acc,
-		ictx->cnt_new_ope,
-		ictx->cnt_new_pay,
-		ictx->cnt_new_cat,
-		ictx->datefmt,
-		ictx->encoding,
-		ictx->cnt_err_date,
-		ictx->nb_duplicate
-		)
-	   );
-}
-#endif
-
-
-
-
-
-
-
-static GList *homebank_qif_import(gchar *filename, ImportContext *ictx)
-{
-GList *list = NULL;
-
-	DB( g_print("\n[import] homebank QIF\n") );
-
-	//todo: context ?
-	list = account_import_qif(filename, ictx);
-
-	return list;
-}
-
-
-
-
-static void import_clearall(struct import_data *data)
-{
-GList *lxxx, *list;
-GtkTreeModel *model;
-
-	DB( g_print("\n[import] clear all\n") );
-
-	// clear account & transactions
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc));
-	gtk_list_store_clear (GTK_LIST_STORE(model));
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->imported_ope));
-	gtk_list_store_clear (GTK_LIST_STORE(model));
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->duplicat_ope));
-	gtk_list_store_clear (GTK_LIST_STORE(model));
-
-	
-	// 1: delete imported accounts
-	lxxx = list = g_hash_table_get_values(GLOBALS->h_acc);
-	while (list != NULL)
-	{
-	Account *item = list->data;
-
-		if( item->imported == TRUE )
-		{
-			DB( g_print(" -> delete acc %p '%s'\n", item, item->name) );
-			da_acc_remove(item->key);
-		}
-		list = g_list_next(list);
-	}
-	g_list_free(lxxx);
-
-	// 2: delete imported payees
-	lxxx = list = g_hash_table_get_values(GLOBALS->h_pay);
-	while (list != NULL)
-	{
-	Payee *item = list->data;
-
-		if( item->imported == TRUE )
-		{
-			DB( g_print(" -> delete pay '%s'\n", item->name) );
-			da_pay_remove(item->key);
-		}
-		list = g_list_next(list);
-	}
-	g_list_free(lxxx);
-
-	// 3: delete imported category
-	lxxx = list = g_hash_table_get_values(GLOBALS->h_cat);
-	while (list != NULL)
-	{
-	Category *item = list->data;
-
-		if( item->imported == TRUE )
-		{
-			DB( g_print(" -> delete cat '%s'\n", item->name) );
-			da_cat_remove(item->key);
-		}
-		list = g_list_next(list);
-	}
-	g_list_free(lxxx);
-
-	_import_context_clear(&data->ictx);
-
-}
-
-
-static gboolean ui_import_panel_transaction_is_duplicate(Transaction *impope, Transaction *ope, gint maxgap)
-{
-Account *dstacc;
-guint dstkacc;
-gboolean retval = FALSE;
-		
-	//common tests
-	if( (impope->amount == ope->amount) &&
-		(ope->date <= (impope->date + maxgap)) && (ope->date >= (impope->date - maxgap)) )
-	{
-
-		//we focus the test on impope->acc->imp_key (and not impope->kacc)
-		dstkacc = impope->kacc; 
-		dstacc = da_acc_get(dstkacc);
-		if( dstacc && dstacc->imp_key > 0 )
-		{
-			dstkacc = dstacc->imp_key;
-		}
-
-		DB( g_print("--------\n -> dstkacc=%d, amount & date are similar\n", dstkacc) );
-
-		DB( g_print(" -> impope: kacc=%d, %s kxfer=%d, kxferacc=%d\n", impope->kacc, impope->wording, impope->kxfer, impope->kxferacc) );
-		DB( g_print(" ->    ope: kacc=%d, %s kxfer=%d, kxferacc=%d\n", ope->kacc, ope->wording, ope->kxfer, ope->kxferacc) );
-
-
-		if(impope->paymode != PAYMODE_INTXFER)
-		{
-			if( dstkacc == ope->kacc )
-			{
-				DB( g_print(" -> impope is not a xfer and acc are similar\n") );
-				retval = TRUE;
-			}
-		}
-		else
-		{
-			if( ( (impope->kxferacc == ope->kxferacc) && ope->kxfer != 0) ||
-				( impope->kxferacc == 0 )
-			   )
-				retval = TRUE;
-		}
-	}
-	return retval;
-}
-
-
-static void ui_import_panel_transaction_find_duplicate(struct import_data *data)
-{
-ImportContext *ictx = &data->ictx;
-GList *tmplist, *implist;
-Transaction *item;
-guint32 mindate;
-guint maxgap;
-
-	DB( g_print("\n[import] find duplicate\n") );
-
-	ictx->nb_duplicate = 0;
-	if( ictx->trans_list )
-	{
-		/* 1: get import min bound date */
-		tmplist = g_list_first(ictx->trans_list);
-		item = tmplist->data;
-		mindate = item->date;
-		maxgap = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_maxgap));
-
-		/* clear any previous same txn */
-		implist = g_list_first(ictx->trans_list);
-		while (implist != NULL)
-		{
-		Transaction *impope = implist->data;
-
-			if(impope->same != NULL)
-			{
-				g_list_free(impope->same);
-				impope->same = NULL;
-			}
-			implist = g_list_next(implist);
-		}
-		
-		
-		GQueue *txn_queue = da_obsolete_transaction_get_partial(mindate);
-
-		//tmplist = g_list_first(GLOBALS->ope_list);
-		tmplist = g_queue_peek_head_link(txn_queue);
-		while (tmplist != NULL)
-		{
-		Transaction *ope = tmplist->data;
-
-			if( ope->date >= mindate )
-			{
-				//DB( g_print("should check here %d: %s\n", ope->date, ope->wording) );
-
-				implist = g_list_first(ictx->trans_list);
-				while (implist != NULL)
-				{
-				Transaction *impope = implist->data;
-
-					if( ui_import_panel_transaction_is_duplicate(impope, ope, maxgap) )
-					{
-						//DB( g_print(" found %d: %s\n", impope->date, impope->wording) );
-
-						impope->same = g_list_append(impope->same, ope);
-						ictx->nb_duplicate++;
-					}
-
-					implist = g_list_next(implist);
-				}
-			}
-
-			tmplist = g_list_next(tmplist);
-		}
-		
-		g_queue_free (txn_queue);
-		
-	}
-
-	DB( g_print(" nb_duplicate = %d\n", ictx->nb_duplicate) );
-
-
-}
-
-
-static void ui_import_panel_account_fill(struct import_data *data)
-{
-ImportContext *ictx = &data->ictx;
-gchar *label = NULL;
-gchar *icon_name = NULL;
-GList *lacc, *list;
-	
-	DB( g_print("\n[import] panel account fill\n") );
-
-	if(ictx->nb_new_acc == 0)
-	{
-		icon_name = ICONNAME_INFO;
-		label = g_strdup( _("All seems all right here, your validation is optional!") );
-	}
-	else
-	{
-	gchar *tmpstr;
-
-		/* file name & path */
-		tmpstr = g_path_get_basename(data->filename);
-
-
-
-		icon_name = ICONNAME_WARNING;
-		label = g_strdup_printf(
-			_("No account information has been found into the file '%s'.\n"
-			  "Please select the appropriate action for account below."),
-		    tmpstr);
-
-		g_free(tmpstr);
-	}
-
-	gtk_label_set_text(GTK_LABEL(data->LB_acc), label);
-	gtk_image_set_from_icon_name(GTK_IMAGE(data->IM_acc), icon_name, GTK_ICON_SIZE_BUTTON);
-
-	g_free(label);
-
-	gtk_list_store_clear (GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc))));
-
-	lacc = list = g_hash_table_get_values(GLOBALS->h_acc);
-	while (list != NULL)
-	{
-	Account *item = list->data;
-
-		if( item->imported == TRUE )
-		{
-			ui_acc_affect_listview_add(GTK_TREE_VIEW(data->LV_acc), item);
-		}
-		list = g_list_next(list);
-	}
-	g_list_free(lacc);
-
-	DB( _import_context_debug(&data->ictx) );
-}
-
-
-/* count transaction with checkbox 'import'  */
-static void import_count_changes(struct import_data *data)
-{
-GList *lacc, *list;
-GtkTreeModel *model;
-GtkTreeIter	iter;
-gboolean valid;
-
-	DB( g_print("\n[import] count_final_changes\n") );
-
-	data->imp_cnt_acc = 0;
-
-	lacc = list = g_hash_table_get_values(GLOBALS->h_acc);
-	while (list != NULL)
-	{
-	Account *item = list->data;
-
-		if( item->imported == TRUE && item->imp_key != 0)
-		{
-			data->imp_cnt_acc++;
-		}
-		list = g_list_next(list);
-	}
-	g_list_free(lacc);
-
-
-	// then import transactions
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->imported_ope));
-
-	data->imp_cnt_trn = 0;
-
-	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
-	while (valid)
-	{
-	gboolean toimport;
-
-		gtk_tree_model_get(GTK_TREE_MODEL(model), &iter,
-			LST_OPE_IMPTOGGLE, &toimport,
-			-1);
-
-		if(toimport == TRUE)
-			data->imp_cnt_trn++;
-
-		/* Make iter point to the next row in the list store */
-		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
-	}
-}
-
-
-static void import_apply(struct import_data *data)
-{
-GtkTreeModel *model;
-GtkTreeIter	iter;
-gboolean valid;
-GList *lxxx, *list;
-
-	DB( g_print("\n[import] apply\n") );
-
-	// 1: persist imported accounts
-	lxxx = list = g_hash_table_get_values(GLOBALS->h_acc);
-	while (list != NULL)
-	{
-	Account *item = list->data;
-
-		if( item->imported == TRUE )
-		{
-			//only persist user selected to new account
-			if( item->imp_key == 0)
-			{
-				DB( g_print(" -> persist acc %x '%s' k=%d, ik=%d\n", item, item->name, item->key, item->imp_key) );
-				item->imported = FALSE;
-				g_free(item->imp_name);
-				item->imp_name = NULL;
-			}
-			//else
-			//DB( g_print(" -> keep exist acc %x '%s' k=%d, ik=%d\n", item, item->name, item->key, item->imp_key) );
-			
-		}
-		list = g_list_next(list);
-	}
-	g_list_free(lxxx);
-
-	// 2: persist imported payees
-	lxxx = list = g_hash_table_get_values(GLOBALS->h_pay);
-	while (list != NULL)
-	{
-	Payee *item = list->data;
-
-		if( item->imported == TRUE )
-		{
-			//DB( g_print(" -> persist pay '%s'\n", item->name) );
-			item->imported = FALSE;
-		}
-		list = g_list_next(list);
-	}
-	g_list_free(lxxx);
-
-	// 3: persist imported categories
-	lxxx = list = g_hash_table_get_values(GLOBALS->h_cat);
-	while (list != NULL)
-	{
-	Category *item = list->data;
-
-		if( item->imported == TRUE )
-		{
-			//DB( g_print(" -> persist cat '%s'\n", item->name) );
-			item->imported = FALSE;
-		}
-		list = g_list_next(list);
-	}
-	g_list_free(lxxx);
-
-	// 4: insert every transactions
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->imported_ope));
-	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
-	while (valid)
-	{
-	Transaction *item;
-	gboolean toimport;
-
-		gtk_tree_model_get(GTK_TREE_MODEL(model), &iter,
-			LST_DSPOPE_DATAS, &item,
-			LST_OPE_IMPTOGGLE, &toimport,
-			-1);
-
-		if(toimport == TRUE)
-		{
-		Account *acc;
-			
-			//DB(g_print("import %d to acc: %d\n", data->total, item->account)	);
-
-			//todo: here also test imp_key on account and change the key into the transaction
-			acc = da_acc_get(item->kacc);
-			if( (acc != NULL) && (acc->imp_key > 0) )
-			{
-				item->kacc = acc->imp_key;
-			}
-
-			//#1653957 change also kxferacc
-			if( item->paymode == PAYMODE_INTXFER )
-			{
-				acc = da_acc_get(item->kxferacc);
-				if( (acc != NULL) && (acc->imp_key > 0) )
-				{
-					item->kxferacc = acc->imp_key;
-				}
-			}
-			
-			transaction_add(item);
-		}
-
-		/* Make iter point to the next row in the list store */
-		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
-	}
-
-
-}
-
-/*
-**
-*/
-static gboolean
-ui_import_assistant_dispose(GtkWidget *widget, gpointer user_data)
-{
-struct import_data *data = user_data;
-
-	DB( g_print("\n[import] dispose\n") );
-
-#if MYDEBUG == 1
-	gpointer data2 = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	g_print(" user_data=%08x to be free, data2=%x\n", (gint)user_data, (gint)data2);
-#endif
-
-	g_free( data->filename );
-
-	import_clearall(data);
-
-
-
-
-	// todo: optimize this
-	if(data->imp_cnt_trn > 0)
-	{
-		GLOBALS->changes_count += data->imp_cnt_trn;
-
-		//our global list has changed, so update the treeview
-		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_BALANCE+UF_REFRESHALL));
-	}
-
-
-	g_free(user_data);
-
-
-	//delete-event TRUE abort/FALSE destroy
-	return FALSE;
-}
-
-
-static void ui_import_panel_transaction_fill(struct import_data *data)
-{
-ImportContext *ictx = &data->ictx;
-GtkWidget *view;
-GtkTreeModel *model;
-GtkTreeIter	iter;
-GList *tmplist;
-gchar *label = NULL;
-gchar *icon_name = NULL;
-
-	//DB( g_print("\n[import] fill imp operatoin\n") );
-
-	if(ictx->nb_duplicate == 0)
-	{
-		icon_name = ICONNAME_INFO;
-		label = _("All seems all right here, your validation is optional!");
-	}
-	else
-	{
-		icon_name = ICONNAME_WARNING;
-		label = 
-			_("Possible duplicate of existing transaction have been found, and disabled for import.\n"
-			  "Please check and choose the ones that have to be imported.");
-	}
-
-	gtk_label_set_text(GTK_LABEL(data->LB_txn), label);
-	gtk_image_set_from_icon_name(GTK_IMAGE(data->IM_txn), icon_name, GTK_ICON_SIZE_BUTTON);
-
-	
-	view = data->imported_ope;
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
-
-	gtk_list_store_clear (GTK_LIST_STORE(model));
-
-	g_object_ref(model); /* Make sure the model stays with us after the tree view unrefs it */
-	gtk_tree_view_set_model(GTK_TREE_VIEW(view), NULL); /* Detach model from view */
-
-	tmplist = g_list_first(ictx->trans_list);
-	while (tmplist != NULL)
-	{
-	Transaction *item = tmplist->data;
-
-		/* append to our treeview */
-			gtk_list_store_append (GTK_LIST_STORE(model), &iter);
-
-				//DB( g_print(" populate: %s\n", ope->ope_Word) );
-
-				gtk_list_store_set (GTK_LIST_STORE(model), &iter,
-				LST_DSPOPE_DATAS, item,
-				LST_OPE_IMPTOGGLE, item->same == NULL ? TRUE : FALSE,
-				-1);
-
-		//DB( g_print(" - fill: %d, %s %.2f %x\n", item->account, item->wording, item->amount, item->same) );
-
-		tmplist = g_list_next(tmplist);
-	}
-
-	gtk_tree_view_set_model(GTK_TREE_VIEW(view), model); /* Re-attach model to view */
-
-	g_object_unref(model);
-
-
-
-}
-
-
-static void ui_import_panel_account_change_action_toggled_cb(GtkRadioButton *radiobutton, gpointer user_data)
-{
-struct import_target_data *data;
-gboolean new_account;
-
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(radiobutton), GTK_TYPE_WINDOW)), "inst_data");
-
-	DB( g_print("\n[import] account type toggle\n") );
-
-	new_account = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->radio[0]));
-
-	gtk_widget_set_sensitive(data->label1, new_account);
-	gtk_widget_set_sensitive(data->getwidget1, new_account);
-
-	gtk_widget_set_sensitive(data->label2, new_account^1);
-	gtk_widget_set_sensitive(data->getwidget2, new_account^1);
-
-}
-
-
-static void ui_import_panel_account_change_action(GtkWidget *widget, gpointer user_data)
-{
-struct import_data *data;
-struct import_target_data ddata;
-ImportContext *ictx;
-GtkWidget *dialog, *content_area, *group_grid, *label ;
-guint32 key;
-gint row;
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n[import] account_change_action\n") );
-
-	ictx = &data->ictx;
-	
-	key = ui_acc_affect_listview_get_selected_key(GTK_TREE_VIEW(data->LV_acc));
-	if( key > 0 )
-	{
-	Account *item;
-
-		item = da_acc_get( key );
-
-		dialog = gtk_dialog_new_with_buttons (_("Change account action"),
-						    GTK_WINDOW (data->assistant),
-						    0,
-						    _("_Cancel"),
-						    GTK_RESPONSE_REJECT,
-						    _("_OK"),
-						    GTK_RESPONSE_ACCEPT,
-						    NULL);
-
-		//store our window private data
-		g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)&ddata);
-
-		content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
-		
-		// group :: dialog
-		group_grid = gtk_grid_new ();
-		gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-		gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-		gtk_container_set_border_width (GTK_CONTAINER(group_grid), SPACING_MEDIUM);
-		gtk_box_pack_start (GTK_BOX (content_area), group_grid, TRUE, TRUE, SPACING_SMALL);
-
-		row = 0;
-		ddata.radio[0] = gtk_radio_button_new_with_label (NULL, _("create new"));
-		gtk_grid_attach (GTK_GRID (group_grid), ddata.radio[0], 0, row, 3, 1);
-
-			row++;
-			label = make_label(_("_Name:"), 0, 0.5);
-			ddata.label1 = label;
-			gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-
-			ddata.getwidget1 = gtk_entry_new();
-			gtk_grid_attach (GTK_GRID (group_grid), ddata.getwidget1, 2, row, 1, 1);
-
-		row++;
-		ddata.radio[1] = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON (ddata.radio[0]), _("use existing"));
-		gtk_grid_attach (GTK_GRID (group_grid), ddata.radio[1], 0, row, 3, 1);
-		
-			row++;
-			label = make_label(_("A_ccount:"), 0, 0.5);
-			ddata.label2 = label;
-			gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-
-			ddata.getwidget2 = ui_acc_comboboxentry_new(NULL);
-			gtk_grid_attach (GTK_GRID (group_grid), ddata.getwidget2, 2, row, 1, 1);
-
-	//initialize
-		if( ictx->next_acc_key > 0 )	//if there were already some accounts
-		{
-			gtk_widget_set_sensitive(ddata.radio[1], TRUE);
-			if( item->imp_key > 0 )
-			{
-				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ddata.radio[1]), TRUE);
-			}
-		}
-		else
-		{
-			gtk_widget_set_sensitive(ddata.radio[1], FALSE);
-
-		}
-
-		gtk_entry_set_text(GTK_ENTRY(ddata.getwidget1), item->name);
-		ui_acc_comboboxentry_populate(GTK_COMBO_BOX(ddata.getwidget2), GLOBALS->h_acc, ACC_LST_INSERT_NORMAL);
-		ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(ddata.getwidget2), item->imp_key);
-
-		ui_import_panel_account_change_action_toggled_cb(GTK_RADIO_BUTTON (ddata.radio[0]), NULL);
-
-		gtk_widget_show_all(group_grid);
-
-		g_signal_connect (ddata.radio[0], "toggled", G_CALLBACK (ui_import_panel_account_change_action_toggled_cb), NULL);
-
-
-		//wait for the user
-		gint result = gtk_dialog_run (GTK_DIALOG (dialog));
-
-		if(result == GTK_RESPONSE_ACCEPT)
-		{
-		gchar *name;
-		gboolean bnew;
-		guint key;
-
-			key = ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(ddata.getwidget2));
-
-			bnew = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ddata.radio[0]));
-			if( bnew )
-			{
-
-				name = (gchar *)gtk_entry_get_text(GTK_ENTRY(ddata.getwidget1));
-
-				if(strcasecmp(name, item->name))
-				{
-
-					DB( g_print("name '%s', existing acc %d\n", name, key) );
-
-					if (name && *name)
-					{
-						if( account_rename(item, name) == FALSE )
-						{
-							ui_dialog_msg_infoerror(GTK_WINDOW(dialog), GTK_MESSAGE_ERROR,
-								_("Error"),
-								_("Cannot rename this Account,\n"
-								"from '%s' to '%s',\n"
-								"this name already exists."),
-								item->name,
-								name
-								);
-						}
-					}
-				}
-				else
-				{
-					item->imp_key = 0;
-				}
-			}
-			else
-			{
-				item->imp_key = key;
-			}
-
-			//we should refresh duplicate
-			ui_import_panel_transaction_find_duplicate(data);
-			ui_import_panel_transaction_fill(data);
-
-	    }
-
-		// cleanup and destroy
-		gtk_widget_destroy (dialog);
-	}
-
-}
-
-
-static void ui_import_panel_filechooser_selection_changed(GtkWidget *widget, gpointer user_data)
-{
-struct import_data *data = user_data;
-gint page_number;
-GtkWidget *current_page;
-gchar *filename;
-
-	page_number = gtk_assistant_get_current_page (GTK_ASSISTANT(data->assistant));
-
-	DB( g_print("\n[import] selchange (page %d)\n", page_number+1) );
-
-	data->valid = FALSE;
-
-	filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(data->filechooser));
-	if( filename == NULL )
-	{
-		gtk_label_set_text(GTK_LABEL(data->user_info), _("Please select a file..."));
-		//current_page = gtk_assistant_get_nth_page (GTK_ASSISTANT(data->assistant), page_number);
-		//gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), current_page, FALSE);
-	}
-	else
-	{
-		if( page_number == PAGE_SELECTFILE )
-		{
-			if(data->filename)
-				g_free( data->filename );
-			data->filename = filename;
-			//DB( g_print(" filename -> %s\n", data->filename) );
-
-			data->filetype = homebank_alienfile_recognize(data->filename);
-			switch(data->filetype)
-			{
-				case FILETYPE_QIF:
-					gtk_label_set_text(GTK_LABEL(data->user_info), _("QIF file recognised !"));
-					data->valid = TRUE;
-					break;
-
-				case FILETYPE_OFX:
-					#ifndef NOOFX
-					gtk_label_set_text(GTK_LABEL(data->user_info), _("OFX file recognised !"));
-					data->valid = TRUE;
-					#else
-					gtk_label_set_text(GTK_LABEL(data->user_info), _("** OFX support is disabled **"));
-					#endif
-					break;
-
-				case FILETYPE_CSV_HB:
-					gtk_label_set_text(GTK_LABEL(data->user_info), _("CSV transaction file recognised !"));
-					data->valid = TRUE;
-					break;
-
-				default:
-					data->filetype = FILETYPE_UNKNOW;
-					gtk_label_set_text(GTK_LABEL(data->user_info), _("Unknown/Invalid file..."));
-					break;
-			}
-
-			current_page = gtk_assistant_get_nth_page (GTK_ASSISTANT(data->assistant), page_number);
-			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), current_page, data->valid);
-
-		}
-
-	}
-
-	if(data->valid == TRUE)
-	{
-		gtk_widget_show(data->ok_image);
-		gtk_widget_hide(data->ko_image);
-	}
-	else
-	{
-		gtk_widget_show(data->ko_image);
-		gtk_widget_hide(data->ok_image);
-	}
-
-}
-
-
-
-static void ui_import_panel_transaction_fill_same(GtkTreeSelection *treeselection, gpointer user_data)
-{
-struct import_data *data;
-GtkTreeSelection *selection;
-GtkTreeModel		 *model, *newmodel;
-GtkTreeIter			 iter, newiter;
-GList *tmplist;
-GtkWidget *view, *widget;
-
-	widget = GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection));
-
-
-	//DB( g_print("\n[import] fillsame\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	view = data->duplicat_ope;
-
-	newmodel = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
-
-	gtk_list_store_clear (GTK_LIST_STORE(newmodel));
-
-
-
-	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->imported_ope));
-	//if true there is a selected node
-	if (gtk_tree_selection_get_selected(selection, &model, &iter))
-	{
-	Transaction *item;
-
-		gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, &item, -1);
-
-		if( item->same != NULL )
-		{
-			tmplist = g_list_first(item->same);
-			while (tmplist != NULL)
-			{
-			Transaction *tmp = tmplist->data;
-
-				/* append to our treeview */
-					gtk_list_store_append (GTK_LIST_STORE(newmodel), &newiter);
-
-					gtk_list_store_set (GTK_LIST_STORE(newmodel), &newiter,
-					LST_DSPOPE_DATAS, tmp,
-					-1);
-
-				//DB( g_print(" - fill: %s %.2f %x\n", item->wording, item->amount, (unsigned int)item->same) );
-
-				tmplist = g_list_next(tmplist);
-			}
-		}
-
-	}
-
-	
-
-
-}
-
-
-static void ui_import_panel_properties_fill(struct import_data *data)
-{
-ImportContext *ictx = &data->ictx;
-gchar *tmpstr;
-
-	/* file name & path */
-	tmpstr = g_path_get_basename(data->filename);
-	gtk_label_set_text(GTK_LABEL(data->TX_filename), tmpstr);
-	g_free(tmpstr);
-	
-	tmpstr = g_path_get_dirname(data->filename);
-	gtk_label_set_text(GTK_LABEL(data->TX_filepath), tmpstr);
-	g_free(tmpstr);
-	
-	gtk_label_set_text(GTK_LABEL(data->TX_encoding), ictx->encoding);
-	
-	gtk_label_set_text(GTK_LABEL(data->TX_datefmt), CYA_IMPORT_DATEORDER[ictx->datefmt]);
-
-	/* file content detail */
-	//TODO: difficult translation here
-	tmpstr = g_strdup_printf(_("account: %d - transaction: %d - payee: %d - categorie: %d"),
-				ictx->nb_src_acc,
-				ictx->cnt_new_ope,
-				ictx->cnt_new_pay,
-				ictx->cnt_new_cat
-				);
-	gtk_label_set_text(GTK_LABEL(data->TX_filedetails), tmpstr);
-	g_free(tmpstr);
-
-	DB( _import_context_debug(&data->ictx) );
-	
-}
-
-
-static void ui_import_panel_confirmation_fill(struct import_data *data)
-{
-ImportContext *ictx = &data->ictx;
-	
-	/* account summary */
-	ui_label_set_integer(GTK_LABEL(data->TX_acc_upd), data->imp_cnt_acc);
-	ui_label_set_integer(GTK_LABEL(data->TX_acc_new), ictx->nb_src_acc - data->imp_cnt_acc);
-
-	/* transaction summary */
-	ui_label_set_integer(GTK_LABEL(data->TX_trn_imp), data->imp_cnt_trn);
-	ui_label_set_integer(GTK_LABEL(data->TX_trn_nop), ictx->cnt_new_ope - data->imp_cnt_trn);
-	ui_label_set_integer(GTK_LABEL(data->TX_trn_asg), data->imp_cnt_asg);
-
-}
-
-static void
-ui_import_assistant_apply (GtkWidget *widget, gpointer user_data)
-{
-struct import_data *data;
-
-	DB( g_print("\n[import] apply\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-
-	import_apply(data);
-
-}
-
-static void
-ui_import_assistant_close_cancel (GtkWidget *widget, gpointer user_data)
-{
-struct import_data *data;
-	GtkWidget *assistant = (GtkWidget *) user_data;
-
-	DB( g_print("\n[import] close\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	ui_import_assistant_dispose(widget, data);
-
-
-	//g_free(data);
-
-
-	gtk_widget_destroy (assistant);
-	//assistant = NULL;
-}
-
-
-static void _import_tryload_file(struct import_data *data)
-{
-ImportContext *ictx = &data->ictx;
-
-	DB( g_print("\n[import] try load file\n") );
-
-	DB( g_print(" -> encoding='%s'\n", ictx->encoding) );
-	DB( g_print(" -> date format='%s' (%d)\n", CYA_IMPORT_DATEORDER[ictx->datefmt], ictx->datefmt) );
-
-	
-	switch(data->filetype)
-	{
-#ifndef NOOFX
-		/* ofx_acc_list & ofx_ope_list are filled here */
-		case FILETYPE_OFX:
-			ictx->trans_list = homebank_ofx_import(data->filename, &data->ictx);
-			break;
-#endif
-		case FILETYPE_QIF:
-			ictx->trans_list = homebank_qif_import(data->filename, &data->ictx);
-			break;
-
-		case FILETYPE_CSV_HB:
-			ictx->trans_list = homebank_csv_import(data->filename, &data->ictx);
-			break;
-	}
-
-	DB( g_print(" -> result: nbtrans=%d, date errors=%d\n", ictx->cnt_new_ope, ictx->cnt_err_date) );
-
-	
-}
-
-
-static void import_file_import(struct import_data *data)
-{
-ImportContext *ictx = &data->ictx;
-
-	DB( g_print("\n[import] real import\n") );
-
-	import_clearall(data);
-	ictx->encoding = homebank_file_getencoding(data->filename);
-	_import_tryload_file(data);
-
-	// if fail, try to load with different date format
-	if( ictx->cnt_err_date > 0)
-	{
-	const gchar *encoding = ictx->encoding;
-	gint i;
-
-		for(i=0;i<NUM_PRF_DATEFMT;i++)
-		{
-		gboolean do_fix;
-
-			if(i != PREFS->dtex_datefmt)	//don't reload with user pref date format
-			{
-				do_fix = ui_dialog_msg_question(
-					GTK_WINDOW(data->assistant),
-					_("Some date convertion failed"),
-					_("Reload using date order: '%s' ?"),
-					CYA_IMPORT_DATEORDER[i]
-					);
-
-				if(do_fix == GTK_RESPONSE_YES)
-				{	
-					DB( g_print(" fail, reload with '%s'\n", CYA_IMPORT_DATEORDER[i]) );
-					//#1448549
-					import_clearall(data);
-					ictx->encoding = encoding; //#1425986 keep encoding with us
-					ictx->datefmt = i;
-					_import_tryload_file(data);
-
-					DB( g_print(" -> reloaded: nbtrans=%d, date errors=%d\n", ictx->cnt_new_ope, ictx->cnt_err_date) );
-
-					if(ictx->cnt_err_date == 0)
-						break;
-				}
-
-			}
-		}
-		
-	}
-
-	DB( g_print(" end of try import\n") );
-
-	// sort by date
-	ictx->trans_list = da_transaction_sort(ictx->trans_list);
-
-}
-
-/**
- * ui_import_assistant_forward_page_func:
- *
- * define the page to be called when the user forward
- *
- * Return value: the page number
- *
- */
-static gint
-ui_import_assistant_forward_page_func(gint current_page, gpointer func_data)
-{
-gint next_page;
-
-	DB( g_print("---------------------------\n") );
-	DB( g_print("\n[import] forward page func :: page %d\n", current_page) );
-
-	DB( g_print(" -> current: %d %s\n", current_page, page_titles[MIN(current_page, NUM_PAGE-1)] ) );
-
-#ifdef MYDEBUG
-	/*
-	struct import_data *data = func_data;
-	gint i
-	for(i=0;i<NUM_PAGE;i++)
-	{
-		g_print("%d: %d '%s'\n", i, 
-		        gtk_assistant_get_page_complete(GTK_ASSISTANT(data->assistant), data->pages[i]),
-		        page_titles[i]
-				);
-	}*/
-#endif
-	
-	DB( g_print(" -> current: %d %s\n", current_page, page_titles[MIN(current_page, NUM_PAGE-1)] ) );
-	
-	next_page = current_page + 1;	
-	
-	switch(current_page)
-	{
-		/*case PAGE_IMPORT:
-			// if no new account, skip the account page
-			if(ictx->nb_new_acc == 0)
-				next_page = PAGE_TRANSACTION;
-			break;*/
-	}
-
-	DB( g_print(" -> next: %d %s\n", next_page, page_titles[MIN(next_page, NUM_PAGE-1)]  ) );
-
-	return next_page;
-}
-
-
-
-
-static void
-ui_import_assistant_prepare (GtkWidget *widget, GtkWidget *page, gpointer user_data)
-{
-struct import_data *data;
-ImportContext *ictx;
-gint current_page, n_pages;
-gchar *title;
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	ictx = &data->ictx;
-	
-	current_page = gtk_assistant_get_current_page (GTK_ASSISTANT(data->assistant));
-	n_pages = gtk_assistant_get_n_pages (GTK_ASSISTANT(data->assistant));
-
-	DB( g_print("\n[import] prepare %d of %d\n", current_page, n_pages) );
-
-	switch( current_page  )
-	{
-		case PAGE_WELCOME:
-			DB( g_print(" -> 1 intro\n") );
-			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, TRUE);
-			break;
-
-		case PAGE_SELECTFILE:
-			DB( g_print(" -> 2 file choose\n") );
-		
-			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, FALSE);
-			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), data->pages[PAGE_ACCOUNT], FALSE);
-			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), data->pages[PAGE_TRANSACTION], FALSE);
-			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), data->pages[PAGE_CONFIRM], FALSE);
-
-			gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(data->filechooser), PREFS->path_import);
-			DB( g_print(" -> set current folder '%s'\n", PREFS->path_import) );
-
-			// the page complete is contextual in ui_import_panel_filechooser_selection_changed
-			break;
-
-		case PAGE_IMPORT:
-			DB( g_print(" -> 3 real import\n") );
-
-			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, FALSE);
-			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), data->pages[PAGE_ACCOUNT], FALSE);
-
-			/* remind folder to preference */
-			gchar *folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(data->filechooser));
-			DB( g_print(" -> store folder '%s'\n", folder) );
-			g_free(PREFS->path_import);
-			PREFS->path_import = folder;
-
-			import_file_import(data);
-			_import_context_count(data);
-			
-			if( ictx->cnt_new_ope > 0 && ictx->cnt_err_date <= 0 )
-			{   
-					if(ictx->nb_new_acc == 0)
-					{
-						DB( g_print(" -> jump to Transaction page\n") );
-						//gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), data->pages[PAGE_ACCOUNT], TRUE);
-						gtk_assistant_next_page(GTK_ASSISTANT(data->assistant));
-						gtk_assistant_next_page(GTK_ASSISTANT(data->assistant));
-						gtk_assistant_next_page(GTK_ASSISTANT(data->assistant));
-						//gtk_assistant_set_current_page (GTK_ASSISTANT(data->assistant), PAGE_TRANSACTION);
-					}
-					else
-					{
-						DB( g_print(" -> jump to Account page\n") );
-						//gtk_assistant_set_current_page (GTK_ASSISTANT(data->assistant), PAGE_ACCOUNT);
-						gtk_assistant_next_page(GTK_ASSISTANT(data->assistant));
-						gtk_assistant_next_page(GTK_ASSISTANT(data->assistant));
-					}
-
-				gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, TRUE);
-			}
-			break;		
-
-		case PAGE_PROPERTIES:
-			DB( g_print(" -> 4 properties\n") );
-			
-
-			ui_import_panel_properties_fill(data);
-
-			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, TRUE);
-			break;
-			
-		case PAGE_ACCOUNT:
-			DB( g_print(" -> 5 account\n") );
-	
-			ui_import_panel_account_fill(data);
-
-			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, TRUE);
-			break;
-
-		case PAGE_TRANSACTION:
-			DB( g_print(" -> 6 transaction\n") );
-
-			//todo: should be optional
-			data->imp_cnt_asg = transaction_auto_assign(ictx->trans_list, 0);
-
-			ui_import_panel_transaction_find_duplicate(data);
-
-			ui_import_panel_transaction_fill(data);
-
-			if( ictx->nb_duplicate > 0 )
-			{
-				gtk_widget_show(data->GR_duplicate);
-				gtk_expander_set_expanded(GTK_EXPANDER(data->GR_duplicate), TRUE);
-			}
-			else
-			{
-				gtk_widget_hide(data->GR_duplicate);
-			}
-
-			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, TRUE);
-			break;
-			
-		case PAGE_CONFIRM:
-		{
-			DB( g_print(" -> 7 confirmation\n") );
-
-			//todo:rework this
-			import_count_changes(data);
-
-			ui_import_panel_confirmation_fill(data);
-
-
-
- 			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, TRUE);
-			break;
-		}
-	}
-
-	title = g_strdup_printf ( _("Import assistant (%d of %d)"), current_page + 1 , n_pages );
-	gtk_window_set_title (GTK_WINDOW (data->assistant), title);
-	g_free (title);
-}
-
-
-
-
-
-
-static void
-ui_import_panel_transaction_refresh (GtkWidget *widget, gpointer data)
-{
-
-	DB( g_print("\n[import] refresh transaction\n") );
-
-	ui_import_panel_transaction_find_duplicate(data);
-	ui_import_panel_transaction_fill(data);
-
-}
-
-
-static void ui_acc_affect_listview_onRowActivated (GtkTreeView        *treeview,
-                       GtkTreePath        *path,
-                       GtkTreeViewColumn  *col,
-                       gpointer            userdata)
-{
-//GtkTreeModel		 *model;
-
-	//model = gtk_tree_view_get_model(treeview);
-	//gtk_tree_model_get_iter_first(model, &iter);
-	//if(gtk_tree_selection_iter_is_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), &iter) == FALSE)
-	//{
-		ui_import_panel_account_change_action(GTK_WIDGET(treeview), NULL);
-	//}
 }
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-static GtkWidget *
-ui_import_panel_welcome_create(GtkWidget *assistant, struct import_data *data)
+static void ui_import_page_filechooser_remove_action(GtkWidget *widget, gpointer user_data)
 {
-GtkWidget *vbox, *label, *align;
+struct import_data *data;
+ImportContext *ictx;
+GtkTreeModel *model;
+GtkTreeIter iter;
+GtkTreeSelection *selection;
 
-	align = gtk_alignment_new(0.5, 0.5, 0.0, 0.0);
-	gtk_alignment_set_padding(GTK_ALIGNMENT(align), 0, 0, 0, 0);
+	DB( g_print("\n[ui-import] page_filechooser_remove_action\n") );
 
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
-	//gtk_container_set_border_width (GTK_CONTAINER(vbox), SPACING_MEDIUM);
-	gtk_container_add(GTK_CONTAINER(align), vbox);
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	ictx = &data->ictx;
 
-	label = make_label(
-	    _("Welcome to the HomeBank Import Assistant.\n\n" \
-		"With this assistant you will be guided throught the process\n" \
-		"of importing an external file into HomeBank.\n\n" \
-	    "No changes will be made until you click \"Apply\" at the end\n" \
-	    "of this assistant.")
-			, 0., 0.0);
-	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, SPACING_SMALL);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_file));
+	//if true there is a selected node
+	if (gtk_tree_selection_get_selected(selection, &model, &iter))
+	{
+	GenFile *genfile;
 
-	/* supported format */
+		gtk_tree_model_get(model, &iter, LST_GENFILE_POINTER, &genfile, -1);
 
+		//remove genacc & gentxn
+		gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
 
-	label = make_label(
-	    _("HomeBank can import files in the following formats:\n" \
-		"- QIF\n" \
-		"- OFX/QFX (optional at compilation time)\n" \
-		"- CSV (format is specific to HomeBank, see the documentation)\n" \
-	), 0.0, 0.0);
+		ictx->gen_lst_file = g_list_remove(ictx->gen_lst_file, genfile);
+		da_gen_file_free(genfile);
+	}
 
-	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, SPACING_SMALL);
-
-
-	gtk_widget_show_all (align);
-
-	gtk_assistant_append_page (GTK_ASSISTANT (assistant), align);
-	gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), align, GTK_ASSISTANT_PAGE_INTRO);
-	gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), align, _(page_titles[PAGE_WELCOME]));
-	//gtk_assistant_set_page_complete (GTK_ASSISTANT (assistant), align, TRUE);
-
-	return align;
+	ui_import_page_filechooser_eval(widget,  NULL);
 }
 
 
-static GtkWidget *
-ui_import_panel_filechooser_create (GtkWidget *assistant, struct import_data *data)
+static void ui_import_page_filechooser_add_action(GtkWidget *widget, gpointer user_data)
 {
-GtkWidget *vbox, *hbox, *align, *widget, *label;
+struct import_data *data;
+ImportContext *ictx;
+GtkWidget *dialog;
 GtkFileFilter *filter;
+gint res;
 
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
-	//gtk_container_set_border_width (GTK_CONTAINER(vbox), SPACING_MEDIUM);
+	DB( g_print("\n[ui-import] page_filechooser_add_action\n") );
 
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	ictx = &data->ictx;
 
-//	widget = gtk_file_chooser_button_new ("Pick a File", GTK_FILE_CHOOSER_ACTION_OPEN);
+	dialog = gtk_file_chooser_dialog_new ("Open File",
+		                                  GTK_WINDOW(data->assistant),
+		                                  GTK_FILE_CHOOSER_ACTION_OPEN,
+		                                  _("_Cancel"),
+		                                  GTK_RESPONSE_CANCEL,
+		                                  _("_Open"),
+		                                  GTK_RESPONSE_ACCEPT,
+		                                  NULL);
 
-	widget = gtk_file_chooser_widget_new(GTK_FILE_CHOOSER_ACTION_OPEN);
+	gtk_window_set_position(GTK_WINDOW(data->assistant), GTK_WIN_POS_CENTER_ON_PARENT);
 
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(dialog), PREFS->path_import);
+	DB( g_print(" set current folder '%s'\n", PREFS->path_import) );
 
-	
-	data->filechooser = widget;
-	gtk_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
+	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("Known files"));
@@ -1683,542 +749,1494 @@ GtkFileFilter *filter;
 	gtk_file_filter_add_pattern (filter, "*.[OoQq][Ff][Xx]");
 	#endif
 	gtk_file_filter_add_pattern (filter, "*.[Cc][Ss][Vv]");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER(widget), filter);
-	if(data->filetype == FILETYPE_UNKNOW)
-		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER(widget), filter);
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER(dialog), filter);
+	//if(data->filetype == FILETYPE_UNKNOWN)
+	//	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER(dialog), filter);
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("QIF files"));
 	gtk_file_filter_add_pattern (filter, "*.[Qq][Ii][Ff]");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER(widget), filter);
-	if(data->filetype == FILETYPE_QIF)
-		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER(widget), filter);
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER(dialog), filter);
+	//if(data->filetype == FILETYPE_QIF)
+	//	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER(dialog), filter);
 	
 	#ifndef NOOFX
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("OFX/QFX files"));
 	gtk_file_filter_add_pattern (filter, "*.[OoQq][Ff][Xx]");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER(widget), filter);
-	if(data->filetype == FILETYPE_OFX)
-		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER(widget), filter);
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER(dialog), filter);
+	//if(data->filetype == FILETYPE_OFX)
+	//	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER(dialog), filter);
 	#endif
 
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("CSV files"));
 	gtk_file_filter_add_pattern (filter, "*.[Cc][Ss][Vv]");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER(widget), filter);
-	if(data->filetype == FILETYPE_CSV_HB)
-		gtk_file_chooser_set_filter (GTK_FILE_CHOOSER(widget), filter);
-
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER(dialog), filter);
+	//if(data->filetype == FILETYPE_CSV_HB)
+	//	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER(dialog), filter);
 	
 	filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, _("All files"));
 	gtk_file_filter_add_pattern (filter, "*");
-	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER(widget), filter);
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER(dialog), filter);
 
 
-/* our addon message */
-	align = gtk_alignment_new(0.65, 0, 0, 0);
-		gtk_box_pack_start (GTK_BOX (vbox), align, FALSE, FALSE, 0);
+	res = gtk_dialog_run (GTK_DIALOG (dialog));
+	if (res == GTK_RESPONSE_ACCEPT)
+	{
+	GSList *list;
 
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-		gtk_container_add(GTK_CONTAINER(align), hbox);
+		GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+		list = gtk_file_chooser_get_filenames(chooser);
+		while(list)
+		{
+		GenFile *genfile;
 
-	label = gtk_label_new("");
-	data->user_info = label;
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, SPACING_SMALL);
+			DB( g_print("  selected '%p'\n", list->data) );
 
-	gimp_label_set_attributes (GTK_LABEL (label),
-                             PANGO_ATTR_SCALE,  PANGO_SCALE_LARGE,
-							PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD,
-                             -1);
+			genfile = da_gen_file_append_from_filename(ictx, list->data);
+			if(genfile)
+			list_file_add(data->LV_file, genfile);
 
+			list = g_slist_next(list);
+		}
+		g_slist_free_full (list, g_free);
 
-
-	widget = gtk_image_new_from_icon_name(ICONNAME_HB_FILE_VALID, GTK_ICON_SIZE_LARGE_TOOLBAR);
-	data->ok_image = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-
-	widget = gtk_image_new_from_icon_name(ICONNAME_HB_FILE_INVALID, GTK_ICON_SIZE_LARGE_TOOLBAR);
-	data->ko_image = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-
-
-	gtk_widget_show_all (vbox);
-	gtk_widget_hide(data->ok_image);
-	gtk_widget_hide(data->ko_image);
-
-
-	gtk_assistant_append_page (GTK_ASSISTANT (assistant), vbox);
-	//gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), vbox, GTK_ASSISTANT_PAGE_CONTENT);
-	gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), vbox, _(page_titles[PAGE_SELECTFILE]));
-
-
-
-	return vbox;
+		/* remind folder to preference */
+		gchar *folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(chooser));
+		DB( g_print(" store folder '%s'\n", folder) );
+		g_free(PREFS->path_import);
+		PREFS->path_import = folder;
+	}
+	
+	gtk_widget_destroy (dialog);
+	
+	ui_import_page_filechooser_eval(widget,  NULL);
+	
 }
 
 
-static GtkWidget *
-ui_import_panel_import_create (GtkWidget *assistant, struct import_data *data)
+static void ui_import_page_confirmation_fill(struct import_data *data)
 {
-GtkWidget *align, *content_grid;
-GtkWidget *label, *widget;
-gchar *txt;
+ImportContext *ictx = &data->ictx;
+GList *list;
+GString *node;
 
-	align = gtk_alignment_new(0.5, 0.5, 0.0, 0.0);
-	
-	content_grid = gtk_grid_new();
-	gtk_grid_set_column_spacing (GTK_GRID (content_grid), SPACING_MEDIUM);
-	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
-	gtk_container_add(GTK_CONTAINER(align), content_grid);
-	
-	widget = gtk_image_new_from_icon_name(ICONNAME_ERROR, GTK_ICON_SIZE_DIALOG );
-	gtk_grid_attach (GTK_GRID (content_grid), widget, 0, 0, 1, 1);
-	
-	txt = _("A general error occured, and this file cannot be loaded.");
-	label = gtk_label_new(txt);
-	gtk_widget_set_valign (label, GTK_ALIGN_CENTER);
-	gtk_grid_attach (GTK_GRID (content_grid), label, 1, 0, 1, 1);
-	
-	gtk_widget_show_all (align);
-	gtk_assistant_append_page (GTK_ASSISTANT (assistant), align);
-	//gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), align, GTK_ASSISTANT_PAGE_PROGRESS);
-	gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), align, _(page_titles[PAGE_IMPORT]));
-	
-	return align;
+	DB( g_print("\n[ui-import] page_confirmation_fill\n") );
+
+	node = g_string_sized_new(255);
+
+	list = g_list_first(ictx->gen_lst_acc);
+	while (list != NULL)
+	{
+	GenAcc *genacc = list->data;
+	gchar *targetname = NULL;
+
+		switch( genacc->kacc )
+		{
+			case DST_ACC_GLOBAL:
+				targetname = _("new global account");
+				break;
+			case DST_ACC_NEW:
+				targetname = _("new account");
+				break;
+			case DST_ACC_SKIP:
+				targetname = _("skipped");
+				break;
+			default:
+			{
+			Account *acc = da_acc_get (genacc->kacc);
+
+				if(acc)
+					targetname = acc->name;
+			}
+			break;
+		}
+				
+		//line1: title
+		g_string_append_printf(node, "<b>'%s'</b>\n => '%s'", genacc->name, targetname);
+
+		//line2: count	
+		if( genacc->kacc != DST_ACC_SKIP)
+		{
+			hb_import_gen_acc_count_txn(ictx, genacc);
+			g_string_append_printf(node, _(", %d of %d transactions"), genacc->n_txnimp, genacc->n_txnall);
+		}
+
+		g_string_append(node, "\n\n");
+
+		list = g_list_next(list);
+	}
+
+	gtk_label_set_markup (GTK_LABEL(data->TX_summary), node->str);
+
+	g_string_free(node, TRUE);
 }
 
 
-
-static GtkWidget *
-ui_import_panel_properties_create (GtkWidget *assistant, struct import_data *data)
+static gboolean ui_import_page_import_eval(GtkWidget *widget, gpointer user_data)
 {
-GtkWidget *content_grid, *group_grid;
-GtkWidget *label, *widget;
-gint crow, row;
+//struct import_data *data;
+//ImportContext *ictx;
+//gint count;
+
+	DB( g_print("\n[ui-import] page_import_eval\n") );
+
+
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	//ictx = &data->ictx;
+
+	//count = g_list_length (ictx->gen_lst_acc);
+
+	//DB( g_print(" count=%d (max=%d)\n", count, TXN_MAX_ACCOUNT) );
+
+	//if( count <= TXN_MAX_ACCOUNT )
+		return TRUE;
+
+	//return FALSE;
+}
+
+
+static void ui_import_page_filechooser_eval(GtkWidget *widget, gpointer user_data)
+{
+struct import_data *data;
+ImportContext *ictx;
+GList *list;
+gint count = 0;
+
+	DB( g_print("\n[ui-import] page_filechooser_eval\n") );
+
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	ictx = &data->ictx;
+
+	list = g_list_first(ictx->gen_lst_file);
+	while (list != NULL)
+	{
+	GenFile *genfile = list->data;
+
+		if(genfile->filetype != FILETYPE_UNKNOWN)
+			count++;
+
+		list = g_list_next(list);
+	}	
+
+	gint index = gtk_assistant_get_current_page(GTK_ASSISTANT(data->assistant));
+	GtkWidget *current_page = gtk_assistant_get_nth_page (GTK_ASSISTANT(data->assistant), index);
+	gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), current_page, (count > 0) ? TRUE : FALSE);
+
+}
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+static ImpTxnData *ui_import_page_transaction_data_get(GArray *txndata, guint32 idx)
+{
+//gint i;
 	
-	content_grid = gtk_grid_new();
-	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
-	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+	/*g_print(" array @%p, len is %d\n", txndata, txndata->len);
+	for(i=0;i<txndata->len;i++)
+		g_print(" %d %p\n", i, &g_array_index(txndata, ImpTxnData, i) );
 
-	crow = 0;
-	// group :: File properties
-    group_grid = gtk_grid_new ();
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
-	
-	label = make_label_group(_("File properties"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
-
-	row = 1;
-	label = make_label(_("Name:"), 0.0, 0.5);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_label(NULL, 0.0, 0.5);
-	data->TX_filename = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-	row++;
-	label = make_label(_("Path:"), 0.0, 0.5);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_label(NULL, 0.0, 0.5);
-	data->TX_filepath = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-	row++;
-	label = make_label(_("Encoding:"), 0.0, 0.5);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_label(NULL, 0.0, 0.5);
-	data->TX_encoding = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-	row++;
-	label = make_label(_("Date format:"), 0.0, 0.5);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_label(NULL, 0.0, 0.5);
-	data->TX_datefmt = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-	// group :: File content
-    group_grid = gtk_grid_new ();
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
-	
-	label = make_label_group(_("File content"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
-
-	row = 1;
-	label = make_label(_("Content:"), 0.0, 0.5);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_label(NULL, 0.0, 0.5);
-	data->TX_filedetails = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-	/*
-	expander = gtk_expander_new (_("File content"));
-	gtk_box_pack_start (GTK_BOX (container), expander, TRUE, TRUE, 0);
- 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	widget = gtk_text_view_new ();
-	gtk_container_add(GTK_CONTAINER(scrollwin), widget);
-	gtk_container_add(GTK_CONTAINER(expander), scrollwin);
+	g_print(" get idx=%d - %p\n", idx, &g_array_index (txndata, ImpTxnData, idx) );
 	*/
 
+	if( idx <= txndata->len )
+		return &g_array_index (txndata, ImpTxnData, idx);
+	return NULL;
+}
 
-	gtk_widget_show_all (content_grid);
 
-	gtk_assistant_append_page (GTK_ASSISTANT (assistant), content_grid);
-	//set page type to intro to avoid going back once that point over
-	gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), content_grid, GTK_ASSISTANT_PAGE_INTRO);
-	gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), content_grid, _(page_titles[PAGE_PROPERTIES]));
 
-	return content_grid;
+
+static void ui_import_page_transaction_cb_fill_same(GtkTreeSelection *treeselection, gpointer user_data)
+{
+struct import_data *data;
+ImpTxnData *txndata;
+//ImportContext *ictx;
+GtkTreeSelection *selection;
+GtkTreeModel		 *model, *dupmodel;
+GtkTreeIter			 iter, newiter;
+GList *tmplist;
+GtkWidget *widget;
+guint count = 0;
+
+	DB( g_print("\n[ui-import] page_transaction_cb_fill_same\n") );
+
+	widget = GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection));
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	//ictx = &data->ictx;
+
+	gint pageidx = gtk_assistant_get_current_page(GTK_ASSISTANT(data->assistant));
+	gint acckey =  pageidx - (PAGE_IMPORT);
+	//GenAcc *genacc = da_gen_acc_get_by_key(ictx->gen_lst_acc, acckey);
+
+	//txndata = &data->txndata[acckey];
+	txndata = ui_import_page_transaction_data_get(data->txndata, acckey);
+
+	dupmodel = gtk_tree_view_get_model(GTK_TREE_VIEW(txndata->LV_duptxn));
+	gtk_list_store_clear (GTK_LIST_STORE(dupmodel));
+
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(txndata->LV_gentxn));
+
+	//if true there is a selected node
+	if (gtk_tree_selection_get_selected(selection, &model, &iter))
+	{
+	GenTxn *gentxn;
+
+		gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, &gentxn, -1);
+
+		if( gentxn->lst_existing != NULL )
+		{
+			tmplist = g_list_first(gentxn->lst_existing);
+			while (tmplist != NULL)
+			{
+			Transaction *tmp = tmplist->data;
+
+				/* append to our treeview */
+				//gtk_list_store_append (GTK_LIST_STORE(dupmodel), &newiter);
+				//gtk_list_store_set (GTK_LIST_STORE(dupmodel), &newiter,
+				count++;
+				gtk_list_store_insert_with_values(GTK_LIST_STORE(dupmodel), &newiter, -1,
+					LST_DSPOPE_DATAS, tmp,
+					-1);
+
+				//DB( g_print(" - fill: %s %.2f %x\n", item->memo, item->amount, (unsigned int)item->same) );
+
+				tmplist = g_list_next(tmplist);
+			}
+		}
+	}
+
+	gtk_expander_set_expanded (GTK_EXPANDER(txndata->EX_duptxn), (count > 0) ? TRUE : FALSE);
+
+}
+
+
+static void ui_import_page_transaction_options_get(struct import_data *data)
+{
+ImpTxnData *txndata;
+ImportContext *ictx;
+
+
+	DB( g_print("\n[ui-import] options_get\n") );
+
+	ictx = &data->ictx;
+
+	gint pageidx = gtk_assistant_get_current_page(GTK_ASSISTANT(data->assistant));
+	gint accidx =  pageidx - (PAGE_IMPORT);
+	//GenAcc *genacc = g_list_nth_data(ictx->gen_lst_acc, accidx);
+
+	//txndata = &data->txndata[accidx];
+	txndata = ui_import_page_transaction_data_get(data->txndata, accidx);
+
+	ictx->opt_dateorder = gtk_combo_box_get_active (GTK_COMBO_BOX(txndata->CY_txn_dateorder));
+	ictx->opt_daygap    = gtk_spin_button_get_value(GTK_SPIN_BUTTON(txndata->NB_txn_daygap));
+	ictx->opt_ucfirst   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(txndata->CM_txn_ucfirst));
+	
+	ictx->opt_ofxname   = gtk_combo_box_get_active (GTK_COMBO_BOX(txndata->CY_txn_ofxname));
+	ictx->opt_ofxmemo   = gtk_combo_box_get_active (GTK_COMBO_BOX(txndata->CY_txn_ofxmemo));
+
+	ictx->opt_qifmemo   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(txndata->CM_txn_qifmemo));
+	ictx->opt_qifswap   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(txndata->CM_txn_qifswap));
+
+	DB( g_print(" datefmt  = '%s' (%d)\n", CYA_IMPORT_DATEORDER[ictx->opt_dateorder], ictx->opt_dateorder) );
+}
+
+
+static void ui_import_page_transaction_update(struct import_data *data)
+{
+ImpTxnData *txndata;
+ImportContext *ictx;
+gboolean sensitive, visible;
+gboolean iscomplete;
+GtkTreeModel *model;
+
+	DB( g_print("\n[ui-import] page_transaction_update\n") );
+	
+	ictx = &data->ictx;
+
+	gint pageidx = gtk_assistant_get_current_page(GTK_ASSISTANT(data->assistant));
+	gint acckey =  pageidx - (PAGE_IMPORT);
+	//GenAcc *genacc = g_list_nth_data(ictx->gen_lst_acc, acckey);
+	GenAcc *genacc = da_gen_acc_get_by_key(ictx->gen_lst_acc, acckey);
+
+	//txndata = &data->txndata[acckey];
+	txndata = ui_import_page_transaction_data_get(data->txndata, acckey);
+
+	DB( g_print(" page idx:%d, genacckey:%d genacc:%p, txndata:%p\n", pageidx, acckey, genacc, txndata) );
+
+	if(genacc)
+	{
+		DB( g_print(" genacc id=%d name='%s'\n dstacc=%d\n", acckey, genacc->name, genacc->kacc ) );
+
+		visible = (genacc->is_unamed == TRUE) && (genacc->filetype != FILETYPE_CSV_HB) ? TRUE: FALSE;
+		hb_widget_visible (txndata->IM_unamed, visible);
+
+		sensitive = (genacc->kacc == DST_ACC_SKIP) ? FALSE : TRUE;
+		DB( g_print(" sensitive=%d\n", sensitive) );
+
+		gtk_widget_set_sensitive(txndata->LV_gentxn, sensitive);
+		gtk_widget_set_sensitive(txndata->EX_duptxn, sensitive);
+		//todo: disable option button
+		gtk_widget_set_sensitive(txndata->GR_misc, sensitive);
+		gtk_widget_set_sensitive(txndata->GR_date, sensitive);
+		gtk_widget_set_sensitive(txndata->GR_ofx, sensitive);
+		gtk_widget_set_sensitive(txndata->GR_qif, sensitive);
+		gtk_widget_set_sensitive(txndata->GR_select, sensitive);
+		
+		//todo: display a warning if incorrect date
+		gchar *msg_icon = NULL, *msg_label = NULL;
+
+		iscomplete = (genacc->n_txnbaddate > 0) ? FALSE : TRUE;
+		iscomplete = (genacc->kacc == DST_ACC_SKIP) ? TRUE : iscomplete;
+
+		DB( g_print(" nbbaddates=%d, dstacc=%d\n", genacc->n_txnbaddate, genacc->kacc) );
+		DB( g_print(" iscomplete=%d\n", iscomplete) );
+		
+		//show/hide invalid date group
+		visible = FALSE;
+		if(genacc->n_txnbaddate > 0)
+		{
+			visible = TRUE;
+			DB( g_print(" invalid date detected\n" ) );
+			msg_icon = ICONNAME_ERROR;
+			msg_label = 
+				_("Some date cannot be converted. Please try to change the date order to continue.");
+		}
+		gtk_image_set_from_icon_name(GTK_IMAGE(txndata->IM_txn), msg_icon, GTK_ICON_SIZE_BUTTON);
+		gtk_label_set_text(GTK_LABEL(txndata->LB_txn), msg_label);
+		hb_widget_visible (txndata->GR_msg, visible);
+
+		//show/hide duplicate
+		visible = TRUE;
+		if( genacc->kacc==DST_ACC_GLOBAL || genacc->kacc==DST_ACC_NEW || genacc->kacc==DST_ACC_SKIP)
+			visible = FALSE;
+		hb_widget_visible (txndata->EX_duptxn, visible);
+
+		model = gtk_tree_view_get_model(GTK_TREE_VIEW(txndata->LV_gentxn));
+
+		gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), LST_DSPOPE_DATE, GTK_SORT_ASCENDING);
+		//gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
+		//gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
+		
+		GtkWidget *page = gtk_assistant_get_nth_page (GTK_ASSISTANT(data->assistant), pageidx);
+		gtk_assistant_set_page_complete(GTK_ASSISTANT(data->assistant), page, iscomplete);
+	}
+	
+}
+
+
+static void ui_import_page_transaction_cb_account_changed(GtkWidget *widget, gpointer user_data)
+{
+struct import_data *data;
+ImpTxnData *txndata;
+ImportContext *ictx;
+gint dstacc;
+
+	DB( g_print("\n[ui-import] cb_account_changed\n") );
+	
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	ictx = &data->ictx;
+
+	gint pageidx = gtk_assistant_get_current_page(GTK_ASSISTANT(data->assistant));
+	gint acckey =  pageidx - (PAGE_IMPORT);
+	//GenAcc *genacc = g_list_nth_data(ictx->gen_lst_acc, accidx);
+	GenAcc *genacc = da_gen_acc_get_by_key(ictx->gen_lst_acc, acckey);
+	
+	//txndata = &data->txndata[acckey];
+	txndata = ui_import_page_transaction_data_get(data->txndata, acckey);
+
+	dstacc = ui_genacc_comboboxtext_get_active (txndata->CY_acc);
+	genacc->kacc = dstacc;
+
+	ui_import_page_transaction_options_get(data);
+	hb_import_option_apply(ictx, genacc);
+	hb_import_gen_txn_check_duplicate(ictx, genacc);
+	hb_import_gen_txn_check_target_similar(ictx, genacc);
+	genacc->is_dupcheck = TRUE;
+
+	gtk_tree_view_columns_autosize(GTK_TREE_VIEW(txndata->LV_gentxn));
+	
+	ui_import_page_transaction_update(data);
+}
+
+
+static void ui_import_page_transaction_cb_option_changed(GtkWidget *widget, gpointer user_data)
+{
+struct import_data *data;
+ImpTxnData *txndata;
+ImportContext *ictx;
+
+
+	DB( g_print("\n[ui-import] cb_option_changed\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	ictx = &data->ictx;
+
+	gint pageidx = gtk_assistant_get_current_page(GTK_ASSISTANT(data->assistant));
+	gint acckey =  pageidx - (PAGE_IMPORT);
+	//GenAcc *genacc = g_list_nth_data(ictx->gen_lst_acc, accidx);
+	GenAcc *genacc = da_gen_acc_get_by_key(ictx->gen_lst_acc, acckey);
+
+	//txndata = &data->txndata[acckey];
+	txndata = ui_import_page_transaction_data_get(data->txndata, acckey);
+
+	ui_import_page_transaction_options_get(data);
+	hb_import_option_apply(ictx, genacc);
+
+	gtk_tree_view_columns_autosize(GTK_TREE_VIEW(txndata->LV_gentxn));
+
+	ui_import_page_transaction_update(data);
+}
+
+
+static void ui_import_page_transaction_fill(struct import_data *data)
+{
+ImpTxnData *txndata;
+ImportContext *ictx = &data->ictx;
+GtkWidget *view;
+GtkTreeModel *model;
+GtkTreeIter	iter;
+GList *tmplist;
+gchar *label = NULL;
+gboolean visible;
+//gint nbacc;
+
+	DB( g_print("\n[ui-import] page_transaction_fill\n") );
+
+	//get the account, it will be the account into the glist
+	//of pagenum - PAGE_IMPORT
+	//gint pageidx = gtk_assistant_get_current_page(GTK_ASSISTANT(data->assistant));
+	gint acckey = gtk_assistant_get_current_page(GTK_ASSISTANT(data->assistant)) - (PAGE_IMPORT);
+	//GenAcc *genacc = g_list_nth_data(ictx->gen_lst_acc, acckey);
+	GenAcc *genacc = da_gen_acc_get_by_key(ictx->gen_lst_acc, acckey);
+	//nbacc = g_list_length(ictx->gen_lst_acc);
+	
+	//txndata = &data->txndata[acckey];
+	txndata = ui_import_page_transaction_data_get(data->txndata, acckey);
+	
+	DB( g_print(" genacckey:%d genacc:%p, txndata:%p\n", acckey, genacc, txndata) );
+	
+	if(genacc)
+	{
+	gint count;
+
+		DB( g_print(" genacc id=%d name='%s'\n dstacc=%d\n", acckey, genacc->name, genacc->kacc ) );
+
+		g_signal_handlers_block_by_func(txndata->CY_acc, G_CALLBACK(ui_import_page_transaction_cb_account_changed), NULL);
+		ui_genacc_comboboxtext_set_active(txndata->CY_acc, genacc->kacc);
+		g_signal_handlers_unblock_by_func(txndata->CY_acc, G_CALLBACK(ui_import_page_transaction_cb_account_changed), NULL);
+
+		ui_import_page_transaction_options_get(data);
+		hb_import_option_apply(ictx, genacc);
+		if( genacc->is_dupcheck == FALSE )
+		{
+			hb_import_gen_txn_check_duplicate(ictx, genacc);
+			hb_import_gen_txn_check_target_similar(ictx, genacc);
+			genacc->is_dupcheck = TRUE;
+		}
+
+		view = txndata->LV_gentxn;
+		model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+		gtk_list_store_clear (GTK_LIST_STORE(model));
+
+		count = 0;
+		tmplist = g_list_first(ictx->gen_lst_txn);
+		while (tmplist != NULL)
+		{
+		GenTxn *item = tmplist->data;
+
+			//todo: chnage this, this should be account
+			if(item->kacc == genacc->key)
+			{
+				// append to our treeview
+				//gtk_list_store_append (GTK_LIST_STORE(model), &iter);
+				//gtk_list_store_set (GTK_LIST_STORE(model), &iter,
+				gtk_list_store_insert_with_values(GTK_LIST_STORE(model), &iter, -1,
+					LST_GENTXN_POINTER, item,
+					-1);
+
+				DB( g_print(" fill: %s, %d, %s %.2f\n", item->account, item->julian, item->memo, item->amount) );
+				count++;
+			}
+			tmplist = g_list_next(tmplist);
+		}
+
+		//label = g_strdup_printf(_("'%s' - %s"), genacc->name, hb_import_filetype_char_get(genacc));
+		label = g_strdup_printf(_("Import <b>%s</b> in_to:"), genacc->is_unamed ? _("this file") : _("this account") );
+		gtk_label_set_markup_with_mnemonic (GTK_LABEL(txndata->LB_acc_title), label);
+		g_free(label);
+
+		//build tooltip
+		GenFile *genfile = da_gen_file_get (ictx->gen_lst_file, genacc->kfile);
+
+		label = g_strdup_printf(_("Name: %s\nNumber: %s\nFile: %s\nEncoding: %s"), genacc->name, genacc->number, genfile->filepath, genfile->encoding);
+		gtk_widget_set_tooltip_text (GTK_WIDGET(txndata->LB_acc_title), label);
+		g_free(label);
+		
+		//label = g_strdup_printf(_("Account %d of %d"), acckey+1, nbacc);
+		//gtk_label_set_markup (GTK_LABEL(txndata->LB_acc_count), label);
+		//g_free(label);
+
+		label = g_strdup_printf(_("%d transactions"), count);
+		gtk_label_set_markup (GTK_LABEL(txndata->LB_txn_title), label);
+		g_free(label);
+		
+		visible = (genacc->filetype == FILETYPE_OFX) ? FALSE : TRUE;
+		hb_widget_visible(GTK_WIDGET(txndata->GR_date), visible);
+		
+		visible = (genacc->filetype == FILETYPE_OFX) ? TRUE : FALSE;
+		hb_widget_visible(GTK_WIDGET(txndata->GR_ofx), visible);
+		
+		visible = (genacc->filetype == FILETYPE_QIF) ? TRUE : FALSE;
+		hb_widget_visible(GTK_WIDGET(txndata->GR_qif), visible);
+
+		gtk_stack_set_visible_child_name(GTK_STACK(txndata->ST_stack), visible ? "QIF" : "OFX");
+		
+	}
+
+}
+
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+static void
+ui_import_page_intro_cb_dontshow(GtkWidget *widget, gpointer user_data)
+{
+	PREFS->dtex_nointro = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(widget));
 }
 
 
 static GtkWidget *
-ui_import_panel_account_create (GtkWidget *assistant, struct import_data *data)
+ui_import_page_intro_create(GtkWidget *assistant, struct import_data *data)
 {
-GtkWidget *content_grid, *group_grid;
-GtkWidget *label, *widget, *scrollwin;
-gint crow, row;
-	
-	content_grid = gtk_grid_new();
-	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
-	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+GtkWidget *mainbox, *label, *widget;
 
-	crow = 0;
-	// group :: Title
-    group_grid = gtk_grid_new ();
-	
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
-	
-	//label = make_label_group(_("Title"));
-	//gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 2, 1);
-	
-	row = 1;
-	widget = gtk_image_new ();
-	data->IM_acc = widget;
-	gtk_widget_set_valign(widget, GTK_ALIGN_START);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 0, row, 1, 1);
-	label = make_label(NULL, 0, 0.5);
-	data->LB_acc = label;
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 2, 1);
 
-	// group :: Account list
-    group_grid = gtk_grid_new ();
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
-	
-	label = make_label_group(_("Choose the action for accounts"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 1, 1);
-	
-	row = 1;
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_widget_set_size_request(scrollwin, -1, HB_MINWIDTH_LIST);
+	mainbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
+	gtk_widget_set_halign(mainbox, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(mainbox, GTK_ALIGN_CENTER);
 
-	widget = ui_acc_affect_listview_new();
-	data->LV_acc = widget;
-	gtk_container_add(GTK_CONTAINER(scrollwin), widget);
-	gtk_widget_set_hexpand(scrollwin, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), scrollwin, 0, row, 1, 1);
 
-	row++;
-	widget = gtk_button_new_with_mnemonic (_("Change _action"));
-	data->BT_edit = widget;
-	gtk_widget_set_halign(widget, GTK_ALIGN_START);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 0, row, 1, 1);
+	label = make_label(_("Import transactions from bank or credit card"), 0, 0);
+	gimp_label_set_attributes(GTK_LABEL(label), 
+		PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, 
+		PANGO_ATTR_SCALE,  PANGO_SCALE_LARGE, 
+		-1);
+	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, SPACING_SMALL);
 
-	/* signal and other stuff */
-	g_signal_connect (G_OBJECT (data->BT_edit), "clicked", G_CALLBACK (ui_import_panel_account_change_action), data);
-	g_signal_connect (GTK_TREE_VIEW(data->LV_acc), "row-activated", G_CALLBACK (ui_acc_affect_listview_onRowActivated), NULL);
+	label = make_label(
+		_("With this assistant you will be guided through the process of importing one or several\n" \
+		  "downloaded statements from your bank or credit card, in the following formats:"), 0, 0);
+	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, SPACING_SMALL);
 
-	gtk_widget_show_all (content_grid);
-	gtk_assistant_append_page (GTK_ASSISTANT (assistant), content_grid);
-	//gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), content_grid, GTK_ASSISTANT_PAGE_INTRO);
-	gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), content_grid, _(page_titles[PAGE_ACCOUNT]));
-	
-	return content_grid;
+	label = gtk_label_new(NULL);
+	gtk_label_set_markup(GTK_LABEL(label), 
+		_("<b>Recommended:</b> .OFX or .QFX\n" \
+		"<i>(Sometimes named Money™ or Quicken™)</i>\n" \
+		"<b>Supported:</b> .QIF\n" \
+		"<i>(Common Quicken™ file)</i>\n" \
+		"<b>Advanced users only:</b> .CSV\n"
+		"<i>(format is specific to HomeBank, see the documentation)</i>"));
+
+
+	/* supported format */
+	/*label = make_label(
+	    _("HomeBank can import files in the following formats:\n" \
+		"- QIF\n" \
+		"- OFX/QFX (optional at compilation time)\n" \
+		"- CSV (format is specific to HomeBank, see the documentation)\n" \
+	), 0.0, 0.0);*/
+
+	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, SPACING_SMALL);
+
+
+	label = make_label(
+	    _("No changes will be made until you click \"Apply\" at the end of this assistant."), 0., 0.0);
+	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, SPACING_SMALL);
+
+
+	widget = gtk_check_button_new_with_mnemonic (_("Don't show this again"));
+	data->CM_dsta = widget;
+	gtk_box_pack_end (GTK_BOX (mainbox), widget, FALSE, FALSE, SPACING_SMALL);
+
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_dsta), PREFS->dtex_nointro);
+
+
+	gtk_widget_show_all (mainbox);
+
+	g_signal_connect (data->CM_dsta, "toggled", G_CALLBACK (ui_import_page_intro_cb_dontshow), data);
+
+
+	return mainbox;
+}
+
+
+static void ui_import_page_filechooser_update(GtkWidget *widget, gpointer user_data)
+{
+struct import_data *data;
+GtkTreeSelection *selection;
+gboolean sensitive;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_file));
+
+	gint count = gtk_tree_selection_count_selected_rows(selection);
+
+	sensitive = (count > 0) ? TRUE : FALSE;
+	gtk_widget_set_sensitive(data->BT_file_remove, sensitive);
+	//gtk_widget_set_sensitive(data->BT_merge, sensitive);
+	//gtk_widget_set_sensitive(data->BT_delete, sensitive);
+
+}
+
+
+static void ui_import_page_filechooser_selection(GtkTreeSelection *treeselection, gpointer user_data)
+{
+	ui_import_page_filechooser_update(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), NULL);
 }
 
 
 static GtkWidget *
-ui_import_panel_transaction_create (GtkWidget *assistant, struct import_data *data)
+ui_import_page_filechooser_create (GtkWidget *assistant, struct import_data *data)
 {
-GtkWidget *content_grid, *group_grid;
-GtkWidget *label, *scrollwin, *widget, *expander;
-gint crow, row;
-	
-	content_grid = gtk_grid_new();
-	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
-	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+GtkWidget *mainbox, *vbox, *hbox, *widget, *label, *scrollwin, *tbar;
+GtkToolItem *toolitem;
 
-	crow = 0;
-	// group :: Title
-    group_grid = gtk_grid_new ();
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
-	
-	//label = make_label_group(_("Title"));
-	//gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+	mainbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
+	//gtk_container_set_border_width (GTK_CONTAINER(vbox), SPACING_SMALL);
 
-	row = 1;
-	widget = gtk_image_new ();
-	data->IM_txn = widget;
-	gtk_widget_set_valign(widget, GTK_ALIGN_START);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 0, row, 1, 1);
-	label = make_label(NULL, 0, 0.5);
-	data->LB_txn = label;
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 2, 1);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_start (GTK_BOX (mainbox), hbox, FALSE, FALSE, SPACING_SMALL);
 
-	// group :: Transactions to import
-    group_grid = gtk_grid_new ();
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
-	
-	label = make_label_group(_("Choose transactions to import"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 2, 1);
-	
-	row = 1;
+	widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, SPACING_SMALL);
+
+
+	label = make_label(
+	    _("Drag&Drop one or several files to import.\n" \
+	    "You can also use the add/remove buttons of the list.")
+			, 0., 0.0);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, SPACING_SMALL);
+
+
+
+
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_box_pack_start (GTK_BOX (mainbox), vbox, TRUE, TRUE, 0);
+
+	//list
 	scrollwin = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_hexpand(scrollwin, TRUE);
 	gtk_widget_set_vexpand(scrollwin, TRUE);
-	widget = create_list_import_transaction(TRUE);
-	data->imported_ope = widget;
+	widget = list_file_new();
+	data->LV_file = widget;
 	gtk_container_add (GTK_CONTAINER (scrollwin), widget);
-	gtk_grid_attach (GTK_GRID (group_grid), scrollwin, 0, row, 2, 1);
+	//gtk_grid_attach (GTK_GRID (group_grid), scrollwin, 0, row, 2, 1);
+	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
-	expander = gtk_expander_new (_("Detail of existing transaction (possible duplicate)"));
-	data->GR_duplicate = expander;
-	gtk_grid_attach (GTK_GRID (group_grid), expander, 0, crow++, 2, 1);
+	//list toolbar
+	tbar = gtk_toolbar_new();
+	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
+	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
+	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
 
-    group_grid = gtk_grid_new ();
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_container_add (GTK_CONTAINER (expander), group_grid);
-
-	row = 0;
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_hexpand(scrollwin, TRUE);
-	//widget = create_list_transaction(LIST_TXN_TYPE_IMPORT, list_imptxn_columns);
-	widget = create_list_import_transaction(FALSE);
-	data->duplicat_ope = widget;
-	gtk_container_add (GTK_CONTAINER (scrollwin), widget);
-	gtk_widget_set_size_request(scrollwin, -1, HB_MINWIDTH_LIST/2);
-	gtk_grid_attach (GTK_GRID (group_grid), scrollwin, 0, row, 6, 1);
-
-	row++;
-	label = make_label(_("Date _tolerance:"), 0, 0.5);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-
-	widget = make_numeric(label, 0.0, 14.0);
-	data->NB_maxgap = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-
-	//TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days of date tolerance
-	label = make_label(_("days"), 0, 0.5);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
-
-	widget = gtk_button_new_with_mnemonic (_("_Refresh"));
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 3, row, 1, 1);
-	g_signal_connect (widget, "clicked",
-			G_CALLBACK (ui_import_panel_transaction_refresh), data);
-
-	widget = gtk_image_new_from_icon_name(ICONNAME_INFO, GTK_ICON_SIZE_SMALL_TOOLBAR );
-	gtk_widget_set_hexpand(widget, FALSE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 4, row, 1, 1);
-
-	label = make_label (_(
-		"The match is done in order: by account, amount and date.\n" \
-		"A date tolerance of 0 day means an exact match"), 0, 0.5);
-	gimp_label_set_attributes (GTK_LABEL (label),
-                             PANGO_ATTR_SCALE,  PANGO_SCALE_SMALL,
-                             -1);
-	gtk_widget_set_hexpand(label, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 5, row, 1, 1);
-
-
-	gtk_widget_show_all (content_grid);
-
-	gtk_assistant_append_page (GTK_ASSISTANT (assistant), content_grid);
-//	gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), content_grid, GTK_ASSISTANT_PAGE_PROGRESS);
-	gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), content_grid, _(page_titles[PAGE_TRANSACTION]));
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
 	
-	return content_grid;
+		widget = make_image_button(ICONNAME_LIST_ADD, NULL);
+		data->BT_file_add = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+		widget = make_image_button(ICONNAME_LIST_REMOVE, NULL);
+		data->BT_file_remove = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+
+
+
+	gtk_widget_show_all (mainbox);
+	
+	ui_import_page_filechooser_update(assistant, NULL);
+
+
+	g_signal_connect (G_OBJECT (data->BT_file_add), "clicked", G_CALLBACK (ui_import_page_filechooser_add_action), data);
+	g_signal_connect (G_OBJECT (data->BT_file_remove), "clicked", G_CALLBACK (ui_import_page_filechooser_remove_action), data);
+
+
+	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_file)), "changed", G_CALLBACK (ui_import_page_filechooser_selection), NULL);
+
+
+	return mainbox;
 }
 
 
 static GtkWidget *
-ui_import_panel_confirmation_create(GtkWidget *assistant, struct import_data *data)
+ui_import_page_import_create (GtkWidget *assistant, struct import_data *data)
 {
-GtkWidget *vbox, *label, *align, *widget, *table;
+GtkWidget *mainbox;
+GtkWidget *label, *widget;
+gchar *txt;
+
+	mainbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	//gtk_widget_set_halign(mainbox, GTK_ALIGN_CENTER);
+	//gtk_widget_set_valign(mainbox, GTK_ALIGN_CENTER);
+
+	widget = gtk_image_new_from_icon_name(ICONNAME_ERROR, GTK_ICON_SIZE_DIALOG );
+	gtk_box_pack_start (GTK_BOX (mainbox), widget, FALSE, FALSE, 0);
+	
+	txt = _("There is too much account in the files you choosed,\n" \
+			"please use the back button to select less files.");
+	label = gtk_label_new(txt);
+	gtk_widget_set_valign (label, GTK_ALIGN_CENTER);
+	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, 0);
+
+	gtk_widget_show_all (mainbox);
+	
+	return mainbox;
+}
+
+
+
+
+static gboolean
+ui_import_page_transaction_cb_activate_link (GtkWidget *label, const gchar *uri, gpointer user_data)
+{
+GtkTreeModel *model;
+GtkTreeIter	iter;
+gboolean valid;
+GenTxn *gentxn;
+
+	g_return_val_if_fail(GTK_IS_TREE_VIEW(user_data), TRUE);
+
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(user_data));
+
+	DB( g_print(" comboboxlink '%s' \n", uri) );
+
+	if (g_strcmp0 (uri, "all") == 0)	
+	{
+		valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+		while (valid)
+		{
+			gtk_tree_model_get(model, &iter, 
+				LST_GENTXN_POINTER, &gentxn, 
+				-1);
+
+			gentxn->to_import = TRUE;
+			valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+		}
+	}
+	else
+	if (g_strcmp0 (uri, "non") == 0)	
+	{
+		valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+		while (valid)
+		{
+			gtk_tree_model_get(model, &iter, 
+				LST_GENTXN_POINTER, &gentxn, 
+				-1);
+
+			gentxn->to_import = FALSE;
+			valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+		}
+	}
+	else
+	if (g_strcmp0 (uri, "inv") == 0)	
+	{
+		valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+		while (valid)
+		{
+			gtk_tree_model_get(model, &iter, 
+				LST_GENTXN_POINTER, &gentxn, 
+				-1);
+
+			gentxn->to_import ^= TRUE;
+			valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+		}
+	}
+
+	gtk_widget_queue_draw(GTK_WIDGET(user_data));
+
+    return TRUE;
+}
+
+
+static GtkWidget *
+ui_import_page_transaction_create (GtkWidget *assistant, gint idx, struct import_data *data)
+{
+ImpTxnData *txndata;
+GtkWidget *table, *box, *group, *stack;
+GtkWidget *label, *scrollwin, *expander, *widget;
+ImpTxnData tmp;
 gint row;
 
-	align = gtk_alignment_new(0.5, 0.5, 0.0, 0.0);
-	gtk_alignment_set_padding(GTK_ALIGNMENT(align), 0, 0, 0, 0);
+	//txndata = &data->txndata[idx];
+	memset(&tmp, 0, sizeof(ImpTxnData));
+	g_array_insert_vals(data->txndata, idx, &tmp, 1);
 
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
-	gtk_container_set_border_width (GTK_CONTAINER(vbox), SPACING_MEDIUM);
-	gtk_container_add(GTK_CONTAINER(align), vbox);
+	txndata = ui_import_page_transaction_data_get(data->txndata, idx);
+
+	DB( g_print(" txndat=%p\n", txndata) );
+
+	if(!txndata)
+		return NULL;
+	
+	table = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
+
+	row = 0;
+	//line 1 left
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	//gtk_widget_set_hexpand(box, TRUE);
+	gtk_grid_attach (GTK_GRID(table), box, 0, row, 1, 1);
+
+		// XXX (type) + accname
+		label = make_label(NULL, 0.0, 0.5);
+		txndata->LB_acc_title = label;
+		//gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_LARGE, -1);
+		gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+
+		widget = ui_genacc_comboboxtext_new(data, label);
+		//gtk_widget_set_hexpand(widget, TRUE);
+		txndata->CY_acc = widget;
+		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
+
+		widget = gtk_image_new_from_icon_name(ICONNAME_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
+		txndata->IM_unamed = widget;
+		gtk_widget_set_tooltip_text (widget, _("Target account identification by name or number failed."));
+		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
+
+	//line 1 right
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	//gtk_widget_set_hexpand(box, TRUE);
+	gtk_grid_attach (GTK_GRID(table), box, 1, row, 1, 1);
+	
+	//csv options
+	group = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	txndata->GR_date = group;
+	gtk_box_pack_start (GTK_BOX(box), group, FALSE, FALSE, 0);
+
+		label = make_label(_("Date order:"), 0, 0.5);
+		gtk_box_pack_start (GTK_BOX(group), label, FALSE, FALSE, 0);
+		widget = make_cycle(label, CYA_IMPORT_DATEORDER);
+		txndata->CY_txn_dateorder = widget;
+		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+
+	stack = gtk_stack_new();
+	gtk_box_pack_start (GTK_BOX(box), stack, FALSE, FALSE, 0);
+	txndata->ST_stack= stack;
+	
+	//qif options
+	group = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	txndata->GR_qif = group;
+	//gtk_box_pack_start (GTK_BOX(box), group, FALSE, FALSE, 0);
+	gtk_stack_add_named(GTK_STACK(stack), group, "QIF");
+	
+		widget = gtk_check_button_new_with_mnemonic (_("_Import memos"));
+		txndata->CM_txn_qifmemo = widget;
+		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+
+		widget = gtk_check_button_new_with_mnemonic (_("_Swap memos with payees"));
+		txndata->CM_txn_qifswap = widget;
+		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+
+	//ofx options
+	group = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	txndata->GR_ofx = group;
+	//gtk_box_pack_start (GTK_BOX(box), group, FALSE, FALSE, 0);
+	gtk_stack_add_named(GTK_STACK(stack), group, "OFX");
+
+		label = make_label(_("OFX _Name:"), 0, 0.5);
+		gtk_box_pack_start (GTK_BOX(group), label, FALSE, FALSE, 0);
+		widget = make_cycle(label, CYA_IMPORT_OFXNAME);
+		txndata->CY_txn_ofxname = widget;
+		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+
+		label = make_label(_("OFX _Memo:"), 0, 0.5);
+		gtk_box_pack_start (GTK_BOX(group), label, FALSE, FALSE, 0);
+		widget = make_cycle(label, CYA_IMPORT_OFXMEMO);
+		txndata->CY_txn_ofxmemo = widget;
+		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+
+	// n transaction ...
+	row++;
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	//gtk_widget_set_hexpand(box, TRUE);
+	gtk_grid_attach (GTK_GRID(table), box, 0, row, 1, 1);
+	
+		group = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+		txndata->GR_select = group;
+		gtk_box_pack_start (GTK_BOX (box), group, FALSE, FALSE, 0);
+
+			label = make_label (_("Select:"), 0, 0.5);
+			gtk_box_pack_start (GTK_BOX (group), label, FALSE, FALSE, 0);
+
+			label = make_clicklabel("all", _("All"));
+			txndata->BT_all= label;
+			gtk_box_pack_start (GTK_BOX (group), label, FALSE, FALSE, 0);
+			
+			label = make_clicklabel("non", _("None"));
+			txndata->BT_non = label;
+			gtk_box_pack_start (GTK_BOX (group), label, FALSE, FALSE, 0);
+
+			label = make_clicklabel("inv", _("Invert"));
+			txndata->BT_inv = label;
+			gtk_box_pack_start (GTK_BOX (group), label, FALSE, FALSE, 0);
+
+			label = make_label(NULL, 0.0, 0.0);
+			txndata->LB_txn_title = label;
+			gtk_widget_set_valign(label, GTK_ALIGN_CENTER);
+			gtk_box_pack_start (GTK_BOX (group), label, FALSE, FALSE, 0);
+
+	// import into
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	gtk_grid_attach (GTK_GRID(table), box, 1, row, 1, 1);
+
+		group = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+		txndata->GR_misc = group;
+		gtk_box_pack_start (GTK_BOX (box), group, FALSE, FALSE, 0);
+
+			widget = gtk_check_button_new_with_mnemonic (_("Sentence _case memo/payee"));
+			txndata->CM_txn_ucfirst = widget;
+			gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+
+	
+	// error messages
+	row++;
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	txndata->GR_msg = box;
+	//gtk_widget_set_hexpand(box, TRUE);
+	gtk_grid_attach (GTK_GRID(table), box, 0, row, 2, 1);
+
+		widget = gtk_image_new ();
+		txndata->IM_txn = widget;
+		gtk_widget_set_valign(widget, GTK_ALIGN_START);
+		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
+		label = make_label(NULL, 0.0, 0.5);
+		txndata->LB_txn = label;
+		gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+
+	row++;
+	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	widget = list_txn_import_create();
+	txndata->LV_gentxn = widget;
+	gtk_widget_set_hexpand(scrollwin, TRUE);
+	gtk_widget_set_vexpand(scrollwin, TRUE);
+	gtk_container_add (GTK_CONTAINER (scrollwin), widget);
+	gtk_grid_attach (GTK_GRID(table), scrollwin, 0, row, 2, 1);
+	
+
+	//duplicate
+	row++;
+	expander = gtk_expander_new (_("Similar transaction in target account (possible duplicate)"));
+	txndata->EX_duptxn = expander;
+	//gtk_widget_set_hexpand(expander, TRUE);
+	gtk_grid_attach (GTK_GRID(table), expander, 0, row, 2, 1);
+
+
+	group = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group), SPACING_SMALL);
+	gtk_container_add (GTK_CONTAINER (expander), group);
+
+		row = 0;
+		scrollwin = gtk_scrolled_window_new (NULL, NULL);
+		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		gtk_widget_set_hexpand(scrollwin, TRUE);
+		//widget = create_list_transaction(LIST_TXN_TYPE_DETAIL, PREFS->lst_ope_columns);
+		widget = create_list_transaction(LIST_TXN_TYPE_DETAIL, PREFS->lst_impope_columns);
+		txndata->LV_duptxn = widget;
+		gtk_container_add (GTK_CONTAINER (scrollwin), widget);
+		gtk_widget_set_size_request(scrollwin, -1, HB_MINWIDTH_LIST/2);
+		gtk_grid_attach (GTK_GRID (group), scrollwin, 0, row, 5, 1);
+
+		row++;
+		label = make_label(_("Date _gap:"), 0, 0.5);
+		gtk_grid_attach (GTK_GRID (group), label, 0, row, 1, 1);
+
+		widget = make_numeric(label, 0.0, HB_DATE_MAX_GAP);
+		txndata->NB_txn_daygap = widget;
+		gtk_grid_attach (GTK_GRID (group), widget, 1, row, 1, 1);
+
+		//TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days of date tolerance
+		label = make_label(_("days"), 0, 0.5);
+		gtk_grid_attach (GTK_GRID (group), label, 2, row, 1, 1);
+
+		widget = gtk_image_new_from_icon_name(ICONNAME_INFO, GTK_ICON_SIZE_SMALL_TOOLBAR );
+		gtk_widget_set_hexpand(widget, FALSE);
+		gtk_grid_attach (GTK_GRID (group), widget, 3, row, 1, 1);
+	
+		label = make_label (_(
+			"The match is done in order: by account, amount and date.\n" \
+			"A date tolerance of 0 day means an exact match"), 0, 0.5);
+		gimp_label_set_attributes (GTK_LABEL (label),
+				                 PANGO_ATTR_SCALE,  PANGO_SCALE_SMALL,
+				                 -1);
+		gtk_widget_set_hexpand(label, TRUE);
+		gtk_grid_attach (GTK_GRID (group), label, 4, row, 1, 1);
+
+
+	// init ofx/qfx option to move
+	gtk_combo_box_set_active(GTK_COMBO_BOX(txndata->CY_txn_dateorder), PREFS->dtex_datefmt);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(txndata->CM_txn_ucfirst), PREFS->dtex_ucfirst);
+
+	gtk_combo_box_set_active(GTK_COMBO_BOX(txndata->CY_txn_ofxname), PREFS->dtex_ofxname);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(txndata->CY_txn_ofxmemo), PREFS->dtex_ofxmemo);
+
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(txndata->CM_txn_qifmemo), PREFS->dtex_qifmemo);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(txndata->CM_txn_qifswap), PREFS->dtex_qifswap);
+
+	gtk_widget_show_all (table);
+	gtk_widget_hide(txndata->GR_qif);
+	gtk_widget_hide(txndata->GR_ofx);
+
+	g_signal_connect (txndata->BT_all, "activate-link", G_CALLBACK (ui_import_page_transaction_cb_activate_link), txndata->LV_gentxn);
+	g_signal_connect (txndata->BT_non, "activate-link", G_CALLBACK (ui_import_page_transaction_cb_activate_link), txndata->LV_gentxn);
+	g_signal_connect (txndata->BT_inv, "activate-link", G_CALLBACK (ui_import_page_transaction_cb_activate_link), txndata->LV_gentxn);
+
+	g_signal_connect (txndata->CY_acc          , "changed", G_CALLBACK (ui_import_page_transaction_cb_account_changed), data);
+	g_signal_connect (txndata->CY_txn_dateorder, "changed", G_CALLBACK (ui_import_page_transaction_cb_account_changed), data);
+	g_signal_connect (txndata->NB_txn_daygap   , "value-changed", G_CALLBACK (ui_import_page_transaction_cb_account_changed), data);
+
+	g_signal_connect (txndata->CY_txn_ofxname  , "changed", G_CALLBACK (ui_import_page_transaction_cb_option_changed), data);
+	g_signal_connect (txndata->CY_txn_ofxmemo  , "changed", G_CALLBACK (ui_import_page_transaction_cb_option_changed), data);
+	g_signal_connect (txndata->CM_txn_qifmemo, "toggled", G_CALLBACK (ui_import_page_transaction_cb_option_changed), data);
+	g_signal_connect (txndata->CM_txn_qifswap, "toggled", G_CALLBACK (ui_import_page_transaction_cb_option_changed), data);
+	g_signal_connect (txndata->CM_txn_ucfirst, "toggled", G_CALLBACK (ui_import_page_transaction_cb_option_changed), data);
+
+	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(txndata->LV_gentxn)), "changed",
+		G_CALLBACK (ui_import_page_transaction_cb_fill_same), NULL);
+
+	return table;
+}
+
+
+static GtkWidget *
+ui_import_page_confirmation_create(GtkWidget *assistant, struct import_data *data)
+{
+GtkWidget *mainbox, *label, *widget, *scrollwin;
+
+	mainbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
+	//gtk_container_set_border_width (GTK_CONTAINER(mainbox), SPACING_SMALL);
+
+	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_NONE);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_hexpand(scrollwin, TRUE);
+	gtk_widget_set_vexpand(scrollwin, TRUE);
+	widget = gtk_label_new (NULL);
+	data->TX_summary = widget;
+	gtk_container_add (GTK_CONTAINER (scrollwin), widget);
+	gtk_box_pack_start (GTK_BOX (mainbox), scrollwin, TRUE, TRUE, 0);
 
 	label = make_label(
 		_("Click \"Apply\" to update your accounts.\n"), 0.5, 0.5);
-		gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, 0);
 
-	/* the summary */
-	table = gtk_grid_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (table), SPACING_SMALL);
-	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL/2);
-	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
+	gtk_widget_set_margin_top(GTK_WIDGET(label), SPACING_SMALL);
+	gtk_widget_set_margin_bottom(GTK_WIDGET(label), SPACING_SMALL);
 
-	row = 0;
-	label = make_label(_("Accounts"), 0.0, 0.5);
-	gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
-	gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
+	gtk_widget_show_all (mainbox);
 
-	/* acc update */
-	row++;
-	label = make_label(NULL, 0.0, 0.5);
-	//gtk_misc_set_padding (GTK_MISC (label), SPACING_SMALL, 0);
-	gtk_grid_attach (GTK_GRID (table), label, 0, row, 1, 1);
-	widget = make_label(NULL, 1.0, 0.5);
-	data->TX_acc_upd = widget;
-	gtk_grid_attach (GTK_GRID (table), widget, 1, row, 1, 1);
-	label = make_label(_("to update"), 0.0, 0.5);
-	gtk_grid_attach (GTK_GRID (table), label, 2, row, 1, 1);
-
-	/* acc create */
-	row++;
-	widget = make_label(NULL, 1.0, 0.5);
-	data->TX_acc_new = widget;
-	gtk_grid_attach (GTK_GRID (table), widget, 1, row, 1, 1);
-	label = make_label(_("to create"), 0.0, 0.5);
-	gtk_grid_attach (GTK_GRID (table), label, 2, row, 1, 1);
-
-	row++;
-	label = make_label(_("Transactions"), 0.0, 0.5);
-	gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
-	gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
-
-	/* trn import */
-	row++;
-	widget = make_label(NULL, 1.0, 0.5);
-	data->TX_trn_imp = widget;
-	gtk_grid_attach (GTK_GRID (table), widget, 1, row, 1, 1);
-	label = make_label(_("to import"), 0.0, 0.5);
-	gtk_grid_attach (GTK_GRID (table), label, 2, row, 1, 1);
-
-	/* trn reject */
-	row++;
-	widget = make_label(NULL, 1.0, 0.5);
-	data->TX_trn_nop = widget;
-	gtk_grid_attach (GTK_GRID (table), widget, 1, row, 1, 1);
-	label = make_label(_("to reject"), 0.0, 0.5);
-	gtk_grid_attach (GTK_GRID (table), label, 2, row, 1, 1);
-
-	/* trn auto-assigned */
-	row++;
-	widget = make_label(NULL, 1.0, 0.5);
-	data->TX_trn_asg = widget;
-	gtk_grid_attach (GTK_GRID (table), widget, 1, row, 1, 1);
-	label = make_label(_("auto-assigned"), 0.0, 0.5);
-	gtk_grid_attach (GTK_GRID (table), label, 2, row, 1, 1);
+	return mainbox;
+}
 
 
-	gtk_widget_show_all (align);
 
-	gtk_assistant_append_page (GTK_ASSISTANT (assistant), align);
-	gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), align, GTK_ASSISTANT_PAGE_CONFIRM);
-	//gtk_assistant_set_page_complete (GTK_ASSISTANT (assistant), label, TRUE);
-	gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), align, _(page_titles[PAGE_CONFIRM]));
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/**
+ * ui_import_assistant_forward_page_func:
+ *
+ * define the page to be called when the user forward
+ *
+ * Return value: the page number
+ *
+ */
 
-	return align;
+/*static gint
+ui_import_assistant_forward_page_func(gint current_page, gpointer func_data)
+{
+struct import_data *data;
+GtkWidget *page;
+gint next_page;
+
+	data = func_data;
+	
+	DB( g_print("---------------------------\n") );
+	DB( g_print("\n[ui-import] forward page func\n") );
+
+	page = gtk_assistant_get_nth_page(GTK_ASSISTANT(data->assistant), current_page);
+	
+	DB( g_print(" -> current: %d %s\n", current_page, gtk_assistant_get_page_title(GTK_ASSISTANT(data->assistant), page) ) );
+
+#if MYDEBUG == 1
+
+	struct import_data *data = func_data;
+	gint i
+	for(i=0;i<NUM_PAGE;i++)
+	{
+		g_print("%d: %d '%s'\n", i, 
+		        gtk_assistant_get_page_complete(GTK_ASSISTANT(data->assistant), data->pages[i]),
+		        page_titles[i]
+				);
+#endif
+	
+	next_page = current_page + 1;	
+	
+	switch(current_page)
+	{
+		//case PAGE_IMPORT:
+			// if no new account, skip the account page
+			//if(ictx->nb_new_acc == 0)
+			//	next_page = PAGE_TRANSACTION;
+			//break;
+	}
+
+	page = gtk_assistant_get_nth_page(GTK_ASSISTANT(data->assistant), next_page);
+	DB( g_print(" -> next: %d %s\n", next_page, gtk_assistant_get_page_title(GTK_ASSISTANT(data->assistant), page) ) );
+
+	return next_page;
+}*/
+
+
+static void
+ui_import_assistant_prepare (GtkWidget *widget, GtkWidget *page, gpointer user_data)
+{
+struct import_data *data;
+ImportContext *ictx;
+gint current_page, n_pages;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	ictx = &data->ictx;
+	
+	current_page = gtk_assistant_get_current_page (GTK_ASSISTANT(data->assistant));
+	n_pages = gtk_assistant_get_n_pages (GTK_ASSISTANT(data->assistant));
+
+	DB( g_print("\n--------\n[ui-import] prepare \n page %d of %d\n", current_page, n_pages) );
+
+	switch( current_page )
+	{
+		case PAGE_WELCOME:
+			DB( g_print("\n #1 intro\n") );
+			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, TRUE);
+			break;
+
+		case PAGE_FILES:
+			DB( g_print("\n #2 file choose\n") );
+			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, FALSE);
+
+			//open the file add if no file
+			if( gtk_tree_model_iter_n_children(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_file)), NULL) == 0 )
+			{
+				//g_signal_emit_by_name(data->BT_file_add, "clicked", NULL);
+				ui_import_page_filechooser_add_action(data->BT_file_add, NULL);
+			}
+
+			// the page complete is contextual in ui_import_page_filechooser_selection_changed
+				// check is something valid :: count total rows
+			ui_import_page_filechooser_eval(widget, user_data);
+			break;
+
+		case PAGE_IMPORT:
+			DB( g_print("\n #3 real import\n") );
+			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, FALSE);
+
+			//todo: more test needed here
+			//clean any previous txn page
+			/*for(i=(n_pages-1);i>=PAGE_IMPORT+1;i--)
+			{
+			GtkWidget *page = gtk_assistant_get_nth_page (GTK_ASSISTANT(data->assistant), i);
+			gboolean isacc;
+				
+				if( page != NULL )
+				{
+					isacc = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(page), "pgacc"));
+
+					DB( g_print(" %d is acc: %d\n", i, isacc) );
+
+					if( isacc )
+					{
+						gtk_assistant_remove_page(GTK_ASSISTANT(data->assistant), i);
+						gtk_widget_destroy (page);
+					}
+				}
+			}*/
+			
+			hb_import_load_all(&data->ictx);
+
+			//add 1 page per account
+			gint key, nbacc;
+			nbacc = g_list_length (ictx->gen_lst_acc);
+
+			if(data->txndata)
+			{
+				g_array_free(data->txndata, TRUE);
+				data->txndata = NULL;
+			}
+			data->txndata = g_array_sized_new(FALSE, TRUE, sizeof(ImpTxnData), nbacc);
+
+			//#1820618 patch for glib < 2.58 https://gitlab.gnome.org/GNOME/glib/issues/1374
+			if( glib_minor_version < 58 )
+			{
+				g_array_set_size(data->txndata, nbacc);
+			}
+			
+			DB( g_print(" accnb=%d @%p\n", nbacc, data->txndata) );
+			
+			//debug
+			//_import_context_debug_acc_list(&data->ictx);
+			
+			//if(nbacc < TXN_MAX_ACCOUNT)
+			//{
+				for(key=1;key<nbacc+1;key++)
+				{
+				GtkWidget *page;
+				GenAcc *genacc;
+				gchar *title;
+
+					genacc = da_gen_acc_get_by_key(ictx->gen_lst_acc, key);
+
+					DB( g_print(" create page txn for '%s' '%s' at page %d\n", genacc->name, genacc->number, PAGE_IMPORT + key) );
+
+					page = ui_import_page_transaction_create (data->assistant, key, data);
+					//g_object_set_data(G_OBJECT(page), "pgacc", (gpointer)TRUE);
+					gtk_widget_show_all (page);
+					gtk_assistant_insert_page (GTK_ASSISTANT (data->assistant), page, PAGE_IMPORT + key);
+					//gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, _("Transaction"));
+					//gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, genacc->name);
+					
+					title = g_strdup_printf("%s %d", (!genacc->is_unamed) ? _("Account") : _("Unknown"), key );
+					gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, title);
+					g_free(title);
+				}
+			//}
+			
+			// obsolete ??
+			if( ui_import_page_import_eval (widget, NULL) )
+			{   
+				/*if(ictx->nb_new_acc == 0)
+				{
+					DB( g_print(" -> jump to Transaction page\n") );
+					//gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), data->pages[PAGE_ACCOUNT], TRUE);
+					gtk_assistant_next_page(GTK_ASSISTANT(data->assistant));
+					gtk_assistant_next_page(GTK_ASSISTANT(data->assistant));
+					//gtk_assistant_set_current_page (GTK_ASSISTANT(data->assistant), PAGE_TRANSACTION);
+				}
+				else
+				{
+					DB( g_print(" -> jump to Account page\n") );
+					//gtk_assistant_set_current_page (GTK_ASSISTANT(data->assistant), PAGE_ACCOUNT);
+					gtk_assistant_next_page(GTK_ASSISTANT(data->assistant));
+				}*/
+
+				gtk_assistant_next_page(GTK_ASSISTANT(data->assistant));
+				gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, TRUE);
+			}
+			break;		
+
+		default:
+			if(current_page != (n_pages - 1))
+			{
+				DB( g_print("\n #4 transaction\n") );
+
+				if( current_page == PAGE_IMPORT + 1)
+					//hack to get rid of back button
+					gtk_assistant_set_page_type (GTK_ASSISTANT(data->assistant), page, GTK_ASSISTANT_PAGE_INTRO);
+				
+				ui_import_page_transaction_fill(data);
+				ui_import_page_transaction_update(data);
+			}
+			else
+			{	
+				DB( g_print("\n #5 confirmation\n") );
+
+			//todo: auto assignment should be optional
+				//data->imp_cnt_asg = transaction_auto_assign(ictx->trans_list, 0);
+				//ui_import_page_transaction_find_duplicate(data);
+
+				ui_import_page_confirmation_fill(data);
+				gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, TRUE);
+			}
+	}
+}
+
+
+static void
+ui_import_assistant_apply (GtkWidget *widget, gpointer user_data)
+{
+struct import_data *data;
+
+	DB( g_print("\n[ui-import] apply\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	hb_import_apply(&data->ictx);
+}
+
+
+static gboolean
+ui_import_assistant_dispose(GtkWidget *widget, gpointer user_data)
+{
+struct import_data *data = user_data;
+
+	DB( g_print("\n[ui-import] dispose\n") );
+
+#if MYDEBUG == 1
+	gpointer data2 = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	g_print(" user_data=%p to be free, data2=%p\n", user_data, data2);
+#endif
+
+	da_import_context_destroy(&data->ictx);
+
+	if(data->txndata)
+	{
+		g_array_free(data->txndata, TRUE);
+	}
+
+
+	// todo: optimize this
+	//if(data->imp_cnt_trn > 0)
+	//{
+		//GLOBALS->changes_count += data->imp_cnt_trn;
+
+		//our global list has changed, so update the treeview
+		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_BALANCE+UF_REFRESHALL));
+	//}
+
+	g_free(user_data);
+
+	//delete-event TRUE abort/FALSE destroy
+	return FALSE;
+}
+
+
+static void
+ui_import_assistant_close_cancel (GtkWidget *widget, gpointer user_data)
+{
+struct import_data *data;
+GtkWidget *assistant = (GtkWidget *) user_data;
+
+	DB( g_print("\n[ui-import] close\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	ui_import_assistant_dispose(widget, data);
+	gtk_widget_destroy (assistant);
 }
 
 
 /* starting point of import */
-GtkWidget *ui_import_assistant_new (gint filetype)
+GtkWidget *ui_import_assistant_new (gchar **paths)
 {
 struct import_data *data;
-GtkWidget *assistant;
-gint w, h, pos;
+GtkWidget *assistant, *page;
+gint w, h;
+
+	DB( g_print("\n[ui-import] new\n") );
 
 	data = g_malloc0(sizeof(struct import_data));
 	if(!data) return NULL;
 
-	data->filetype = filetype;
-	
 	assistant = gtk_assistant_new ();
 	data->assistant = assistant;
 
 	//store our window private data
 	g_object_set_data(G_OBJECT(assistant), "inst_data", (gpointer)data);
-	//DB( g_print("** \n[import] window=%x, inst_data=%x\n", assistant, data) );
-
+	//DB( g_print("** \n[ui-import] window=%x, inst_data=%x\n", assistant, data) );
 
 	gtk_window_set_modal(GTK_WINDOW (assistant), TRUE);
 	gtk_window_set_transient_for(GTK_WINDOW(assistant), GTK_WINDOW(GLOBALS->mainwindow));
 
 	//set a nice dialog size
 	gtk_window_get_size(GTK_WINDOW(GLOBALS->mainwindow), &w, &h);
-	gtk_window_set_default_size (GTK_WINDOW(assistant), w*0.8, h*0.8);
+	gtk_window_set_default_size (GTK_WINDOW(assistant), w * 0.8, h * 0.8);
+	//gtk_window_set_default_size (GTK_WINDOW(assistant), w - 24, h - 24);
 
+	page = ui_import_page_intro_create (assistant, data);
+	gtk_assistant_append_page (GTK_ASSISTANT (assistant), page);
+	gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), page, GTK_ASSISTANT_PAGE_INTRO);
+	gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), page, _("Welcome"));
+	gtk_assistant_set_page_complete (GTK_ASSISTANT(assistant), page, TRUE );
 
-	pos = 0;
-	data->pages[pos++] = ui_import_panel_welcome_create (assistant, data);
-	data->pages[pos++] = ui_import_panel_filechooser_create (assistant, data);
-	data->pages[pos++] = ui_import_panel_import_create (assistant, data);
-	data->pages[pos++] = ui_import_panel_properties_create (assistant, data);
-	data->pages[pos++] = ui_import_panel_account_create (assistant, data);
-	data->pages[pos++] = ui_import_panel_transaction_create (assistant, data);
-	data->pages[pos++] = ui_import_panel_confirmation_create (assistant, data);
+	page = ui_import_page_filechooser_create (assistant, data);
+	gtk_assistant_append_page (GTK_ASSISTANT (assistant), page);
+	gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), page, _("Select file(s)"));
 
-	gtk_assistant_set_forward_page_func(GTK_ASSISTANT(assistant), ui_import_assistant_forward_page_func, data, NULL);
+	page = ui_import_page_import_create (assistant, data);
+	gtk_assistant_append_page (GTK_ASSISTANT (assistant), page);
+	//gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), page, GTK_ASSISTANT_PAGE_PROGRESS);
+	gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), page, _("Import"));
+
+	//3...x transaction page will be added automatically
+
+	//page = ui_import_page_transaction_create (assistant, 0, data);
+	//gtk_assistant_append_page (GTK_ASSISTANT (assistant), page);
+	//hack to hide the back button here
+	//gtk_assistant_set_page_type (GTK_ASSISTANT(assistant), page, GTK_ASSISTANT_PAGE_INTRO);
+	//gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), page, _("Transaction"));
+	
+	page = ui_import_page_confirmation_create (assistant, data);
+	gtk_assistant_append_page (GTK_ASSISTANT (assistant), page);
+	gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), page, GTK_ASSISTANT_PAGE_CONFIRM);
+	gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), page, _("Confirmation"));
+	
+	//gtk_assistant_set_forward_page_func(GTK_ASSISTANT(assistant), ui_import_assistant_forward_page_func, data, NULL);
 
 	//setup
+	//ui_import_page_filechooser_selection_changed(assistant, data);
+	DB( g_printf(" check list of paths '%p'\n", paths) );
+	if( paths != NULL )
+	{
+	ImportContext *ictx = &data->ictx;
+	GenFile *genfile;
+	gchar **str = paths;
 
-	ui_import_panel_filechooser_selection_changed(assistant, data);
+		while(*str != NULL)
+		{
+			DB( g_printf(" try to append '%s'\n", *str) );
+
+			genfile = da_gen_file_append_from_filename(ictx, *str);
+			if(genfile)
+			{
+				list_file_add(data->LV_file, genfile);
+			}
+			str++;
+		}
+		g_strfreev(paths);
+	}
 
 	//connect all our signals
 	//g_signal_connect (window, "delete-event", G_CALLBACK (hbfile_dispose), (gpointer)data);
-
 	g_signal_connect (G_OBJECT (assistant), "cancel", G_CALLBACK (ui_import_assistant_close_cancel), assistant);
-
 	g_signal_connect (G_OBJECT (assistant), "close", G_CALLBACK (ui_import_assistant_close_cancel), assistant);
-
 	g_signal_connect (G_OBJECT (assistant), "apply", G_CALLBACK (ui_import_assistant_apply), NULL);
-
 	g_signal_connect (G_OBJECT (assistant), "prepare", G_CALLBACK (ui_import_assistant_prepare), NULL);
-
-	g_signal_connect (G_OBJECT (data->filechooser), "selection-changed",
-		G_CALLBACK (ui_import_panel_filechooser_selection_changed), (gpointer)data);
-
-	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->imported_ope)), "changed",
-		G_CALLBACK (ui_import_panel_transaction_fill_same), NULL);
-
+	
 	gtk_widget_show (assistant);
 
-	gtk_assistant_set_page_complete (GTK_ASSISTANT(assistant), data->pages[PAGE_WELCOME], TRUE );
-	gtk_assistant_set_current_page(GTK_ASSISTANT(assistant), PAGE_SELECTFILE);
+	if(PREFS->dtex_nointro)
+		gtk_assistant_set_current_page(GTK_ASSISTANT(assistant), PAGE_FILES);
 
 	return assistant;
 }
-
-
-
 

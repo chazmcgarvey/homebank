@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -79,17 +79,6 @@ enum
 	TOOLBAR_TOGGLE
 };
 
-/*
-** scheduled unit
-*/
-enum
-{
-	AUTO_UNIT_DAY,
-	AUTO_UNIT_WEEK,
-	AUTO_UNIT_MONTH,
-	//AUTO_UNIT_QUARTER,
-	AUTO_UNIT_YEAR
-};
 
 
 /* list display transaction (dsp_account) */
@@ -113,19 +102,7 @@ enum
 	NUM_LST_DSPOPE
 };
 
-/* list_import_transaction */
-#define LST_OPE_IMPTOGGLE 2
 
-
-
-/* list define archive (defarchive) */
-enum
-{
-	LST_DEFARC_DATAS,
-	LST_DEFARC_OLDPOS,
-	LST_DEFARC_AUTO,
-	NUM_LST_DEFARC
-};
 
 /* csv format validator */
 enum

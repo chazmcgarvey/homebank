@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -39,6 +39,10 @@
 extern struct HomeBank *GLOBALS;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+//Payee *
+//da_pay_clone
+
 
 void
 da_pay_free(Payee *item)
@@ -86,20 +90,6 @@ Payee *item;
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-static void da_pay_max_key_ghfunc(gpointer key, Payee *item, guint32 *max_key)
-{
-	*max_key = MAX(*max_key, item->key);
-}
-
-static gboolean da_pay_name_grfunc(gpointer key, Payee *item, gchar *name)
-{
-	if( name && item->name )
-	{
-		if(!strcasecmp(name, item->name))
-			return TRUE;
-	}
-	return FALSE;
-}
 
 /**
  * da_pay_length:
@@ -112,29 +102,30 @@ da_pay_length(void)
 	return g_hash_table_size(GLOBALS->h_pay);
 }
 
-/*
-gboolean
-da_pay_create_none(void)
+
+static void 
+da_pay_max_key_ghfunc(gpointer key, Payee *item, guint32 *max_key)
 {
-Payee *pay;
-guint32 *new_key;
-
-	DB( g_print("da_pay_insert none\n") );
-
-	pay = da_pay_malloc();
-	new_key = g_new0(guint32, 1);
-	*new_key = 0;
-	pay->key = 0;
-	pay->name = g_strdup("");
-
-	DB( g_print(" -> insert id: %d\n", *new_key) );
-
-	g_hash_table_insert(GLOBALS->h_pay, new_key, pay);
-
-
-	return TRUE;
+	*max_key = MAX(*max_key, item->key);
 }
-*/
+
+
+/**
+ * da_pay_get_max_key:
+ *
+ * Get the biggest key from the GHashTable
+ *
+ * Return value: the biggest key value
+ *
+ */
+guint32
+da_pay_get_max_key(void)
+{
+guint32 max_key = 0;
+
+	g_hash_table_foreach(GLOBALS->h_pay, (GHFunc)da_pay_max_key_ghfunc, &max_key);
+	return max_key;
+}
 
 
 /**
@@ -152,6 +143,7 @@ da_pay_remove(guint32 key)
 
 	return g_hash_table_remove(GLOBALS->h_pay, &key);
 }
+
 
 /**
  * da_pay_insert:
@@ -188,51 +180,59 @@ gboolean
 da_pay_append(Payee *item)
 {
 Payee *existitem;
-guint32 *new_key;
 
 	DB( g_print("da_pay_append\n") );
 
-	/* ensure no duplicate */
-	//g_strstrip(item->name);
-	if( item->name != NULL )
+	existitem = da_pay_get_by_name( item->name );
+	if( existitem == NULL )
 	{
-		existitem = da_pay_get_by_name( item->name );
-		if( existitem == NULL )
-		{
-			new_key = g_new0(guint32, 1);
-			*new_key = da_pay_get_max_key() + 1;
-			item->key = *new_key;
-
-			DB( g_print(" -> append id: %d\n", *new_key) );
-
-			g_hash_table_insert(GLOBALS->h_pay, new_key, item);
-			return TRUE;
-		}
+		item->key = da_pay_get_max_key() + 1;
+		da_pay_insert(item);
+		return TRUE;
 	}
 
 	DB( g_print(" -> %s already exist: %d\n", item->name, item->key) );
-
 	return FALSE;
 }
 
+
 /**
- * da_pay_get_max_key:
+ * da_pay_append_if_new:
  *
- * Get the biggest key from the GHashTable
+ * append a new payee into the GHashTable
  *
- * Return value: the biggest key value
+ * Return value: existing or new payee
  *
  */
-guint32
-da_pay_get_max_key(void)
+Payee *
+da_pay_append_if_new(gchar *rawname)
 {
-guint32 max_key = 0;
+Payee *retval = NULL;
 
-	g_hash_table_foreach(GLOBALS->h_pay, (GHFunc)da_pay_max_key_ghfunc, &max_key);
-	return max_key;
+	retval = da_pay_get_by_name(rawname);
+	if(retval == NULL)
+	{
+		retval = da_pay_malloc();
+		retval->key = da_pay_get_max_key() + 1;
+		retval->name = g_strdup(rawname);
+		g_strstrip(retval->name);
+		da_pay_insert(retval);
+	}
+
+	return retval;
 }
 
 
+static gboolean
+da_pay_name_grfunc(gpointer key, Payee *item, gchar *name)
+{
+	if( name && item->name )
+	{
+		if(!strcasecmp(name, item->name))
+			return TRUE;
+	}
+	return FALSE;
+}
 
 
 /**
@@ -244,13 +244,25 @@ guint32 max_key = 0;
  *
  */
 Payee *
-da_pay_get_by_name(gchar *name)
+da_pay_get_by_name(gchar *rawname)
 {
+Payee *retval = NULL;
+gchar *stripname;
+
 	DB( g_print("da_pay_get_by_name\n") );
 
-	return g_hash_table_find(GLOBALS->h_pay, (GHRFunc)da_pay_name_grfunc, name);
+	if( rawname )
+	{
+		stripname = g_strdup(rawname);
+		g_strstrip(stripname);
+		if( strlen(stripname) == 0 )
+			retval = da_pay_get(0);
+		else
+			retval = g_hash_table_find(GLOBALS->h_pay, (GHRFunc)da_pay_name_grfunc, stripname);
+		g_free(stripname);
+	}
+	return retval;
 }
-
 
 
 /**
@@ -273,6 +285,9 @@ da_pay_get(guint32 key)
 void da_pay_consistency(Payee *item)
 {
 	g_strstrip(item->name);
+	//5.2.4 we drop internal xfer here as it will disapear 
+	if( item->paymode == PAYMODE_INTXFER )
+		item->paymode = PAYMODE_XFER;
 }
 
 
@@ -454,61 +469,29 @@ payee_rename(Payee *item, const gchar *newname)
 {
 Payee *existitem;
 gchar *stripname;
+gboolean retval = FALSE;
 
 	stripname = g_strdup(newname);
 	g_strstrip(stripname);
 
 	existitem = da_pay_get_by_name(stripname);
 
-	if( existitem != NULL )
+	if( existitem != NULL && existitem->key != item->key)
 	{
-		if( existitem->key == item->key )
-			return TRUE;
+		DB( g_print("- error, same name already exist with other key %d <> %d\n",existitem->key, item->key) );
+		g_free(stripname);
 	}
 	else
 	{
+		DB( g_print("- renaming\n") );
 		g_free(item->name);
-		item->name = g_strdup(stripname);
-		return TRUE;
-	}
-
-	g_free(stripname);
-
-	return FALSE;
-}
-
-
-/**
- * payee_append_if_new:
- *
- * append a new payee into the GHashTable
- *
- * Return value: true/false + new payee
- *
- */
-gboolean
-payee_append_if_new(gchar *name, Payee **newpayee)
-{
-gboolean retval = FALSE;
-gchar *stripname = g_strdup(name);
-Payee *item;
-
-	g_strstrip(stripname);
-	item = da_pay_get_by_name(stripname);
-	if(item == NULL)
-	{
-		item = da_pay_malloc();
-		item->name = g_strdup(stripname);
-		da_pay_append(item);
+		item->name = stripname;
 		retval = TRUE;
 	}
-	if( newpayee != NULL )
-		*newpayee = item;
-
-	g_free(stripname);
 
 	return retval;
 }
+
 
 static gint
 payee_glist_name_compare_func(Payee *a, Payee *b)
@@ -524,7 +507,8 @@ payee_glist_key_compare_func(Payee *a, Payee *b)
 }
 
 
-GList *payee_glist_sorted(gint column)
+GList *
+payee_glist_sorted(gint column)
 {
 GList *list = g_hash_table_get_values(GLOBALS->h_pay);
 
@@ -533,7 +517,6 @@ GList *list = g_hash_table_get_values(GLOBALS->h_pay);
 	else
 		return g_list_sort(list, (GCompareFunc)payee_glist_name_compare_func);
 }
-
 
 
 gboolean
@@ -548,13 +531,13 @@ const gchar *encoding;
 gint nbcol;
 
 	encoding = homebank_file_getencoding(filename);
+	DB( g_print(" -> encoding should be %s\n", encoding) );
 
 	retval = TRUE;
 	*error = NULL;
 	io = g_io_channel_new_file(filename, "r", NULL);
 	if(io != NULL)
 	{
-		DB( g_print(" -> encoding should be %s\n", encoding) );
 		if( encoding != NULL )
 		{
 			g_io_channel_set_encoding(io, encoding, NULL);
@@ -585,26 +568,24 @@ gint nbcol;
 					}
 					else
 					{
-					gboolean added;
 					Payee *pay = NULL;
-					
+					Category *cat = NULL;
+
 						if( nbcol >= 1 )
 						{
 							DB( g_print(" add pay:'%s' ?\n", str_array[0]) );
-							added = payee_append_if_new(str_array[0], &pay);
-							if(	added )
+							pay = da_pay_append_if_new(str_array[0]);
+							DB( g_print(" pay: %p\n", pay) );
+							if(	pay != NULL )
 							{				
-								DB( g_print(" added: %p\n", pay) );
 								GLOBALS->changes_count++;
 							}
 						}
 
 						if( nbcol == 2 )
 						{
-						Category *cat;
-						
 							DB( g_print(" add cat:'%s'\n", str_array[1]) );
-							cat = da_cat_append_ifnew_by_fullname(str_array[1], FALSE);
+							cat = da_cat_append_ifnew_by_fullname(str_array[1]);
 							
 							DB( g_print(" cat: %p %p\n", cat, pay) );
 							if( cat != NULL )
@@ -657,7 +638,7 @@ gchar *outstr;
 					
 					if( cat != NULL )
 					{
-						fullcatname = da_cat_get_fullname (cat);
+						fullcatname = cat->fullname;
 					}
 				}
 
@@ -680,7 +661,5 @@ gchar *outstr;
 
 		g_io_channel_unref (io);
 	}
-
 }
-
 

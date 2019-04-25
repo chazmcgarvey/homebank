@@ -15,17 +15,17 @@ USER_INTERFACE =
 	
 
 homebank_SOURCES =  \
-	dsp_account.c \
-	dsp_account.h \
-	dsp_mainwindow.c \
-	dsp_mainwindow.h \
+	dsp-account.c \
+	dsp-account.h \
+	dsp-mainwindow.c \
+	dsp-mainwindow.h \
 	enums.h \
 	gtk-chart.c \
 	gtk-chart.h \
 	gtk-chart-colors.c \
 	gtk-chart-colors.h \
-	gtk-chart-stack.c \
-	gtk-chart-stack.h \
+	gtk-chart-progress.c \
+	gtk-chart-progress.h \
 	gtk-dateentry.c \
 	gtk-dateentry.h \
 	hb-account.c \
@@ -69,26 +69,32 @@ homebank_SOURCES =  \
 	hb-xml.h \
 	homebank.c \
 	homebank.h \
+	hub-account.c \
+	hub-account.h \
+	hub-scheduled.c \
+	hub-scheduled.h \
+	hub-spending.c \
+	hub-spending.h \
+	hub-transaction.c \
+	hub-transaction.h \
 	language.c \
 	language.h \
-	list_account.c \
-	list_account.h \
-	list_operation.c \
-	list_operation.h \
-	list_topspending.c \
-	list_topspending.h \
-	list_upcoming.c \
-	list_upcoming.h \
-	rep_balance.c \
-	rep_balance.h \
-	rep_budget.c \
-	rep_budget.h \
-	rep_stats.c \
-	rep_stats.h \
-	rep_time.c \
-	rep_time.h \
-	rep_vehicle.c \
-	rep_vehicle.h \
+	list-account.c \
+	list-account.h \
+	list-operation.c \
+	list-operation.h \
+	list-scheduled.c \
+	list-scheduled.h \
+	rep-balance.c \
+	rep-balance.h \
+	rep-budget.c \
+	rep-budget.h \
+	rep-stats.c \
+	rep-stats.h \
+	rep-time.c \
+	rep-time.h \
+	rep-vehicle.c \
+	rep-vehicle.h \
 	ui-account.c \
 	ui-account.h \
 	ui-archive.c \
@@ -117,10 +123,13 @@ homebank_SOURCES =  \
 	ui-pref.h \
 	ui-split.c \
 	ui-split.h \
+	ui-tag.c \
+	ui-tag.h \
 	ui-transaction.c \
 	ui-transaction.h \
 	ui-txn-multi.c \
 	ui-txn-multi.h \
+	ui-widgets-data.c \
 	ui-widgets.c \
 	ui-widgets.h \
 	refcount.h \
@@ -132,6 +141,7 @@ homebank_SOURCES =  \
 	ext-perl.xs
 
 EXTRA_homebank_DEPENDENCIES = $(PERL_OBJS)
+
 
 homebank_LDADD = $(DEPS_LIBS) \
 	$(LIBSOUP_LIBS) \

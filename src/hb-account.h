@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -21,7 +21,6 @@
 #define __HB_ACCOUNT_H__
 
 
-
 typedef struct _account		Account;
 
 
@@ -35,13 +34,14 @@ struct _account
 	gchar		*name;
 	gchar		*number;
 	gchar		*bankname;
+
 	gdouble		initial;
 	gdouble		warning;
 	gdouble		minimum;
 	guint32		cheque1;
 	guint32		cheque2;
 	gchar	    *notes;
-
+	guint32		karc;
 
 	/* unsaved datas */
 	GQueue		*txn_queue;
@@ -51,12 +51,7 @@ struct _account
 	gdouble     bal_today;	//today balance (every transaction until today)
 	gdouble     bal_future;	//future balance (every transaction)
 
-	gboolean	filter;		//true if selected into filter
-
-	// import datas
-	gboolean	imported;
-	guint32		imp_key;	// 0 create new / x to map to existing
-	gchar		*imp_name;  // name in the file
+	gboolean	flt_select;		//true if selected into filter
 };
 
 // 0 is free
@@ -71,6 +66,8 @@ struct _account
 
 enum
 {
+// + https://www.kashoo.com/blog/what-are-the-different-account-types-in-accounting/
+
 	ACC_TYPE_NONE       = 0,
 	ACC_TYPE_BANK       = 1,	//Banque
 	ACC_TYPE_CASH       = 2,	//Espèce
@@ -98,7 +95,7 @@ void da_acc_new(void);
 guint		da_acc_length(void);
 gboolean	da_acc_create_none(void);
 gboolean	da_acc_remove(guint32 key);
-gboolean	da_acc_insert(Account *acc);
+gboolean	da_acc_insert(Account *item);
 gboolean	da_acc_append(Account *item);
 guint32		da_acc_get_max_key(void);
 Account		*da_acc_get_by_name(gchar *name);

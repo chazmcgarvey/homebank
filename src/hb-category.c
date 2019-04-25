@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -49,7 +49,8 @@ Category *new_item = rc_dup(src_item, sizeof(Category));
 	if(new_item)
 	{
 		//duplicate the string
-		new_item->name		= g_strdup(src_item->name);
+		new_item->name = g_strdup(src_item->name);
+		new_item->fullname = g_strdup(src_item->fullname);
 	}
 	return new_item;
 }
@@ -64,6 +65,7 @@ da_cat_free(Category *item)
 		DB( g_print(" => %d, %s\n", item->key, item->name) );
 
 		g_free(item->name);
+		g_free(item->fullname);
 		rc_free(item);
 	}
 }
@@ -95,7 +97,9 @@ Category *item;
 
 	// insert our 'no category'
 	item = da_cat_malloc();
+	item->key = 0;
 	item->name = g_strdup("");
+	item->fullname = g_strdup("");
 	da_cat_insert(item);
 }
 
@@ -114,15 +118,30 @@ da_cat_length(void)
 }
 
 
+static void
+da_cat_max_key_ghfunc(gpointer key, Category *cat, guint32 *max_key)
+{
+	*max_key = MAX(*max_key, cat->key);
+}
 
 /**
- * da_cat_remove_grfunc:
+ * da_cat_get_max_key:
  *
- * GRFunc to get the max id
+ * Get the biggest key from the GHashTable
  *
- * Return value: TRUE if the key/value must be deleted
+ * Return value: the biggest key value
  *
  */
+guint32
+da_cat_get_max_key(void)
+{
+guint32 max_key = 0;
+
+	g_hash_table_foreach(GLOBALS->h_cat, (GHFunc)da_cat_max_key_ghfunc, &max_key);
+	return max_key;
+}
+
+
 static gboolean
 da_cat_remove_grfunc(gpointer key, Category *cat, guint32 *remkey)
 {
@@ -144,10 +163,61 @@ da_cat_remove_grfunc(gpointer key, Category *cat, guint32 *remkey)
 guint
 da_cat_remove(guint32 key)
 {
-	DB( g_print("da_cat_remove %d\n", key) );
+	DB( g_print("\nda_cat_remove %d\n", key) );
 
 	return g_hash_table_foreach_remove(GLOBALS->h_cat, (GHRFunc)da_cat_remove_grfunc, &key);
 }
+
+
+static void
+da_cat_build_fullname(Category *item)
+{
+Category *parent;
+
+	g_free(item->fullname);
+	if( item->parent == 0 )
+		item->fullname = g_strdup(item->name);
+	else
+	{
+		parent = da_cat_get(item->parent);
+		if( parent != NULL )
+			item->fullname = g_strconcat(parent->name, ":", item->name, NULL);
+	}
+
+	DB( g_print("- updated %d:'%s' fullname='%s'\n", item->key, item->name, item->fullname) );
+
+}
+
+
+static void
+da_cat_rename(Category *item, gchar *newname)
+{
+
+	DB( g_print("- renaming %s' => '%s'\n", item->name, newname) );
+
+	g_free(item->name);
+	item->name = g_strdup(newname);
+	da_cat_build_fullname(item);
+
+	if( item->parent == 0 )
+	{
+	GHashTableIter iter;
+	gpointer value;
+
+		DB( g_print("- updating subcat fullname\n") );
+
+		g_hash_table_iter_init (&iter, GLOBALS->h_cat);
+		while (g_hash_table_iter_next (&iter, NULL, &value))
+		{
+		Category *subcat = value;
+
+			if( subcat->parent == item->key )
+				da_cat_build_fullname(subcat);
+		}
+
+	}
+}
+
 
 /**
  * da_cat_insert:
@@ -162,11 +232,15 @@ da_cat_insert(Category *item)
 {
 guint32 *new_key;
 
-	DB( g_print("da_cat_insert\n") );
+	DB( g_print("\nda_cat_insert\n") );
+
+	DB( g_print("- '%s'\n", item->name) );
 
 	new_key = g_new0(guint32, 1);
 	*new_key = item->key;
 	g_hash_table_insert(GLOBALS->h_cat, new_key, item);
+
+	da_cat_build_fullname(item);
 
 	return TRUE;
 }
@@ -180,164 +254,36 @@ guint32 *new_key;
  * Return value: TRUE if inserted
  *
  */
+// used only to add cat/subcat from ui_category with the 2 inputs
 gboolean
 da_cat_append(Category *cat)
 {
 Category *existitem;
-guint32 *new_key;
-gchar *fullname;
 
-	DB( g_print("da_cat_append\n") );
+	DB( g_print("\nda_cat_append\n") );
 
-	if( cat->name != NULL)
+	if( !cat->fullname )
+		da_cat_build_fullname(cat);
+
+	existitem = da_cat_get_by_fullname( cat->fullname );
+	if( existitem == NULL )
 	{
-
-		fullname = da_cat_get_fullname(cat);
-		existitem = da_cat_get_by_fullname( fullname );
-		g_free(fullname);
-
-		if( existitem == NULL )
-		{
-			new_key = g_new0(guint32, 1);
-			*new_key = da_cat_get_max_key() + 1;
-			cat->key = *new_key;
-
-			DB( g_print(" -> insert id: %d\n", *new_key) );
-
-			g_hash_table_insert(GLOBALS->h_cat, new_key, cat);
-			return TRUE;
-		}
-
+		cat->key = da_cat_get_max_key() + 1;
+		da_cat_insert(cat);
+		return TRUE;
 	}
 
 	DB( g_print(" -> %s already exist\n", cat->name) );
-
 	return FALSE;
 }
 
 
-/**
- * da_cat_max_key_ghfunc:
- *
- * GHFunc for biggest key
- *
- */
-static void
-da_cat_max_key_ghfunc(gpointer key, Category *cat, guint32 *max_key)
-{
-
-	*max_key = MAX(*max_key, cat->key);
-}
-
-/**
- * da_cat_get_max_key:
- *
- * Get the biggest key from the GHashTable
- *
- * Return value: the biggest key value
- *
- */
-guint32
-da_cat_get_max_key(void)
-{
-guint32 max_key = 0;
-
-	g_hash_table_foreach(GLOBALS->h_cat, (GHFunc)da_cat_max_key_ghfunc, &max_key);
-	return max_key;
-}
-
-/**
- * da_cat_get_fullname:
- *
- * Get category the fullname 'xxxx:yyyyy'
- *
- * Return value: the category fullname (free it with g_free)
- *
- */
-gchar *
-da_cat_get_fullname(Category *cat)
-{
-Category *parent;
-
-	if( cat->parent == 0 )
-		return g_strdup(cat->name);
-	else
-	{
-		parent = da_cat_get(cat->parent);
-		if( parent )
-		{
-			return g_strdup_printf("%s:%s", parent->name, cat->name);
-		}
-	}
-
-	return NULL;
-}
-
-
-/**
- * da_cat_name_grfunc:
- *
- * GRFunc to get the max id
- *
- * Return value: TRUE if the key/value pair match our name
- *
- */
-static gboolean
-da_cat_name_grfunc(gpointer key, Category *cat, gchar *name)
-{
-
-//	DB( g_print("%s == %s\n", name, cat->name) );
-	if( name && cat->name)
-	{
-		if(!strcasecmp(name, cat->name))
-			return TRUE;
-	}
-	return FALSE;
-}
-
-/**
- * da_cat_get_key_by_name:
- *
- * Get a category key by its name
- *
- * Return value: the category key or -1 if not found
- *
- */
-guint32
-da_cat_get_key_by_name(gchar *name)
-{
-Category *cat;
-
-	DB( g_print("da_cat_get_key_by_name\n") );
-
-	cat = g_hash_table_find(GLOBALS->h_cat, (GHRFunc)da_cat_name_grfunc, name);
-	if( cat == NULL)
-		return -1;
-
-	return cat->key;
-}
-
-/**
- * da_cat_get_by_name:
- *
- * Get a category structure by its name
- *
- * Return value: Category * or NULL if not found
- *
- */
-Category *
-da_cat_get_by_name(gchar *name)
-{
-	DB( g_print("da_cat_get_by_name\n") );
-
-	return g_hash_table_find(GLOBALS->h_cat, (GHRFunc)da_cat_name_grfunc, name);
-}
 
 
 /* fullname i.e. car:refuel */
 struct fullcatcontext
 {
-	guint	parent;
+	guint32	parent;
 	gchar	*name;
 };
 
@@ -349,54 +295,90 @@ da_cat_fullname_grfunc(gpointer key, Category *item, struct fullcatcontext *ctx)
 	//DB( g_print("'%s' == '%s'\n", ctx->name, item->name) );
 	if( item->parent == ctx->parent )
 	{
-		if(!strcasecmp(ctx->name, item->name))
-			return TRUE;
+		if( ctx->name && item->name )
+			if(!strcasecmp(ctx->name, item->name))
+				return TRUE;
 	}
 	return FALSE;
 }
 
-Category *
-da_cat_get_by_fullname(gchar *fullname)
+
+static Category *da_cat_get_by_name_find_internal(guint32 parent, gchar *name)
 {
 struct fullcatcontext ctx;
-gchar **typestr;
-Category *item = NULL;
 
-	DB( g_print("da_cat_get_by_fullname\n") );
+	ctx.parent = parent;
+	ctx.name   = name;
+	DB( g_print("- searching %s %d '%s'\n", (parent == 0) ? "lv1cat" : "lv2cat", parent, name) );
+	return g_hash_table_find(GLOBALS->h_cat, (GHRFunc)da_cat_fullname_grfunc, &ctx);
+}
 
-	typestr = g_strsplit(fullname, ":", 2);
-	if( g_strv_length(typestr) == 2 )
+
+static gchar **da_cat_get_by_fullname_split_clean(gchar *rawfullname, guint *outlen)
+{
+gchar **partstr = g_strsplit(rawfullname, ":", 2);
+guint len = g_strv_length(partstr);
+gboolean valid = TRUE;
+
+	DB( g_print("- spliclean '%s' - %d parts\n", rawfullname, g_strv_length(partstr)) );
+
+	if( outlen != NULL )
+		*outlen = len;
+
+	if(len >= 1)
 	{
-		ctx.parent = 0;
-		ctx.name = typestr[0];
-		DB( g_print(" [x:x] try to find the parent : '%s'\n", typestr[0]) );
+		g_strstrip(partstr[0]);
+		if( strlen(partstr[0]) == 0 )
+		   valid = FALSE;
 
-		Category *parent = g_hash_table_find(GLOBALS->h_cat, (GHRFunc)da_cat_fullname_grfunc, &ctx);
-		if( parent != NULL )
+		if(len == 2)
 		{
-			ctx.parent = parent->key;
-			ctx.name = typestr[1];
+			g_strstrip(partstr[1]);
+			if( strlen(partstr[1]) == 0 )
+			   valid = FALSE;
+	   }
+	}
 
-			DB( g_print(" [x:x] and searching sub %d '%s'\n", ctx.parent, ctx.name) );
+	if(valid == TRUE)
+		return partstr;
 
-			item = g_hash_table_find(GLOBALS->h_cat, (GHRFunc)da_cat_fullname_grfunc, &ctx);
+	DB( g_print("- is invalid\n") );
+
+	g_strfreev(partstr);
+	return NULL;
+}
+
+
+Category *
+da_cat_get_by_fullname(gchar *rawfullname)
+{
+gchar **partstr;
+Category *parent = NULL;
+Category *retval = NULL;
+guint len;
+
+	DB( g_print("\nda_cat_get_by_fullname\n") );
+
+	if( rawfullname )
+	{
+		if( (partstr = da_cat_get_by_fullname_split_clean(rawfullname, &len)) != NULL )
+		{
+			if( len >= 1 )
+			{
+				parent = da_cat_get_by_name_find_internal(0, partstr[0]);
+				retval = parent;
+			}
+
+			if( len == 2 && parent != NULL )
+			{
+				retval = da_cat_get_by_name_find_internal(parent->key, partstr[1]);
+			}
+
+			g_strfreev(partstr);
 		}
 	}
-	else
-	{
-		ctx.parent = 0;
-		ctx.name = fullname;
 
-		DB( g_print(" [x] try to '%s'\n", fullname) );
-
-		item = g_hash_table_find(GLOBALS->h_cat, (GHRFunc)da_cat_fullname_grfunc, &ctx);
-	}
-
-	g_strfreev(typestr);
-
-	DB( g_print(" return value %p\n", item) );
-
-	return item;
+	return retval;
 }
 
 
@@ -409,116 +391,58 @@ Category *item = NULL;
  *
  */
 Category *
-da_cat_append_ifnew_by_fullname(gchar *fullname, gboolean imported)
+da_cat_append_ifnew_by_fullname(gchar *rawfullname)
 {
-struct fullcatcontext ctx;
-gchar **typestr;
-Category *newcat, *item, *retval = NULL;
-guint32 *new_key;
+gchar **partstr;
+Category *parent = NULL;
+Category *newcat = NULL;
+Category *retval = NULL;
+guint len;
 
-	DB( g_print("da_cat_append_ifnew_by_fullname\n") );
+	DB( g_print("\nda_cat_append_ifnew_by_fullname\n") );
 
-	DB( g_print(" -> fullname: '%s' %d\n", fullname, strlen(fullname)) );
-
-	if( strlen(fullname) > 0 )
+	if( rawfullname )
 	{
-		typestr = g_strsplit(fullname, ":", 2);
-
-		/* if we have a subcategory : aaaa:bbb */
-		if( g_strv_length(typestr) == 2 )
+		if( (partstr = da_cat_get_by_fullname_split_clean(rawfullname, &len)) != NULL )
 		{
-			ctx.parent = 0;
-			ctx.name = typestr[0];
-			DB( g_print(" try to find the parent:'%s'\n", typestr[0]) );
-
-			Category *parent = g_hash_table_find(GLOBALS->h_cat, (GHRFunc)da_cat_fullname_grfunc, &ctx);
-			if( parent == NULL )
+			if( len >= 1 )
 			{
-				DB( g_print(" -> not found\n") );
-
-				// append a new category
-				new_key = g_new0(guint32, 1);
-				*new_key = da_cat_get_max_key() + 1;
-
-				newcat = da_cat_malloc();
-				newcat->key = *new_key;
-				newcat->name = g_strdup(typestr[0]);
-				newcat->imported = imported;
-
-				parent = newcat;
-
-				DB( g_print(" -> insert cat '%s' id: %d\n", newcat->name, newcat->key) );
-
-				g_hash_table_insert(GLOBALS->h_cat, new_key, newcat);
+				parent = da_cat_get_by_name_find_internal(0, partstr[0]);
+				if( parent == NULL )
+				{
+					parent = da_cat_malloc();
+					parent->key = da_cat_get_max_key() + 1;
+					parent->name = g_strdup(partstr[0]);
+					da_cat_insert(parent);
+				}
+				retval = parent;
 			}
 
-			ctx.parent = parent->key;
-			ctx.name = typestr[1];
-			DB( g_print(" searching %d '%s'\n", ctx.parent, ctx.name) );
-
-			item = g_hash_table_find(GLOBALS->h_cat, (GHRFunc)da_cat_fullname_grfunc, &ctx);
-			if( item == NULL )
+			/* if we have a subcategory - xxx:xxx */
+			if( len == 2 && parent != NULL )
 			{
-				// append a new subcategory
-				new_key = g_new0(guint32, 1);
-				*new_key = da_cat_get_max_key() + 1;
-
-				newcat = da_cat_malloc();
-				newcat->key = *new_key;
-				newcat->parent = parent->key;
-				newcat->name = g_strdup(typestr[1]);
-				newcat->imported = imported;
-
-				newcat->flags |= GF_SUB;
-				//#1713413 take parent type into account
-				if(parent->flags & GF_INCOME)
-					newcat->flags |= GF_INCOME;
-
-				DB( g_print(" -> insert subcat '%s' id: %d\n", newcat->name, newcat->key) );
-
-				g_hash_table_insert(GLOBALS->h_cat, new_key, newcat);
-
+				newcat = da_cat_get_by_name_find_internal(parent->key, partstr[1]);
+				if( newcat == NULL )
+				{
+					newcat = da_cat_malloc();
+					newcat->key = da_cat_get_max_key() + 1;
+					newcat->parent = parent->key;
+					newcat->name = g_strdup(partstr[1]);
+					newcat->flags |= GF_SUB;
+					//#1713413 take parent type into account
+					if(parent->flags & GF_INCOME)
+						newcat->flags |= GF_INCOME;
+					da_cat_insert(newcat);
+				}
 				retval = newcat;
 			}
-			else
-				retval = item;
+
+			g_strfreev(partstr);
 		}
-		/* this a single category : aaaa */
-		else
-		{
-			ctx.parent = 0;
-			ctx.name = typestr[0];
-			DB( g_print(" searching %d '%s'\n", ctx.parent, ctx.name) );
-
-			item = g_hash_table_find(GLOBALS->h_cat, (GHRFunc)da_cat_fullname_grfunc, &ctx);
-			if( item == NULL )
-			{
-				// append a new category
-				new_key = g_new0(guint32, 1);
-				*new_key = da_cat_get_max_key() + 1;
-
-				newcat = da_cat_malloc();
-				newcat->key = *new_key;
-				newcat->name = g_strdup(typestr[0]);
-				newcat->imported = imported;
-
-				DB( g_print(" -> insert cat '%s' id: %d\n", newcat->name, newcat->key) );
-
-				g_hash_table_insert(GLOBALS->h_cat, new_key, newcat);
-
-				retval = newcat;
-			}
-			else
-				retval = item;
-
-		}
-
-		g_strfreev(typestr);
 	}
 
 	return retval;
 }
-
 
 
 /**
@@ -538,6 +462,18 @@ da_cat_get(guint32 key)
 }
 
 
+gchar *da_cat_get_name(Category *item)
+{
+gchar *name = NULL;
+
+	if(item != NULL)
+	{
+		name = item->key == 0 ? _("(no category)") : item->fullname;
+	}
+	return name;
+}
+
+
 void da_cat_consistency(Category *item)
 {
 gboolean isIncome;
@@ -547,10 +483,10 @@ gboolean isIncome;
 		//check for existing parent
 		if( da_cat_get(item->parent) == NULL )
 		{
-		Category *parent = da_cat_append_ifnew_by_fullname ("orphaned", FALSE);
+		Category *parent = da_cat_append_ifnew_by_fullname ("orphaned");
 
 			item->parent = parent->key;
-			
+			da_cat_build_fullname(item);
 			g_warning("category consistency: fixed missing parent %d", item->parent);
 		}
 	}
@@ -565,8 +501,17 @@ gboolean isIncome;
 			GLOBALS->changes_count++;
 		}
 	}
-	
-	g_strstrip(item->name);
+
+	if( item->name != NULL )
+		g_strstrip(item->name);
+	else
+	{
+		item->name = g_strdup("void");
+		da_cat_build_fullname(item);
+		g_warning("category consistency: fixed null name");
+		GLOBALS->changes_count++;
+	}
+
 }
 
 
@@ -603,31 +548,31 @@ da_cat_debug_list(void)
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+
 guint32 category_report_id(guint32 key, gboolean subcat)
 {
-Category *catentry = da_cat_get(key);
 guint32 retval = 0;
 
-	if(catentry)
+	if(subcat == FALSE)
 	{
-		if(subcat == FALSE)
-		{
+	Category *catentry = da_cat_get(key);
+		if(catentry)
 			retval = (catentry->flags & GF_SUB) ? catentry->parent : catentry->key;
-		}
-		else
-		{
-			retval = catentry->key;
-		}
 	}
+	else
+	{
+		retval = key;
+	}
+	//DB( g_print("- cat '%s' reportid = %d\n", catentry->name, retval) );
 	return retval;
 }
 
 
-void 
+void
 category_delete_unused(void)
 {
 GList *lcat, *list;
-	
+
 	lcat = list = g_hash_table_get_values(GLOBALS->h_cat);
 	while (list != NULL)
 	{
@@ -642,7 +587,7 @@ GList *lcat, *list;
 }
 
 
-static void 
+static void
 category_fill_usage_count(guint32 kcat)
 {
 Category *cat = da_cat_get (kcat);
@@ -696,16 +641,16 @@ guint i, nbsplit;
 			//#1689308 count split as well
 			if( txn->flags & OF_SPLIT )
 			{
-				nbsplit = da_splits_count(txn->splits);
+				nbsplit = da_splits_length(txn->splits);
 				for(i=0;i<nbsplit;i++)
 				{
-				Split *split = txn->splits[i];
-					
+				Split *split = da_splits_get(txn->splits, i);
+
 					category_fill_usage_count(split->kcat);
 				}
 			}
 			else
-				category_fill_usage_count(txn->kcat);		
+				category_fill_usage_count(txn->kcat);
 
 			lnk_txn = g_list_next(lnk_txn);
 		}
@@ -732,11 +677,11 @@ guint i, nbsplit;
 		//#1689308 count split as well
 		if( entry->flags & OF_SPLIT )
 		{
-			nbsplit = da_splits_count(entry->splits);
+			nbsplit = da_splits_length(entry->splits);
 			for(i=0;i<nbsplit;i++)
 			{
-			Split *split = entry->splits[i];
-				
+			Split *split = da_splits_get(entry->splits, i);
+
 				category_fill_usage_count(split->kcat);
 			}
 		}
@@ -778,7 +723,7 @@ guint i, nbsplit;
 		while (lnk_txn != NULL)
 		{
 		Transaction *txn = lnk_txn->data;
-		
+
 			if(txn->kcat == key1)
 			{
 				txn->kcat = key2;
@@ -786,10 +731,10 @@ guint i, nbsplit;
 			}
 
 			// move split category #1340142
-			nbsplit = da_splits_count(txn->splits);
+			nbsplit = da_splits_length(txn->splits);
 			for(i=0;i<nbsplit;i++)
 			{
-			Split *split = txn->splits[i];
+			Split *split = da_splits_get(txn->splits, i);
 
 				if( split->kcat == key1 )
 				{
@@ -800,7 +745,7 @@ guint i, nbsplit;
 
 			lnk_txn = g_list_next(lnk_txn);
 		}
-		
+
 		lnk_acc = g_list_next(lnk_acc);
 	}
 	g_list_free(lst_acc);
@@ -841,7 +786,7 @@ gchar *fullname = NULL;
 gchar *stripname;
 gboolean retval;
 
-	DB( g_print("(category) rename\n") );
+	DB( g_print("\n(category) rename\n") );
 
 	stripname = g_strdup(newname);
 	g_strstrip(stripname);
@@ -863,15 +808,14 @@ gboolean retval;
 
 	if( existitem != NULL && existitem->key != item->key)
 	{
-		DB( g_print("error, same name already exist with other key %d <> %d\n",existitem->key, item->key) );
+		DB( g_print("- error, same name already exist with other key %d <> %d\n",existitem->key, item->key) );
 		retval = FALSE;
 	}
 	else
 	{
-		DB( g_print(" -renaming\n") );
+		DB( g_print("- renaming\n") );
 
-		g_free(item->name);
-		item->name = g_strdup(stripname);
+		da_cat_rename (item, stripname);
 		retval = TRUE;
 	}
 
@@ -882,26 +826,21 @@ gboolean retval;
 }
 
 
-static gint category_glist_name_compare_func(Category *c1, Category *c2)
+static gint
+category_glist_name_compare_func(Category *c1, Category *c2)
 {
-gchar *name1, *name2;
 gint retval = 0;
 
 	if( c1 != NULL && c2 != NULL )
 	{
-		name1 = da_cat_get_fullname(c1);
-		name2 = da_cat_get_fullname(c2);
-
-		retval = hb_string_utf8_compare(name1, name2);
-
-		g_free(name2);
-		g_free(name1);
+		retval = hb_string_utf8_compare(c1->fullname, c2->fullname);
 	}
 	return retval;
 }
 
 
-static gint category_glist_key_compare_func(Category *a, Category *b)
+static gint
+category_glist_key_compare_func(Category *a, Category *b)
 {
 gint ka, kb, retval = 0;
 
@@ -937,7 +876,8 @@ gint ka, kb, retval = 0;
 }
 
 
-GList *category_glist_sorted(gint column)
+GList *
+category_glist_sorted(gint column)
 {
 GList *list = g_hash_table_get_values(GLOBALS->h_cat);
 
@@ -964,16 +904,13 @@ gint type = 0;
 const gchar *encoding;
 
 	encoding = homebank_file_getencoding(filename);
-
-			DB( g_print(" -> encoding should be %s\n", encoding) );
-
+	DB( g_print(" -> encoding should be %s\n", encoding) );
 
 	retval = TRUE;
 	*error = NULL;
 	io = g_io_channel_new_file(filename, "r", NULL);
 	if(io != NULL)
 	{
-
 		if( encoding != NULL )
 		{
 			g_io_channel_set_encoding(io, encoding, NULL);
@@ -1033,10 +970,7 @@ const gchar *encoding;
 							fullcatname = g_strdup_printf("%s:%s", lastcatname, str_array[2]);
 						}
 
-						DB( g_print(" + fullcatname %s\n", fullcatname) );
-
-						item = da_cat_append_ifnew_by_fullname(fullcatname, FALSE);
-
+						item = da_cat_append_ifnew_by_fullname(fullcatname);
 						DB( g_print(" + item %p\n", item) );
 
 						if( item != NULL)
@@ -1051,21 +985,16 @@ const gchar *encoding;
 						g_strfreev (str_array);
 					}
 				}
-
 			}
 			g_free(tmpstr);
-
 		}
 		g_io_channel_unref (io);
-
-
 	}
 
 	g_free(lastcatname);
 
 	return retval;
 }
-
 
 
 gboolean
@@ -1075,7 +1004,6 @@ gboolean retval = FALSE;
 GIOChannel *io;
 gchar *outstr;
 GList *lcat, *list;
-
 
 	io = g_io_channel_new_file(filename, "w", NULL);
 	if(io != NULL)
@@ -1119,11 +1047,12 @@ GList *lcat, *list;
 		g_io_channel_unref (io);
 	}
 
-
 	return retval;
 }
 
-gint category_type_get(Category *item)
+
+gint
+category_type_get(Category *item)
 {
 	if( (item->flags & (GF_INCOME)) )
 		return 1;
@@ -1131,8 +1060,15 @@ gint category_type_get(Category *item)
 }
 
 
+gchar
+category_get_type_char(Category *item)
+{
+	return (item->flags & GF_INCOME) ? '+' : '-';
+}
 
-static gint category_change_type_eval(Category *item, gboolean isIncome)
+
+static gint
+category_change_type_eval(Category *item, gboolean isIncome)
 {
 	if( (item->flags & (GF_INCOME)) && !isIncome )
 		return 1;
@@ -1140,13 +1076,14 @@ static gint category_change_type_eval(Category *item, gboolean isIncome)
 }
 
 
-gint category_change_type(Category *item, gboolean isIncome)
+gint
+category_change_type(Category *item, gboolean isIncome)
 {
 gint changes = 0;
 GList *lcat, *list;
 
 	changes += category_change_type_eval(item, isIncome);
-	
+
 	item->flags &= ~(GF_INCOME);	//delete flag
 	if(isIncome == TRUE)
 		item->flags |= GF_INCOME;
@@ -1173,9 +1110,6 @@ GList *lcat, *list;
 }
 
 
-
-
-
 /**
  * category_find_preset:
  *
@@ -1184,7 +1118,8 @@ GList *lcat, *list;
  * Return value: a pathname to the file or NULL
  *
  */
-gchar *category_find_preset(gchar **lang)
+gchar *
+category_find_preset(gchar **lang)
 {
 gchar **langs;
 gchar *filename;
@@ -1219,5 +1154,4 @@ guint i;
 	*lang = NULL;
 	return NULL;
 }
-
 

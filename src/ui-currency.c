@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -649,7 +649,7 @@ GtkTreeViewColumn	*column;
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set(renderer, "xalign", 0.5, NULL);
 	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(column, _("Last modfied"));
+	gtk_tree_view_column_set_title(column, _("Last modified"));
 	gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_cur_listview_lastmodified_cell_data_function, GINT_TO_POINTER(LST_DEFCUR_DATAS), NULL);
@@ -874,7 +874,7 @@ gint crow, row;
 	row++;
 	label = make_label_widget(_("_Frac digits:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_numeric(label, 0.0, 6.0);
+	widget = make_numeric(label, 0.0, 8.0);
 	data.NB_fracdigits = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 	
@@ -1171,7 +1171,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
 
 	row = 0;
-	widget = gtk_search_entry_new();
+	widget = make_search();
 	data.ST_search = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
@@ -1232,7 +1232,7 @@ gint crow, row;
 		data.ST_custname = widget;
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
-		label = make_label_widget("_ISO:");
+		label = make_label_widget(_("_ISO:"));
 		data.LB_custiso = label;
 		gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
 		widget = make_string_maxlength(label, 3);
@@ -1309,7 +1309,7 @@ gboolean retcode = FALSE;
 
 	if(!retcode)
 	{
-	gchar *msg = _("Unknow error");
+	gchar *msg = _("Unknown error");
 
 		if( error )
 			msg = error->message;
@@ -1697,7 +1697,7 @@ gint crow, row, w, h;
 	data.BB_update = bbox;
 	gtk_grid_attach (GTK_GRID(group_grid), bbox, 0, row, 1, 1);
 
-	widget = gtk_button_new_from_icon_name (ICONNAME_REFRESH, GTK_ICON_SIZE_BUTTON);
+	widget = gtk_button_new_from_icon_name (ICONNAME_HB_REFRESH, GTK_ICON_SIZE_BUTTON);
 	gtk_container_add (GTK_CONTAINER (bbox), widget);
 	
 	g_signal_connect (G_OBJECT (widget), "clicked", G_CALLBACK (ui_cur_manage_dialog_sync), NULL);

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,13 +20,24 @@
 #ifndef __HB_WIDGETS_GTK_H__
 #define __HB_WIDGETS_GTK_H__
 
+typedef struct _hbtk__data		HbKvData;
+
+struct _hbtk__data {
+	guint32			key;
+	const gchar		*name;
+};
+
+
+
+
+
 
 GtkWidget *make_label(gchar *str, gfloat xalign, gfloat yalign);
 GtkWidget *make_clicklabel(gchar *id, gchar *str);
 GtkWidget *make_label_group(gchar *str);
 GtkWidget *make_label_widget(gchar *str);
 GtkWidget *make_text(gfloat xalign);
-GtkWidget *make_search(GtkWidget *label);
+GtkWidget *make_search(void);
 GtkWidget *make_string(GtkWidget *label);
 GtkWidget *make_image_button(gchar *icon_name, gchar *tooltip_text);
 
@@ -41,22 +52,34 @@ GtkWidget *make_year(GtkWidget *label);
 GtkWidget *make_cycle(GtkWidget *label, gchar **items);
 GtkWidget *make_daterange(GtkWidget *label, gboolean custom);
 
-
 void ui_label_set_integer(GtkLabel *label, gint value);
 
-GtkWidget *make_radio(gchar **items, gboolean buttonstyle, GtkOrientation orientation);
-GtkWidget *radio_get_nth_widget (GtkContainer *container, gint nth);
-gint radio_get_active (GtkContainer *container);
-void radio_set_active (GtkContainer *container, gint active);
 
-void
-gimp_label_set_attributes (GtkLabel *label,
-                           ...);
+gchar *hbtk_get_label(HbKvData *kvdata, guint32 key);
+guint32 hbtk_combo_box_get_active_id (GtkComboBoxText *combobox);
+void hbtk_combo_box_set_active_id (GtkComboBoxText *combobox, guint32 active_id);
+void hbtk_combo_box_text_append (GtkComboBoxText *combobox, guint32 key, gchar *text);
+GtkWidget *hbtk_combo_box_new (GtkWidget *label);
+GtkWidget *hbtk_combo_box_new_with_data (GtkWidget *label, HbKvData *kvdata);
+
+gint hbtk_radio_get_active (GtkContainer *container);
+void hbtk_radio_set_active (GtkContainer *container, gint active);
+GtkWidget *hbtk_radio_get_nth (GtkContainer *container, gint nth);
+void hbtk_radio_connect(GtkContainer *container, const gchar *detailed_signal, GCallback c_handler, gpointer data);
+GtkWidget *hbtk_radio_new (gchar **items, gboolean buttonstyle);
+
+
+void gimp_label_set_attributes (GtkLabel *label, ...);
+
 
 void hb_widget_visible(GtkWidget *widget, gboolean visible);
+void ui_gtk_entry_tag_name_append(GtkEntry *entry, gchar *tagname);
 void ui_gtk_entry_set_text(GtkWidget *widget, gchar *text);
 void ui_gtk_entry_replace_text(GtkWidget *widget, gchar **storage);
 
+GtkWidget *make_nainex(GtkWidget *label);
+
+/*
 guint make_popaccount_populate(GtkComboBox *combobox, GList *srclist);
 GtkWidget *make_popaccount(GtkWidget *label);
 
@@ -68,6 +91,7 @@ GtkWidget *make_poparchive(GtkWidget *label);
 
 guint make_popcategory_populate(GtkComboBox *combobox, GList *srclist);
 GtkWidget *make_popcategory(GtkWidget *label);
+*/
 
 
 gchar *get_paymode_icon_name(gint index);

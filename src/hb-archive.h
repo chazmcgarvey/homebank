@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -27,7 +27,7 @@ typedef struct _archive		Archive;
 
 struct _archive
 {
-
+	guint32		key;
 	gdouble		amount;
 	guint32		kacc;
 	gushort		paymode;
@@ -40,11 +40,11 @@ struct _archive
 	//gushort		pos;
 	gushort     status, _pad1;
 	//gchar		*info;
-	//guint32		*tags;
+	guint32		*tags;
 	//guint32		kxfer;		//strong link xfer key
 	guint32		kxferacc;
 	
-	Split		*splits[TXN_MAX_SPLIT+1];
+	GPtrArray	*splits;
 
 	guint32		nextdate;
 	gushort		daygap;
@@ -55,13 +55,44 @@ struct _archive
 };
 
 
+/* list define archive (defarchive) */
+enum
+{
+	LST_DEFARC_DATAS,
+	LST_DEFARC_OLDPOS,
+	LST_DEFARC_AUTO,
+	NUM_LST_DEFARC
+};
+
+/*
+** scheduled unit
+*/
+enum
+{
+	AUTO_UNIT_DAY,
+	AUTO_UNIT_WEEK,
+	AUTO_UNIT_MONTH,
+	//AUTO_UNIT_QUARTER,
+	AUTO_UNIT_YEAR
+};
+
+
+
+
 Archive *da_archive_malloc(void);
 Archive *da_archive_clone(Archive *src_item);
 guint archive_add_get_nbdays(void);
 void da_archive_free(Archive *item);
 void da_archive_destroy(GList *list);
 GList *da_archive_sort(GList *list);
+
 guint da_archive_length(void);
+gboolean da_archive_append(Archive *item);
+gboolean da_archive_append_new(Archive *item);
+guint32 da_archive_get_max_key(void);
+Archive *da_archive_get(guint32 key);
+
+
 void da_archive_consistency(Archive *item);
 
 Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn);

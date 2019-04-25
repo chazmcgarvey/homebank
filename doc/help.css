@@ -60,6 +60,10 @@ ol li {
 	margin-top: .5em;
 }
 
+.padleft {
+	margin-left: 3em;
+}
+
 .toc li {
 /*list-style:none;*/
 	list-style-image: url(images/arrow.png);

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.52)
-AC_INIT([homebank], [5.1.7])
+AC_INIT([homebank], [5.2.4])
 #AC_INIT([homebank], [x.x-rc])
 
 AM_CONFIG_HEADER(config.h)
@@ -42,7 +42,7 @@ CFLAGS="${CFLAGS} -Wall -Wmissing-prototypes"
 CFLAGS="${CFLAGS} -Wno-deprecated-declarations"
 
 # extended flags
-#CFLAGS="${CFLAGS} -Wextra -Wno-unused-parameter"
+#CFLAGS="${CFLAGS} -Wextra -Wno-unused-parameter -Wno-cast-function-type"
 
 # profiling valgrind/gprof flags
 #CFLAGS="${CFLAGS} -g -O0 -pg"
@@ -131,7 +131,7 @@ AC_C_VOLATILE
 AC_CHECK_FUNCS([floor localeconv memset modf pow setlocale sqrt strcasecmp strtoul])
 
 # International support
-ALL_LINGUAS="af ar ast be bg br ca cs cy da de el en_AU en_CA en_GB es et eu fa fi fr gl he hr hu id is it ja ko lt lv mr ms nb nds nl oc pl pt_BR pt pt_PT ro ru si sk sl sr sv tr uk vi zh_CN zh_TW" 
+ALL_LINGUAS="af ar ast be bg br ca ckb cs cy da de el en_AU en_CA en_GB es et eu fa fi fr gl he hr hu id is it ja ka ko lt lv ms nb nds nl oc pl pt_BR pt pt_PT ro ru si sk sl sr sv tr uk vi zh_CN zh_TW" 
 
 AM_GLIB_GNU_GETTEXT
 

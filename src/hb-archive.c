@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -41,7 +41,11 @@ extern struct HomeBank *GLOBALS;
 
 Archive *da_archive_malloc(void)
 {
-	return rc_alloc(sizeof(Archive));
+Archive *item;
+
+	item = rc_alloc(sizeof(Archive));
+	item->key = 1;
+	return item;
 }
 
 
@@ -54,7 +58,14 @@ Archive *new_item = rc_dup(src_item, sizeof(Archive));
 		//duplicate the string
 		new_item->memo = g_strdup(src_item->memo);
 
-		if( da_splits_clone(src_item->splits, new_item->splits) > 0)
+		//duplicate tags
+		//no g_free here to avoid free the src tags (memdup copie dthe ptr)
+		new_item->tags = tags_clone(src_item->tags);
+
+		//duplicate splits
+		//no g_free here to avoid free the src tags (memdup copie dthe ptr)
+		new_item->splits = da_splits_clone(src_item->splits);
+		if( da_splits_length (new_item->splits) > 0 )
 			new_item->flags |= OF_SPLIT; //Flag that Splits are active
 	}
 	return new_item;
@@ -67,10 +78,8 @@ void da_archive_free(Archive *item)
 	{
 		if(item->memo != NULL)
 			g_free(item->memo);
-
-		da_splits_free(item->splits);
-		//item->flags &= ~(OF_SPLIT); //Flag that Splits are cleared		
-		
+		if(item->splits != NULL)
+			da_split_destroy(item->splits);
 		rc_free(item);
 	}
 }
@@ -111,11 +120,70 @@ guint da_archive_length(void)
 }
 
 
+/* append a fav with an existing key (from xml file only) */
+gboolean
+da_archive_append(Archive *item)
+{
+	GLOBALS->arc_list = g_list_append(GLOBALS->arc_list, item);
+	return TRUE;
+}
+
+
+gboolean
+da_archive_append_new(Archive *item)
+{
+	item->key = da_archive_get_max_key() + 1;
+	GLOBALS->arc_list = g_list_append(GLOBALS->arc_list, item);
+	return TRUE;
+}
+
+
+guint32
+da_archive_get_max_key(void)
+{
+GList *tmplist = g_list_first(GLOBALS->arc_list);
+guint32 max_key = 0;
+
+	while (tmplist != NULL)
+	{
+	Archive *item = tmplist->data;
+
+		max_key = MAX(item->key, max_key);
+		tmplist = g_list_next(tmplist);
+	}
+
+	return max_key;
+}
+
+
+Archive *
+da_archive_get(guint32 key)
+{
+GList *tmplist;
+Archive *retval = NULL;
+
+	tmplist = g_list_first(GLOBALS->arc_list);
+	while (tmplist != NULL)
+	{
+	Archive *item = tmplist->data;
+
+		if(item->key == key)
+		{
+			retval = item;
+			break;
+		}
+		tmplist = g_list_next(tmplist);
+	}
+	return retval;
+}
+
+
 void da_archive_consistency(Archive *item)
 {
 Account *acc;
 Category *cat;
 Payee *pay;
+guint nbsplit;
 
 	// check category exists
 	cat = da_cat_get(item->kcat);
@@ -125,9 +193,20 @@ Payee *pay;
 		item->kcat = 0;
 		GLOBALS->changes_count++;
 	}
-	
-	split_cat_consistency(item->splits);
-	
+
+	//#1340142 check split category
+	if( item->splits != NULL )
+	{
+		nbsplit = da_splits_consistency(item->splits);
+		//# 1416624 empty category when split
+		if(nbsplit > 0 && item->kcat > 0)
+		{
+			g_warning("txn consistency: fixed invalid cat on split txn");
+			item->kcat = 0;
+			GLOBALS->changes_count++;
+		}
+	}
+
 	// check payee exists
 	pay = da_pay_get(item->kpay);
 	if(pay == NULL)
@@ -169,13 +248,15 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn)
 	arc->kpay		= txn->kpay;
 	arc->kcat		= txn->kcat;
 	if(txn->memo != NULL)
-		arc->memo 	= g_strdup(txn->memo);
+		arc->memo = g_strdup(txn->memo);
 	else
-		arc->memo 	= g_strdup(_("(new archive)"));
+		arc->memo = g_strdup(_("(new archive)"));
 
-	if( da_splits_clone(txn->splits, arc->splits) > 0)
+	arc->tags    = tags_clone(txn->tags);
+	arc->splits  = da_splits_clone(txn->splits);
+	if( da_splits_length (arc->splits) > 0 )
 		arc->flags |= OF_SPLIT; //Flag that Splits are active
-	
+
 	return arc;
 }
 
@@ -211,7 +292,7 @@ guint32 nextpostdate = nextdate;
 
 	/* get the final post date and free */
 	nextpostdate = g_date_get_julian(tmpdate);
-	
+
 	return nextpostdate;
 }
 
@@ -239,7 +320,7 @@ gint shift;
 
 
 	finalpostdate = postdate;
-	
+
 	tmpdate = g_date_new_julian(finalpostdate);
 	/* manage weekend exception */
 	if( arc->weekend > 0 )
@@ -266,11 +347,11 @@ gint shift;
 			}
 		}
 	}
-	
+
 	/* get the final post date and free */
 	finalpostdate = g_date_get_julian(tmpdate);
 	g_date_free(tmpdate);
-	
+
 	return finalpostdate;
 }
 
@@ -314,10 +395,10 @@ guint32 nblate = 0;
 
 	if(arc->flags & OF_LIMIT)
 		nblate = MIN(nblate, arc->limit);
-	
+
 	nblate = MIN(nblate, 11);
 	*/
-	
+
 
 	// pre 5.1 way
 	post_date = g_date_new();
@@ -327,7 +408,7 @@ guint32 nblate = 0;
 		curdate = _sched_date_get_next_post(post_date, arc, curdate);
 		nblate++;
 		// break if over limit or at 11 max (to display +10)
-		if(nblate >= arc->limit || nblate >= 11)
+		if( nblate >= 11 || ( (arc->flags & OF_LIMIT) && (nblate >= arc->limit) ) )
 			break;
 	}
 
@@ -373,7 +454,7 @@ gushort lastday;
 			}
 
 			arc->daygap = CLAMP(lastday - g_date_get_day(post_date), 0, 3);
-		
+
 			DB( g_print(" daygap is %d\n", arc->daygap) );
 		}
 		else
@@ -410,10 +491,10 @@ GDate *today, *maxdate;
 	DB( g_print("\n[scheduled] date_get_post_max\n") );
 
 	//add until xx of the next month (excluded)
-	if(GLOBALS->auto_smode == 0)	
+	if(GLOBALS->auto_smode == 0)
 	{
 		DB( g_print(" - max is %d of next month\n", GLOBALS->auto_weekday) );
-		
+
 		today = g_date_new_julian(GLOBALS->today);
 
 		//we compute user xx weekday of next month
@@ -421,9 +502,9 @@ GDate *today, *maxdate;
 		g_date_set_day(maxdate, GLOBALS->auto_weekday);
 		if(g_date_get_day (today) >= GLOBALS->auto_weekday)
 			g_date_add_months(maxdate, 1);
-		
+
 		nbdays = g_date_days_between(today, maxdate);
-	
+
 		g_date_free(maxdate);
 		g_date_free(today);
 	}
@@ -454,7 +535,7 @@ Transaction *txn;
 	maxpostdate = scheduled_date_get_post_max();
 
 	txn = da_transaction_malloc();
-	
+
 	list = g_list_first(GLOBALS->arc_list);
 	while (list != NULL)
 	{
@@ -474,12 +555,12 @@ Transaction *txn;
 				while(mydate < maxpostdate)
 				{
 					DB( hb_print_date(mydate, arc->memo) );
-					
+
 					da_transaction_init_from_template(txn, arc);
 					txn->date = scheduled_get_postdate(arc, mydate);
 					/* todo: ? fill in cheque number */
 
-					transaction_add(txn);
+					transaction_add(NULL, txn);
 					GLOBALS->changes_count++;
 					count++;
 
@@ -500,7 +581,7 @@ nextarchive:
 	}
 
 	da_transaction_free (txn);
-	
+
 	return count;
 }
 

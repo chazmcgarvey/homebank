@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -35,49 +35,19 @@ extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
 
-gchar *CYA_CAT_TYPE[] = { 
-	N_("Expense"), 
-	N_("Income"), 
-	NULL
-};
+extern gchar *CYA_CAT_TYPE[];
+
 
 static void ui_cat_manage_populate_listview(struct ui_cat_manage_dialog_data *data);
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 /**
- * ui_cat_comboboxentry_get_name:
- *
- * get the name of the active category or -1
- *
- * Return value: a new allocated name tobe freed with g_free
- *
- */
-gchar *
-ui_cat_comboboxentry_get_name(GtkComboBox *entry_box)
-{
-gchar *cbname;
-gchar *name = NULL;
-
-    DB( g_print ("ui_cat_comboboxentry_get_name()\n") );
-
-	cbname = (gchar *)gtk_entry_get_text(GTK_ENTRY (gtk_bin_get_child(GTK_BIN (entry_box))));
-	if( cbname != NULL)
-	{
-		name = g_strdup(cbname);
-		g_strstrip(name);
-	}
-
-	return name;
-}
-
-
-/**
  * ui_cat_comboboxentry_get_key:
  *
- * get the key of the active category or -1
+ * get the key of the active category or 0
  *
- * Return value: the key or -1
+ * Return value: the key or 0
  *
  */
 guint32
@@ -90,29 +60,27 @@ gchar *name;
 
 	name = (gchar *)gtk_entry_get_text(GTK_ENTRY (gtk_bin_get_child(GTK_BIN (entry_box))));
 
-	if( name == NULL)
-		return -1;
-
 	item = da_cat_get_by_fullname(name);
-	if(item == NULL)
-	{
-		/* automatic add */
-		//todo: check prefs + ask the user here 1st time
-		item = da_cat_append_ifnew_by_fullname(name, FALSE);
+	if(item != NULL)
+		return item->key;
 
+	item = da_cat_append_ifnew_by_fullname(name);
+	if( item != NULL )
+	{
 		ui_cat_comboboxentry_add(entry_box, item);
+		return item->key;
 	}
 
-	return item->key;
+	return 0;
 }
 
 
 /**
  * ui_cat_comboboxentry_get_key:
  *
- * get the key of the active category or -1
+ * get the key of the active category or 0
  *
- * Return value: the key or -1
+ * Return value: the key or 0
  *
  */
 guint32
@@ -124,14 +92,12 @@ gchar *name;
 	DB( g_print ("ui_cat_comboboxentry_get_key()\n") );
 
 	name = (gchar *)gtk_entry_get_text(GTK_ENTRY (gtk_bin_get_child(GTK_BIN (entry_box))));
-	if( name == NULL)
-		return -1;
 
 	item = da_cat_get_by_fullname(name);
 	if(item != NULL)
 		return item->key;
 
-	return -1;
+	return 0;
 }
 
 
@@ -144,8 +110,6 @@ gchar *name;
 	DB( g_print ("ui_cat_comboboxentry_get_key()\n") );
 
 	name = (gchar *)gtk_entry_get_text(GTK_ENTRY (gtk_bin_get_child(GTK_BIN (entry_box))));
-	if(name == NULL)
-		return NULL;
 
 	item = da_cat_get_by_fullname(name);
 
@@ -157,7 +121,6 @@ gboolean
 ui_cat_comboboxentry_set_active(GtkComboBox *entry_box, guint32 key)
 {
 Category *item;
-gchar *fullname;
 
     DB( g_print ("ui_cat_comboboxentry_set_active()\n") );
 
@@ -171,9 +134,7 @@ gchar *fullname;
 				gtk_entry_set_text(GTK_ENTRY (gtk_bin_get_child(GTK_BIN (entry_box))), item->name);
 			else
 			{
-				fullname = da_cat_get_fullname(item);
-				gtk_entry_set_text(GTK_ENTRY (gtk_bin_get_child(GTK_BIN (entry_box))), fullname);
-				g_free(fullname);
+				gtk_entry_set_text(GTK_ENTRY (gtk_bin_get_child(GTK_BIN (entry_box))), item->fullname);
 			}
 			return TRUE;
 		}
@@ -206,7 +167,7 @@ ui_cat_comboboxentry_add(GtkComboBox *entry_box, Category *item)
 
 gchar *fullname, *name;
 
-		fullname = da_cat_get_fullname(item);
+		fullname = item->fullname;
 		model = gtk_combo_box_get_model(GTK_COMBO_BOX(entry_box));
 
 		if( item->parent == 0 )
@@ -223,7 +184,6 @@ gchar *fullname, *name;
 			LST_CMBCAT_SUBCAT, item->parent == 0 ? 1 : 0,
 			-1);
 
-	g_free(fullname);
 	g_free(name);
 
 	}
@@ -243,8 +203,8 @@ gchar type;
 	{
 		pitem = da_cat_get(item->parent);
 
-		type = (item->flags & GF_INCOME) ? '+' : '-';
-		fullname = da_cat_get_fullname(item);
+		type = category_get_type_char(item);
+		fullname = item->fullname;
 		sortname = NULL;
 		name = NULL;
 		
@@ -287,7 +247,6 @@ gchar type;
 		DB( g_print(" - add [%2d:%2d] '%-12s' '%-12s' '%s' '%s' %d\n", item->parent, item->key, pitem->name, name, fullname, sortname, item->parent == 0 ? 1 : 0) );
 
 		g_free(sortname);
-		g_free(fullname);
 		g_free(name);
 	}
 
@@ -612,10 +571,10 @@ gchar *string;
 	else
 		name = entry->name;
 
-	gchar type = (entry->flags & GF_INCOME) ? '+' : '-';
+	gchar type = category_get_type_char(entry);
 
 	#if MYDEBUG
-	string = g_markup_printf_escaped ("%d > [%d] %s [%c] %d", entry->key, entry->parent, name, type, entry->flags );
+	string = g_markup_printf_escaped ("%d > [%d] %s [%c] %d %c", entry->key, entry->parent, name, type, entry->flags, (entry->flags & GF_MIXED) ?'m':' ' );
 	#else
 	if(entry->key == 0)
 		string = g_strdup(name);
@@ -1026,7 +985,8 @@ GtkTreeViewColumn	*column;
 	g_object_unref(store);
 
 	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (treeview), PREFS->grid_lines);
-
+	gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW (treeview), TRUE);
+	
 
 	// column 1: toggle
 	if( withtoggle == TRUE )
@@ -1067,6 +1027,7 @@ GtkTreeViewColumn	*column;
 		gtk_tree_view_column_pack_start(column, renderer, TRUE);
 		gtk_tree_view_column_set_cell_data_func(column, renderer, ui_cat_listview_count_cell_data_function, GINT_TO_POINTER(LST_DEFCAT_DATAS), NULL);
 		gtk_tree_view_column_set_alignment (column, 0.5);
+		//gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 		gtk_tree_view_column_set_sort_column_id (column, LST_DEFCAT_SORT_USED);
 		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	}
@@ -1251,38 +1212,43 @@ gint type;
 
 		g_strstrip(item->name);
 
-		/* if cat use new id */
-		if(subcat == FALSE)
+		if( strlen(item->name) > 0 )
 		{
-			type = radio_get_active(GTK_CONTAINER(data->RA_type));
-			if(type == 1)
-				item->flags |= GF_INCOME;
-
-			if( da_cat_append(item) )
+			/* if cat use new id */
+			if(subcat == FALSE)
 			{
-				DB( g_print(" => add cat: %p %d, %s type=%d\n", item, subcat, item->name, type) );
-				ui_cat_listview_add(GTK_TREE_VIEW(data->LV_cat), item, NULL);
-			}
-		}
-		/* if subcat use parent id & gf_income */
-		else
-		{
-			paritem = ui_cat_listview_get_selected_parent(GTK_TREE_VIEW(data->LV_cat), &parent_iter);
-			if(paritem)
-			{
-				DB( g_print(" => selitem parent: %d, %s\n", paritem->key, paritem->name) );
+				type = hbtk_radio_get_active(GTK_CONTAINER(data->RA_type));
+				if(type == 1)
+					item->flags |= GF_INCOME;
 
-				item->parent = paritem->key;
-				item->flags |= (paritem->flags & GF_INCOME);
-				item->flags |= GF_SUB;
-
-				if(da_cat_append(item))
+				if( da_cat_append(item) )
 				{
-					DB( g_print(" => add subcat: %p %d, %s\n", item, subcat, item->name) );
-					ui_cat_listview_add(GTK_TREE_VIEW(data->LV_cat), item, &parent_iter);
+					DB( g_print(" => add cat: %p %d, %s type=%d\n", item, subcat, item->name, type) );
+					ui_cat_listview_add(GTK_TREE_VIEW(data->LV_cat), item, NULL);
+				}
+			}
+			/* if subcat use parent id & gf_income */
+			else
+			{
+				paritem = ui_cat_listview_get_selected_parent(GTK_TREE_VIEW(data->LV_cat), &parent_iter);
+				if(paritem)
+				{
+					DB( g_print(" => selitem parent: %d, %s\n", paritem->key, paritem->name) );
+
+					item->parent = paritem->key;
+					item->flags |= (paritem->flags & GF_INCOME);
+					item->flags |= GF_SUB;
+
+					if(da_cat_append(item))
+					{
+						DB( g_print(" => add subcat: %p %d, %s\n", item, subcat, item->name) );
+						ui_cat_listview_add(GTK_TREE_VIEW(data->LV_cat), item, &parent_iter);
+					}
 				}
 			}
 		}
+		else
+			da_cat_free(item);
 
 		gtk_entry_set_text(GTK_ENTRY(tmpwidget),"");
 	}
@@ -1377,7 +1343,7 @@ GtkTreeIter			 iter;
 				Category *parent;
 				gchar *fromname, *toname = NULL;
 
-					fromname = da_cat_get_fullname(item);
+					fromname = item->fullname;
 
 					if( item->parent == 0)
 						toname = g_strdup(name);
@@ -1400,7 +1366,6 @@ GtkTreeIter			 iter;
 						toname
 						);
 
-					g_free(fromname);
 					g_free(toname);
 
 				}
@@ -1526,6 +1491,10 @@ GtkTreeIter iter;
 
 			newcat = da_cat_get (dstcatkey);
 
+			//#1771720: update count
+			newcat->usage_count += srccat->usage_count;
+			srccat->usage_count = 0;
+			
 			//keep the income type with us
 			parent = da_cat_get(srccat->parent);
 			if(parent != NULL && (parent->flags & GF_INCOME))
@@ -1568,7 +1537,7 @@ Category *item;
 gint result;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(defcategory) delete (data=%x)\n", (guint)data) );
+	DB( g_print("\n(defcategory) delete (data=%p)\n", data) );
 
 	item = ui_cat_listview_get_selected(GTK_TREE_VIEW(data->LV_cat));
 	if( item != NULL )
@@ -1596,8 +1565,8 @@ gint result;
 
 		if( result == GTK_RESPONSE_OK )
 		{
-			category_move(item->key, 0);
 			ui_cat_listview_remove(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_cat)), item->key);
+			category_move(item->key, 0);
 			da_cat_remove(item->key);
 			data->change++;
 		}
@@ -1612,7 +1581,7 @@ static void ui_cat_manage_dialog_expand_all(GtkWidget *widget, gpointer user_dat
 struct ui_cat_manage_dialog_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(defcategory) expand all (data=%x)\n", (guint)data) );
+	DB( g_print("\n(defcategory) expand all (data=%p)\n", data) );
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data->LV_cat));
 
@@ -1624,7 +1593,7 @@ static void ui_cat_manage_dialog_collapse_all(GtkWidget *widget, gpointer user_d
 struct ui_cat_manage_dialog_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(defcategory) collapse all (data=%x)\n", (guint)data) );
+	DB( g_print("\n(defcategory) collapse all (data=%p)\n", data) );
 
 	gtk_tree_view_collapse_all(GTK_TREE_VIEW(data->LV_cat));
 
@@ -1789,7 +1758,7 @@ static void ui_cat_manage_populate_listview(struct ui_cat_manage_dialog_data *da
 {
 gint type;
 
-	type = radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
+	type = hbtk_radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
 	ui_cat_listview_populate(data->LV_cat, type);
 	gtk_tree_view_expand_all (GTK_TREE_VIEW(data->LV_cat));
 }
@@ -1826,7 +1795,7 @@ GtkWidget *ui_cat_manage_dialog (void)
 {
 struct ui_cat_manage_dialog_data data;
 GtkWidget *window, *content, *mainvbox, *bbox, *table, *hbox, *vbox, *label, *scrollwin, *treeview;
-GtkWidget *menu, *menuitem, *widget, *image, *tbar;
+GtkWidget *menu, *menuitem, *widget, *image, *tbar, *addreveal;
 GtkToolItem *toolitem;
 gint w, h, row;
 
@@ -1849,7 +1818,7 @@ gint w, h, row;
 	
 	//store our window private data
 	g_object_set_data(G_OBJECT(window), "inst_data", (gpointer)&data);
-	DB( g_print("(defcategory) window=%x, inst_data=%x\n", (guint)window, (guint)&data) );
+	DB( g_print("(defcategory) window=%p, inst_data=%p\n", window, &data) );
 
     g_signal_connect (window, "destroy",
 			G_CALLBACK (gtk_widget_destroyed), &window);
@@ -1867,14 +1836,12 @@ gint w, h, row;
 	gtk_box_pack_start (GTK_BOX (mainvbox), table, TRUE, TRUE, 0);
 
 	row = 0;
-	bbox = make_radio(CYA_CAT_TYPE, TRUE, GTK_ORIENTATION_HORIZONTAL);
+	bbox = hbtk_radio_new(CYA_CAT_TYPE, TRUE);
 	data.RA_type = bbox;
 	gtk_widget_set_halign (bbox, GTK_ALIGN_CENTER);
 	gtk_grid_attach (GTK_GRID (table), bbox, 0, row, 2, 1);
 
-	widget = radio_get_nth_widget(GTK_CONTAINER(bbox), 1);
-	if(widget)
-		g_signal_connect (widget, "toggled", G_CALLBACK (ui_cat_manage_type_changed_cb), &data);
+	hbtk_radio_connect (GTK_CONTAINER(bbox), "toggled", G_CALLBACK (ui_cat_manage_type_changed_cb), &data);
 
 	menu = gtk_menu_new ();
 	gtk_widget_set_halign (menu, GTK_ALIGN_END);
@@ -1906,25 +1873,6 @@ gint w, h, row;
 	g_object_set (widget, "image", image, "popup", GTK_MENU(menu),  NULL);
 	gtk_widget_set_halign (widget, GTK_ALIGN_END);
 	gtk_grid_attach (GTK_GRID (table), widget, 1, row, 1, 1);
-
-	row++;
-	widget = gtk_entry_new ();
-	data.ST_name1 = widget;
-	gtk_entry_set_placeholder_text(GTK_ENTRY(data.ST_name1), _("new category") );
-	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (table), widget, 0, row, 2, 1);
-
-	// subcategory + add button
-	row++;
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	gtk_grid_attach (GTK_GRID (table), hbox, 0, row, 2, 1);
-	data.LA_category = gtk_label_new(NULL);
-	gtk_box_pack_start (GTK_BOX (hbox), data.LA_category, FALSE, FALSE, 0);
-	label = gtk_label_new(":");
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-	data.ST_name2 = gtk_entry_new ();
-	gtk_entry_set_placeholder_text(GTK_ENTRY(data.ST_name2), _("new subcategory") );
-	gtk_box_pack_start (GTK_BOX (hbox), data.ST_name2, TRUE, TRUE, 0);
 
 	//list
 	row++;
@@ -1995,6 +1943,30 @@ gint w, h, row;
 		data.BT_collapse = widget;
 		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
+	// subcategory + add button
+	row++;
+	addreveal = gtk_revealer_new ();
+	gtk_grid_attach (GTK_GRID (table), addreveal, 0, row, 2, 1);
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
+	gtk_container_add(GTK_CONTAINER(addreveal), vbox);
+
+	widget = gtk_entry_new ();
+	data.ST_name1 = widget;
+	gtk_entry_set_placeholder_text(GTK_ENTRY(data.ST_name1), _("new category") );
+	gtk_widget_set_hexpand (widget, TRUE);
+	gtk_container_add (GTK_CONTAINER (vbox), widget);
+	
+	row++;
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	gtk_container_add (GTK_CONTAINER (vbox), hbox);
+	data.LA_category = gtk_label_new(NULL);
+	gtk_box_pack_start (GTK_BOX (hbox), data.LA_category, FALSE, FALSE, 0);
+	label = gtk_label_new(":");
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	data.ST_name2 = gtk_entry_new ();
+	gtk_entry_set_placeholder_text(GTK_ENTRY(data.ST_name2), _("new subcategory") );
+	gtk_box_pack_start (GTK_BOX (hbox), data.ST_name2, TRUE, TRUE, 0);
+
 
 	row++;
 	bbox = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
@@ -2002,6 +1974,10 @@ gint w, h, row;
 	gtk_box_set_spacing (GTK_BOX (bbox), SPACING_SMALL);
 	gtk_grid_attach (GTK_GRID (table), bbox, 0, row, 2, 1);
 
+	data.BT_add = gtk_toggle_button_new_with_mnemonic(_("_Add"));
+	gtk_container_add (GTK_CONTAINER (bbox), data.BT_add);
+
+	//todo: useless ?
 	data.BT_edit = gtk_button_new_with_mnemonic(_("_Edit"));
 	gtk_container_add (GTK_CONTAINER (bbox), data.BT_edit);
 
@@ -2011,14 +1987,9 @@ gint w, h, row;
 	data.BT_delete = gtk_button_new_with_mnemonic(_("_Delete"));
 	gtk_container_add (GTK_CONTAINER (bbox), data.BT_delete);
 
-
-	/*row++;
-	widget = gtk_check_button_new_with_mnemonic(_("I_ncome"));
-	data.CM_type = widget;
-	gtk_grid_attach (GTK_GRID (table), widget, 0, row, 3, 1);*/
-
-
 	//connect all our signals
+	g_object_bind_property (data.BT_add, "active", addreveal, "reveal-child", G_BINDING_BIDIRECTIONAL);
+
 	g_signal_connect (G_OBJECT (data.ST_name1), "activate", G_CALLBACK (ui_cat_manage_dialog_add), GINT_TO_POINTER(FALSE));
 	g_signal_connect (G_OBJECT (data.ST_name2), "activate", G_CALLBACK (ui_cat_manage_dialog_add), GINT_TO_POINTER(TRUE));
 

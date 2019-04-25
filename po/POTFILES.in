@@ -4,8 +4,8 @@ data/homebank.desktop.in.in
 data/homebank.appdata.xml.in
 
 # Main application
-src/dsp_account.c
-src/dsp_mainwindow.c
+src/dsp-account.c
+src/dsp-mainwindow.c
 src/hb-archive.c
 src/hb-category.c
 src/hb-export.c
@@ -13,18 +13,21 @@ src/hb-filter.c
 src/hb-hbfile.c
 src/hb-payee.c
 src/hb-preferences.c
+src/hb-report.c
 src/homebank.c
+src/hub-account.c
+src/hub-scheduled.c
+src/hub-spending.c
 src/hb-import-csv.c
 src/hb-import.c
-src/list_account.c
-src/list_operation.c
-src/list_topspending.c
-src/list_upcoming.c
-src/rep_balance.c
-src/rep_budget.c
-src/rep_stats.c
-src/rep_time.c
-src/rep_vehicle.c
+src/list-account.c
+src/list-operation.c
+src/list-scheduled.c
+src/rep-balance.c
+src/rep-budget.c
+src/rep-stats.c
+src/rep-time.c
+src/rep-vehicle.c
 src/ui-account.c
 src/ui-archive.c
 src/ui-assign.c
@@ -39,6 +42,9 @@ src/ui-hbfile.c
 src/ui-payee.c
 src/ui-pref.c
 src/ui-split.c
+src/ui-tag.c
 src/ui-transaction.c
 src/ui-txn-multi.c
+src/ui-widgets-data.c
 src/ui-widgets.c
+

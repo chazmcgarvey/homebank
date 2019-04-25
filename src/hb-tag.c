@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -189,8 +189,6 @@ guint32 max_key = 0;
 }
 
 
-
-
 /**
  * da_tag_get_by_name:
  *
@@ -224,10 +222,145 @@ Tag *da_tag_get(guint32 key)
 }
 
 
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+guint
+tags_count(guint32 *tags)
+{
+guint count = 0;
+
+	DB( g_print("\n[tags] count\n") );
+
+	if( tags == NULL )
+		return 0;
+
+	while(*tags++ != 0 && count < 32)
+		count++;
+
+	return count;
+}
+
+
+guint32 *tags_clone(guint32 *tags)
+{
+guint32 *newtags = NULL;
+guint count;
+
+	count = tags_count(tags);
+	if(count > 0)
+	{
+		//1501962: we must also copy the final 0
+		newtags = g_memdup(tags, (count+1)*sizeof(guint32));
+	}
+
+	return newtags;	
+}
+
+
+static gboolean
+tags_key_exists(guint32 *tags, guint32 key)
+{
+guint count = 0;
+	while(*tags != 0 && count < 32)
+	{
+		if( *tags == key )
+			return TRUE;
+		tags++;
+		count++;
+	}
+	return FALSE;
+}
+
+
+guint32 *
+tags_parse(const gchar *tagstring)
+{
+gchar **str_array;
+guint32 *tags = NULL;
+guint32 *ptags;
+guint count, i;
+Tag *tag;
+
+	DB( g_print("\n[tags] parse\n") );
+
+	if( tagstring )
+	{
+		str_array = g_strsplit (tagstring, " ", 0);
+		count = g_strv_length( str_array );
+		DB( g_print("- %d tags '%s'\n", count, tagstring) );
+		if( count > 0 )
+		{
+			tags = g_new0(guint32, count + 1);
+			ptags = tags;
+			for(i=0;i<count;i++)
+			{
+				//5.2.3 fixed empty tag
+				if( strlen(str_array[i]) == 0 )
+					continue;
+
+				DB( g_print("- %d search '%s'\n", i, str_array[i]) );
+				tag = da_tag_get_by_name(str_array[i]);
+				if(tag == NULL)
+				{
+				Tag *newtag = da_tag_malloc();
+
+					newtag->name = g_strdup(str_array[i]);
+					da_tag_append(newtag);
+					tag = da_tag_get_by_name(str_array[i]);
+				}
+				DB( g_print("- array add %d '%s'\n", tag->key, tag->name) );
+
+				//5.3 fixed duplicate tag in same tags
+				if( tags_key_exists(tags, tag->key) == FALSE )
+					*ptags++ = tag->key;
+			}
+			*ptags = 0;
+		}
+
+		g_strfreev (str_array);
+	}
+	return tags;
+}
+
+
+
+gchar *
+tags_tostring(guint32 *tags)
+{
+guint count, i;
+gchar **str_array, **tptr;
+gchar *tagstring;
+Tag *tag;
+
+	DB( g_print("\n[tags] tostring\n") );
+	if( tags == NULL )
+	{
+		return NULL;
+	}
+	else
+	{
+		count = tags_count(tags);
+		str_array = g_new0(gchar*, count+1);
+		tptr = str_array;
+		for(i=0;i<count;i++)
+		{
+			tag = da_tag_get(tags[i]);
+			if( tag )
+			{
+				*tptr++ = tag->name;
+			}
+		}
+		*tptr = NULL;
+		
+		tagstring = g_strjoinv(" ", str_array);
+		g_free (str_array);
+	}
+	return tagstring;
+}
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
 
 #if MYDEBUG
 
@@ -257,6 +390,34 @@ da_tag_debug_list(void)
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+
+gboolean
+tag_rename(Tag *item, const gchar *newname)
+{
+Tag *existitem;
+gchar *stripname;
+gboolean retval = FALSE;
+
+	stripname = g_strdup(newname);
+	g_strstrip(stripname);
+
+	existitem = da_tag_get_by_name(stripname);
+
+	if( existitem != NULL && existitem->key != item->key)
+	{
+		DB( g_print("- error, same name already exist with other key %d <> %d\n",existitem->key, item->key) );
+		g_free(stripname);
+	}
+	else
+	{
+		DB( g_print("- renaming\n") );
+		g_free(item->name);
+		item->name = stripname;
+		retval = TRUE;
+	}
+
+	return retval;
+}
 
 
 

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -63,6 +63,7 @@ struct ui_arc_manage_data
 	GtkWidget	*PO_grp;
 	GtkWidget	*PO_acc;
 	GtkWidget	*LB_accto, *PO_accto;
+	GtkWidget	*ST_tags, *CY_tags;
 
 	GtkWidget   *LB_schedinsert;
 	GtkWidget	*CM_auto;

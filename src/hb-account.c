@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -46,14 +46,13 @@ da_acc_free(Account *item)
 	{
 		DB( g_print(" => %d, %s\n", item->key, item->name) );
 
-		g_free(item->imp_name);
 		g_free(item->name);
 		g_free(item->number);
 		g_free(item->bankname);
 		g_free(item->notes);
-		
+
 		g_queue_free (item->txn_queue);
-		
+
 		rc_free(item);
 	}
 }
@@ -66,6 +65,7 @@ Account *item;
 
 	DB( g_print("da_acc_malloc\n") );
 	item = rc_alloc(sizeof(Account));
+	item->kcur = GLOBALS->kcur;
 	item->txn_queue = g_queue_new ();
 	return item;
 }
@@ -88,30 +88,7 @@ da_acc_new(void)
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-static void da_acc_max_key_ghfunc(gpointer key, Account *item, guint32 *max_key)
-{
-	*max_key = MAX(*max_key, item->key);
-}
 
-static gboolean da_acc_name_grfunc(gpointer key, Account *item, gchar *name)
-{
-	if( name && item->name )
-	{
-		if(!strcasecmp(name, item->name))
-			return TRUE;
-	}
-	return FALSE;
-}
-
-static gboolean da_acc_imp_name_grfunc(gpointer key, Account *item, gchar *name)
-{
-	if( name && item->imp_name )
-	{
-		if(!strcasecmp(name, item->imp_name))
-			return TRUE;
-	}
-	return FALSE;
-}
 
 /**
  * da_acc_length:
@@ -122,6 +99,30 @@ guint
 da_acc_length(void)
 {
 	return g_hash_table_size(GLOBALS->h_acc);
+}
+
+
+static void da_acc_max_key_ghfunc(gpointer key, Account *item, guint32 *max_key)
+{
+	*max_key = MAX(*max_key, item->key);
+}
+
+
+/**
+ * da_acc_get_max_key:
+ *
+ * Get the biggest key from the GHashTable
+ *
+ * Return value: the biggest key value
+ *
+ */
+guint32
+da_acc_get_max_key(void)
+{
+guint32 max_key = 0;
+
+	g_hash_table_foreach(GLOBALS->h_acc, (GHFunc)da_acc_max_key_ghfunc, &max_key);
+	return max_key;
 }
 
 
@@ -179,31 +180,20 @@ gboolean
 da_acc_append(Account *item)
 {
 Account *existitem;
-guint32 *new_key;
 
 	DB( g_print("da_acc_append\n") );
 
-	/* ensure no duplicate */
-	g_strstrip(item->name);
-	if(item->name != NULL)
+	existitem = da_acc_get_by_name( item->name );
+	if( existitem == NULL )
 	{
-		existitem = da_acc_get_by_name( item->name );
-		if( existitem == NULL )
-		{
-			new_key = g_new0(guint32, 1);
-			*new_key = da_acc_get_max_key() + 1;
-			item->key = *new_key;
-			item->pos = da_acc_length() + 1;
+		item->key = da_acc_get_max_key() + 1;
+		item->pos = da_acc_length() + 1;
+		da_acc_insert(item);
 
-			DB( g_print(" -> insert id: %d\n", *new_key) );
+		GValue item_val = G_VALUE_INIT;
+		ext_hook("account_inserted", EXT_ACCOUNT(&item_val, item), NULL);
 
-			g_hash_table_insert(GLOBALS->h_acc, new_key, item);
-
-			GValue item_val = G_VALUE_INIT;
-			ext_hook("account_inserted", EXT_ACCOUNT(&item_val, item), NULL);
-
-			return TRUE;
-		}
+		return TRUE;
 	}
 
 	DB( g_print(" -> %s already exist: %d\n", item->name, item->key) );
@@ -211,25 +201,16 @@ guint32 *new_key;
 	return FALSE;
 }
 
-/**
- * da_acc_get_max_key:
- *
- * Get the biggest key from the GHashTable
- *
- * Return value: the biggest key value
- *
- */
-guint32
-da_acc_get_max_key(void)
+
+static gboolean da_acc_name_grfunc(gpointer key, Account *item, gchar *name)
 {
-guint32 max_key = 0;
-
-	g_hash_table_foreach(GLOBALS->h_acc, (GHFunc)da_acc_max_key_ghfunc, &max_key);
-	return max_key;
+	if( name && item->name )
+	{
+		if(!strcasecmp(name, item->name))
+			return TRUE;
+	}
+	return FALSE;
 }
-
-
-
 
 /**
  * da_acc_get_by_name:
@@ -240,19 +221,24 @@ guint32 max_key = 0;
  *
  */
 Account *
-da_acc_get_by_name(gchar *name)
+da_acc_get_by_name(gchar *rawname)
 {
+Account *retval = NULL;
+gchar *stripname;
+
 	DB( g_print("da_acc_get_by_name\n") );
 
-	return g_hash_table_find(GLOBALS->h_acc, (GHRFunc)da_acc_name_grfunc, name);
-}
+	if( rawname )
+	{
+		stripname = g_strdup(rawname);
+		g_strstrip(stripname);
+		if( strlen(stripname) > 0 )
+			retval = g_hash_table_find(GLOBALS->h_acc, (GHRFunc)da_acc_name_grfunc, stripname);
 
-Account *
-da_acc_get_by_imp_name(gchar *name)
-{
-	DB( g_print("da_acc_get_by_imp_name\n") );
+		g_free(stripname);
+	}
 
-	return g_hash_table_find(GLOBALS->h_acc, (GHRFunc)da_acc_imp_name_grfunc, name);
+	return retval;
 }
 
 
@@ -369,14 +355,14 @@ gboolean retval;
 	while (lnk_acc != NULL)
 	{
 	Account *acc = lnk_acc->data;
-	
+
 		if(acc->key != key)
 		{
 			lnk_txn = g_queue_peek_head_link(acc->txn_queue);
 			while (lnk_txn != NULL)
 			{
 			Transaction *entry = lnk_txn->data;
-			
+
 				if( key == entry->kxferacc)
 				{
 					retval = TRUE;
@@ -439,21 +425,24 @@ account_rename(Account *item, gchar *newname)
 Account *existitem;
 gchar *stripname = account_get_stripname(newname);
 
-	existitem = da_acc_get_by_name(stripname);
-	if( existitem == NULL )
+	if( strlen(stripname) > 0 )
 	{
-		g_free(item->name);
-		item->name = g_strdup(stripname);
-		return TRUE;
-	}
+		existitem = da_acc_get_by_name(stripname);
+		if( existitem == NULL )
+		{
+			g_free(item->name);
+			item->name = g_strdup(stripname);
+			return TRUE;
+		}
 
-	g_free(stripname);
+		g_free(stripname);
+	}
 
 	return FALSE;
 }
 
 
-/* 
+/*
  * change the account currency
  * change every txn to currency
  * ensure dst xfer transaction account will be set to same currency
@@ -474,7 +463,7 @@ guint32 maxkey, i;
 	}
 
 	DB( g_print(" - set for '%s'\n", acc->name)  );
-		
+
 	maxkey = da_acc_get_max_key () + 1;
 	xfer_list = g_malloc0(sizeof(gboolean) * maxkey );
 	DB( g_print(" - alloc for %d account\n", da_acc_length() ) );
@@ -494,7 +483,7 @@ guint32 maxkey, i;
 
 	acc->kcur = kcur;
 	DB( g_print(" - '%s'\n", acc->name) );
-	
+
 	for(i=1;i<maxkey;i++)
 	{
 		DB( g_print(" - %d '%d'\n", i, xfer_list[i]) );
@@ -589,25 +578,25 @@ GList *lnk_txn;
 	while (lnk_acc != NULL)
 	{
 	Account *acc = lnk_acc->data;
-	
+
 		/* set initial amount */
 		acc->bal_bank = acc->initial;
 		acc->bal_today = acc->initial;
 		acc->bal_future = acc->initial;
-		
+
 		/* add every txn */
 		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
 		while (lnk_txn != NULL)
 		{
 		Transaction *txn = lnk_txn->data;
-		
+
 			if(!(txn->status == TXN_STATUS_REMIND))
 			{
 				account_balances_add_internal(acc, txn);
 			}
 			lnk_txn = g_list_next(lnk_txn);
 		}
-		
+
 		lnk_acc = g_list_next(lnk_acc);
 	}
 	g_list_free(lst_acc);

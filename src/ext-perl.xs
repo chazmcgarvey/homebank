@@ -11,8 +11,8 @@
 #include "refcount.h"
 
 extern struct HomeBank *GLOBALS;
-#include "dsp_mainwindow.h"
-#include "dsp_account.h"
+#include "dsp-mainwindow.h"
+#include "dsp-account.h"
 #include "ui-transaction.h"
 
 
@@ -910,7 +910,7 @@ transactions(Account* SELF)
 GObject*
 open(Account* SELF)
 	CODE:
-		RETVAL = G_OBJECT(register_panel_window_new(SELF->key, SELF));
+		RETVAL = G_OBJECT(register_panel_window_new(SELF));
 	OUTPUT:
 		RETVAL
 
@@ -1004,7 +1004,7 @@ info(Transaction* SELF, ...)
 GObject*
 open(Transaction* SELF)
 	CODE:
-		RETVAL = G_OBJECT(create_deftransaction_window(NULL, TRANSACTION_EDIT_MODIFY, FALSE));
+		RETVAL = G_OBJECT(create_deftransaction_window(NULL, TRANSACTION_EDIT_MODIFY, FALSE, 0));
 		deftransaction_set_transaction(GTK_WIDGET(RETVAL), SELF);
 	OUTPUT:
 		RETVAL
@@ -1023,7 +1023,7 @@ pair_with(Transaction* SELF, Transaction* other, ...)
 				EXT_P2C_OBJECT("HomeBank::Transaction", sv, ptr, Transaction*);
 				list = g_list_append(list, ptr);
 			}
-			other = ui_dialog_transaction_xfer_select_child(SELF, list);
+			ui_dialog_transaction_xfer_select_child(NULL, SELF, list, &other);
 		}
 		if (other) {
 			transaction_xfer_change_to_child(SELF, other);

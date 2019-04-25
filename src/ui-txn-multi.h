@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2018 Maxime DOYEN
+ *	Copyright (C) 1995-2019 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -39,7 +39,7 @@ struct ui_multipleedit_dialog_data
 };
 
 void ui_multipleedit_dialog_prefill( GtkWidget *widget, Transaction *ope, gint column_id );
-gint ui_multipleedit_dialog_apply( GtkWidget *widget, gpointer user_data );
+gint ui_multipleedit_dialog_apply( GtkWidget *widget, gboolean *do_sort );
 GtkWidget *ui_multipleedit_dialog_new(GtkWindow *parent, GtkTreeView *treeview);
 
 
