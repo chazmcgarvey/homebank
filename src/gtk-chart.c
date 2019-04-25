@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -26,6 +26,7 @@
 #include "homebank.h"
 #include "gtk-chart-colors.h"
 #include "gtk-chart.h"
+
 
 #define MYDEBUG 0
 
@@ -908,6 +909,28 @@ int tw, th;
 		}
 	}
 
+	/* average */
+	if( chart->show_average )
+	{
+		if( chart->average < 0 )
+		{
+			y  = 0.5 + chart->oy + (ABS(chart->average)/chart->range) * chart->graph.height;
+		}
+		else
+		{
+			y  = 0.5 + chart->oy - (ABS(chart->average)/chart->range) * chart->graph.height;
+		}
+
+		DB( g_print(" draw average: x%d, y%f, w%d\n", chart->l, y, chart->w) );
+
+		cairo_user_set_rgbacol(cr, &global_colors[THTEXT], 1.0);
+		cairo_set_line_width(cr, 1.0);
+		cairo_set_dash (cr, dashed3, 1, 0);
+		cairo_move_to(cr, chart->graph.x, y);
+		cairo_line_to (cr, chart->graph.x + chart->graph.width, y);
+		cairo_stroke(cr);
+	}
+
 	g_object_unref (layout);
 	cairo_destroy(cr);
 }
@@ -1231,10 +1254,35 @@ gint first, i;
 		x += chart->blkw;
 	}
 
-/* overdrawn */
+	/* average */
+	
+	if( chart->show_average )
+	{
+		if( chart->average < 0 )
+		{
+			y  = 0.5 + chart->oy + (ABS(chart->average)/chart->range) * chart->graph.height;
+		}
+		else
+		{
+			y  = 0.5 + chart->oy - (ABS(chart->average)/chart->range) * chart->graph.height;
+		}
 
+		y2 = (ABS(chart->min)/chart->range) * chart->graph.height - (y - chart->oy) + 1;
+
+		DB( g_print(" draw average: x%d, y%f, w%d, h%f\n", chart->l, y, chart->w, y2) );
+
+		cairo_user_set_rgbacol(cr, &global_colors[THTEXT], 1.0);
+		cairo_set_line_width(cr, 1.0);
+		cairo_set_dash (cr, dashed3, 1, 0);
+		cairo_move_to(cr, chart->graph.x, y);
+		cairo_line_to (cr, chart->graph.x + chart->graph.width, y);
+		cairo_stroke(cr);
+	}
+	
+
+	
+	/* overdrawn */
 	DB( g_print(" min=%.2f range=%.2f\n", chart->min, chart->range) );
-
 
 	if( chart->show_over )
 	{
@@ -2203,6 +2251,22 @@ void gtk_chart_show_xval(GtkChart * chart, gboolean visible)
 	//if(chart->type != CHART_TYPE_PIE)
 	//	chart_recompute(chart);
 }
+
+
+void gtk_chart_show_average(GtkChart * chart, gdouble value, gboolean visible)
+{
+	g_return_if_fail (GTK_IS_CHART (chart));
+
+	DB( g_print("\n[gtkchart] set show average %f\n", value) );
+
+	chart->average = value;
+	chart->show_average = visible;
+	
+	//if(chart->type == CHART_TYPE_LINE)
+	//	chart_recompute(chart);
+}
+
+
 
 /*
 ** chnage the overdrawn visibility

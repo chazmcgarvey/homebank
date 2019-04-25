@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -266,6 +266,23 @@ da_cur_get(guint32 key)
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+
+gboolean
+currency_is_euro(guint32 key)
+{
+Currency *item;
+gboolean retval = FALSE;
+
+	item = da_cur_get(key);
+	if( item && item->iso_code )
+	{
+		if(!strcasecmp("EUR", item->iso_code))
+			retval = TRUE;
+	}
+	return retval;
+}
+
+
 /**
  * currency_is_used:
  * 
@@ -471,7 +488,7 @@ Currency *item;
 	}
 	else
 	{
-		item->name = g_strdup("unknow");
+		item->name = g_strdup("unknown");
 		//item->country = cur.country_name;
 		item->iso_code = g_strdup("XXX");
 		item->frac_digits = 2;
@@ -507,16 +524,26 @@ Currency *cur;
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* currency API
+ * discontinued see #1730527, #1785210
+ */
 
+/* real open source fixer API */
+/* DNS should be: https://frankfurter.app
+ * see https://github.com/fixerAPI/fixer/issues/107
+ */
 
-/* 
-//test API
-gchar fixeriojson[] = 
-"{    }";
-"	{	\r	\"base\"	:	\"EUR\", \
-\"date\":	\n\r		\"2017-12-04\", \
-\"rates\"	\n\n		:{\"AUD\":1.5585,\"CAD\":1.5034,\"CHF\":1.1665,\"CNY\":7.8532,\"GBP\":0.87725,\"JPY\":133.91,\"USD\":1.1865 \
-}  	}";
+/* old
+** api.fixer.io deprecated since 30/04/2019
+** QS: https://api.fixer.io/latest?base=EUR&symbols=USD,CHF,AUD,CAD,JPY,CNY,GBP
+** 
+** test API
+** gchar fixeriojson[] = 
+** "{    }";
+** "	{	\r	\"base\"	:	\"EUR\", \
+** \"date\":	\n\r		\"2017-12-04\", \
+** \"rates\"	\n\n		:{\"AUD\":1.5585,\"CAD\":1.5034,\"CHF\":1.1665,\"CNY\":7.8532,\"GBP\":0.87725,\"JPY\":133.91,\"USD\":1.1865 \
+** }  	}";
 */
 
 
@@ -586,7 +613,10 @@ gint i;
 	base = da_cur_get (GLOBALS->kcur);
 
 	node = g_string_sized_new(512);
-	g_string_append_printf(node, "https://api.fixer.io/latest?base=%s&symbols=", base->iso_code);
+	//todo: think about encapsulate the API call ourself
+	//todo: let the user choose http / https
+	g_string_append_printf(node, "https://frankfurter.app/latest?base=%s&symbols=", base->iso_code);
+	//g_string_append_printf(node, "https://api.fixer.io/latest?base=%s&symbols=", base->iso_code);
 
 	list = g_hash_table_get_values(GLOBALS->h_cur);
 	i = g_list_length (list);
@@ -636,20 +666,23 @@ gboolean retval = TRUE;
 	if(msg != NULL)
 	{
 		soup_session_send_message (session, msg);
+
 		DB( g_print("status_code: %d %d\n", msg->status_code, SOUP_STATUS_IS_SUCCESSFUL(msg->status_code) ) );
 		DB( g_print("reason: %s\n", msg->reason_phrase) );
 		DB( g_print("datas: %s\n", msg->response_body->data) );
 		
 		if( SOUP_STATUS_IS_SUCCESSFUL(msg->status_code) == TRUE )
 		{
-			retval = api_fixerio_parse(msg->response_body->data, error);
-			//retval = api_yahoo_parse(msg->response_body->data, error);
+			//#1750426 ignore the retval here (false when no rate was found, as we don't care)
+			api_fixerio_parse(msg->response_body->data, error);
 		}
 		else
 		{
 			*error = g_error_new_literal(1, msg->status_code, msg->reason_phrase);
 			retval = FALSE;
 		}
+
+		g_object_unref(msg);
 	}
 	else
 	{
@@ -658,6 +691,10 @@ gboolean retval = TRUE;
 	}
 
 	g_free(query);
+	
+	soup_session_abort (session);
+
+	g_object_unref(session);
 	
 	return retval;
 }

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Lend / Refund money</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Using the Remind status to follow up lend/refund money</h1>
+    <p>When you lend money to someone or someone lent you money, you need to remind or track and remind this.<br>The Remind status of the transaction was designed for that. When a transaction is set to that status it will:</p>
+    <ul>
+      <li>always be displayed into the register listview (until you force not to)</li>
+      <li>will not be counted for balance, report and other stuff, as this transaction is a remind and not already a real transaction</li>
+    </ul>
+    <p>Let's take an example on a way (there is others) to manage that.<br>
+    So let's say you lend 50 £ to your best friend John Doe today Jan 1, 2000. You can have a dedicated transaction for that or this can be part of an overall transaction (if you pay for a group of friends/the whole family):</p>
+    <ul class="toc">
+      <li>Step 1: <a href="#create">Create the remind transaction(s)</a></li>
+      <li>Step 2: <a href="#follow">Follow up your remind transaction</a></li>
+      <li>Step 3: <a href="#follow">At payback, change remind to a real transaction</a></li>
+    </ul>
+  </div>
+  <div class="rounded content">
+    <h3><a id="create" name="create"></a>Step 1: Create the remind transaction</h3>
+    <p>Register one or several Remind transaction per payee with:</p>
+    <table class="widgetinfo" >
+      <tr><th>Date</th><td>01/01/2000</td></tr>
+      <tr><th>Payee</th><td>John Doe</td></tr>
+      <tr><th>Category</th><td>Friend:debt/loan or Family:debt/loan</td></tr>
+      <tr><th>Amount</th><td>+50 £</td></tr>
+      <tr><th>Info</th><td>01/01/2000</td></tr>
+      <tr><th>Status</th><td>Remind</td></tr>
+      <tr><th>Memo</th><td>payback for the restaurant</td></tr>
+    </table>
+    <p>Do the same for any other lend you make that day or others days</p>
+  </div>
+  <div class="rounded content">
+    <h3><a id="trigger" name="trigger"></a>Step 2: Follow up your remind transaction</h3>
+    <p>As the Remind transaction are always visible, you can see it into the register. In a near future I will add a synthesis in the main HomeBank window.</p>
+    <p>Using the report, you can easily track if the payee is at equity or not</p>
+  </div>
+  <div class="rounded content">
+    <h3><a id="trigger" name="trigger"></a>Step 3: At payback, change remind to a real transaction</h3>
+    <p>At last when you get money back, you just change the transaction status to cleared or reconciled and setup the payback date:</p>
+     <table class="widgetinfo" >
+      <tr><th>Date</th><td>13/01/2000</td></tr>
+      <tr><th>Payee</th><td>John Doe</td></tr>
+      <tr><th>Category</th><td>Friend:debt/loan or Family:debt/loan</td></tr>
+      <tr><th>Amount</th><td>+50 £</td></tr>
+      <tr><th>Info</th><td>01/01/2000</td></tr>
+      <tr><th>Status</th><td>Cleared</td></tr>
+      <tr><th>Memo</th><td>payback for the restaurant</td></tr>
+      </table>
+      <p>You can change the category as well, add tags, or whatever suit your needs</p>
+  </div>
+  <h3>Final note</h3>
+  <p>This is a way of doing such tracking, some people reported using some accounts and internal xfer as well for complex tracking.</p>
+
+</body>
+</html>

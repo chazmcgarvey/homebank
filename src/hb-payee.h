@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -32,9 +32,8 @@ struct _payee
 	gchar   	*name;
 
 	/* unsaved datas */
-	gboolean	filter;
+	gboolean	flt_select;
 	guint		usage_count;
-	gboolean	imported;
 };
 
 void da_pay_free(Payee *item);
@@ -43,14 +42,17 @@ Payee *da_pay_malloc(void);
 void da_pay_destroy(void);
 void da_pay_new(void);
 
-guint		da_pay_length(void);
-gboolean	da_pay_create_none(void);
-gboolean	da_pay_remove(guint32 key);
-gboolean	da_pay_insert(Payee *acc);
-gboolean	da_pay_append(Payee *acc);
-guint32		da_pay_get_max_key(void);
-Payee		*da_pay_get_by_name(gchar *name);
-Payee		*da_pay_get(guint32 key);
+guint da_pay_length(void);
+guint32 da_pay_get_max_key(void);
+
+gboolean da_pay_remove(guint32 key);
+gboolean da_pay_insert(Payee *acc);
+gboolean da_pay_append(Payee *acc);
+Payee *da_pay_append_if_new(gchar *rawname);
+
+Payee *da_pay_get(guint32 key);
+Payee *da_pay_get_by_name(gchar *rawname);
+
 void da_pay_consistency(Payee *item);
 
 void payee_delete_unused(void);
@@ -60,7 +62,6 @@ GList *payee_glist_sorted(gint column);
 
 void payee_move(guint32 key1, guint32 key2);
 gboolean payee_rename(Payee *item, const gchar *newname);
-gboolean payee_append_if_new(gchar *name, Payee **newpayee);
 
 gboolean payee_load_csv(gchar *filename, gchar **error);
 void payee_save_csv(gchar *filename);

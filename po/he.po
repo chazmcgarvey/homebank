@@ -7,28 +7,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-06 18:30+0100\n"
-"PO-Revision-Date: 2017-07-03 17:52+0000\n"
-"Last-Translator: David <zardav@gmail.com>\n"
+"POT-Creation-Date: 2019-04-10 16:14+0200\n"
+"PO-Revision-Date: 2019-03-12 18:27+0000\n"
+"Last-Translator: rochai <Unknown>\n"
 "Language-Team: Hebrew <he@li.org>\n"
+"Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2018-01-06 18:08+0000\n"
-"X-Generator: Launchpad (build 18521)\n"
+"X-Launchpad-Export-Date: 2019-04-10 13:13+0000\n"
+"X-Generator: Launchpad (build 18920)\n"
 "X-Language: he\n"
 "X-Source-Language: en\n"
 
-#: ../data/homebank.desktop.in.in.h:1 ../src/dsp_mainwindow.c:910
+#: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:943
 msgid "HomeBank"
-msgstr "הום בנק"
+msgstr "HomeBank"
 
 #: ../data/homebank.desktop.in.in.h:2
 msgid "Personal finance"
 msgstr "מימון אישי"
 
-#: ../data/homebank.desktop.in.in.h:3 ../src/dsp_mainwindow.c:466
-#: ../src/dsp_mainwindow.c:914
+#: ../data/homebank.desktop.in.in.h:3 ../src/dsp-mainwindow.c:466
+#: ../src/dsp-mainwindow.c:947
 msgid "Free, easy, personal accounting for everyone"
 msgstr "ראיית חשבונות אישית חופשית, קלה ופשוטה לכולם"
 
@@ -38,11 +39,9 @@ msgstr "מימון;פיננסים;חשבונאות;תקציב;אישי;כסף;"
 
 #: ../data/homebank.appdata.xml.in.h:1
 msgid ""
-"HomeBank is a free software (as in \"free speech\" and also as in \"free "
-"beer\") that will assist you to manage your personal accounting."
+"HomeBank is a free software (as in \"free speech\" and also as in \"free beer"
+"\") that will assist you to manage your personal accounting."
 msgstr ""
-"‏HomeBank הינה תכנה חופשית (במובן של \"חופש ביטוי\" וגם של \"בירה בחינם\") "
-"אשר תסייע לך לנהל את החשבונות האישיים שלך."
 
 #: ../data/homebank.appdata.xml.in.h:2
 msgid ""
@@ -57,18 +56,27 @@ msgid ""
 "If you are looking for a completely free and easy way to manage your "
 "personal accounting then HomeBank should be the software of choice."
 msgstr ""
-"אם אתה מחפש דרך חופשית וקלה כדי לנהל את החשבונות האישיים שלך אז HomeBank "
-"אמורה להיות התכנה לבחירתך."
+"אם אתה מחפש דרך לנהל את החשבונות האישיים שלך בקלות וללא עלות, Homebank היא "
+"התכנה בשבילך."
 
-#: ../src/dsp_account.c:238 ../src/dsp_account.c:248
+#: ../src/dsp-account.c:206
+#, c-format
+msgid "There is %d group of similar transactions"
+msgstr "נמצאו %d קבוצות של עסקאות דומות"
+
+#: ../src/dsp-account.c:211
+msgid "No similar transaction were found !"
+msgstr "לא נמצאו עסקאות תואמות"
+
+#: ../src/dsp-account.c:293 ../src/dsp-account.c:303
 msgid "Check internal transfert result"
 msgstr "בדוק תוצאה של העברה פנימית"
 
-#: ../src/dsp_account.c:239
+#: ../src/dsp-account.c:294
 msgid "No inconsistency found !"
 msgstr "לא נמצא חוסר עקביות"
 
-#: ../src/dsp_account.c:249
+#: ../src/dsp-account.c:304
 #, c-format
 msgid ""
 "Inconsistency were found: %d\n"
@@ -77,341 +85,371 @@ msgstr ""
 "חוסר עקביות נמצא: %d\n"
 "האם ברצונך לסקור ולתקן?"
 
-#: ../src/dsp_account.c:305
+#: ../src/dsp-account.c:361
 #, c-format
 msgid "Every transaction amount will be divided by %.6f."
-msgstr "כל סכום עסקה יחולק עם %.6f."
+msgstr "כל סכום עסקה יחולק ב %.6f"
 
-#: ../src/dsp_account.c:309
+#: ../src/dsp-account.c:365
 msgid ""
 "Are you sure you want to convert this account\n"
 "to Euro as Major currency?"
 msgstr ""
+"האם לשנות את מטבע החשבון ל-Euro\n"
+"כמטבע עיקרי?"
 
-#: ../src/dsp_account.c:311
+#: ../src/dsp-account.c:367
 msgid "_Convert"
-msgstr "_המר"
+msgstr ""
 
-#: ../src/dsp_account.c:342
+#: ../src/dsp-account.c:402
 msgid "No transaction changed"
-msgstr "אף עסקה לא שונתה"
+msgstr "לא בוצעו שינויים בעסקאות"
 
-#: ../src/dsp_account.c:344
+#: ../src/dsp-account.c:404
 #, c-format
 msgid "transaction changed: %d"
-msgstr "עסקה שונתה: %d"
+msgstr "עסקה עודכנה: %d"
 
-#: ../src/dsp_account.c:347
+#: ../src/dsp-account.c:407
 msgid "Automatic assignment result"
 msgstr "תוצאה של השמה אוטומטית"
 
-#: ../src/dsp_account.c:467
+#: ../src/dsp-account.c:533
 msgid ""
 "Do you want to create a template with\n"
 "each of the selected transaction ?"
 msgstr ""
-"האם ברצונך ליצור תבנית בעזרת\n"
-"כל אחת מן העסקאות הנבחרות ?"
+"האם ליצור תבנתי באמצעות\n"
+"כל אחת מהעסקאות הנבחרות?"
 
-#: ../src/dsp_account.c:1142
+#: ../src/dsp-account.c:534
+msgid "_Create"
+msgstr ""
+
+#: ../src/dsp-account.c:1272
 msgid ""
 "Do you want to delete\n"
 "each of the selected transaction ?"
 msgstr ""
-"האם ברצונך למחוק\n"
-"את כל העסקאות שנבחרו?"
+"האם למחוק את\n"
+"כל העסקאות שנבחרו?"
 
-#: ../src/dsp_account.c:1208
+#: ../src/dsp-account.c:1273 ../src/ui-account.c:1041 ../src/ui-account.c:1319
+#: ../src/ui-archive.c:400 ../src/ui-archive.c:1277 ../src/ui-assign.c:556
+#: ../src/ui-assign.c:772 ../src/ui-category.c:1105 ../src/ui-category.c:1561
+#: ../src/ui-category.c:1987 ../src/ui-currency.c:1547
+#: ../src/ui-currency.c:1734 ../src/ui-payee.c:742 ../src/ui-payee.c:1165
+#: ../src/ui-payee.c:1380 ../src/ui-tag.c:505 ../src/ui-tag.c:659
+msgid "_Delete"
+msgstr "_מחק"
+
+#: ../src/dsp-account.c:1336
 msgid "Are you sure you want to change the status to None?"
 msgstr "האם אתה בטח כי ברצונך לשנות את הסטטוס אל אין?"
 
-#: ../src/dsp_account.c:1209 ../src/dsp_account.c:1271
+#: ../src/dsp-account.c:1337 ../src/dsp-account.c:1397
 msgid "Some transaction in your selection are already Reconciled."
-msgstr "עסקאות מסוימות בתוך הבחירה שלך הושלמו כבר."
+msgstr "חלק מהעסקאות שנבחרו כבר הושלמו."
 
-#: ../src/dsp_account.c:1210 ../src/ui-assist-start.c:281
-#: ../src/ui-dialogs.c:374
+#: ../src/dsp-account.c:1338 ../src/ui-assist-start.c:280
+#: ../src/ui-dialogs.c:383
 msgid "_Change"
 msgstr "_שינוי"
 
-#: ../src/dsp_account.c:1270
+#: ../src/dsp-account.c:1396
 msgid "Are you sure you want to toggle the status Reconciled?"
-msgstr "האם אתה בטוח כי ברצונך להחליף את הסטטוס הושלם?"
+msgstr "האם לעדכן את סטטוס העסקא ל-'הושלם'?"
 
-#: ../src/dsp_account.c:1272
+#: ../src/dsp-account.c:1398
 msgid "_Toggle"
 msgstr "_החלף"
 
-#: ../src/dsp_account.c:1537
+#. label = g_strdup_printf(_("Account %d of %d"), acckey+1, nbacc);
+#. gtk_label_set_markup (GTK_LABEL(txndata->LB_acc_count), label);
+#. g_free(label);
+#: ../src/dsp-account.c:1689 ../src/ui-assist-import.c:1288
 #, c-format
-msgid "%d items (%s)"
-msgstr "%d פריטים (%s)"
+msgid "%d transactions"
+msgstr "%d עסקאות"
 
-#. TRANSLATORS: detail of the 3 %s which are some amount of selected transaction, 1=total 2=income, 3=expense
-#. msg = g_strdup_printf (_("transaction selected: %d, hidden: %d / %s ( %s - %s)"), count, data->hidden, buf3, buf1, buf2);
-#: ../src/dsp_account.c:1542
+#: ../src/dsp-account.c:1692
 #, c-format
-msgid "%d items (%d selected %s)"
-msgstr "%d פריטים (%d נבחרו %s)"
+msgid "%d transactions, %d selected, avg: %s, sum: %s (%s - %s)"
+msgstr ""
 
-#: ../src/dsp_account.c:1639
-#, c-format
-msgid "[closed account] %s"
-msgstr "[חשבון סגור] %s"
+#: ../src/dsp-account.c:1791 ../src/dsp-account.c:2047
+msgid "All transactions"
+msgstr "כל העסקאות"
 
 #. name, icon-name, label
-#: ../src/dsp_account.c:1751
+#: ../src/dsp-account.c:1906
 msgid "A_ccount"
-msgstr "ח_שבון"
+msgstr ""
 
-#: ../src/dsp_account.c:1752
+#: ../src/dsp-account.c:1907
 msgid "Transacti_on"
-msgstr "_עסקה"
+msgstr ""
 
-#: ../src/dsp_account.c:1753
+#: ../src/dsp-account.c:1908
 msgid "_Status"
-msgstr "ס_טטוס"
+msgstr "_סטטוס"
 
-#: ../src/dsp_account.c:1754 ../src/dsp_mainwindow.c:177
+#: ../src/dsp-account.c:1909 ../src/dsp-mainwindow.c:167
 msgid "_Tools"
 msgstr "_כלים"
 
-#: ../src/dsp_account.c:1758 ../src/dsp_mainwindow.c:192
-#: ../src/dsp_mainwindow.c:900 ../src/ui-account.c:1257
-#: ../src/ui-archive.c:1152 ../src/ui-assign.c:723 ../src/ui-budget.c:999
-#: ../src/ui-category.c:1836 ../src/ui-currency.c:1658 ../src/ui-dialogs.c:179
-#: ../src/ui-payee.c:1235 ../src/ui-transaction.c:1203
-#: ../src/ui-transaction.c:1211
-msgid "_Close"
-msgstr "_סגור"
-
-#: ../src/dsp_account.c:1758
-msgid "Close the current account"
-msgstr "סגור את החשבון הנוכחי"
-
 #. name, icon-name, label, accelerator, tooltip
-#: ../src/dsp_account.c:1761
-msgid "_Filter..."
-msgstr "מ_סנן..."
+#: ../src/dsp-account.c:1913
+msgid "Export as PDF..."
+msgstr "ייצא כ-PDF"
 
-#: ../src/dsp_account.c:1761
-msgid "Open the list filter"
-msgstr "פתח את מסנן הרשימה"
+#: ../src/dsp-account.c:1913
+msgid "Export to a PDF file"
+msgstr "ייצא לקובץ PDF"
 
-#: ../src/dsp_account.c:1762
-msgid "Convert to Euro..."
-msgstr ""
-
-#: ../src/dsp_account.c:1762
-msgid "Convert this account to Euro currency"
-msgstr ""
-
-#: ../src/dsp_account.c:1764
-msgid "_Add..."
-msgstr "_הוסף..."
-
-#: ../src/dsp_account.c:1764
-msgid "Add a new transaction"
-msgstr "הוסף עסקה חדשה"
-
-#: ../src/dsp_account.c:1765
-msgid "_Inherit..."
-msgstr "הור_ש..."
-
-#: ../src/dsp_account.c:1765
-msgid "Inherit from the active transaction"
-msgstr "הורש מתוך העסקה הפעילה"
-
-#: ../src/dsp_account.c:1766
-msgid "_Edit..."
-msgstr "_ערוך..."
-
-#: ../src/dsp_account.c:1766
-msgid "Edit the active transaction"
-msgstr "ערוך עסקאות פעילות"
-
-#: ../src/dsp_account.c:1768
-msgid "_None"
-msgstr "_אין"
-
-#: ../src/dsp_account.c:1768
-msgid "Toggle none for selected transaction(s)"
-msgstr "איין סטטוס מתוך עסקאות נבחרות"
-
-#: ../src/dsp_account.c:1769
-msgid "_Cleared"
-msgstr "הו_סדר"
-
-#: ../src/dsp_account.c:1769
-msgid "Toggle cleared for selected transaction(s)"
-msgstr "קבע עסקאות נבחרות כמוסדרות"
-
-#: ../src/dsp_account.c:1770
-msgid "_Reconciled"
-msgstr "הו_שלם"
-
-#: ../src/dsp_account.c:1770
-msgid "Toggle reconciled for selected transaction(s)"
-msgstr "קבע עסקאות נבחרות ככאלה שהושלמו"
-
-#: ../src/dsp_account.c:1772
-msgid "_Multiple Edit..."
-msgstr "_עריכה מרובה..."
-
-#: ../src/dsp_account.c:1772
-msgid "Edit multiple transaction"
-msgstr "ערוך עסקאות מרובות"
-
-#: ../src/dsp_account.c:1773
-msgid "Create template..."
-msgstr "צור תבנית..."
-
-#: ../src/dsp_account.c:1773
-msgid "Create template"
-msgstr "צור תבנית"
-
-#: ../src/dsp_account.c:1774
-msgid "_Delete..."
-msgstr "_מחק..."
-
-#: ../src/dsp_account.c:1774
-msgid "Delete selected transaction(s)"
-msgstr "מחק עסקאות נבחרות"
-
-#: ../src/dsp_account.c:1776
-msgid "Auto. assignments"
-msgstr "השמות אוטומטיות"
-
-#: ../src/dsp_account.c:1776
-msgid "Run automatic assignments"
-msgstr "הרץ השמות אוטומטיות"
-
-#: ../src/dsp_account.c:1777
+#: ../src/dsp-account.c:1914
 msgid "Export QIF..."
 msgstr "יצא QIF..."
 
-#: ../src/dsp_account.c:1777 ../src/ui-dialogs.c:437
+#: ../src/dsp-account.c:1914 ../src/ui-dialogs.c:448
 msgid "Export as QIF"
-msgstr "יצוא בתור QIF"
+msgstr "ייצוא כ-QIF"
 
-#: ../src/dsp_account.c:1778
+#: ../src/dsp-account.c:1915
 msgid "Export CSV..."
 msgstr "יצא CSV..."
 
-#: ../src/dsp_account.c:1778 ../src/rep_vehicle.c:67 ../src/ui-dialogs.c:487
+#: ../src/dsp-account.c:1915 ../src/rep-vehicle.c:67 ../src/ui-dialogs.c:504
 msgid "Export as CSV"
-msgstr "יצוא בתור CSV"
+msgstr "יצוא כ-CSV"
 
-#: ../src/dsp_account.c:1780
-msgid "Check internal xfer..."
+#: ../src/dsp-account.c:1916 ../src/dsp-mainwindow.c:184
+#: ../src/dsp-mainwindow.c:933 ../src/ui-account.c:1261
+#: ../src/ui-archive.c:1212 ../src/ui-assign.c:720 ../src/ui-budget.c:995
+#: ../src/ui-category.c:1805 ../src/ui-currency.c:1658 ../src/ui-dialogs.c:183
+#: ../src/ui-payee.c:1253 ../src/ui-tag.c:578 ../src/ui-transaction.c:1159
+#: ../src/ui-transaction.c:1167
+msgid "_Close"
+msgstr "_סגור"
+
+#: ../src/dsp-account.c:1916
+msgid "Close the current account"
+msgstr "סגור את החשבון הנוכחי"
+
+#: ../src/dsp-account.c:1918
+msgid "_Add..."
+msgstr "הוספה..."
+
+#: ../src/dsp-account.c:1918
+msgid "Add a new transaction"
+msgstr "הוסף עסקה חדשה"
+
+#: ../src/dsp-account.c:1919
+msgid "_Inherit..."
+msgstr "הור_ש..."
+
+#: ../src/dsp-account.c:1919
+msgid "Inherit from the active transaction"
+msgstr "הורש מתוך העסקה הפעילה"
+
+#: ../src/dsp-account.c:1920
+msgid "_Edit..."
+msgstr "_ערוך..."
+
+#: ../src/dsp-account.c:1920
+msgid "Edit the active transaction"
+msgstr "ערוך עסקאות פעילות"
+
+#: ../src/dsp-account.c:1922
+msgid "_None"
+msgstr "_אין"
+
+#: ../src/dsp-account.c:1922
+msgid "Toggle none for selected transaction(s)"
+msgstr "הגדר סטטוס 'אין' עבור העסקאות הנבחרות"
+
+#: ../src/dsp-account.c:1923
+msgid "_Cleared"
+msgstr "הו_סדר"
+
+#: ../src/dsp-account.c:1923
+msgid "Toggle cleared for selected transaction(s)"
+msgstr "הגדר עסקאות נבחרות כמוסדרות"
+
+#: ../src/dsp-account.c:1924
+msgid "_Reconciled"
+msgstr "הו_שלם"
+
+#: ../src/dsp-account.c:1924
+msgid "Toggle reconciled for selected transaction(s)"
+msgstr "הגדר עסקאות נבחרות כמושלמות"
+
+#: ../src/dsp-account.c:1926
+msgid "_Multiple Edit..."
+msgstr "_עריכה מרובה..."
+
+#: ../src/dsp-account.c:1926
+msgid "Edit multiple transaction"
+msgstr "ערוך מספר עסקאות"
+
+#: ../src/dsp-account.c:1927
+msgid "Create template..."
+msgstr "צור תבנית..."
+
+#: ../src/dsp-account.c:1927
+msgid "Create template"
+msgstr "צור תבנית"
+
+#: ../src/dsp-account.c:1928
+msgid "_Delete..."
+msgstr "_מחק..."
+
+#: ../src/dsp-account.c:1928
+msgid "Delete selected transaction(s)"
+msgstr "מחק עסקאות נבחרות"
+
+#: ../src/dsp-account.c:1930
+msgid "Mark duplicate..."
+msgstr "סמן ככפול"
+
+#. { "DuplicateClear", NULL                      , N_("Unmark duplicate"), NULL,	NULL, G_CALLBACK (register_panel_action_duplicate_unmark) },
+#: ../src/dsp-account.c:1933
+msgid "Check internal xfer"
 msgstr ""
 
-#. = = = = = = = = future version = = = = = = = =
-#: ../src/dsp_account.c:1783
-msgid "Export PDF..."
+#: ../src/dsp-account.c:1934
+msgid "Auto. assignments"
+msgstr "השמות אוטומטיות"
+
+#: ../src/dsp-account.c:1934
+msgid "Run automatic assignments"
+msgstr "הרץ השמות אוטומטיות"
+
+#: ../src/dsp-account.c:1936
+msgid "_Filter..."
+msgstr "מ_סנן..."
+
+#: ../src/dsp-account.c:1936
+msgid "Open the list filter"
+msgstr "פתח את מסנן הרשימה"
+
+#: ../src/dsp-account.c:1937
+msgid "Convert to Euro..."
+msgstr "המר ל-Euro"
+
+#: ../src/dsp-account.c:1937
+msgid "Convert this account to Euro currency"
+msgstr "המר את החשבון ל-Euro"
+
+#: ../src/dsp-account.c:2040
+msgid "(closed)"
+msgstr "(סגור)"
+
+#: ../src/dsp-account.c:2047
+#, c-format
+msgid "%s - HomeBank"
 msgstr ""
 
-#: ../src/dsp_account.c:1783
-msgid "Export as PDF"
-msgstr ""
-
-#: ../src/dsp_account.c:1921 ../src/dsp_mainwindow.c:2780
+#: ../src/dsp-account.c:2079 ../src/dsp-mainwindow.c:1991 ../src/ui-split.c:824
 msgid "Add"
 msgstr "הוסף"
 
-#: ../src/dsp_account.c:1924
+#: ../src/dsp-account.c:2082
 msgid "Inherit"
 msgstr "הורש"
 
-#: ../src/dsp_account.c:1927
+#: ../src/dsp-account.c:2085 ../src/ui-split.c:786
 msgid "Edit"
 msgstr "ערוך"
 
-#: ../src/dsp_account.c:1930 ../src/rep_stats.c:72
+#: ../src/dsp-account.c:2088 ../src/rep-stats.c:72
 msgid "Filter"
 msgstr "מסנן"
 
+#. info bar for duplicate
+#: ../src/dsp-account.c:2125
+msgid "_Refresh"
+msgstr "_רענן"
+
 #. balances area
-#: ../src/dsp_account.c:1984
+#: ../src/dsp-account.c:2160
 msgid "Bank:"
 msgstr "בנק:"
 
-#: ../src/dsp_account.c:1990
+#: ../src/dsp-account.c:2166
 msgid "Today:"
 msgstr "היום:"
 
-#: ../src/dsp_account.c:1996
+#: ../src/dsp-account.c:2172
 msgid "Future:"
 msgstr "עתיד:"
 
-#: ../src/dsp_account.c:2020 ../src/rep_balance.c:940 ../src/rep_budget.c:1224
-#: ../src/rep_stats.c:1663 ../src/rep_time.c:1527 ../src/rep_vehicle.c:749
+#: ../src/dsp-account.c:2195 ../src/rep-balance.c:942 ../src/rep-budget.c:1170
+#: ../src/rep-stats.c:1539 ../src/rep-time.c:1270 ../src/rep-vehicle.c:749
+#: ../src/ui-pref.c:1262 ../src/ui-pref.c:1617 ../src/ui-pref.c:2002
 msgid "_Range:"
 msgstr "_טווח:"
 
-#: ../src/dsp_account.c:2025 ../src/ui-account.c:1345
-#: ../src/ui-assist-start.c:392
+#: ../src/dsp-account.c:2203
+msgid "Toggle show future transaction"
+msgstr ""
+
+#: ../src/dsp-account.c:2207 ../src/rep-budget.c:1145 ../src/rep-stats.c:1497
+#: ../src/ui-account.c:1349 ../src/ui-assist-start.c:391
 msgid "_Type:"
 msgstr "_טיפוס:"
 
-#: ../src/dsp_account.c:2030 ../src/ui-archive.c:1041
-#: ../src/ui-transaction.c:1113
+#: ../src/dsp-account.c:2212 ../src/ui-archive.c:1089
+#: ../src/ui-transaction.c:1301
 msgid "_Status:"
 msgstr "ס_טטוס:"
 
-#: ../src/dsp_account.c:2035
-msgid "Reset _filters"
-msgstr "נקה מסננים"
+#. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
+#: ../src/dsp-account.c:2218 ../src/ui-filter.c:1352 ../src/ui-pref.c:2099
+#: ../src/ui-pref.c:2120
+msgid "_Reset"
+msgstr "אפ_ס"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp_account.c:2040 ../src/rep_balance.c:919 ../src/rep_budget.c:1211
-#: ../src/rep_stats.c:1634 ../src/rep_time.c:1505 ../src/rep_vehicle.c:736
+#: ../src/dsp-account.c:2223 ../src/rep-balance.c:921 ../src/rep-budget.c:1157
+#: ../src/rep-stats.c:1511 ../src/rep-time.c:1249 ../src/rep-vehicle.c:736
 msgid "Euro _minor"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:160 ../src/dsp_mainwindow.c:2767
-#: ../src/list_operation.c:1188 ../src/list_operation.c:1444
-#: ../src/rep_budget.c:70 ../src/rep_budget.c:1519 ../src/rep_budget.c:1704
-#: ../src/rep_stats.c:146 ../src/rep_time.c:123 ../src/ui-budget.c:245
-#: ../src/ui-dialogs.c:234 ../src/ui-split.c:406
-msgid "Category"
-msgstr "סיווג"
-
-#: ../src/dsp_mainwindow.c:161 ../src/rep_budget.c:70 ../src/rep_stats.c:147
-msgid "Subcategory"
-msgstr "סיווג משני"
-
 #. name, icon-name, label
-#: ../src/dsp_mainwindow.c:170
+#: ../src/dsp-mainwindow.c:159
 msgid "_File"
 msgstr "_קובץ"
 
-#: ../src/dsp_mainwindow.c:171 ../src/ui-pref.c:1153
-msgid "_Import"
-msgstr "י_בא"
+#. { "ImportMenu" , NULL, N_("_Import"), NULL, NULL, NULL },
+#: ../src/dsp-mainwindow.c:161
+msgid "Open _Recent"
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:172 ../src/ui-category.c:2005
-#: ../src/ui-currency.c:1730 ../src/ui-payee.c:1326
+#. todo: useless ?
+#: ../src/dsp-mainwindow.c:162 ../src/ui-category.c:1981
+#: ../src/ui-currency.c:1730 ../src/ui-payee.c:1374 ../src/ui-tag.c:656
 msgid "_Edit"
 msgstr "ע_ריכה"
 
-#: ../src/dsp_mainwindow.c:173
+#: ../src/dsp-mainwindow.c:163
 msgid "_View"
 msgstr "_תצוגה"
 
-#: ../src/dsp_mainwindow.c:174
+#: ../src/dsp-mainwindow.c:164
 msgid "_Manage"
 msgstr "_ניהול"
 
-#: ../src/dsp_mainwindow.c:175
+#: ../src/dsp-mainwindow.c:165
 msgid "_Transactions"
 msgstr "ע_סקאות"
 
-#: ../src/dsp_mainwindow.c:176
+#: ../src/dsp-mainwindow.c:166
 msgid "_Reports"
 msgstr "_דיווחים"
 
-#: ../src/dsp_mainwindow.c:178
+#: ../src/dsp-mainwindow.c:168
 msgid "_Help"
 msgstr "_עזרה"
 
@@ -419,326 +457,344 @@ msgstr "_עזרה"
 #. { "Export"       , NULL, N_("Export to") },
 #. name, icon-name, label, accelerator, tooltip
 #. FileMenu
-#: ../src/dsp_mainwindow.c:185
+#: ../src/dsp-mainwindow.c:175
 msgid "_New"
 msgstr "_חדש"
 
-#: ../src/dsp_mainwindow.c:185
+#: ../src/dsp-mainwindow.c:175
 msgid "Create a new file"
 msgstr "צור קובץ חדש"
 
-#: ../src/dsp_mainwindow.c:186
+#: ../src/dsp-mainwindow.c:176
 msgid "_Open..."
 msgstr "_פתח..."
 
-#: ../src/dsp_mainwindow.c:186 ../src/dsp_mainwindow.c:2840
+#: ../src/dsp-mainwindow.c:176 ../src/dsp-mainwindow.c:2045
 msgid "Open a file"
 msgstr "פתח קובץ"
 
-#: ../src/dsp_mainwindow.c:187 ../src/ui-dialogs.c:441 ../src/ui-dialogs.c:488
-#: ../src/ui-dialogs.c:549 ../src/ui-dialogs.c:673
+#: ../src/dsp-mainwindow.c:177 ../src/ui-dialogs.c:452 ../src/ui-dialogs.c:505
+#: ../src/ui-dialogs.c:572 ../src/ui-dialogs.c:723
 msgid "_Save"
 msgstr "_שמור"
 
-#: ../src/dsp_mainwindow.c:187
+#: ../src/dsp-mainwindow.c:177
 msgid "Save the current file"
 msgstr "שמור את הקובץ הנוכחי"
 
-#: ../src/dsp_mainwindow.c:188
+#: ../src/dsp-mainwindow.c:178
 msgid "Save _As..."
 msgstr "שמירה _בשם..."
 
-#: ../src/dsp_mainwindow.c:188
+#: ../src/dsp-mainwindow.c:178
 msgid "Save the current file with a different name"
 msgstr "שמור את הקובץ הנוכחי בשם אחר"
 
-#: ../src/dsp_mainwindow.c:189
+#: ../src/dsp-mainwindow.c:180
 msgid "Revert"
 msgstr "שחזר"
 
-#: ../src/dsp_mainwindow.c:189
+#: ../src/dsp-mainwindow.c:180
 msgid "Revert to a saved version of this file"
 msgstr "חזור לגרסה שמורה של הקובץ הזה"
 
-#: ../src/dsp_mainwindow.c:191
+#: ../src/dsp-mainwindow.c:181
+msgid "Restore backup"
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:181
+msgid "Restore from a backup file"
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:183
 msgid "Properties..."
 msgstr "מאפיינים..."
 
-#: ../src/dsp_mainwindow.c:191
+#: ../src/dsp-mainwindow.c:183
 msgid "Configure the file"
 msgstr "הגדר את הקובץ"
 
-#: ../src/dsp_mainwindow.c:192
+#: ../src/dsp-mainwindow.c:184
 msgid "Close the current file"
 msgstr "סגור את הקובץ הנוכחי"
 
-#: ../src/dsp_mainwindow.c:193
+#: ../src/dsp-mainwindow.c:185
 msgid "_Quit"
 msgstr "י_ציאה"
 
-#: ../src/dsp_mainwindow.c:193
+#: ../src/dsp-mainwindow.c:185
 msgid "Quit HomeBank"
 msgstr "סגור את HomeBank"
 
 #. Exchange
-#: ../src/dsp_mainwindow.c:196
-msgid "QIF file..."
-msgstr "קובץ QIF..."
+#: ../src/dsp-mainwindow.c:188
+msgid "Import..."
+msgstr "ייבוא..."
 
-#: ../src/dsp_mainwindow.c:196 ../src/dsp_mainwindow.c:197
-#: ../src/dsp_mainwindow.c:198
+#: ../src/dsp-mainwindow.c:188
 msgid "Open the import assistant"
 msgstr "פתח מסייע יבוא"
 
-#: ../src/dsp_mainwindow.c:197
-msgid "OFX/QFX file..."
-msgstr "קובץ OFX/QFX..."
+#. { "ImportQIF" , ICONNAME_HB_FILE_IMPORT  , N_("QIF file...")     , NULL, N_("Open the import assistant"),    G_CALLBACK (ui_mainwindow_action_import) },
+#. { "ImportOFX" , ICONNAME_HB_FILE_IMPORT  , N_("OFX/QFX file...")     , NULL, N_("Open the import assistant"),    G_CALLBACK (ui_mainwindow_action_import) },
+#. { "ImportCSV" , ICONNAME_HB_FILE_IMPORT  , N_("CSV file...")     , NULL, N_("Open the import assistant"),    G_CALLBACK (ui_mainwindow_action_import) },
+#: ../src/dsp-mainwindow.c:193
+msgid "Export as QIF..."
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:198
-msgid "CSV file..."
-msgstr "קובץ CSV..."
-
-#: ../src/dsp_mainwindow.c:200
-msgid "Export QIF file..."
-msgstr "יצא קובץ QIF..."
-
-#: ../src/dsp_mainwindow.c:200
+#: ../src/dsp-mainwindow.c:193
 msgid "Export all account in a QIF file"
 msgstr "יצא את כל החשבונות לקובץ QIF"
 
 #. EditMenu
-#: ../src/dsp_mainwindow.c:203
+#: ../src/dsp-mainwindow.c:196
 msgid "Preferences..."
 msgstr "העדפות..."
 
-#: ../src/dsp_mainwindow.c:203
+#: ../src/dsp-mainwindow.c:196
 msgid "Configure HomeBank"
 msgstr "הגדרת HomeBank"
 
 #. ManageMenu
-#: ../src/dsp_mainwindow.c:206
+#: ../src/dsp-mainwindow.c:199
 msgid "Currencies..."
 msgstr "מטבעות..."
 
-#: ../src/dsp_mainwindow.c:206
+#: ../src/dsp-mainwindow.c:199
 msgid "Configure the currencies"
 msgstr "הגדרת מטבעות"
 
-#: ../src/dsp_mainwindow.c:207
+#: ../src/dsp-mainwindow.c:200
 msgid "Acc_ounts..."
 msgstr "_חשבונות..."
 
-#: ../src/dsp_mainwindow.c:207
+#: ../src/dsp-mainwindow.c:200
 msgid "Configure the accounts"
 msgstr "הגדר חשבונות"
 
-#: ../src/dsp_mainwindow.c:208
+#: ../src/dsp-mainwindow.c:201
 msgid "_Payees..."
 msgstr "מוט_בים..."
 
-#: ../src/dsp_mainwindow.c:208
+#: ../src/dsp-mainwindow.c:201
 msgid "Configure the payees"
 msgstr "הגדר מוטבים"
 
-#: ../src/dsp_mainwindow.c:209
+#: ../src/dsp-mainwindow.c:202
 msgid "Categories..."
 msgstr "סיווגים..."
 
-#: ../src/dsp_mainwindow.c:209
+#: ../src/dsp-mainwindow.c:202
 msgid "Configure the categories"
 msgstr "הגדר סיווגים"
 
-#: ../src/dsp_mainwindow.c:210
+#: ../src/dsp-mainwindow.c:203
 msgid "Scheduled/Template..."
 msgstr "תזמון/תבנית..."
 
-#: ../src/dsp_mainwindow.c:210
+#: ../src/dsp-mainwindow.c:203
 msgid "Configure the scheduled/template transactions"
 msgstr "הגדר עסקאות מתוזמנות/תבנית"
 
-#: ../src/dsp_mainwindow.c:211
+#: ../src/dsp-mainwindow.c:204
 msgid "Budget..."
 msgstr "תקציב..."
 
-#: ../src/dsp_mainwindow.c:211
+#: ../src/dsp-mainwindow.c:204
 msgid "Configure the budget"
 msgstr "הגדר תקציב"
 
-#: ../src/dsp_mainwindow.c:212
+#: ../src/dsp-mainwindow.c:205
 msgid "Assignments..."
 msgstr "משימות..."
 
-#: ../src/dsp_mainwindow.c:212
+#: ../src/dsp-mainwindow.c:205
 msgid "Configure the automatic assignments"
 msgstr "הגדר השמות אוטומטיות"
 
+#: ../src/dsp-mainwindow.c:206
+msgid "Tags..."
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:206
+msgid "Configure the tags"
+msgstr ""
+
 #. TxnMenu
-#: ../src/dsp_mainwindow.c:215
-msgid "Show..."
-msgstr "הצג..."
-
-#: ../src/dsp_mainwindow.c:215
-msgid "Shows selected account transactions"
-msgstr "הצג עסקאות חשבון נבחרות"
-
-#: ../src/dsp_mainwindow.c:216
+#: ../src/dsp-mainwindow.c:209
 msgid "Add..."
 msgstr "הוסף..."
 
-#: ../src/dsp_mainwindow.c:216
+#: ../src/dsp-mainwindow.c:209
 msgid "Add transactions"
 msgstr "הוסף עסקאות"
 
-#: ../src/dsp_mainwindow.c:217
+#: ../src/dsp-mainwindow.c:210
+msgid "Show..."
+msgstr "הצג..."
+
+#: ../src/dsp-mainwindow.c:210
+msgid "Shows selected account transactions"
+msgstr "הצג עסקאות חשבון נבחרות"
+
+#: ../src/dsp-mainwindow.c:211
+msgid "Show all..."
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:211
+msgid "Shows all account transactions"
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:212
 msgid "Set scheduler..."
 msgstr "הגדר מתזמן..."
 
-#: ../src/dsp_mainwindow.c:217
+#: ../src/dsp-mainwindow.c:212
 msgid "Configure the transaction scheduler"
 msgstr "הגדר מתזמן עסקאות"
 
-#: ../src/dsp_mainwindow.c:218
+#: ../src/dsp-mainwindow.c:213
 msgid "Post scheduled"
 msgstr "מתוכננות בדיעבד"
 
-#: ../src/dsp_mainwindow.c:218 ../src/ui-pref.c:1785
+#: ../src/dsp-mainwindow.c:213 ../src/ui-pref.c:1982
 msgid "Post pending scheduled transactions"
 msgstr "עסקאות מתוכננות תלויות ועומדות בדיעבד"
 
 #. ReportMenu
-#: ../src/dsp_mainwindow.c:221
+#: ../src/dsp-mainwindow.c:216
 msgid "_Statistics..."
 msgstr "_סטטיסטיקה..."
 
-#: ../src/dsp_mainwindow.c:221
+#: ../src/dsp-mainwindow.c:216
 msgid "Open the Statistics report"
 msgstr "פתח דו״ח סטטיסטיקה"
 
-#: ../src/dsp_mainwindow.c:222
+#: ../src/dsp-mainwindow.c:217
 msgid "_Trend Time..."
 msgstr "_מגמת זמן..."
 
-#: ../src/dsp_mainwindow.c:222
+#: ../src/dsp-mainwindow.c:217
 msgid "Open the Trend Time report"
 msgstr "פתח דו״ח מגמת זמן"
 
-#: ../src/dsp_mainwindow.c:223
+#: ../src/dsp-mainwindow.c:218
 msgid "B_udget..."
 msgstr "תק_ציב..."
 
-#: ../src/dsp_mainwindow.c:223
+#: ../src/dsp-mainwindow.c:218
 msgid "Open the Budget report"
 msgstr "פתח דו״ח תקציב"
 
-#: ../src/dsp_mainwindow.c:224
+#: ../src/dsp-mainwindow.c:219
 msgid "Balance..."
 msgstr "מאזן..."
 
-#: ../src/dsp_mainwindow.c:224
+#: ../src/dsp-mainwindow.c:219
 msgid "Open the Balance report"
 msgstr "פתח דו״ח מאזן"
 
-#: ../src/dsp_mainwindow.c:225
+#: ../src/dsp-mainwindow.c:220
 msgid "_Vehicle cost..."
 msgstr "_עלויות רכב..."
 
-#: ../src/dsp_mainwindow.c:225
+#: ../src/dsp-mainwindow.c:220
 msgid "Open the Vehicle cost report"
 msgstr "פתח דו״ח עלויות רכב"
 
 #. Tools
-#: ../src/dsp_mainwindow.c:228
+#: ../src/dsp-mainwindow.c:223
 msgid "Show welcome dialog..."
 msgstr "הצג דו שיח התחלה..."
 
-#: ../src/dsp_mainwindow.c:229
+#: ../src/dsp-mainwindow.c:224
 msgid "File statistics..."
 msgstr "סטטיסטיקת קובץ..."
 
-#: ../src/dsp_mainwindow.c:230
+#: ../src/dsp-mainwindow.c:225
 msgid "Anonymize..."
 msgstr "עילום (אנונימיזציה)..."
 
 #. HelpMenu
-#: ../src/dsp_mainwindow.c:233
+#: ../src/dsp-mainwindow.c:228
 msgid "_Contents"
 msgstr "_תכנים"
 
-#: ../src/dsp_mainwindow.c:233
+#: ../src/dsp-mainwindow.c:228
 msgid "Documentation about HomeBank"
 msgstr "תיעוד על HomeBank"
 
-#: ../src/dsp_mainwindow.c:234
+#: ../src/dsp-mainwindow.c:229
 msgid "Get Help Online..."
 msgstr "השג עזרה מקוונת..."
 
-#: ../src/dsp_mainwindow.c:234
+#: ../src/dsp-mainwindow.c:229
 msgid "Connect to the LaunchPad website for online help"
 msgstr "התחבר לאתר LaunchPad בשביל עזרה מקוונת"
 
-#: ../src/dsp_mainwindow.c:236
+#: ../src/dsp-mainwindow.c:231
 msgid "Check for updates..."
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:236
+#: ../src/dsp-mainwindow.c:231
 msgid "Visit HomeBank website to check for update"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:237
+#: ../src/dsp-mainwindow.c:232
 msgid "Release Notes"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:237
+#: ../src/dsp-mainwindow.c:232
 msgid "Display the release notes"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:238
+#: ../src/dsp-mainwindow.c:233
 msgid "Report a Problem..."
 msgstr "דווח על בעיה..."
 
-#: ../src/dsp_mainwindow.c:238
+#: ../src/dsp-mainwindow.c:233
 msgid "Connect to the LaunchPad website to help fix problems"
 msgstr "התחבר לאתר LaunchPad בשביל לדווח על בעיה"
 
-#: ../src/dsp_mainwindow.c:239
+#: ../src/dsp-mainwindow.c:234
 msgid "Translate this Application..."
 msgstr "תרגם יישום זה..."
 
-#: ../src/dsp_mainwindow.c:239
+#: ../src/dsp-mainwindow.c:234
 msgid "Connect to the LaunchPad website to help translate this application"
 msgstr "התחבר לאתר LaunchPad כדי לעזור לתרגם את יישום זה"
 
-#: ../src/dsp_mainwindow.c:241
+#: ../src/dsp-mainwindow.c:236
 msgid "_About"
 msgstr "_אודות"
 
-#: ../src/dsp_mainwindow.c:241
+#: ../src/dsp-mainwindow.c:236
 msgid "About HomeBank"
 msgstr "אודות HomeBank"
 
 #. name         , icon-name, label, accelerator, tooltip, callback, is_active
-#: ../src/dsp_mainwindow.c:249
+#: ../src/dsp-mainwindow.c:244
 msgid "_Toolbar"
 msgstr "_סרגל כלים"
 
-#: ../src/dsp_mainwindow.c:250
+#: ../src/dsp-mainwindow.c:245
 msgid "_Top spending"
 msgstr "הוצאה _עיקרית"
 
-#: ../src/dsp_mainwindow.c:251
-msgid "_Scheduled list"
-msgstr "_רשימת מתוכננות"
+#: ../src/dsp-mainwindow.c:246
+msgid "_Bottom Lists"
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:252 ../src/ui-pref.c:85
+#: ../src/dsp-mainwindow.c:247 ../src/ui-pref.c:92
 msgid "Euro minor"
 msgstr "יורו שולי"
 
-#: ../src/dsp_mainwindow.c:384
+#: ../src/dsp-mainwindow.c:384
 #, c-format
 msgid "Revert unsaved changes to file '%s'?"
 msgstr "החזר שינויים לא שמורים לקובץ '%s'?"
 
-#: ../src/dsp_mainwindow.c:387
+#: ../src/dsp-mainwindow.c:387
 msgid ""
 "- Changes made to the file will be permanently lost\n"
 "- File will be reloaded from the last save (.xhb~)"
@@ -746,15 +802,15 @@ msgstr ""
 "- שינויים אשר נעשו לקובץ יאובדו לעד\n"
 "- קובץ ייטען מחדש מתוך השמירה האחרונה (.xhb~)"
 
-#: ../src/dsp_mainwindow.c:394
+#: ../src/dsp-mainwindow.c:394
 msgid "_Revert"
 msgstr "_שחזר"
 
-#: ../src/dsp_mainwindow.c:580
+#: ../src/dsp-mainwindow.c:585
 msgid "Are you sure you want to anonymize the file?"
 msgstr "האם אתה בטוח כי ברצונך להפוך את הקובץ לעלום?"
 
-#: ../src/dsp_mainwindow.c:583
+#: ../src/dsp-mainwindow.c:588
 msgid ""
 "Proceeding will anonymize any text, \n"
 "like 'account x', 'payee y', 'memo z', ..."
@@ -762,77 +818,39 @@ msgstr ""
 "המשך יהפוך לעלום כל טקסט, \n"
 "כגון 'חשבון x', 'מוטב y', 'מזכר z', ..."
 
-#: ../src/dsp_mainwindow.c:590
+#: ../src/dsp-mainwindow.c:595
 msgid "_Anonymize"
 msgstr "_עילום"
 
-#: ../src/dsp_mainwindow.c:897
+#: ../src/dsp-mainwindow.c:930
 msgid "Welcome to HomeBank"
 msgstr "ברוכים הבאים אל HomeBank"
 
-#: ../src/dsp_mainwindow.c:924
+#: ../src/dsp-mainwindow.c:957
 msgid "What do you want to do:"
 msgstr "מה ברצונך לעשות:"
 
-#: ../src/dsp_mainwindow.c:928
+#: ../src/dsp-mainwindow.c:961
 msgid "Read HomeBank _Manual"
 msgstr "לקרוא מדריך _HomeBank"
 
-#: ../src/dsp_mainwindow.c:932
+#: ../src/dsp-mainwindow.c:965
 msgid "Configure _preferences"
 msgstr "הגדר _העדפות"
 
-#: ../src/dsp_mainwindow.c:936
+#: ../src/dsp-mainwindow.c:969
 msgid "Create a _new file"
 msgstr "ליצור קובץ _חדש"
 
-#: ../src/dsp_mainwindow.c:940
+#: ../src/dsp-mainwindow.c:973
 msgid "_Open an existing file"
 msgstr "_לפתוח קובץ קיים"
 
-#: ../src/dsp_mainwindow.c:944
+#: ../src/dsp-mainwindow.c:977
 msgid "Open the _example file"
 msgstr "לפתוח קובץ _דוגמא"
 
-#. hb_label_set_amount(GTK_LABEL(data->TX_topamount), total, GLOBALS->kcur, GLOBALS->minor);
-#: ../src/dsp_mainwindow.c:1191
-msgid "Top spending"
-msgstr "הוצאה עיקרית"
-
-#. future usage
-#: ../src/dsp_mainwindow.c:1202
-#, c-format
-msgid "Top %d spending"
-msgstr "%d הוצאות עיקריות"
-
-#: ../src/dsp_mainwindow.c:1369 ../src/rep_stats.c:1130 ../src/rep_stats.c:1150
-#: ../src/ui-budget.c:131 ../src/ui-category.c:393 ../src/ui-category.c:611
-msgid "(no category)"
-msgstr "(אין סיווג)"
-
-#: ../src/dsp_mainwindow.c:1390
-msgid "Other"
-msgstr "אחר"
-
-#: ../src/dsp_mainwindow.c:1631
-msgid "No transaction to add"
-msgstr "אין עסקה להוספה"
-
-#: ../src/dsp_mainwindow.c:1633
-#, c-format
-msgid "transaction added: %d"
-msgstr "התווספה עסקה: %d"
-
-#: ../src/dsp_mainwindow.c:1636
-msgid "Check scheduled transactions result"
-msgstr "תוצאת בדיקת עסקאות מתוכננות"
-
-#: ../src/dsp_mainwindow.c:1753 ../src/dsp_mainwindow.c:2155
-#: ../src/rep_vehicle.c:847
-msgid "Total"
-msgstr "סה״כ"
-
-#: ../src/dsp_mainwindow.c:1772
+#: ../src/dsp-mainwindow.c:1206
 #, c-format
 msgid ""
 "Your are about to open the backup file '%s'.\n"
@@ -840,29 +858,29 @@ msgid ""
 "Are you sure you want to do this ?"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1776
-msgid "Open a backup file ?"
+#: ../src/dsp-mainwindow.c:1210
+msgid "Open the backup file ?"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1778
+#: ../src/dsp-mainwindow.c:1212
 msgid "_Open backup"
 msgstr ""
 
-#: ../src/dsp_mainwindow.c:1869 ../src/ui-currency.c:1312
-msgid "Unknow error"
-msgstr "שגיאה לא מוכרת"
+#: ../src/dsp-mainwindow.c:1310 ../src/ui-currency.c:1312
+msgid "Unknown error"
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:1874 ../src/dsp_mainwindow.c:1959
+#: ../src/dsp-mainwindow.c:1315 ../src/dsp-mainwindow.c:1421
 #, c-format
 msgid "I/O error for file '%s'."
 msgstr "שגיאת I/O לקובץ '%s'."
 
-#: ../src/dsp_mainwindow.c:1877
+#: ../src/dsp-mainwindow.c:1318
 #, c-format
 msgid "The file '%s' is not a valid HomeBank file."
 msgstr "הקובץ '%s' אינו קובץ HomeBank תקני."
 
-#: ../src/dsp_mainwindow.c:1880
+#: ../src/dsp-mainwindow.c:1321
 #, c-format
 msgid ""
 "The file '%s' was saved with a higher version of HomeBank\n"
@@ -871,174 +889,148 @@ msgstr ""
 "הקובץ '%s' נשמר בעזרת גרסא מתקדמת יותר של HomeBank\n"
 "ולא יכול להיטען על ידי הגרסא הנוכחית."
 
-#: ../src/dsp_mainwindow.c:1885 ../src/dsp_mainwindow.c:1962
-#: ../src/dsp_mainwindow.c:2671
+#: ../src/dsp-mainwindow.c:1326 ../src/dsp-mainwindow.c:1424
 msgid "File error"
 msgstr "שגיאת קובץ"
 
-#: ../src/dsp_mainwindow.c:2018
-msgid "(no institution)"
-msgstr "(אין מוסד)"
+#: ../src/dsp-mainwindow.c:1397
+msgid "The file has been modified since reading it."
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:2187
-msgid "Grand total"
-msgstr "סך כולל"
+#: ../src/dsp-mainwindow.c:1398
+msgid "If you save it, all the external changes could be lost. Save it anyway?"
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:2672
-#, c-format
-msgid "The file %s is not a valid HomeBank file."
-msgstr "הקובץ %s הוא לא קובץ HomeBank תקין."
+#: ../src/dsp-mainwindow.c:1399
+msgid "S_ave Anyway"
+msgstr ""
 
-#: ../src/dsp_mainwindow.c:2755 ../src/dsp_mainwindow.c:2844
+#: ../src/dsp-mainwindow.c:1966 ../src/dsp-mainwindow.c:2057
 msgid "Open"
 msgstr "פתח"
 
-#: ../src/dsp_mainwindow.c:2761 ../src/list_operation.c:1093
-#: ../src/list_operation.c:1412 ../src/list_upcoming.c:462
-#: ../src/rep_time.c:123 ../src/ui-account.c:1341 ../src/ui-assist-import.c:60
-#: ../src/ui-dialogs.c:207
+#. 5.2 we always create the column and set it not visible
+#. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, _("Transaction"));
+#. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, genacc->name);
+#: ../src/dsp-mainwindow.c:1972 ../src/list-operation.c:1144
+#: ../src/list-scheduled.c:482 ../src/rep-stats.c:149 ../src/rep-time.c:125
+#: ../src/ui-account.c:1345 ../src/ui-assist-import.c:2028
+#: ../src/ui-dialogs.c:211
 msgid "Account"
 msgstr "חשבון"
 
-#: ../src/dsp_mainwindow.c:2764 ../src/hb-export.c:448
-#: ../src/list_operation.c:1128 ../src/list_operation.c:1441
-#: ../src/list_upcoming.c:400 ../src/rep_stats.c:148 ../src/rep_time.c:123
-#: ../src/ui-archive.c:289 ../src/ui-assign.c:41 ../src/ui-dialogs.c:225
-#: ../src/ui-pref.c:125
+#. payee
+#: ../src/dsp-mainwindow.c:1975 ../src/hb-export.c:443
+#: ../src/list-operation.c:1178 ../src/list-scheduled.c:418
+#: ../src/rep-stats.c:148 ../src/rep-time.c:127 ../src/ui-archive.c:291
+#: ../src/ui-assist-import.c:386 ../src/ui-dialogs.c:229 ../src/ui-pref.c:132
+#: ../src/ui-widgets-data.c:36
 msgid "Payee"
 msgstr "מוטב"
 
+#. category
+#: ../src/dsp-mainwindow.c:1978 ../src/list-operation.c:1239
+#: ../src/rep-budget.c:1465 ../src/rep-budget.c:1646 ../src/rep-stats.c:146
+#: ../src/rep-time.c:126 ../src/ui-assist-import.c:390 ../src/ui-budget.c:232
+#: ../src/ui-dialogs.c:238 ../src/ui-split.c:202 ../src/ui-split.c:791
+#: ../src/ui-widgets-data.c:49
+msgid "Category"
+msgstr "סיווג"
+
 #. TRANSLATORS: an archive is stored transaction buffers (kind of bookmark to prefill manual insertion)
-#: ../src/dsp_mainwindow.c:2771
+#: ../src/dsp-mainwindow.c:1982
 msgid "Archive"
 msgstr "ארכיב"
 
 #. column: Income
-#: ../src/dsp_mainwindow.c:2774 ../src/dsp_mainwindow.c:2786
-#: ../src/rep_budget.c:74 ../src/rep_budget.c:966 ../src/rep_budget.c:1519
-#: ../src/rep_budget.c:1719
+#: ../src/dsp-mainwindow.c:1985 ../src/dsp-mainwindow.c:1997
+#: ../src/rep-budget.c:911 ../src/rep-budget.c:1465 ../src/rep-budget.c:1661
 msgid "Budget"
 msgstr "תקציב"
 
-#: ../src/dsp_mainwindow.c:2777
+#: ../src/dsp-mainwindow.c:1988
 msgid "Show"
 msgstr "הצג"
 
-#: ../src/dsp_mainwindow.c:2783
+#: ../src/dsp-mainwindow.c:1994
 msgid "Statistics"
 msgstr "סטטיסטיקה"
 
 # ןיתרה
 #. column: Balance
-#: ../src/dsp_mainwindow.c:2789 ../src/hb-export.c:452
-#: ../src/list_operation.c:1206 ../src/rep_balance.c:1312
-#: ../src/rep_stats.c:159 ../src/rep_stats.c:1943 ../src/rep_stats.c:2126
+#: ../src/dsp-mainwindow.c:2000 ../src/hb-export.c:447
+#: ../src/list-operation.c:1257 ../src/rep-balance.c:1314
+#: ../src/rep-stats.c:161 ../src/rep-stats.c:1820 ../src/rep-stats.c:2003
 msgid "Balance"
 msgstr "מאז"
 
-#: ../src/dsp_mainwindow.c:2792 ../src/ui-hbfile.c:275
+#: ../src/dsp-mainwindow.c:2003 ../src/ui-hbfile.c:275
 msgid "Vehicle cost"
 msgstr "עלויות רכב"
 
-#: ../src/dsp_mainwindow.c:2837 ../src/ui-dialogs.c:482 ../src/ui-dialogs.c:544
-#: ../src/ui-dialogs.c:608
+#: ../src/dsp-mainwindow.c:2044 ../src/ui-assist-import.c:734
+#: ../src/ui-dialogs.c:499 ../src/ui-dialogs.c:567 ../src/ui-dialogs.c:653
 msgid "_Open"
 msgstr "_פתח"
 
-#: ../src/dsp_mainwindow.c:2841
+#: ../src/dsp-mainwindow.c:2049
 msgid "Open a recently used file"
 msgstr "פתח קובץ שהיה בשימוש לאחרונה"
 
-#: ../src/dsp_mainwindow.c:2962
-msgid "Your accounts"
-msgstr "החשבון שלך"
+#: ../src/dsp-mainwindow.c:2144 ../src/ui-widgets-data.c:28
+msgid "Scheduled"
+msgstr "מתוזמן"
 
-#: ../src/dsp_mainwindow.c:2977 ../src/ui-budget.c:1104
-#: ../src/ui-category.c:1990
-msgid "Expand all"
-msgstr "הרחב הכל"
+#. Future
+#: ../src/dsp-mainwindow.c:2148 ../src/list-account.c:430
+msgid "Future"
+msgstr "עתיד"
 
-#: ../src/dsp_mainwindow.c:2981 ../src/ui-budget.c:1108
-#: ../src/ui-category.c:1994
-msgid "Collapse all"
-msgstr "צמצם הכל"
+#: ../src/dsp-mainwindow.c:2151 ../src/ui-transaction.c:59
+msgid "Remind"
+msgstr "הזכר"
 
-#: ../src/dsp_mainwindow.c:2998
-msgid "Show all"
-msgstr "הצג הכל"
-
-#: ../src/dsp_mainwindow.c:3003
-msgid "By type"
-msgstr "לפי סוג"
-
-#: ../src/dsp_mainwindow.c:3004
-msgid "By institition"
-msgstr "לפי מוסד"
-
-#: ../src/dsp_mainwindow.c:3061
-msgid "Where your money goes"
-msgstr "לאן הולך הכסף שלך"
-
-#: ../src/dsp_mainwindow.c:3120
-msgid "Scheduled transactions"
-msgstr "עסקאות מתוכננות"
-
-#: ../src/dsp_mainwindow.c:3136
-msgid "Skip"
-msgstr "דלג"
-
-#: ../src/dsp_mainwindow.c:3140
-msgid "Edit & Post"
-msgstr "ערוך וממש"
-
-#. TRANSLATORS: Posting a scheduled transaction is the action to materialize it into its target account.
-#. TRANSLATORS: Before that action the automated transaction occurrence is pending and not yet really existing.
-#: ../src/dsp_mainwindow.c:3146
-msgid "Post"
-msgstr "ממש"
-
-#: ../src/dsp_mainwindow.c:3161
-msgid "maximum post date"
-msgstr "מועד מימוש מרבי"
-
-#: ../src/hb-archive.c:171
+#: ../src/hb-archive.c:250
 msgid "(new archive)"
 msgstr "(ארכיון חדש)"
 
-#: ../src/hb-category.c:1007 ../src/hb-payee.c:579
+#: ../src/hb-category.c:468 ../src/rep-stats.c:995 ../src/rep-stats.c:1015
+#: ../src/ui-budget.c:117 ../src/ui-category.c:352 ../src/ui-category.c:570
+msgid "(no category)"
+msgstr "(אין סיווג)"
+
+#: ../src/hb-category.c:944 ../src/hb-payee.c:562
 msgid "invalid CSV format"
 msgstr "פורמט CSV לא חוקי"
 
-#: ../src/hb-export.c:446 ../src/list_operation.c:1105
-#: ../src/list_operation.c:1423 ../src/rep_balance.c:1293
-#: ../src/rep_vehicle.c:218 ../src/rep_vehicle.c:1098 ../src/ui-pref.c:1487
+#: ../src/hb-export.c:441 ../src/list-operation.c:1155
+#: ../src/rep-balance.c:1295 ../src/rep-vehicle.c:218 ../src/rep-vehicle.c:1098
+#: ../src/ui-assist-import.c:358
 msgid "Date"
 msgstr "תאריך"
 
-#: ../src/hb-export.c:447 ../src/list_operation.c:951 ../src/ui-pref.c:2189
+#: ../src/hb-export.c:442 ../src/list-operation.c:1003
+#: ../src/ui-assist-import.c:372 ../src/ui-pref.c:133 ../src/ui-pref.c:2349
 msgid "Info"
 msgstr "מידע"
 
-#: ../src/hb-export.c:449 ../src/list_operation.c:1136
-#: ../src/list_operation.c:1432 ../src/list_upcoming.c:420
-#: ../src/ui-archive.c:273 ../src/ui-assign.c:40 ../src/ui-pref.c:124
-#: ../src/ui-split.c:410
+#. memo
+#: ../src/hb-export.c:444 ../src/list-operation.c:1186
+#: ../src/list-scheduled.c:439 ../src/ui-archive.c:275
+#: ../src/ui-assist-import.c:363 ../src/ui-pref.c:131 ../src/ui-split.c:220
+#: ../src/ui-split.c:795 ../src/ui-widgets-data.c:35
 msgid "Memo"
 msgstr "מזכר"
 
 #. column: Amount
-#: ../src/hb-export.c:450 ../src/list_operation.c:1164
-#: ../src/list_operation.c:1435 ../src/rep_time.c:1793 ../src/rep_time.c:1915
-#: ../src/rep_vehicle.c:222 ../src/rep_vehicle.c:1143 ../src/ui-split.c:414
+#. amount
+#: ../src/hb-export.c:445 ../src/list-operation.c:1215 ../src/rep-time.c:1542
+#: ../src/rep-time.c:1664 ../src/rep-vehicle.c:222 ../src/rep-vehicle.c:1143
+#: ../src/ui-assist-import.c:367 ../src/ui-split.c:236 ../src/ui-split.c:799
 msgid "Amount"
 msgstr "סכום"
 
-#: ../src/hb-filter.c:74
-#, c-format
-msgid "<i>from</i> %s <i>to</i> %s"
-msgstr "<i>מאז</i> %s <i>עד</i> %s"
-
-#: ../src/hb-hbfile.c:569
+#: ../src/hb-hbfile.c:596 ../src/ui-assist-import.c:2028
 msgid "Unknown"
 msgstr "לא מוכר"
 
@@ -1058,6 +1050,21 @@ msgstr "ק״מ/ל"
 msgid "mi./l"
 msgstr "מייל/ל"
 
+#. g_snprintf(buffer, 63, "%d-%02d", g_date_get_year(date), g_date_get_month(date));
+#. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
+#: ../src/hb-report.c:333
+#, c-format
+msgid "%d-w%d"
+msgstr ""
+
+#. g_snprintf(buffer, 63, "%d-%02d", g_date_get_year(date), g_date_get_month(date));
+#. todo: will be innacurrate here if fiscal year start not 1/jan
+#. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
+#: ../src/hb-report.c:347
+#, c-format
+msgid "%d-q%d"
+msgstr ""
+
 #: ../src/homebank.c:70
 msgid "Output version information and exit"
 msgstr "הצג מידע אודות הגירסה וצא"
@@ -1066,517 +1073,517 @@ msgstr "הצג מידע אודות הגירסה וצא"
 msgid "[FILE]"
 msgstr "[קובץ]"
 
-#: ../src/homebank.c:314
+#: ../src/homebank.c:361
 msgid "Browser error."
 msgstr "שגיאת דפדפן."
 
-#: ../src/homebank.c:315
+#: ../src/homebank.c:362
 #, c-format
 msgid "Could not display the URL '%s'"
 msgstr "לא ניתן להציג את הכתובת: '%s'"
 
-#: ../src/homebank.c:904 ../src/homebank.c:905
+#: ../src/homebank.c:971 ../src/homebank.c:972
 msgid "HomeBank options"
 msgstr "אפשרויות HomeBank"
 
-#: ../src/homebank.c:1034
+#: ../src/homebank.c:1101
 #, c-format
 msgid "Unable to open '%s', the file does not exist.\n"
 msgstr "לא ניתן לפתוח '%s', הקובץ איננו קיים.\n"
 
-#: ../src/hb-import-csv.c:251 ../src/hb-import.c:66
+#: ../src/hub-account.c:115
+msgid "(no institution)"
+msgstr "(אין מוסד)"
+
+#: ../src/hub-account.c:255 ../src/hub-scheduled.c:383 ../src/rep-vehicle.c:847
+msgid "Total"
+msgstr "סה״כ"
+
+#: ../src/hub-account.c:296
+msgid "Grand total"
+msgstr "סך כולל"
+
+#: ../src/hub-account.c:427
+msgid "Your accounts"
+msgstr "החשבון שלך"
+
+#: ../src/hub-account.c:442 ../src/ui-budget.c:1098 ../src/ui-category.c:1938
+msgid "Expand all"
+msgstr "הרחב הכל"
+
+#: ../src/hub-account.c:446 ../src/ui-budget.c:1102 ../src/ui-category.c:1942
+msgid "Collapse all"
+msgstr "צמצם הכל"
+
+#: ../src/hub-account.c:463
+msgid "Show all"
+msgstr "הצג הכל"
+
+#: ../src/hub-account.c:468
+msgid "By type"
+msgstr "לפי סוג"
+
+#: ../src/hub-account.c:469
+msgid "By group"
+msgstr ""
+
+#: ../src/hub-account.c:470
+msgid "By institution"
+msgstr ""
+
+#: ../src/hub-scheduled.c:261
+msgid "No transaction to add"
+msgstr "אין עסקה להוספה"
+
+#: ../src/hub-scheduled.c:263
 #, c-format
-msgid "(account %d)"
-msgstr "(חשבון %d)"
+msgid "transaction added: %d"
+msgstr "התווספה עסקה: %d"
+
+#: ../src/hub-scheduled.c:266
+msgid "Check scheduled transactions result"
+msgstr "תוצאת בדיקת עסקאות מתוכננות"
+
+#: ../src/hub-scheduled.c:428
+msgid "Scheduled transactions"
+msgstr "עסקאות מתוכננות"
+
+#: ../src/hub-scheduled.c:444
+msgid "Skip"
+msgstr "דלג"
+
+#: ../src/hub-scheduled.c:448
+msgid "Edit & Post"
+msgstr "ערוך וממש"
+
+#. TRANSLATORS: Posting a scheduled transaction is the action to materialize it into its target account.
+#. TRANSLATORS: Before that action the automated transaction occurrence is pending and not yet really existing.
+#: ../src/hub-scheduled.c:454
+msgid "Post"
+msgstr "ממש"
+
+#: ../src/hub-scheduled.c:469
+msgid "maximum post date"
+msgstr "מועד מימוש מרבי"
+
+#. hb_label_set_amount(GTK_LABEL(data->TX_topamount), total, GLOBALS->kcur, GLOBALS->minor);
+#: ../src/hub-spending.c:91
+msgid "Top spending"
+msgstr "הוצאה עיקרית"
+
+#. future usage
+#: ../src/hub-spending.c:102
+#, c-format
+msgid "Top %d spending"
+msgstr "%d הוצאות עיקריות"
+
+#: ../src/hub-spending.c:294
+msgid "Other"
+msgstr "אחר"
+
+#: ../src/hub-spending.c:357
+msgid "Where your money goes"
+msgstr "לאן הולך הכסף שלך"
+
+#: ../src/hb-import.c:1229
+msgid "imported account"
+msgstr ""
 
 #. gtk_widget_show(GTK_WIDGET(page));
-#: ../src/list_account.c:382 ../src/ui-assist-import.c:2090
-#: ../src/ui-filter.c:558 ../src/ui-filter.c:1486
+#: ../src/list-account.c:410 ../src/ui-filter.c:504 ../src/ui-filter.c:1432
 msgid "Accounts"
 msgstr "חשבונות"
 
 #. Bank
-#: ../src/list_account.c:394 ../src/ui-account.c:41
+#: ../src/list-account.c:422 ../src/ui-widgets-data.c:72
 msgid "Bank"
 msgstr "בנק"
 
 #. Today
-#: ../src/list_account.c:398
+#: ../src/list-account.c:426
 msgid "Today"
 msgstr "היום"
 
-#. Future
-#: ../src/list_account.c:402
-msgid "Future"
-msgstr "עתיד"
-
-#: ../src/list_operation.c:472
+#: ../src/list-operation.c:498
 msgid "- split -"
 msgstr "- פילוג -"
 
-#: ../src/list_operation.c:1146
+#: ../src/list-operation.c:1196
 msgid "Status"
 msgstr "סטטוס"
 
 #. column: Expense
-#: ../src/list_operation.c:1172 ../src/list_upcoming.c:434
-#: ../src/rep_balance.c:1304 ../src/rep_budget.c:72 ../src/rep_stats.c:157
-#: ../src/rep_stats.c:1943 ../src/rep_stats.c:2114 ../src/ui-category.c:39
-#: ../src/ui-filter.c:49
+#: ../src/list-operation.c:1223 ../src/list-scheduled.c:453
+#: ../src/rep-balance.c:1306 ../src/rep-stats.c:159 ../src/rep-stats.c:1820
+#: ../src/rep-stats.c:1991 ../src/ui-widgets-data.c:42
+#: ../src/ui-widgets-data.c:108 ../src/ui-widgets-data.c:115
 msgid "Expense"
 msgstr "הוצאה"
 
 #. column: Income
-#: ../src/list_operation.c:1180 ../src/list_upcoming.c:445
-#: ../src/rep_balance.c:1308 ../src/rep_budget.c:72 ../src/rep_stats.c:158
-#: ../src/rep_stats.c:1943 ../src/rep_stats.c:2120 ../src/ui-category.c:40
-#: ../src/ui-filter.c:50
+#: ../src/list-operation.c:1231 ../src/list-scheduled.c:464
+#: ../src/rep-balance.c:1310 ../src/rep-stats.c:160 ../src/rep-stats.c:1820
+#: ../src/rep-stats.c:1997 ../src/ui-widgets-data.c:43
+#: ../src/ui-widgets-data.c:109 ../src/ui-widgets-data.c:116
 msgid "Income"
 msgstr "הכנסה"
 
-#: ../src/list_operation.c:1196
+#: ../src/list-operation.c:1247
 msgid "Tags"
 msgstr "תגיות"
 
 #. TRANSLATORS: title of list column to inform the scheduled transaction is Late
-#: ../src/list_upcoming.c:354
+#: ../src/list-scheduled.c:371
 msgid "Late"
 msgstr "איחור"
 
-#: ../src/list_upcoming.c:386
+#. TRANSLATORS: title of list column to inform how many occurence remain to post for limited scheduled txn
+#: ../src/list-scheduled.c:389
+msgid "Still"
+msgstr ""
+
+#: ../src/list-scheduled.c:403
 msgid "Next date"
 msgstr "מועד הבא"
 
-#: ../src/rep_balance.c:76 ../src/rep_budget.c:81 ../src/rep_stats.c:64
-#: ../src/rep_time.c:65
+#: ../src/rep-balance.c:76 ../src/rep-budget.c:76 ../src/rep-stats.c:64
+#: ../src/rep-time.c:66
 msgid "List"
 msgstr "רשימה"
 
-#: ../src/rep_balance.c:76 ../src/rep_budget.c:81 ../src/rep_stats.c:64
-#: ../src/rep_time.c:65
+#: ../src/rep-balance.c:76 ../src/rep-budget.c:76 ../src/rep-stats.c:64
+#: ../src/rep-time.c:66
 msgid "View results as list"
 msgstr "הצג תוצאות בתור רשימה"
 
-#: ../src/rep_balance.c:77 ../src/rep_time.c:66
+#: ../src/rep-balance.c:77 ../src/rep-time.c:67
 msgid "Line"
 msgstr "עקומה"
 
-#: ../src/rep_balance.c:77 ../src/rep_time.c:66
+#: ../src/rep-balance.c:77 ../src/rep-time.c:67
 msgid "View results as lines"
 msgstr "הצג תוצאות בתור עקומות"
 
 #. { "Filter"  , ICONNAME_HB_FILTER    , N_("Filter") , NULL,   N_("Edit the filter"), G_CALLBACK (ui_reptime_action_filter) },
-#: ../src/rep_balance.c:83 ../src/rep_budget.c:88 ../src/rep_stats.c:73
-#: ../src/rep_time.c:73 ../src/rep_vehicle.c:65
+#: ../src/rep-balance.c:83 ../src/rep-budget.c:83 ../src/rep-stats.c:73
+#: ../src/rep-time.c:74 ../src/rep-vehicle.c:65
 msgid "Refresh"
 msgstr "רענן"
 
-#: ../src/rep_balance.c:83 ../src/rep_budget.c:88 ../src/rep_stats.c:73
-#: ../src/rep_time.c:73 ../src/rep_vehicle.c:65
+#: ../src/rep-balance.c:83 ../src/rep-budget.c:83 ../src/rep-stats.c:73
+#: ../src/rep-time.c:74 ../src/rep-vehicle.c:65
 msgid "Refresh results"
 msgstr "רענן תוצאות"
 
 #. name, icon-name
-#: ../src/rep_balance.c:90 ../src/rep_budget.c:97 ../src/rep_stats.c:82
-#: ../src/rep_time.c:81
+#: ../src/rep-balance.c:90 ../src/rep-budget.c:92 ../src/rep-stats.c:82
+#: ../src/rep-time.c:82
 msgid "Detail"
 msgstr "פירוט"
 
 #. label, accelerator
-#: ../src/rep_balance.c:91 ../src/rep_budget.c:98 ../src/rep_stats.c:83
-#: ../src/rep_time.c:82
+#: ../src/rep-balance.c:91 ../src/rep-budget.c:93 ../src/rep-stats.c:83
+#: ../src/rep-time.c:83
 msgid "Toggle detail"
 msgstr "פרטים"
 
 #. //TRANSLATORS: count of transaction in balancedrawn / count of total transaction under abalancedrawn amount threshold
-#: ../src/rep_balance.c:331
+#: ../src/rep-balance.c:331
 #, c-format
 msgid "%d/%d under %s"
 msgstr "%d/%d תחת %s"
 
-#: ../src/rep_balance.c:874
+#: ../src/rep-balance.c:876
 msgid "Balance report"
 msgstr "דו״ח מאזן"
 
-#: ../src/rep_balance.c:897 ../src/rep_budget.c:1187 ../src/rep_stats.c:1611
-#: ../src/rep_time.c:1453 ../src/rep_vehicle.c:724
+#: ../src/rep-balance.c:899 ../src/rep-budget.c:1133 ../src/rep-stats.c:1485
+#: ../src/rep-time.c:1181 ../src/rep-vehicle.c:724
 msgid "Display"
 msgstr "תצוגה"
 
-#: ../src/rep_balance.c:901 ../src/rep_time.c:1464 ../src/ui-archive.c:1008
-#: ../src/ui-assist-import.c:985 ../src/ui-transaction.c:1078
-#: ../src/ui-txn-multi.c:445
+#: ../src/rep-balance.c:903 ../src/rep-time.c:1193 ../src/ui-archive.c:1029
+#: ../src/ui-transaction.c:1237 ../src/ui-txn-multi.c:457
 msgid "A_ccount:"
 msgstr "ח_שבון:"
 
-#: ../src/rep_balance.c:908 ../src/rep_time.c:1488
+#: ../src/rep-balance.c:910 ../src/rep-time.c:1225
 msgid "Select _all"
 msgstr "בחר ה_כל"
 
-#: ../src/rep_balance.c:913
+#: ../src/rep-balance.c:915
 msgid "Each _day"
 msgstr "כל _יום"
 
-#: ../src/rep_balance.c:924 ../src/rep_stats.c:1640 ../src/rep_time.c:1510
+#: ../src/rep-balance.c:926 ../src/rep-stats.c:1517 ../src/rep-time.c:1254
 msgid "_Zoom X:"
 msgstr "_זום X:"
 
-#: ../src/rep_balance.c:936 ../src/rep_budget.c:1220 ../src/rep_stats.c:1659
-#: ../src/rep_time.c:1523 ../src/rep_vehicle.c:745
+#: ../src/rep-balance.c:938 ../src/rep-budget.c:1166 ../src/rep-stats.c:1535
+#: ../src/rep-time.c:1266 ../src/rep-vehicle.c:745
 msgid "Date filter"
 msgstr "מסנן תאריך"
 
-#: ../src/rep_balance.c:946 ../src/rep_budget.c:1230 ../src/rep_stats.c:1669
-#: ../src/rep_time.c:1533 ../src/rep_vehicle.c:755 ../src/ui-filter.c:1163
-#: ../src/ui-filter.c:1266
+#: ../src/rep-balance.c:948 ../src/rep-budget.c:1176 ../src/rep-stats.c:1545
+#: ../src/rep-time.c:1276 ../src/rep-vehicle.c:755 ../src/ui-filter.c:1109
+#: ../src/ui-filter.c:1212
 msgid "_From:"
 msgstr "_מן:"
 
-#: ../src/rep_balance.c:952 ../src/rep_budget.c:1236 ../src/rep_stats.c:1675
-#: ../src/rep_time.c:1539 ../src/rep_vehicle.c:761 ../src/ui-filter.c:1169
-#: ../src/ui-filter.c:1273
+#: ../src/rep-balance.c:954 ../src/rep-budget.c:1182 ../src/rep-stats.c:1551
+#: ../src/rep-time.c:1282 ../src/rep-vehicle.c:761 ../src/ui-filter.c:1115
+#: ../src/ui-filter.c:1219
 msgid "_To:"
 msgstr "_עד:"
 
-#: ../src/rep_budget.c:72 ../src/rep_stats.c:156
-msgid "Exp. & Inc."
-msgstr "הוצאות וגם הכנסות"
-
-#: ../src/rep_budget.c:74
-msgid "Spent & Budget"
-msgstr "הוצאות וגם תקציב"
-
-#. column: Expense
-#: ../src/rep_budget.c:74 ../src/rep_budget.c:1519 ../src/rep_budget.c:1715
-msgid "Spent"
-msgstr "הוצאות"
-
-#. column: Result
-#: ../src/rep_budget.c:74 ../src/rep_budget.c:966 ../src/rep_budget.c:1519
-#: ../src/rep_budget.c:1723 ../src/rep_stats.c:1943 ../src/rep_stats.c:2103
-msgid "Result"
-msgstr "תוצאה"
-
-#: ../src/rep_budget.c:82
+#: ../src/rep-budget.c:77
 msgid "Stack"
 msgstr "ערימה"
 
-#: ../src/rep_budget.c:82
+#: ../src/rep-budget.c:77
 msgid "View results as stack bars"
 msgstr "הצג תוצאות בתור שורות מסודרות בערימה"
 
-#: ../src/rep_budget.c:906
+#: ../src/rep-budget.c:853
 msgid " over"
 msgstr " עודף"
 
-#: ../src/rep_budget.c:912
+#: ../src/rep-budget.c:859
 msgid " left"
 msgstr " נותר"
 
-#: ../src/rep_budget.c:915
+#: ../src/rep-budget.c:862
 msgid " under"
 msgstr " בחובה"
 
 #. update stack chart
-#: ../src/rep_budget.c:960
+#: ../src/rep-budget.c:905
 #, c-format
 msgid "Budget for %s"
 msgstr "תקציב עבור %s"
 
-#: ../src/rep_budget.c:1162
+#. column: Result
+#: ../src/rep-budget.c:911 ../src/rep-budget.c:1465 ../src/rep-budget.c:1665
+#: ../src/rep-stats.c:1820 ../src/rep-stats.c:1980
+msgid "Result"
+msgstr "תוצאה"
+
+#: ../src/rep-budget.c:1108
 msgid "Budget report"
 msgstr "דו״ח תקציב"
 
-#: ../src/rep_budget.c:1191 ../src/rep_time.c:1457
-msgid "_For:"
-msgstr "_עבור:"
+#: ../src/rep-budget.c:1137 ../src/rep-stats.c:1489 ../src/rep-time.c:1185
+msgid "_View by:"
+msgstr "_הצג לפי:"
 
-#: ../src/rep_budget.c:1199
-msgid "_Kind:"
-msgstr "_סוג:"
-
-#: ../src/rep_budget.c:1206
+#: ../src/rep-budget.c:1152
 msgid "Only out of budget"
 msgstr ""
 
 #. gtk_widget_set_halign (menu, GTK_ALIGN_END);
-#: ../src/rep_budget.c:1300 ../src/rep_stats.c:1748 ../src/rep_time.c:1606
+#: ../src/rep-budget.c:1246 ../src/rep-stats.c:1624 ../src/rep-time.c:1349
 msgid "_Result to clipboard"
 msgstr ""
 
-#: ../src/rep_budget.c:1304 ../src/rep_stats.c:1752 ../src/rep_time.c:1610
+#: ../src/rep-budget.c:1250 ../src/rep-stats.c:1628 ../src/rep-time.c:1353
 msgid "_Result to CSV"
 msgstr ""
 
-#: ../src/rep_budget.c:1308 ../src/rep_stats.c:1756 ../src/rep_time.c:1614
+#: ../src/rep-budget.c:1254 ../src/rep-stats.c:1632 ../src/rep-time.c:1357
 msgid "_Detail to clipboard"
 msgstr ""
 
-#: ../src/rep_budget.c:1313 ../src/rep_stats.c:1761 ../src/rep_time.c:1619
+#: ../src/rep-budget.c:1259 ../src/rep-stats.c:1637 ../src/rep-time.c:1362
 msgid "_Detail to CSV"
 msgstr ""
 
-#: ../src/rep_budget.c:1347
+#: ../src/rep-budget.c:1293
 msgid "Result:"
 msgstr "תוצאה:"
 
-#: ../src/rep_budget.c:1353
+#: ../src/rep-budget.c:1299
 msgid "Budget:"
 msgstr "תקציב:"
 
-#: ../src/rep_budget.c:1359
+#: ../src/rep-budget.c:1305
 msgid "Spent:"
 msgstr "הוצאות:"
 
-#: ../src/rep_budget.c:1480
+#: ../src/rep-budget.c:1426
 msgid "No account is defined to be part of the budget."
 msgstr "אין חשבון אשר מוגדר כדי להוות חלק מן התקציב."
 
-#: ../src/rep_budget.c:1481
+#: ../src/rep-budget.c:1427
 msgid "You should include some accounts from the account dialog."
 msgstr "עליך להגדיר אילו חשבונות מתוך דו שיח חשבון."
 
-#: ../src/rep_stats.c:65
+#. column: Expense
+#: ../src/rep-budget.c:1465 ../src/rep-budget.c:1657
+msgid "Spent"
+msgstr "הוצאות"
+
+#: ../src/rep-stats.c:65 ../src/rep-time.c:68
 msgid "Column"
 msgstr "עמודה"
 
-#: ../src/rep_stats.c:65
+#: ../src/rep-stats.c:65 ../src/rep-time.c:68
 msgid "View results as column"
 msgstr "הצג תוצאות בתור עמודה"
 
-#: ../src/rep_stats.c:66
+#: ../src/rep-stats.c:66
 msgid "Donut"
 msgstr "עוגה"
 
-#: ../src/rep_stats.c:66
+#: ../src/rep-stats.c:66
 msgid "View results as donut"
 msgstr "הצג תוצאות בתור עוגה"
 
-#: ../src/rep_stats.c:72 ../src/ui-filter.c:1403
+#: ../src/rep-stats.c:72 ../src/ui-filter.c:1349
 msgid "Edit filter"
 msgstr "ערוך מסנן"
 
 #. is_active
 #. name, icon-name
-#: ../src/rep_stats.c:88
+#: ../src/rep-stats.c:88
 msgid "Legend"
 msgstr "מקרא"
 
 #. label, accelerator
-#: ../src/rep_stats.c:89
+#: ../src/rep-stats.c:89
 msgid "Toggle legend"
 msgstr "מקרא"
 
 # אחוז יחסי
 #. is_active
 #. name, icon-name
-#: ../src/rep_stats.c:94
+#: ../src/rep-stats.c:94
 msgid "Rate"
 msgstr "שיעור"
 
 #. label, accelerator
-#: ../src/rep_stats.c:95
+#: ../src/rep-stats.c:95
 msgid "Toggle rate"
 msgstr "שיעור"
 
-#: ../src/rep_stats.c:149
+#: ../src/rep-stats.c:147 ../src/ui-widgets-data.c:50
+msgid "Subcategory"
+msgstr "סיווג משני"
+
+#: ../src/rep-stats.c:150 ../src/rep-time.c:128
 msgid "Tag"
 msgstr "תגית"
 
-#: ../src/rep_stats.c:150 ../src/rep_time.c:127 ../src/ui-archive.c:54
+#: ../src/rep-stats.c:151 ../src/rep-time.c:136 ../src/ui-widgets-data.c:92
 msgid "Month"
 msgstr "חודש"
 
-#: ../src/rep_stats.c:151 ../src/rep_time.c:127 ../src/ui-archive.c:54
+#: ../src/rep-stats.c:152 ../src/rep-time.c:139 ../src/ui-widgets-data.c:93
 msgid "Year"
 msgstr "שנה"
 
-#: ../src/rep_stats.c:168 ../src/ui-filter.c:91
-msgid "January"
-msgstr "ינואר"
+#: ../src/rep-stats.c:158 ../src/ui-widgets-data.c:107
+msgid "Exp. & Inc."
+msgstr "הוצאות וגם הכנסות"
 
-#: ../src/rep_stats.c:169 ../src/ui-filter.c:92
-msgid "February"
-msgstr "פברואר"
-
-#: ../src/rep_stats.c:170 ../src/ui-filter.c:93
-msgid "March"
-msgstr "מרץ"
-
-#: ../src/rep_stats.c:171 ../src/ui-filter.c:94
-msgid "April"
-msgstr "אפריל"
-
-#: ../src/rep_stats.c:172 ../src/rep_time.c:138 ../src/ui-filter.c:95
-msgid "May"
-msgstr "מאי"
-
-#: ../src/rep_stats.c:173 ../src/ui-filter.c:96
-msgid "June"
-msgstr "יוני"
-
-#: ../src/rep_stats.c:174 ../src/ui-filter.c:97
-msgid "July"
-msgstr "יולי"
-
-#: ../src/rep_stats.c:175 ../src/ui-filter.c:98
-msgid "August"
-msgstr "אוגוסט"
-
-#: ../src/rep_stats.c:176 ../src/ui-filter.c:99
-msgid "September"
-msgstr "ספטמבר"
-
-#: ../src/rep_stats.c:177 ../src/ui-filter.c:100
-msgid "October"
-msgstr "אוקטובר"
-
-#: ../src/rep_stats.c:178 ../src/ui-filter.c:101
-msgid "November"
-msgstr "נובמבר"
-
-#: ../src/rep_stats.c:179 ../src/ui-filter.c:102
-msgid "December"
-msgstr "דצמבר"
-
-#. //TRANSLATORS: example 'Expense by Category'
-#: ../src/rep_stats.c:641
+#. TRANSLATORS: example 'Expense by Category'
+#: ../src/rep-stats.c:417
 #, c-format
 msgid "%s by %s"
 msgstr "%s לפי %s"
 
-#: ../src/rep_stats.c:1162 ../src/ui-payee.c:280 ../src/ui-payee.c:488
+#: ../src/rep-stats.c:1027 ../src/ui-payee.c:259 ../src/ui-payee.c:459
 msgid "(no payee)"
 msgstr "(אין מוטב)"
 
-#: ../src/rep_stats.c:1587
+#: ../src/rep-stats.c:1464
 msgid "Statistics Report"
 msgstr "דו״ח סטטיסטי"
 
-#: ../src/rep_stats.c:1615
-msgid "_View:"
-msgstr "ת_צוגה:"
-
-#: ../src/rep_stats.c:1622
-msgid "_By:"
-msgstr "_לפי:"
-
-#: ../src/rep_stats.c:1629
+#: ../src/rep-stats.c:1506
 msgid "By _amount"
 msgstr "לפי ס_כום"
 
-#: ../src/rep_stats.c:1795
+#: ../src/rep-stats.c:1671
 msgid "Balance:"
 msgstr "מאזן:"
 
-#: ../src/rep_stats.c:1801
+#: ../src/rep-stats.c:1677
 msgid "Income:"
 msgstr "הכנסה:"
 
-#: ../src/rep_stats.c:1808
+#: ../src/rep-stats.c:1684
 msgid "Expense:"
 msgstr "הוצאה:"
 
-#: ../src/rep_time.c:127 ../src/ui-archive.c:54
+#: ../src/rep-time.c:134 ../src/ui-widgets-data.c:90
 msgid "Day"
 msgstr "יום"
 
-#: ../src/rep_time.c:127 ../src/ui-archive.c:54
+#: ../src/rep-time.c:135 ../src/ui-widgets-data.c:91
 msgid "Week"
 msgstr "שבוע"
 
-#: ../src/rep_time.c:127
+#: ../src/rep-time.c:137
 msgid "Quarter"
 msgstr "רבעון"
 
-#: ../src/rep_time.c:134
-msgid "Jan"
-msgstr "ינו׳"
+#: ../src/rep-time.c:138
+msgid "Half Year"
+msgstr ""
 
-#: ../src/rep_time.c:135
-msgid "Feb"
-msgstr "פבר׳"
-
-#: ../src/rep_time.c:136
-msgid "Mar"
-msgstr "מרץ"
-
-#: ../src/rep_time.c:137
-msgid "Apr"
-msgstr "אפר׳"
-
-#: ../src/rep_time.c:139
-msgid "Jun"
-msgstr "יונ׳"
-
-#: ../src/rep_time.c:140
-msgid "Jul"
-msgstr "יול׳"
-
-#: ../src/rep_time.c:141
-msgid "Aug"
-msgstr "אוג׳"
-
-#: ../src/rep_time.c:142
-msgid "Sep"
-msgstr "ספט׳"
-
-#: ../src/rep_time.c:143
-msgid "Oct"
-msgstr "אוק׳"
-
-#: ../src/rep_time.c:144
-msgid "Nov"
-msgstr "נוב׳"
-
-#: ../src/rep_time.c:145
-msgid "Dec"
-msgstr "דצמ׳"
-
-#. //TRANSLATORS: example 'Expense by Category'
-#: ../src/rep_time.c:588
+#. visible = (tmpmode == REPORT_RESULT_TOTAL) ? TRUE : FALSE;
+#. gtk_chart_show_average(GTK_CHART(data->RE_line), data->average, visible);
+#. TRANSLATORS: example 'Category Over Time'
+#: ../src/rep-time.c:372
 #, c-format
 msgid "%s Over Time"
 msgstr "%s במשך זמן"
 
-#. //TRANSLATORS: count of transaction in balancedrawn / count of total transaction under abalancedrawn amount threshold
-#: ../src/rep_time.c:1102
+#: ../src/rep-time.c:833
 #, c-format
 msgid "Average: %s"
 msgstr "ממוצע: %s"
 
-#: ../src/rep_time.c:1430
+#: ../src/rep-time.c:1158
 msgid "Trend Time Report"
 msgstr "דו״ח מגמת זמן"
 
-#: ../src/rep_time.c:1472 ../src/ui-archive.c:1033 ../src/ui-assign.c:875
-#: ../src/ui-hbfile.c:279 ../src/ui-payee.c:926 ../src/ui-transaction.c:1104
-#: ../src/ui-txn-multi.c:477
+#: ../src/rep-time.c:1201 ../src/ui-archive.c:1078 ../src/ui-assign.c:872
+#: ../src/ui-hbfile.c:279 ../src/ui-payee.c:925 ../src/ui-transaction.c:1289
+#: ../src/ui-txn-multi.c:489
 msgid "_Category:"
 msgstr "סיוו_ג:"
 
-#: ../src/rep_time.c:1480 ../src/ui-archive.c:1025 ../src/ui-assign.c:846
-#: ../src/ui-transaction.c:1095 ../src/ui-txn-multi.c:461
+#: ../src/rep-time.c:1209 ../src/ui-archive.c:1070 ../src/ui-assign.c:843
+#: ../src/ui-transaction.c:1281 ../src/ui-txn-multi.c:473
 msgid "_Payee:"
 msgstr "מוט_ב:"
 
-#: ../src/rep_time.c:1493
+#: ../src/rep-time.c:1217 ../src/ui-filter.c:1174
+msgid "_Tag:"
+msgstr "ת_גית:"
+
+#: ../src/rep-time.c:1230
 msgid "_Cumulate"
 msgstr "_צבור"
 
-#: ../src/rep_time.c:1498
-msgid "_View by:"
-msgstr "_הצג לפי:"
+#: ../src/rep-time.c:1235
+msgid "Inter_val:"
+msgstr ""
 
-#: ../src/rep_time.c:1793 ../src/rep_time.c:1904
+#: ../src/rep-time.c:1243
+msgid "Show empty line"
+msgstr ""
+
+#: ../src/rep-time.c:1542 ../src/rep-time.c:1652
 msgid "Time slice"
 msgstr "חיתוך לפי זמן"
 
-#: ../src/rep_vehicle.c:67
+#: ../src/rep-vehicle.c:67
 msgid "Export"
 msgstr "יצא"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1585,10 +1592,10 @@ msgstr "יצא"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1596,116 +1603,99 @@ msgstr "יצא"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
-#: ../src/rep_vehicle.c:219 ../src/rep_vehicle.c:1131
+#: ../src/rep-vehicle.c:219 ../src/rep-vehicle.c:1131
 msgid "Meter"
 msgstr "מונה"
 
 #. column: Fuel load
-#: ../src/rep_vehicle.c:220 ../src/rep_vehicle.c:1135
+#: ../src/rep-vehicle.c:220 ../src/rep-vehicle.c:1135
 msgid "Fuel"
 msgstr "דלק"
 
 #. column: Price by unit
-#: ../src/rep_vehicle.c:221 ../src/rep_vehicle.c:1139
+#: ../src/rep-vehicle.c:221 ../src/rep-vehicle.c:1139
 msgid "Price"
 msgstr "מחיר"
 
 #. column: Distance done
-#: ../src/rep_vehicle.c:223 ../src/rep_vehicle.c:1147
+#: ../src/rep-vehicle.c:223 ../src/rep-vehicle.c:1147
 msgid "Dist."
 msgstr "מרחק"
 
-#: ../src/rep_vehicle.c:700
+#: ../src/rep-vehicle.c:700
 msgid "Vehicle cost report"
 msgstr "דו״ח עלויות רכב"
 
-#: ../src/rep_vehicle.c:728
+#: ../src/rep-vehicle.c:728
 msgid "Vehi_cle:"
 msgstr "_רכב:"
 
-#: ../src/rep_vehicle.c:814
+#: ../src/rep-vehicle.c:814
 msgid "Meter:"
 msgstr "מונה:"
 
-#: ../src/rep_vehicle.c:818
+#: ../src/rep-vehicle.c:818
 msgid "Consumption:"
 msgstr "צריכה:"
 
-#: ../src/rep_vehicle.c:822
+#: ../src/rep-vehicle.c:822
 msgid "Fuel cost:"
 msgstr "עלות דלק:"
 
-#: ../src/rep_vehicle.c:826
+#: ../src/rep-vehicle.c:826
 msgid "Other cost:"
 msgstr "עלות אחרת:"
 
-#: ../src/rep_vehicle.c:830
+#: ../src/rep-vehicle.c:830
 msgid "Total cost:"
 msgstr "עלות כוללת:"
 
-#: ../src/ui-account.c:40
-msgid "(no type)"
-msgstr "(אין טיפוס)"
-
-#: ../src/ui-account.c:42 ../src/ui-widgets.c:821
-msgid "Cash"
-msgstr "מזומן"
-
-#: ../src/ui-account.c:43
-msgid "Asset"
-msgstr "נכס"
-
-#: ../src/ui-account.c:44 ../src/ui-widgets.c:819
-msgid "Credit card"
-msgstr "כרטיס אשראי"
-
-#: ../src/ui-account.c:45
-msgid "Liability"
-msgstr "התחייבות"
-
-#: ../src/ui-account.c:385 ../src/ui-assign.c:101 ../src/ui-currency.c:245
-#: ../src/ui-widgets.c:818
+#. populate_view_acc(data->LV_acc, GLOBALS->acc_list, TRUE);
+#. populate template
+#: ../src/ui-account.c:338 ../src/ui-account.c:1231 ../src/ui-assign.c:98
+#: ../src/ui-currency.c:245 ../src/ui-tag.c:137 ../src/ui-widgets.c:980
 msgid "(none)"
 msgstr "(אין)"
 
-#: ../src/ui-account.c:544 ../src/ui-assign.c:252 ../src/ui-category.c:1035
-#: ../src/ui-currency.c:599 ../src/ui-payee.c:660
+#: ../src/ui-account.c:497 ../src/ui-assign.c:249 ../src/ui-category.c:995
+#: ../src/ui-currency.c:599 ../src/ui-payee.c:651 ../src/ui-tag.c:280
 msgid "Visible"
 msgstr "מוצג"
 
 #. GTK_FILE_CHOOSER_ACTION_OPEN,
-#: ../src/ui-account.c:694 ../src/ui-assist-import.c:950
-#: ../src/ui-category.c:1324 ../src/ui-category.c:1472 ../src/ui-currency.c:777
-#: ../src/ui-currency.c:1145 ../src/ui-dialogs.c:69 ../src/ui-dialogs.c:330
-#: ../src/ui-dialogs.c:440 ../src/ui-dialogs.c:495 ../src/ui-dialogs.c:555
-#: ../src/ui-dialogs.c:607 ../src/ui-dialogs.c:672 ../src/ui-dialogs.c:716
-#: ../src/ui-dialogs.c:850 ../src/ui-filter.c:1408 ../src/ui-hbfile.c:194
-#: ../src/ui-payee.c:884 ../src/ui-payee.c:1045 ../src/ui-pref.c:1971
-#: ../src/ui-split.c:365 ../src/ui-transaction.c:1194 ../src/ui-txn-multi.c:367
+#: ../src/ui-account.c:647 ../src/ui-assist-import.c:732
+#: ../src/ui-category.c:1290 ../src/ui-category.c:1437 ../src/ui-currency.c:777
+#: ../src/ui-currency.c:1145 ../src/ui-dialogs.c:69 ../src/ui-dialogs.c:334
+#: ../src/ui-dialogs.c:451 ../src/ui-dialogs.c:512 ../src/ui-dialogs.c:578
+#: ../src/ui-dialogs.c:652 ../src/ui-dialogs.c:722 ../src/ui-dialogs.c:772
+#: ../src/ui-dialogs.c:918 ../src/ui-filter.c:1354 ../src/ui-hbfile.c:194
+#: ../src/ui-payee.c:883 ../src/ui-payee.c:1046 ../src/ui-pref.c:2122
+#: ../src/ui-split.c:726 ../src/ui-tag.c:389 ../src/ui-transaction.c:1150
+#: ../src/ui-txn-multi.c:379
 msgid "_Cancel"
 msgstr "_ביטול"
 
-#: ../src/ui-account.c:696 ../src/ui-assist-import.c:952
-#: ../src/ui-category.c:1326 ../src/ui-currency.c:779 ../src/ui-currency.c:1147
-#: ../src/ui-dialogs.c:331 ../src/ui-dialogs.c:852 ../src/ui-filter.c:1410
-#: ../src/ui-hbfile.c:196 ../src/ui-payee.c:886 ../src/ui-pref.c:1973
-#: ../src/ui-split.c:383 ../src/ui-transaction.c:1195 ../src/ui-txn-multi.c:369
+#. gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Remove"), GTK_RESPONSE_SPLIT_REM);
+#: ../src/ui-account.c:649 ../src/ui-category.c:1292 ../src/ui-currency.c:779
+#: ../src/ui-currency.c:1147 ../src/ui-dialogs.c:335 ../src/ui-dialogs.c:919
+#: ../src/ui-filter.c:1356 ../src/ui-hbfile.c:196 ../src/ui-payee.c:885
+#: ../src/ui-pref.c:2124 ../src/ui-split.c:740 ../src/ui-tag.c:391
+#: ../src/ui-transaction.c:1151 ../src/ui-txn-multi.c:381
 msgid "_OK"
 msgstr "_אישור"
 
-#: ../src/ui-account.c:982 ../src/ui-account.c:1089
+#: ../src/ui-account.c:963 ../src/ui-account.c:1076
 msgid "Account name"
 msgstr "שם חשבון"
 
-#: ../src/ui-account.c:988 ../src/ui-account.c:1095
-#: ../src/ui-assist-import.c:1045 ../src/ui-category.c:1395
-#: ../src/ui-payee.c:978
+#: ../src/ui-account.c:969 ../src/ui-account.c:1082 ../src/ui-category.c:1361
+#: ../src/ui-payee.c:979 ../src/ui-tag.c:449
 msgid "Error"
 msgstr "שגיאה"
 
-#: ../src/ui-account.c:989
+#: ../src/ui-account.c:970
 #, c-format
 msgid ""
 "Cannot add an account '%s',\n"
@@ -1714,36 +1704,28 @@ msgstr ""
 "לא מסוגל להוסיף חשבון '%s',\n"
 "שם זה כבר קיים."
 
-#: ../src/ui-account.c:1031
+#: ../src/ui-account.c:1018
 #, c-format
 msgid "Cannot delete account '%s'"
 msgstr "לא יכול למחוק חשבון '%s'"
 
-#: ../src/ui-account.c:1035
+#: ../src/ui-account.c:1022
 msgid ""
 "This account contains transactions and/or is part of internal transfers."
 msgstr "חשבון זה מכיל עסקאות ו/או הינו חלק מתוך עסקאות פנימיות."
 
-#: ../src/ui-account.c:1046 ../src/ui-archive.c:389 ../src/ui-assign.c:551
-#: ../src/ui-category.c:1580 ../src/ui-currency.c:1539 ../src/ui-payee.c:1148
+#: ../src/ui-account.c:1033 ../src/ui-archive.c:392 ../src/ui-assign.c:548
+#: ../src/ui-category.c:1549 ../src/ui-currency.c:1539 ../src/ui-payee.c:1153
+#: ../src/ui-tag.c:493
 #, c-format
 msgid "Are you sure you want to permanently delete '%s'?"
 msgstr "האם אתה בטוח כי ברצונך למחוק את '%s' לצמיתות?"
 
-#: ../src/ui-account.c:1048
+#: ../src/ui-account.c:1035
 msgid "If you delete an account, it will be permanently lost."
 msgstr "כאשר אתה מוחק חשבון, זה יאבד לעד."
 
-#: ../src/ui-account.c:1054 ../src/ui-account.c:1315 ../src/ui-archive.c:397
-#: ../src/ui-archive.c:1218 ../src/ui-assign.c:559 ../src/ui-assign.c:775
-#: ../src/ui-category.c:1144 ../src/ui-category.c:1592
-#: ../src/ui-category.c:2011 ../src/ui-currency.c:1547
-#: ../src/ui-currency.c:1734 ../src/ui-payee.c:751 ../src/ui-payee.c:1160
-#: ../src/ui-payee.c:1332
-msgid "_Delete"
-msgstr "_מחק"
-
-#: ../src/ui-account.c:1096 ../src/ui-assist-import.c:1046
+#: ../src/ui-account.c:1083
 #, c-format
 msgid ""
 "Cannot rename this Account,\n"
@@ -1754,11 +1736,11 @@ msgstr ""
 "מן '%s' אל '%s',\n"
 "שם זה כבר קיים."
 
-#: ../src/ui-account.c:1254
+#: ../src/ui-account.c:1258
 msgid "Manage Accounts"
 msgstr "ניהול חשבונות"
 
-#: ../src/ui-account.c:1305
+#: ../src/ui-account.c:1309
 msgid ""
 "Drag & drop to change the order\n"
 "Double-click to rename"
@@ -1766,283 +1748,275 @@ msgstr ""
 "גרורו השחרר כדי לשנות את הסדר\n"
 "לחיצה-כפולה כדי לשנות שם"
 
-#: ../src/ui-account.c:1311 ../src/ui-archive.c:1214 ../src/ui-assign.c:771
-#: ../src/ui-currency.c:1726 ../src/ui-transaction.c:1205
+#: ../src/ui-account.c:1315 ../src/ui-archive.c:1273 ../src/ui-assign.c:768
+#: ../src/ui-category.c:1977 ../src/ui-currency.c:1726 ../src/ui-payee.c:1370
+#: ../src/ui-tag.c:652 ../src/ui-transaction.c:1161
 msgid "_Add"
 msgstr "הוס_ף"
 
-#: ../src/ui-account.c:1332 ../src/ui-hbfile.c:222 ../src/ui-pref.c:79
-#: ../src/ui-pref.c:1357 ../src/ui-pref.c:1670
+#: ../src/ui-account.c:1336 ../src/ui-hbfile.c:222 ../src/ui-pref.c:84
+#: ../src/ui-pref.c:1354 ../src/ui-pref.c:1726
 msgid "General"
 msgstr "כללי"
 
-#: ../src/ui-account.c:1352
+#: ../src/ui-account.c:1357
 msgid "_Currency:"
 msgstr "_מטבע:"
 
-#: ../src/ui-account.c:1359
+#: ../src/ui-account.c:1364
 msgid "Start _balance:"
 msgstr "איזון ה_תחלה:"
 
-#: ../src/ui-account.c:1367
+#: ../src/ui-account.c:1372
 msgid "Notes:"
 msgstr "הערות:"
 
-#: ../src/ui-account.c:1383
+#: ../src/ui-account.c:1388
 msgid "this account was _closed"
 msgstr "חשבון זה _נסגר"
 
-#: ../src/ui-account.c:1394
+#: ../src/ui-account.c:1399
 msgid "Current check number"
 msgstr "מספר שיק נוכחי"
 
-#: ../src/ui-account.c:1398
+#: ../src/ui-account.c:1403
 msgid "Checkbook _1:"
 msgstr "פנקס שיקים _1:"
 
-#: ../src/ui-account.c:1405
+#: ../src/ui-account.c:1410
 msgid "Checkbook _2:"
 msgstr "פנקס שיקים _2:"
 
-#: ../src/ui-account.c:1417 ../src/ui-budget.c:1204
+#: ../src/ui-account.c:1422 ../src/ui-budget.c:1198
 msgid "Options"
 msgstr "אפשרויות"
 
-#: ../src/ui-account.c:1426
+#: ../src/ui-account.c:1431
 msgid "Institution"
 msgstr "מוסד"
 
-#: ../src/ui-account.c:1430 ../src/ui-assist-start.c:380
-#: ../src/ui-assist-import.c:973 ../src/ui-currency.c:1228
-#: ../src/ui-payee.c:909
+#: ../src/ui-account.c:1435 ../src/ui-assist-start.c:379
+#: ../src/ui-currency.c:1228 ../src/ui-payee.c:908 ../src/ui-tag.c:414
 msgid "_Name:"
 msgstr "_שם:"
 
-#: ../src/ui-account.c:1438 ../src/ui-assist-start.c:400
+#: ../src/ui-account.c:1443 ../src/ui-assist-start.c:400
 msgid "N_umber:"
 msgstr "_מספר:"
 
-#: ../src/ui-account.c:1451
+#: ../src/ui-account.c:1456
 msgid "Balance limits"
 msgstr ""
 
-#: ../src/ui-account.c:1457
+#: ../src/ui-account.c:1462
 msgid "_Overdraft at:"
 msgstr ""
 
+#: ../src/ui-account.c:1474
+msgid "Miscellaneous"
+msgstr ""
+
+#: ../src/ui-account.c:1478
+msgid "Default _Template:"
+msgstr ""
+
 # מניעת דיווח
-#: ../src/ui-account.c:1469
+#: ../src/ui-account.c:1492
 msgid "Report exclusion"
 msgstr "הוצאה מכלל דיווח"
 
-#: ../src/ui-account.c:1473
+#: ../src/ui-account.c:1496
 msgid "exclude from account _summary"
 msgstr "הוצא מתוך _סיכום חשבון"
 
-#: ../src/ui-account.c:1478
+#: ../src/ui-account.c:1501
 msgid "exclude from the _budget"
 msgstr "הוצא מתוך ה_תקציב"
 
-#: ../src/ui-account.c:1483
+#: ../src/ui-account.c:1506
 msgid "exclude from any _reports"
 msgstr "הוצא מתוך ה_דיווחים"
 
-#: ../src/ui-archive.c:48
-msgid "Scheduled"
-msgstr "מתוזמן"
-
-#: ../src/ui-archive.c:49
-msgid "Template"
-msgstr "תבנית"
-
-#: ../src/ui-archive.c:56
-msgid "Possible"
-msgstr "אפשרי"
-
-#: ../src/ui-archive.c:56
-msgid "Before"
-msgstr "לפני"
-
-#: ../src/ui-archive.c:56
-msgid "After"
-msgstr "אחרי"
-
-#: ../src/ui-archive.c:344
+#: ../src/ui-archive.c:346
 #, c-format
 msgid "(template %d)"
 msgstr "(תבנית %d)"
 
-#: ../src/ui-archive.c:391
+#: ../src/ui-archive.c:394
 msgid "If you delete a scheduled/template, it will be permanently lost."
 msgstr "כאשר אתה מוחק תזמון/תבנית, זו תאבד לעד."
 
-#: ../src/ui-archive.c:974 ../src/ui-transaction.c:1038
+#: ../src/ui-archive.c:1013 ../src/ui-transaction.c:1219
 msgid "_Amount:"
 msgstr "ס_כום:"
 
-#: ../src/ui-archive.c:982 ../src/ui-transaction.c:1046
+#: ../src/ui-archive.c:1021 ../src/ui-transaction.c:1228
 msgid "Toggle amount sign"
 msgstr "החלף סימן סכום"
 
-#: ../src/ui-archive.c:990 ../src/ui-split.c:362 ../src/ui-transaction.c:1054
+#: ../src/ui-archive.c:1024 ../src/ui-split.c:723 ../src/ui-transaction.c:1231
 msgid "Transaction splits"
 msgstr "פילוגי עסקה"
 
-#: ../src/ui-archive.c:993 ../src/ui-assign.c:903
-msgid "Pay_ment:"
-msgstr "תש_לום:"
-
-#: ../src/ui-archive.c:1001 ../src/ui-transaction.c:1065
-msgid "Of notebook _2"
-msgstr "מפנקס _2"
-
-#: ../src/ui-archive.c:1016
+#: ../src/ui-archive.c:1037
 msgid "_To account:"
 msgstr "_לחשבון:"
 
-#: ../src/ui-archive.c:1049 ../src/ui-filter.c:1213
+#: ../src/ui-archive.c:1047 ../src/ui-assign.c:900
+msgid "Pay_ment:"
+msgstr "תש_לום:"
+
+#: ../src/ui-archive.c:1061 ../src/ui-transaction.c:1265
+msgid "Of notebook _2"
+msgstr "מפנקס _2"
+
+#: ../src/ui-archive.c:1097 ../src/ui-filter.c:1159
 msgid "_Memo:"
 msgstr "ת_זכיר:"
 
-#: ../src/ui-archive.c:1073
+#: ../src/ui-archive.c:1105 ../src/ui-transaction.c:1316
+#: ../src/ui-txn-multi.c:505
+msgid "Ta_gs:"
+msgstr "ת_גיות:"
+
+#: ../src/ui-archive.c:1133
 msgid "Scheduled insertion"
 msgstr "הכנסה מתוזמנת"
 
-#: ../src/ui-archive.c:1078
+#: ../src/ui-archive.c:1138
 msgid "_Activate"
 msgstr "ה_פעל"
 
-#: ../src/ui-archive.c:1083
+#: ../src/ui-archive.c:1143
 msgid "Next _date:"
 msgstr "_מועד הבא:"
 
-#: ../src/ui-archive.c:1091
+#: ../src/ui-archive.c:1151
 msgid "Ever_y:"
 msgstr "_כל:"
 
-#: ../src/ui-archive.c:1107
+#: ../src/ui-archive.c:1167
 msgid "Week end:"
 msgstr "סוף שבוע:"
 
-#: ../src/ui-archive.c:1119
+#: ../src/ui-archive.c:1179
 msgid "_Stop after:"
 msgstr "_הפסק כעבור:"
 
-#: ../src/ui-archive.c:1127
+#: ../src/ui-archive.c:1187
 msgid "posts"
 msgstr "ממומשות"
 
-#: ../src/ui-archive.c:1149
+#: ../src/ui-archive.c:1209
 msgid "Manage scheduled/template transactions"
 msgstr "ניהול עסקאות מתוזמנות/תבנית"
 
-#: ../src/ui-assign.c:271
+#: ../src/ui-assign.c:268
 msgid "Text"
 msgstr "טקסט"
 
-#: ../src/ui-assign.c:523
+#: ../src/ui-assign.c:520
 #, c-format
 msgid "(assignment %d)"
 msgstr "(משימה %d)"
 
-#: ../src/ui-assign.c:553
+#: ../src/ui-assign.c:550
 msgid "If you delete an assignment, it will be permanently lost."
 msgstr "כאשר אתה מוחק משימה, זו תאבד לעד."
 
-#: ../src/ui-assign.c:699
+#: ../src/ui-assign.c:696
 msgid "Disabled"
 msgstr "מושבת"
 
-#: ../src/ui-assign.c:700
+#: ../src/ui-assign.c:697
 msgid "If empty"
 msgstr "אם ריק"
 
-#: ../src/ui-assign.c:701
+#: ../src/ui-assign.c:698
 msgid "Overwrite"
 msgstr "שכתוב"
 
-#: ../src/ui-assign.c:720
+#: ../src/ui-assign.c:717
 msgid "Manage Assignments"
 msgstr "ניהול משימות"
 
-#: ../src/ui-assign.c:797
+#: ../src/ui-assign.c:794
 msgid "Condition"
 msgstr "תנאי"
 
-#: ../src/ui-assign.c:801
+#: ../src/ui-assign.c:798
 msgid "Search _in:"
 msgstr "חפש _ב:"
 
 #. label = make_label_widget(_("Con_tains:"));
-#: ../src/ui-assign.c:809
+#: ../src/ui-assign.c:806
 msgid "Fi_nd:"
 msgstr "מצ_א:"
 
-#: ../src/ui-assign.c:817
+#: ../src/ui-assign.c:814
 msgid "Match _case"
 msgstr "התאמת _רישיות"
 
-#: ../src/ui-assign.c:822
+#: ../src/ui-assign.c:819
 msgid "Use _regular expressions"
 msgstr "שימוש ב_ביטויים רגולרים"
 
-#: ../src/ui-assign.c:837
+#: ../src/ui-assign.c:834
 msgid "Assign payee"
 msgstr "השמת מוטב"
 
-#: ../src/ui-assign.c:866
+#: ../src/ui-assign.c:863
 msgid "Assign category"
 msgstr "השמת סיווג"
 
-#: ../src/ui-assign.c:894
+#: ../src/ui-assign.c:891
 msgid "Assign payment"
 msgstr "השמת תשלום"
 
-#: ../src/ui-assist-start.c:140
+#: ../src/ui-assist-start.c:139
 #, c-format
 msgid "New HomeBank file (%d of %d)"
 msgstr "חשבון HomeBank חדש (%d מתוך %d)"
 
-#: ../src/ui-assist-start.c:171
+#: ../src/ui-assist-start.c:170
 msgid "Not found"
 msgstr "לא נמצא"
 
-#: ../src/ui-assist-start.c:268 ../src/ui-hbfile.c:226
+#: ../src/ui-assist-start.c:267 ../src/ui-hbfile.c:226
 msgid "_Owner:"
 msgstr "_בעלים:"
 
-#: ../src/ui-assist-start.c:276 ../src/ui-dialogs.c:369
+#: ../src/ui-assist-start.c:275 ../src/ui-dialogs.c:378
 msgid "Currency:"
 msgstr "מטבע:"
 
-#: ../src/ui-assist-start.c:292 ../src/ui-assist-import.c:1812
-#: ../src/ui-hbfile.c:191
+#: ../src/ui-assist-start.c:291 ../src/ui-hbfile.c:191
 msgid "File properties"
 msgstr "מאפייני קובץ"
 
-#: ../src/ui-assist-start.c:314
+#: ../src/ui-assist-start.c:313
 msgid "System detection"
 msgstr "איתור מערכת"
 
-#: ../src/ui-assist-start.c:318
+#: ../src/ui-assist-start.c:317
 msgid "Languages:"
 msgstr "שפות:"
 
-#: ../src/ui-assist-start.c:325
+#: ../src/ui-assist-start.c:324
 msgid "Preset file:"
 msgstr "קובץ מוגדר מראש:"
 
-#: ../src/ui-assist-start.c:343
+#: ../src/ui-assist-start.c:342
 msgid "Initialize my categories with this file"
 msgstr "התחל את הסיווגים שלי בעזרת קובץ זה"
 
-#: ../src/ui-assist-start.c:355
+#: ../src/ui-assist-start.c:354
 msgid "Preset categories"
 msgstr "סיווגים מוגדרים מראש"
 
-#: ../src/ui-assist-start.c:376
-msgid "Informations"
-msgstr "מידע"
+#: ../src/ui-assist-start.c:375
+msgid "Information"
+msgstr ""
 
 #: ../src/ui-assist-start.c:411
 msgid "Balances"
@@ -2064,231 +2038,204 @@ msgstr "יצירת חשבון"
 msgid "This is a confirmation page, press 'Apply' to apply changes"
 msgstr "זהו עמוד אימות, לחץ 'החל' כדי להחיל שינויים"
 
-#: ../src/ui-assist-start.c:447 ../src/ui-assist-import.c:62
+#: ../src/ui-assist-start.c:447 ../src/ui-assist-import.c:2201
 msgid "Confirmation"
 msgstr "אימות"
 
-#: ../src/ui-assist-import.c:56
-msgid "Welcome"
-msgstr "ברוכים הבאים"
-
-#: ../src/ui-assist-import.c:57
-msgid "Select file"
-msgstr "בחירת קובץ"
-
-#: ../src/ui-assist-import.c:58
-msgid "Import"
-msgstr "יבוא"
-
-#: ../src/ui-assist-import.c:59
-msgid "Properties"
-msgstr "מאפיינים"
-
-#: ../src/ui-assist-import.c:61 ../src/ui-dialogs.c:216
-msgid "Transaction"
-msgstr "עסקה"
-
-#: ../src/ui-assist-import.c:132 ../src/ui-assist-import.c:969
-msgid "create new"
-msgstr "צור חדש"
-
-#: ../src/ui-assist-import.c:134 ../src/ui-assist-import.c:981
-msgid "use existing"
-msgstr "השתמש בקיימת"
-
-#: ../src/ui-assist-import.c:216
-msgid "Name in the file"
-msgstr "שם בתוך הקובץ"
-
-#: ../src/ui-assist-import.c:224
-msgid "Action"
-msgstr "פעולה"
-
-#: ../src/ui-assist-import.c:232
-msgid "Name in HomeBank"
-msgstr "שם בתוך HomeBank"
-
-#: ../src/ui-assist-import.c:597 ../src/ui-assist-import.c:854
-msgid "All seems all right here, your validation is optional!"
-msgstr "הכל נראה בסדר כאן, האימות שלך הינו בגדר רשות!"
-
-#: ../src/ui-assist-import.c:610
-#, c-format
-msgid ""
-"No account information has been found into the file '%s'.\n"
-"Please select the appropriate action for account below."
+#: ../src/ui-assist-import.c:472
+msgid "<New account (global)>"
 msgstr ""
-"לא נמצא מידע חשבון בתוך הקובץ '%s'.\n"
-"אנא בחר את הפעולה המתאימה לחשבון מטה."
 
-#: ../src/ui-assist-import.c:860
-msgid ""
-"Possible duplicate of existing transaction have been found, and disabled for "
-"import.\n"
-"Please check and choose the ones that have to be imported."
+#: ../src/ui-assist-import.c:477
+msgid "<New account>"
 msgstr ""
-"נמצאה כפילות אפשרית של עסקה קיימת, ומנוטרלת לצורך יבוא.\n"
-"אנא בדוק ובחר את אלו אשר יש ליבאן."
 
-#: ../src/ui-assist-import.c:947
-msgid "Change account action"
-msgstr "שינוי פעולת חשבון"
-
-#: ../src/ui-assist-import.c:1094
-msgid "Please select a file..."
-msgstr "אנא בחר קובץ..."
-
-#: ../src/ui-assist-import.c:1111
-msgid "QIF file recognised !"
-msgstr "קובץ QIF זוהה !"
-
-#: ../src/ui-assist-import.c:1117
-msgid "OFX file recognised !"
-msgstr "קובץ OFX זוהה !"
-
-#: ../src/ui-assist-import.c:1120
-msgid "** OFX support is disabled **"
-msgstr "** תמיכת OFX הינה מנוטרלת **"
-
-#: ../src/ui-assist-import.c:1125
-msgid "CSV transaction file recognised !"
-msgstr "קובץ עסקה CSV זוהה !"
-
-#: ../src/ui-assist-import.c:1131
-msgid "Unknown/Invalid file..."
-msgstr "קובץ לא מוכר/תקין..."
-
-#. file content detail
-#. TODO: difficult translation here
-#: ../src/ui-assist-import.c:1237
-#, c-format
-msgid "account: %d - transaction: %d - payee: %d - categorie: %d"
-msgstr "חשבון: %d - עסקה: %d - מוטב: %d - סיווג: %d"
-
-#: ../src/ui-assist-import.c:1358
-msgid "Some date convertion failed"
-msgstr "מספר המרות תאריך נכשלו"
-
-#: ../src/ui-assist-import.c:1359
-#, c-format
-msgid "Reload using date order: '%s' ?"
-msgstr "לטעון מחדש בשימוש תאריך בסדר: '%s' ?"
-
-#: ../src/ui-assist-import.c:1574
-#, c-format
-msgid "Import assistant (%d of %d)"
-msgstr "אשף יבוא (%d מתוך %d)"
-
-#: ../src/ui-assist-import.c:1628
-msgid ""
-"Welcome to the HomeBank Import Assistant.\n"
-"\n"
-"With this assistant you will be guided throught the process\n"
-"of importing an external file into HomeBank.\n"
-"\n"
-"No changes will be made until you click \"Apply\" at the end\n"
-"of this assistant."
+#: ../src/ui-assist-import.c:498
+msgid "<Skip this account>"
 msgstr ""
-"ברוכים הבאים לאשף יבוא HomeBank.\n"
-"\n"
-"בעזרת אשף זה תקבל הנחיות מבעד לתתהליך\n"
-"של יבוא קובץ חיצוני לתוך HomeBank.\n"
-"\n"
-"לא ייעשו שינויים עד אשר תלחץ על \"החל\" בסופו\n"
-"של אשף זה."
 
-#: ../src/ui-assist-import.c:1640
-msgid ""
-"HomeBank can import files in the following formats:\n"
-"- QIF\n"
-"- OFX/QFX (optional at compilation time)\n"
-"- CSV (format is specific to HomeBank, see the documentation)\n"
+#: ../src/ui-assist-import.c:641
+msgid "Valid"
 msgstr ""
-"‏HomeBank מסוגל ליבא את הקבצים הבאים:\n"
-"‏- QIF\n"
-"‏- OFX/QFX (אפשרי במהלך זמן הידור)\n"
-"‏- CSV (פורמט ייחודי של HomeBank, ראה תיעוד)\n"
 
-#: ../src/ui-assist-import.c:1680
+#: ../src/ui-assist-import.c:652 ../src/ui-category.c:1012
+#: ../src/ui-currency.c:616 ../src/ui-currency.c:1209 ../src/ui-payee.c:668
+msgid "Name"
+msgstr "שם"
+
+#: ../src/ui-assist-import.c:746
 msgid "Known files"
 msgstr "קבצים מוכרים"
 
-#: ../src/ui-assist-import.c:1691 ../src/ui-dialogs.c:446
+#: ../src/ui-assist-import.c:757 ../src/ui-dialogs.c:463
 msgid "QIF files"
 msgstr "קבצי QIF"
 
-#: ../src/ui-assist-import.c:1699
+#: ../src/ui-assist-import.c:765
 msgid "OFX/QFX files"
 msgstr "קבצי OFX/QFX"
 
-#: ../src/ui-assist-import.c:1707 ../src/ui-dialogs.c:504
+#: ../src/ui-assist-import.c:773 ../src/ui-dialogs.c:527
 msgid "CSV files"
 msgstr "קבצי CSV"
 
-#. ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("Backup files"), "*.[Bb][Aa][Kk]");
-#: ../src/ui-assist-import.c:1715 ../src/ui-dialogs.c:447
-#: ../src/ui-dialogs.c:505 ../src/ui-dialogs.c:561
+#: ../src/ui-assist-import.c:780 ../src/ui-dialogs.c:464
+#: ../src/ui-dialogs.c:528 ../src/ui-dialogs.c:590
 msgid "All files"
 msgstr "כל הקבצים"
 
-#: ../src/ui-assist-import.c:1779
-msgid "A general error occured, and this file cannot be loaded."
-msgstr "אירעה שגיאה כללית, וקובץ זה לא ניתן לטעינה."
+#: ../src/ui-assist-import.c:839
+msgid "new global account"
+msgstr ""
 
-#: ../src/ui-assist-import.c:1816
-msgid "Name:"
-msgstr "שם:"
+#: ../src/ui-assist-import.c:842
+msgid "new account"
+msgstr ""
 
-#: ../src/ui-assist-import.c:1823
-msgid "Path:"
-msgstr "נתיב:"
+#: ../src/ui-assist-import.c:845
+msgid "skipped"
+msgstr ""
 
-#: ../src/ui-assist-import.c:1830
-msgid "Encoding:"
-msgstr "קידוד:"
+#: ../src/ui-assist-import.c:864
+#, c-format
+msgid ", %d of %d transactions"
+msgstr ""
 
-#: ../src/ui-assist-import.c:1837
-msgid "Date format:"
-msgstr "פורמט תאריך:"
+#: ../src/ui-assist-import.c:1109
+msgid ""
+"Some date cannot be converted. Please try to change the date order to "
+"continue."
+msgstr ""
 
-#: ../src/ui-assist-import.c:1849
-msgid "File content"
-msgstr "תוכן קובץ"
+#. label = g_strdup_printf(_("'%s' - %s"), genacc->name, hb_import_filetype_char_get(genacc));
+#: ../src/ui-assist-import.c:1273
+#, c-format
+msgid "Import <b>%s</b> in_to:"
+msgstr ""
 
-#: ../src/ui-assist-import.c:1853
-msgid "Content:"
-msgstr "תוכן:"
+#: ../src/ui-assist-import.c:1273
+msgid "this file"
+msgstr ""
 
-#: ../src/ui-assist-import.c:1919
-msgid "Choose the action for accounts"
-msgstr "בחר את הפעולה עבור חשבונות"
+#: ../src/ui-assist-import.c:1273
+msgid "this account"
+msgstr ""
 
-#: ../src/ui-assist-import.c:1935
-msgid "Change _action"
-msgstr "שנה _פעולה"
+#: ../src/ui-assist-import.c:1280
+#, c-format
+msgid ""
+"Name: %s\n"
+"Number: %s\n"
+"File: %s\n"
+"Encoding: %s"
+msgstr ""
 
-#: ../src/ui-assist-import.c:1989
-msgid "Choose transactions to import"
-msgstr "בחר עסקאות ליבוא"
+#: ../src/ui-assist-import.c:1330
+msgid "Import transactions from bank or credit card"
+msgstr ""
 
-#: ../src/ui-assist-import.c:2003
-msgid "Detail of existing transaction (possible duplicate)"
-msgstr "פרטים של עסקה נבחרת (כפילות אפשרית)"
+#: ../src/ui-assist-import.c:1338
+msgid ""
+"With this assistant you will be guided through the process of importing one "
+"or several\n"
+"downloaded statements from your bank or credit card, in the following "
+"formats:"
+msgstr ""
 
-#: ../src/ui-assist-import.c:2025
-msgid "Date _tolerance:"
-msgstr "_סבילות תאריך:"
+#: ../src/ui-assist-import.c:1344
+msgid ""
+"<b>Recommended:</b> .OFX or .QFX\n"
+"<i>(Sometimes named Money™ or Quicken™)</i>\n"
+"<b>Supported:</b> .QIF\n"
+"<i>(Common Quicken™ file)</i>\n"
+"<b>Advanced users only:</b> .CSV\n"
+"<i>(format is specific to HomeBank, see the documentation)</i>"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1364
+msgid ""
+"No changes will be made until you click \"Apply\" at the end of this "
+"assistant."
+msgstr ""
+
+#: ../src/ui-assist-import.c:1368
+msgid "Don't show this again"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1427
+msgid ""
+"Drag&Drop one or several files to import.\n"
+"You can also use the add/remove buttons of the list."
+msgstr ""
+
+#: ../src/ui-assist-import.c:1503
+msgid ""
+"There is too much account in the files you choosed,\n"
+"please use the back button to select less files."
+msgstr ""
+
+#: ../src/ui-assist-import.c:1622
+msgid "Target account identification by name or number failed."
+msgstr ""
+
+#: ../src/ui-assist-import.c:1635 ../src/ui-pref.c:1137
+msgid "Date order:"
+msgstr "סדר תאריך:"
+
+#: ../src/ui-assist-import.c:1651 ../src/ui-pref.c:1183
+msgid "_Import memos"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1655 ../src/ui-pref.c:1186
+msgid "_Swap memos with payees"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1665 ../src/ui-pref.c:1156
+msgid "OFX _Name:"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1671 ../src/ui-pref.c:1165
+msgid "OFX _Memo:"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1687 ../src/ui-filter.c:283 ../src/ui-filter.c:397
+#: ../src/ui-filter.c:511
+msgid "Select:"
+msgstr "בחר:"
+
+#: ../src/ui-assist-import.c:1690 ../src/ui-filter.c:286 ../src/ui-filter.c:400
+#: ../src/ui-filter.c:514
+msgid "All"
+msgstr "הכל"
+
+#: ../src/ui-assist-import.c:1694 ../src/ui-filter.c:291 ../src/ui-filter.c:405
+#: ../src/ui-filter.c:519 ../src/ui-pref.c:106 ../src/ui-transaction.c:56
+msgid "None"
+msgstr "אין"
+
+#: ../src/ui-assist-import.c:1698 ../src/ui-filter.c:296 ../src/ui-filter.c:410
+#: ../src/ui-filter.c:524
+msgid "Invert"
+msgstr "הפוך"
+
+#: ../src/ui-assist-import.c:1715 ../src/ui-pref.c:1200
+msgid "Sentence _case memo/payee"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1749
+msgid "Similar transaction in target account (possible duplicate)"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1773
+msgid "Date _gap:"
+msgstr ""
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days of date tolerance
-#: ../src/ui-assist-import.c:2033
+#: ../src/ui-assist-import.c:1781
 msgid "days"
 msgstr "ימים"
 
-#: ../src/ui-assist-import.c:2036
-msgid "_Refresh"
-msgstr "_רענן"
-
-#: ../src/ui-assist-import.c:2046
+#: ../src/ui-assist-import.c:1789
 msgid ""
 "The match is done in order: by account, amount and date.\n"
 "A date tolerance of 0 day means an exact match"
@@ -2296,39 +2243,28 @@ msgstr ""
 "התיאם נעשה לפי סדר: לפי חשבון, מועד וסכום.\n"
 "סבילות תאריך של 0 ימים משמעה תיאום מדויק"
 
-#: ../src/ui-assist-import.c:2079
+#: ../src/ui-assist-import.c:1852
 msgid "Click \"Apply\" to update your accounts.\n"
 msgstr "לחץ על \"החל\" כדי עדכן את חשבונותיך.\n"
 
-#: ../src/ui-assist-import.c:2102
-msgid "to update"
-msgstr "לעדכן"
+#: ../src/ui-assist-import.c:2178
+msgid "Welcome"
+msgstr "ברוכים הבאים"
 
-#: ../src/ui-assist-import.c:2110
-msgid "to create"
-msgstr "ליצור"
+#: ../src/ui-assist-import.c:2183
+msgid "Select file(s)"
+msgstr ""
 
-#: ../src/ui-assist-import.c:2114 ../src/ui-pref.c:81
-msgid "Transactions"
-msgstr "עסקאות"
+#. gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), page, GTK_ASSISTANT_PAGE_PROGRESS);
+#: ../src/ui-assist-import.c:2188
+msgid "Import"
+msgstr "יבוא"
 
-#: ../src/ui-assist-import.c:2123
-msgid "to import"
-msgstr "ליבוא"
-
-#: ../src/ui-assist-import.c:2131
-msgid "to reject"
-msgstr "לדחיה"
-
-#: ../src/ui-assist-import.c:2139
-msgid "auto-assigned"
-msgstr "מוקצאות אוטומטית"
-
-#: ../src/ui-budget.c:510 ../src/ui-category.c:1184 ../src/ui-payee.c:790
+#: ../src/ui-budget.c:505 ../src/ui-category.c:1145 ../src/ui-payee.c:781
 msgid "File format error"
 msgstr "שגיאת פורמט קובץ"
 
-#: ../src/ui-budget.c:511 ../src/ui-category.c:1185 ../src/ui-payee.c:791
+#: ../src/ui-budget.c:506 ../src/ui-category.c:1146 ../src/ui-payee.c:782
 msgid ""
 "The CSV file must contains the exact numbers of column,\n"
 "separated by a semi-colon, please see the help for more details."
@@ -2336,64 +2272,59 @@ msgstr ""
 "קובץ ה-CSV חייב להכיל את כמות העמודות במדוייק,\n"
 "מופרדות ע\"י נקודה-פסיק, אנא ראה בעזרה לפרטים נוספים."
 
-#: ../src/ui-budget.c:695
+#: ../src/ui-budget.c:690
 msgid "Are you sure you want to clear input?"
 msgstr "האם אתה בטוח כי ברצונך לטהר קלט?"
 
-#: ../src/ui-budget.c:697
+#: ../src/ui-budget.c:692
 msgid "If you proceed, every amount will be set to 0."
 msgstr "אם תמשיך, כל סכום יוגדר אל 0."
 
-#: ../src/ui-budget.c:703
+#: ../src/ui-budget.c:698
 msgid "_Clear"
 msgstr "_טהר"
 
-#: ../src/ui-budget.c:996
+#: ../src/ui-budget.c:992
 msgid "Manage Budget"
 msgstr "ניהול תקציב"
 
-#: ../src/ui-budget.c:1039 ../src/ui-category.c:1882 ../src/ui-payee.c:1272
+#: ../src/ui-budget.c:1033 ../src/ui-category.c:1849 ../src/ui-payee.c:1301
 msgid "_Import CSV"
 msgstr "י_בא CSV"
 
-#: ../src/ui-budget.c:1043 ../src/ui-category.c:1886 ../src/ui-payee.c:1276
+#: ../src/ui-budget.c:1037 ../src/ui-category.c:1853 ../src/ui-payee.c:1305
 msgid "E_xport CSV"
 msgstr "יצ_א CSV"
 
-#: ../src/ui-budget.c:1130
+#: ../src/ui-budget.c:1124
 msgid "Budget for each month"
 msgstr "תקציב לכל חודש"
 
-#: ../src/ui-budget.c:1137
+#: ../src/ui-budget.c:1131
 msgid "is the same"
 msgstr "הינו קבוע"
 
-#: ../src/ui-budget.c:1151
+#: ../src/ui-budget.c:1145
 msgid "_Clear input"
 msgstr "_טהר קלט"
 
-#: ../src/ui-budget.c:1166
+#: ../src/ui-budget.c:1160
 msgid "is different"
 msgstr "הינו משתנה"
 
-#: ../src/ui-budget.c:1209
+#: ../src/ui-budget.c:1203
 msgid "_Force monitoring this category"
 msgstr "_אכוף מעקב על סיווג זה"
 
-#: ../src/ui-category.c:1052 ../src/ui-currency.c:616 ../src/ui-currency.c:1209
-#: ../src/ui-payee.c:677
-msgid "Name"
-msgstr "שם"
-
-#: ../src/ui-category.c:1064 ../src/ui-payee.c:693
+#: ../src/ui-category.c:1024 ../src/ui-payee.c:684
 msgid "Usage"
 msgstr "שימוש"
 
-#: ../src/ui-category.c:1142
+#: ../src/ui-category.c:1103
 msgid "Delete unused categories"
 msgstr "מחק סיווגים שאינם בשימוש"
 
-#: ../src/ui-category.c:1143
+#: ../src/ui-category.c:1104
 msgid ""
 "Are you sure you want to permanently\n"
 "delete unused categories?"
@@ -2401,15 +2332,15 @@ msgstr ""
 "האם אתה בטוח שברצונך למחוק לצמיתות\n"
 "סיווגים שאינם בשימוש?"
 
-#: ../src/ui-category.c:1321 ../src/ui-payee.c:881
+#: ../src/ui-category.c:1287 ../src/ui-payee.c:880 ../src/ui-tag.c:386
 msgid "Edit..."
 msgstr "ערוך..."
 
-#: ../src/ui-category.c:1345
+#: ../src/ui-category.c:1311
 msgid "_Income"
 msgstr "ה_כנסה"
 
-#: ../src/ui-category.c:1396
+#: ../src/ui-category.c:1362
 #, c-format
 msgid ""
 "Cannot rename this Category,\n"
@@ -2420,16 +2351,16 @@ msgstr ""
 "מן '%s' אל '%s',\n"
 "שם זה כבר קיים."
 
-#: ../src/ui-category.c:1461
+#: ../src/ui-category.c:1426
 #, c-format
 msgid "Merge category '%s'"
 msgstr "מיזוג קטגוריה '%s'"
 
-#: ../src/ui-category.c:1473 ../src/ui-payee.c:1046
+#: ../src/ui-category.c:1438 ../src/ui-payee.c:1047
 msgid "Merge"
 msgstr "מזג"
 
-#: ../src/ui-category.c:1482
+#: ../src/ui-category.c:1447
 msgid ""
 "Transactions assigned to this category,\n"
 "will be moved to the category selected below."
@@ -2437,12 +2368,12 @@ msgstr ""
 "עסקאות אשר מוקצות לסיווג זה,\n"
 "יועברו אל הסיווג אשר נבחר מטה."
 
-#: ../src/ui-category.c:1492
+#: ../src/ui-category.c:1457
 #, c-format
 msgid "_Delete the category '%s'"
 msgstr "_מחק את הקטגוריה '%s'"
 
-#: ../src/ui-category.c:1584
+#: ../src/ui-category.c:1553
 msgid ""
 "This category is used.\n"
 "Any transaction using that category will be set to (no category)"
@@ -2450,23 +2381,23 @@ msgstr ""
 "סיווג זה הינו מצוי בשימוש.\n"
 "כל עסקה אשר משתמשת בסיווג זה תוגדר אל (אין סיווג)"
 
-#: ../src/ui-category.c:1833
+#: ../src/ui-category.c:1802
 msgid "Manage Categories"
 msgstr "ניהול קטגוריות"
 
-#: ../src/ui-category.c:1893 ../src/ui-payee.c:1283
+#: ../src/ui-category.c:1860 ../src/ui-payee.c:1312
 msgid "_Delete unused"
 msgstr "_מחק לא בשימוש"
 
-#: ../src/ui-category.c:1913
+#: ../src/ui-category.c:1955
 msgid "new category"
 msgstr "סיווג חדש"
 
-#: ../src/ui-category.c:1926
+#: ../src/ui-category.c:1967
 msgid "new subcategory"
 msgstr "סיווג משני חדש"
 
-#: ../src/ui-category.c:2008 ../src/ui-payee.c:1329
+#: ../src/ui-category.c:1984 ../src/ui-payee.c:1377
 msgid "_Merge"
 msgstr "מז_ג"
 
@@ -2478,47 +2409,47 @@ msgstr "מטבע בסיס"
 msgid "Symbol"
 msgstr "סמל"
 
-#: ../src/ui-currency.c:639 ../src/ui-currency.c:819 ../src/ui-pref.c:1399
+#: ../src/ui-currency.c:639 ../src/ui-currency.c:819 ../src/ui-pref.c:1396
 msgid "Exchange rate"
 msgstr "שער המרה"
 
 #: ../src/ui-currency.c:652
-msgid "Last modfied"
-msgstr "השתנה לאחרונה"
+msgid "Last modified"
+msgstr ""
 
 #: ../src/ui-currency.c:774
 msgid "Edit currency"
 msgstr "ערוך מטבע"
 
-#: ../src/ui-currency.c:805 ../src/ui-pref.c:1372
+#: ../src/ui-currency.c:805 ../src/ui-pref.c:1369
 msgid "Currency"
 msgstr "מטבע"
 
-#: ../src/ui-currency.c:838 ../src/ui-pref.c:1417
+#: ../src/ui-currency.c:838 ../src/ui-pref.c:1414
 msgid "Format"
 msgstr "תבנית"
 
-#: ../src/ui-currency.c:847 ../src/ui-pref.c:1426 ../src/ui-pref.c:1496
+#: ../src/ui-currency.c:847 ../src/ui-pref.c:1423 ../src/ui-pref.c:1503
 msgid "_Customize"
 msgstr "_התאמה אישית"
 
-#: ../src/ui-currency.c:856 ../src/ui-pref.c:1435
+#: ../src/ui-currency.c:856 ../src/ui-pref.c:1432
 msgid "_Symbol:"
 msgstr "_סימן"
 
-#: ../src/ui-currency.c:863 ../src/ui-pref.c:1442
+#: ../src/ui-currency.c:863 ../src/ui-pref.c:1439
 msgid "Is pre_fix"
 msgstr ""
 
-#: ../src/ui-currency.c:868 ../src/ui-pref.c:1447
+#: ../src/ui-currency.c:868 ../src/ui-pref.c:1444
 msgid "_Decimal char:"
 msgstr ""
 
-#: ../src/ui-currency.c:875 ../src/ui-pref.c:1454
+#: ../src/ui-currency.c:875 ../src/ui-pref.c:1451
 msgid "_Frac digits:"
 msgstr "ספרות _שבר:"
 
-#: ../src/ui-currency.c:882 ../src/ui-pref.c:1461
+#: ../src/ui-currency.c:882 ../src/ui-pref.c:1458
 msgid "_Grouping char:"
 msgstr "_סימן קיבוץ (של אלפים וכד'):"
 
@@ -2536,6 +2467,10 @@ msgstr ""
 
 #: ../src/ui-currency.c:1222
 msgid "Add a custom _currency"
+msgstr ""
+
+#: ../src/ui-currency.c:1235
+msgid "_ISO:"
 msgstr ""
 
 #: ../src/ui-currency.c:1320
@@ -2570,49 +2505,65 @@ msgstr "עדכן אונליין"
 msgid "Set as base"
 msgstr "בחר כבסיס"
 
-#: ../src/ui-dialogs.c:176
+#: ../src/ui-dialogs.c:180
 msgid "File statistics"
 msgstr "סטטיסטיקת קובץ"
 
-#: ../src/ui-dialogs.c:243
+#: ../src/ui-dialogs.c:220
+msgid "Transaction"
+msgstr "עסקה"
+
+#: ../src/ui-dialogs.c:247
 msgid "Assignment"
 msgstr "משימה"
 
-#: ../src/ui-dialogs.c:327
+#: ../src/ui-dialogs.c:331
 msgid "Upgrade"
 msgstr "שדרג"
 
-#: ../src/ui-dialogs.c:355
+#: ../src/ui-dialogs.c:364
 msgid "Select a base currency"
 msgstr "בחר מטבע בסיס"
 
-#: ../src/ui-dialogs.c:364
+#: ../src/ui-dialogs.c:373
 msgid ""
 "Starting v5.1, HomeBank can manage several currencies\n"
 "if the currency below is not correct, please change it:"
 msgstr ""
 
-#: ../src/ui-dialogs.c:481
+#: ../src/ui-dialogs.c:498
 msgid "Import from CSV"
 msgstr "יבוא מתוך CSV"
 
-#: ../src/ui-dialogs.c:543
+#: ../src/ui-dialogs.c:566
 msgid "Open HomeBank file"
 msgstr "פתח קובץ HomeBank"
 
-#: ../src/ui-dialogs.c:548
+#: ../src/ui-dialogs.c:566
+msgid "Open HomeBank backup file"
+msgstr ""
+
+#: ../src/ui-dialogs.c:571
 msgid "Save HomeBank file as"
 msgstr "שמור קובץ HomeBank בשם"
 
-#: ../src/ui-dialogs.c:559
+#: ../src/ui-dialogs.c:589 ../src/ui-pref.c:1877
 msgid "HomeBank files"
 msgstr "קבצי HomeBank"
 
-#: ../src/ui-dialogs.c:662
+#: ../src/ui-dialogs.c:600
+msgid "File backup"
+msgstr ""
+
+#: ../src/ui-dialogs.c:604
+msgid "All backups"
+msgstr ""
+
+#: ../src/ui-dialogs.c:712
 msgid "Save changes to the file before closing?"
 msgstr "לשמור שינויים לקובץ לפני סגירה?"
 
-#: ../src/ui-dialogs.c:666
+#: ../src/ui-dialogs.c:716
 #, c-format
 msgid ""
 "If you don't save, changes will be permanently lost.\n"
@@ -2621,242 +2572,134 @@ msgstr ""
 "אם לא תשמור, שינויים יאבדו לעד.\n"
 "מספר שינויים: %d."
 
-#: ../src/ui-dialogs.c:671
+#: ../src/ui-dialogs.c:721
 msgid "Close _without saving"
 msgstr "_סגור מבלי לשמור"
 
-#: ../src/ui-dialogs.c:713
-msgid "Export PDF"
+#: ../src/ui-dialogs.c:769
+msgid "Export as PDF"
 msgstr ""
 
-#: ../src/ui-dialogs.c:717
-msgid "_Export"
+#: ../src/ui-dialogs.c:773
+msgid "Export as _PDF"
 msgstr ""
 
-#: ../src/ui-dialogs.c:744
+#: ../src/ui-dialogs.c:806
 msgid "Folder:"
 msgstr ""
 
-#: ../src/ui-dialogs.c:746
+#: ../src/ui-dialogs.c:808
 msgid "Pick a Folder"
 msgstr ""
 
-#: ../src/ui-dialogs.c:750
+#: ../src/ui-dialogs.c:812
 msgid "Filename:"
 msgstr ""
 
-#: ../src/ui-dialogs.c:847
+#: ../src/ui-dialogs.c:915
 msgid "Select among possible transactions..."
 msgstr "בחר מתוך עסקאות אפשריות..."
 
-#: ../src/ui-dialogs.c:883
+#: ../src/ui-dialogs.c:954
 msgid "Select an action:"
 msgstr "בחר פעולה:"
 
-#: ../src/ui-dialogs.c:887
+#: ../src/ui-dialogs.c:958
 msgid "create a new transaction"
 msgstr "צור עסקה חדשה"
 
-#: ../src/ui-dialogs.c:890
+#: ../src/ui-dialogs.c:961
 msgid "select an existing transaction"
 msgstr "בחר עסקה קיימת"
 
-#: ../src/ui-dialogs.c:895
+#: ../src/ui-dialogs.c:966
 msgid ""
 "HomeBank has found some transaction that may be the associated transaction "
 "for the internal transfer."
 msgstr "‏HomeBank מצאה איזו עסקה אשר אולי היא העסקה המשוייכת להעברה הפנימית."
 
-#: ../src/ui-filter.c:52
-msgid "Any Type"
-msgstr "כל טיפוס"
-
-#: ../src/ui-filter.c:57
-msgid "Uncategorized"
-msgstr "לא מסווגת"
-
-#: ../src/ui-filter.c:58
-msgid "Unreconciled"
-msgstr "לא הושלם"
-
-# לא מנוקה
-#: ../src/ui-filter.c:59
-msgid "Uncleared"
-msgstr "לא מוסדר"
-
-#: ../src/ui-filter.c:60 ../src/ui-transaction.c:59
-msgid "Reconciled"
-msgstr "הושלם"
-
-# נוקה
-#: ../src/ui-filter.c:61 ../src/ui-transaction.c:58
-msgid "Cleared"
-msgstr "הוסדר"
-
-#: ../src/ui-filter.c:63
-msgid "Any Status"
-msgstr "כל סטטוס"
-
-#: ../src/ui-filter.c:68
-msgid "This month"
-msgstr "חודש נוכחי"
-
-#: ../src/ui-filter.c:69
-msgid "Last month"
-msgstr "חודש קודם"
-
-#: ../src/ui-filter.c:70
-msgid "This quarter"
-msgstr "רבעון נוכחי"
-
-#: ../src/ui-filter.c:71
-msgid "Last quarter"
-msgstr "רבעון קודם"
-
-#: ../src/ui-filter.c:72
-msgid "This year"
-msgstr "שנה נוכחית"
-
-#: ../src/ui-filter.c:73
-msgid "Last year"
-msgstr "שנה שעברה"
-
-#: ../src/ui-filter.c:75
-msgid "Last 30 days"
-msgstr "30 ימים אחרונים"
-
-#: ../src/ui-filter.c:76
-msgid "Last 60 days"
-msgstr "60 ימים אחרונים"
-
-#: ../src/ui-filter.c:77
-msgid "Last 90 days"
-msgstr "90 ימים אחרונים"
-
-#: ../src/ui-filter.c:78
-msgid "Last 12 months"
-msgstr "12 חודשים אחרונים"
-
-#: ../src/ui-filter.c:80
-msgid "Other..."
-msgstr "אחר..."
-
-#: ../src/ui-filter.c:82
-msgid "All date"
-msgstr "כל התאריכים"
-
-#: ../src/ui-filter.c:90
-msgid "All month"
-msgstr "כל החודשים"
-
 #. gtk_widget_show(GTK_WIDGET(page));
-#: ../src/ui-filter.c:330 ../src/ui-filter.c:1475
+#: ../src/ui-filter.c:276 ../src/ui-filter.c:1421
 msgid "Categories"
 msgstr "סיווגים"
 
-#: ../src/ui-filter.c:337 ../src/ui-filter.c:451 ../src/ui-filter.c:565
-msgid "Select:"
-msgstr "בחר:"
-
-#: ../src/ui-filter.c:340 ../src/ui-filter.c:454 ../src/ui-filter.c:568
-msgid "All"
-msgstr "הכל"
-
-#: ../src/ui-filter.c:345 ../src/ui-filter.c:459 ../src/ui-filter.c:573
-#: ../src/ui-pref.c:99 ../src/ui-transaction.c:57
-msgid "None"
-msgstr "אין"
-
-#: ../src/ui-filter.c:350 ../src/ui-filter.c:464 ../src/ui-filter.c:578
-msgid "Invert"
-msgstr "הפוך"
-
 #. gtk_widget_show(GTK_WIDGET(page));
-#: ../src/ui-filter.c:444 ../src/ui-filter.c:1479
+#: ../src/ui-filter.c:390 ../src/ui-filter.c:1425
 msgid "Payees"
 msgstr "מוטבים"
 
-#: ../src/ui-filter.c:1031 ../src/ui-filter.c:1053 ../src/ui-filter.c:1077
-#: ../src/ui-filter.c:1151 ../src/ui-filter.c:1201 ../src/ui-filter.c:1254
-#: ../src/ui-filter.c:1293 ../src/ui-filter.c:1351
+#: ../src/ui-filter.c:977 ../src/ui-filter.c:999 ../src/ui-filter.c:1023
+#: ../src/ui-filter.c:1097 ../src/ui-filter.c:1147 ../src/ui-filter.c:1200
+#: ../src/ui-filter.c:1239 ../src/ui-filter.c:1299
 msgid "_Option:"
 msgstr "אפש_רות:"
 
 #. gtk_widget_show(GTK_WIDGET(page));
-#: ../src/ui-filter.c:1158 ../src/ui-filter.c:1455
+#: ../src/ui-filter.c:1104 ../src/ui-filter.c:1401
 msgid "Dates"
 msgstr "תאריכים"
 
-#: ../src/ui-filter.c:1175
+#: ../src/ui-filter.c:1121
 msgid "_Month:"
 msgstr "_חודש:"
 
-#: ../src/ui-filter.c:1181
+#: ../src/ui-filter.c:1127
 msgid "_Year:"
 msgstr "_שנה:"
 
 #. gtk_widget_show(GTK_WIDGET(page));
-#: ../src/ui-filter.c:1208 ../src/ui-filter.c:1471
+#: ../src/ui-filter.c:1154 ../src/ui-filter.c:1417
 msgid "Texts"
 msgstr ""
 
-#: ../src/ui-filter.c:1220 ../src/ui-transaction.c:1070
-#: ../src/ui-txn-multi.c:431
+#: ../src/ui-filter.c:1166 ../src/ui-transaction.c:1270
+#: ../src/ui-txn-multi.c:443
 msgid "_Info:"
 msgstr "_מידע:"
 
-#: ../src/ui-filter.c:1228
-msgid "_Tag:"
-msgstr "ת_גית:"
-
-#: ../src/ui-filter.c:1236
+#: ../src/ui-filter.c:1182
 msgid "Case _sensitive"
 msgstr "תלוי _רישיות"
 
 #. gtk_widget_show(GTK_WIDGET(page));
-#: ../src/ui-filter.c:1261 ../src/ui-filter.c:1467
+#: ../src/ui-filter.c:1207 ../src/ui-filter.c:1413
 msgid "Amounts"
 msgstr "סכומים"
 
 #. gtk_widget_show(GTK_WIDGET(page));
-#: ../src/ui-filter.c:1300 ../src/ui-filter.c:1459
+#: ../src/ui-filter.c:1246 ../src/ui-filter.c:1405
 msgid "Statuses"
 msgstr "סטטוסים"
 
-#: ../src/ui-filter.c:1309
+#: ../src/ui-filter.c:1255
 msgid "reconciled"
 msgstr "הושלם"
 
 # נוקה
-#: ../src/ui-filter.c:1313
+#: ../src/ui-filter.c:1259
 msgid "cleared"
 msgstr "הוסדר"
 
-#: ../src/ui-filter.c:1318
+#: ../src/ui-filter.c:1264
 msgid "Force:"
 msgstr "אכוף:"
 
-#: ../src/ui-filter.c:1324
+#: ../src/ui-filter.c:1272
 msgid "display 'Added'"
 msgstr "הצג 'נתווסף'"
 
-#: ../src/ui-filter.c:1328
+#: ../src/ui-filter.c:1276
 msgid "display 'Edited'"
 msgstr "הצג 'נערך'"
 
-#: ../src/ui-filter.c:1332
+#: ../src/ui-filter.c:1280
 msgid "display 'Remind'"
 msgstr "הצג 'תזכורת'"
 
 #. gtk_widget_show(GTK_WIDGET(page));
-#: ../src/ui-filter.c:1358 ../src/ui-filter.c:1463
+#: ../src/ui-filter.c:1306 ../src/ui-filter.c:1409
 msgid "Payments"
 msgstr "תשלומים"
-
-#. clear button
-#: ../src/ui-filter.c:1406 ../src/ui-pref.c:2007
-msgid "_Reset"
-msgstr "אפ_ס"
 
 #: ../src/ui-hbfile.c:239
 msgid "Scheduled transaction"
@@ -2875,19 +2718,19 @@ msgid "add"
 msgstr "הוסף"
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
-#: ../src/ui-hbfile.c:265 ../src/ui-pref.c:1599
+#: ../src/ui-hbfile.c:265
 msgid "days in advance the current date"
 msgstr "ימים לפני התאריך הנוכחי"
 
-#: ../src/ui-payee.c:711
+#: ../src/ui-payee.c:702
 msgid "Default category"
 msgstr "סיווג ברירת מחדל"
 
-#: ../src/ui-payee.c:749
+#: ../src/ui-payee.c:740
 msgid "Delete unused payee"
 msgstr "מחק מוטב שאינו בשימוש"
 
-#: ../src/ui-payee.c:750
+#: ../src/ui-payee.c:741
 msgid ""
 "Are you sure you want to\n"
 "permanently delete unused payee?"
@@ -2895,15 +2738,15 @@ msgstr ""
 "האם אתה בטוח שאתה רוצה\n"
 "למחוק לצמיתות מוטב שאינו בשימוש"
 
-#: ../src/ui-payee.c:922
+#: ../src/ui-payee.c:921
 msgid "Default"
 msgstr "ברירת מחדל"
 
-#: ../src/ui-payee.c:934 ../src/ui-transaction.c:1057 ../src/ui-txn-multi.c:417
+#: ../src/ui-payee.c:933 ../src/ui-transaction.c:1254 ../src/ui-txn-multi.c:429
 msgid "Pa_yment:"
 msgstr "ת_שלום:"
 
-#: ../src/ui-payee.c:979
+#: ../src/ui-payee.c:980
 #, c-format
 msgid ""
 "Cannot rename this Payee,\n"
@@ -2914,12 +2757,12 @@ msgstr ""
 "מן '%s' אל '%s',\n"
 "שם זה כבר קיים."
 
-#: ../src/ui-payee.c:1034
+#: ../src/ui-payee.c:1035
 #, c-format
 msgid "Merge payee '%s'"
 msgstr "מזג מוטב '%s'"
 
-#: ../src/ui-payee.c:1055
+#: ../src/ui-payee.c:1056
 msgid ""
 "Transactions assigned to this payee,\n"
 "will be moved to the payee selected below."
@@ -2927,12 +2770,12 @@ msgstr ""
 "עסקאות אשר מוקצות למוטב זה,\n"
 "יועברו אל המוטב אשר נבחר מטה."
 
-#: ../src/ui-payee.c:1065
+#: ../src/ui-payee.c:1066
 #, c-format
 msgid "_Delete the payee '%s'"
 msgstr "_מחק את המוטב '%s'"
 
-#: ../src/ui-payee.c:1152
+#: ../src/ui-payee.c:1157 ../src/ui-tag.c:497
 msgid ""
 "This payee is used.\n"
 "Any transaction using that payee will be set to (no payee)"
@@ -2940,212 +2783,204 @@ msgstr ""
 "מוטב זה הינו מצוי בשימוש.\n"
 "כל עסקה אשר משתמשת במוטב זה תוגדר אל (אין מוטב)"
 
-#: ../src/ui-payee.c:1232
+#: ../src/ui-payee.c:1250
 msgid "Manage Payees"
 msgstr "ניהול מוטבים"
 
-#: ../src/ui-payee.c:1302
+#: ../src/ui-payee.c:1360
 msgid "new payee"
 msgstr "מוטב חדש"
 
-#: ../src/ui-pref.c:80
+#: ../src/ui-pref.c:85
 msgid "Interface"
 msgstr "ממשק"
 
-#: ../src/ui-pref.c:82
-msgid "Display format"
-msgstr "עיצוב תצוגה"
+#: ../src/ui-pref.c:86
+msgid "Locale"
+msgstr ""
 
-#: ../src/ui-pref.c:83
+#: ../src/ui-pref.c:87
+msgid "Transactions"
+msgstr "עסקאות"
+
+#: ../src/ui-pref.c:88
 msgid "Import/Export"
 msgstr "יבוא/יצוא"
 
-#: ../src/ui-pref.c:84
+#: ../src/ui-pref.c:89
 msgid "Report"
 msgstr "דיווח"
 
-#: ../src/ui-pref.c:90
+#: ../src/ui-pref.c:90 ../src/ui-pref.c:1829
+msgid "Backup"
+msgstr ""
+
+#: ../src/ui-pref.c:91
+msgid "Folders"
+msgstr ""
+
+#: ../src/ui-pref.c:97
 msgid "System defaults"
 msgstr "ברירות מחדל מערכת"
 
-#: ../src/ui-pref.c:91
+#: ../src/ui-pref.c:98
 msgid "Icons only"
 msgstr "סמלים בלבד"
 
-#: ../src/ui-pref.c:92
+#: ../src/ui-pref.c:99
 msgid "Text only"
 msgstr "טקסט בלבד"
 
-#: ../src/ui-pref.c:93
+#: ../src/ui-pref.c:100
 msgid "Text under icons"
 msgstr "טקסט מתחת סמלים"
 
-#: ../src/ui-pref.c:94
+#: ../src/ui-pref.c:101
 msgid "Text beside icons"
 msgstr "טקסט לצד סמלים"
 
-#: ../src/ui-pref.c:100
+#: ../src/ui-pref.c:107
 msgid "Horizontal"
 msgstr "אופקי"
 
-#: ../src/ui-pref.c:101
+#: ../src/ui-pref.c:108
 msgid "Vertical"
 msgstr "אנכי"
 
-#: ../src/ui-pref.c:102
+#: ../src/ui-pref.c:109
 msgid "Both"
 msgstr "גם וגם"
 
-#: ../src/ui-pref.c:109
+#: ../src/ui-pref.c:116
 msgid "Tango light"
 msgstr "Tango light"
 
-#: ../src/ui-pref.c:110
+#: ../src/ui-pref.c:117
 msgid "Tango medium"
 msgstr "Tango medium"
 
-#: ../src/ui-pref.c:111
+#: ../src/ui-pref.c:118
 msgid "Tango dark"
 msgstr "Tango dark"
 
-#: ../src/ui-pref.c:116
+#: ../src/ui-pref.c:123
 msgid "m-d-y"
 msgstr "חודש-יום-שנה"
 
-#: ../src/ui-pref.c:117
+#: ../src/ui-pref.c:124
 msgid "d-m-y"
 msgstr "יום-חודש-שנה"
 
-#: ../src/ui-pref.c:118
+#: ../src/ui-pref.c:125
 msgid "y-m-d"
 msgstr "שנה-חודש-יום"
 
-#: ../src/ui-pref.c:123 ../src/ui-pref.c:130
+#: ../src/ui-pref.c:130 ../src/ui-pref.c:138
 msgid "Ignore"
 msgstr "התעלם"
 
-#: ../src/ui-pref.c:131
+#: ../src/ui-pref.c:139
 msgid "Append to Info"
 msgstr "הוסף למידע"
 
-#: ../src/ui-pref.c:132
+#: ../src/ui-pref.c:140
 msgid "Append to Memo"
 msgstr "הוסף למזכר"
 
-#: ../src/ui-pref.c:133
+#: ../src/ui-pref.c:141
 msgid "Append to Payee"
 msgstr "צרף למוטב"
 
-#: ../src/ui-pref.c:469
+#: ../src/ui-pref.c:477
 msgid "System Language"
 msgstr "שפת מערכת"
 
-#: ../src/ui-pref.c:630
+#: ../src/ui-pref.c:638
 msgid "Choose a default HomeBank files folder"
 msgstr "בחירת תיקיית קבצים HomeBank שגרתית"
 
-#: ../src/ui-pref.c:635
+#: ../src/ui-pref.c:643
 msgid "Choose a default import folder"
 msgstr "בחירת תיקיית יבוא שגרתית"
 
-#: ../src/ui-pref.c:640
+#: ../src/ui-pref.c:648
 msgid "Choose a default export folder"
 msgstr "בחירת תיקיית יצוא שגרתית"
 
-#: ../src/ui-pref.c:1101
+#: ../src/ui-pref.c:1133
 msgid "Date options"
 msgstr "אפשרויות תאריך"
 
-#: ../src/ui-pref.c:1105
-msgid "Date order:"
-msgstr "סדר תאריך:"
-
-#: ../src/ui-pref.c:1120
+#: ../src/ui-pref.c:1152
 msgid "OFX/QFX options"
 msgstr "אפשרויות OFX/QFX"
 
-#: ../src/ui-pref.c:1124
-msgid "_Name field:"
-msgstr ""
-
-#: ../src/ui-pref.c:1133
-msgid "_Memo field:"
-msgstr "שדה ת_זכיר:"
-
-#: ../src/ui-pref.c:1147
+#: ../src/ui-pref.c:1179
 msgid "QIF options"
 msgstr "אפשרויות QIF"
 
-#: ../src/ui-pref.c:1151
-msgid "Memos:"
-msgstr "מזכרים"
+#: ../src/ui-pref.c:1196
+msgid "Other options"
+msgstr ""
 
-#: ../src/ui-pref.c:1156
-msgid "_Swap with payees"
-msgstr "_החלף עם מוטבים"
-
-#: ../src/ui-pref.c:1167 ../src/ui-pref.c:1839
-msgid "Files folder"
-msgstr "תיקיית קבצים"
-
-#: ../src/ui-pref.c:1171
-msgid "_Import:"
-msgstr "י_בוא:"
-
-#: ../src/ui-pref.c:1190
-msgid "_Export:"
-msgstr "י_צוא:"
-
-#: ../src/ui-pref.c:1261
+#: ../src/ui-pref.c:1258
 msgid "Initial filter"
 msgstr "מסנן התחלתי"
 
-#: ../src/ui-pref.c:1265 ../src/ui-pref.c:1582 ../src/ui-pref.c:1827
-msgid "Date _range:"
-msgstr "_טווח מועד:"
-
-#: ../src/ui-pref.c:1279
+#: ../src/ui-pref.c:1276
 msgid "Charts options"
 msgstr "אפשרויות תרשים"
 
-#: ../src/ui-pref.c:1283
+#: ../src/ui-pref.c:1280
 msgid "Color scheme:"
 msgstr "ערכת צבעים:"
 
-#: ../src/ui-pref.c:1305
+#: ../src/ui-pref.c:1302
 msgid "Statistics options"
 msgstr "אפשרויות סטטיסטיקה"
 
-#: ../src/ui-pref.c:1309
+#: ../src/ui-pref.c:1306
 msgid "Show by _amount"
 msgstr "הצג לפי _סכום"
 
-#: ../src/ui-pref.c:1314
+#: ../src/ui-pref.c:1311
 msgid "Show _rate column"
 msgstr "הצג טור _אחוזים"
 
-#: ../src/ui-pref.c:1319 ../src/ui-pref.c:1333
+#: ../src/ui-pref.c:1316 ../src/ui-pref.c:1330
 msgid "Show _details"
 msgstr "הצג _פרטים"
 
-#: ../src/ui-pref.c:1329
+#: ../src/ui-pref.c:1326
 msgid "Budget options"
 msgstr "אפשרויות תקציב"
 
-#: ../src/ui-pref.c:1361
+#: ../src/ui-pref.c:1358
 msgid "_Enable"
 msgstr "_אפשר"
 
 #. row++;
-#: ../src/ui-pref.c:1382 ../src/ui-pref.c:1718
+#: ../src/ui-pref.c:1379 ../src/ui-pref.c:1773
 msgid "_Preset:"
 msgstr "_קבועים מראש:"
 
-#: ../src/ui-pref.c:1505
+#: ../src/ui-pref.c:1484
+msgid "User interface"
+msgstr ""
+
+#: ../src/ui-pref.c:1488
+msgid "_Language:"
+msgstr "_שפה:"
+
+#: ../src/ui-pref.c:1496
+msgid "_Date display:"
+msgstr ""
+
+#: ../src/ui-pref.c:1512
 msgid "_Format:"
 msgstr "_פורמט:"
 
-#: ../src/ui-pref.c:1518
+#: ../src/ui-pref.c:1525
 msgid ""
 "%a locale's abbreviated weekday name.\n"
 "%A locale's full weekday name. \n"
@@ -3162,148 +2997,165 @@ msgid ""
 "%m month as a decimal number [01,12]. \n"
 "%p locale's appropriate date representation. \n"
 "%y year without century as a decimal number [00,99]. \n"
-"%Y year with century as a decimal number. \n"
+"%Y year with century as a decimal number."
 msgstr ""
-"‏%a שם מקוצר של יום חול של מקומיות.\n"
-"‏%A שם מלא של יום חול של מקומיות. \n"
-"‏%b שם מקוצר של חודש של מקומיות. \n"
-"‏%B שם מלא של חודש של מקומיות. \n"
-"‏%c ייצוג תאריך ושעה מתאימים למקומיות. \n"
-"‏%C מספר מאה (השנה מחולקת עם 100 וקטועה למספר שלם) בתור מספר עשרוני [00-99]. "
-"\n"
-"‏%d יום של החודש בתור מספר עשרוני [01,31]. \n"
-"‏%D אותו דבר כמו %m/%d/%y. \n"
-"‏%e יום של החודש בתור מספר עשרוני [1,31]; ספרה יחידה באה לפני רווח. \n"
-"‏%j יום של השנה בתור מספר עשרוני [001,366]. \n"
-"‏%m חודש בתור מספר עשרוני [01,12]. \n"
-"‏%p ייצוג תאריך מתאים למקומיות. \n"
-"‏%y שנה בלי מאה בתור מספר עשרוני [00,99]. \n"
-"‏%Y שנה עם מאה בתור מספר עשרוני. \n"
 
-#: ../src/ui-pref.c:1545
+#: ../src/ui-pref.c:1555
+msgid "Fiscal year"
+msgstr "שנת כספים"
+
+#. TRANSLATORS: (fiscal year) starts on
+#: ../src/ui-pref.c:1560
+msgid "Starts _on:"
+msgstr "מתחילה _ביום:"
+
+#: ../src/ui-pref.c:1580
 msgid "Measurement units"
 msgstr "יחידות מידה"
 
-#: ../src/ui-pref.c:1549
+#: ../src/ui-pref.c:1584
 msgid "Use _miles for meter"
 msgstr "השתמש ב_מיילים לצורך מונה"
 
-#: ../src/ui-pref.c:1554
+#: ../src/ui-pref.c:1589
 msgid "Use _gallon for fuel"
 msgstr "השתמש ב_גלונים לצורך דלק"
 
-#: ../src/ui-pref.c:1578
+#: ../src/ui-pref.c:1613
 msgid "Transaction window"
 msgstr "חלון עסקה"
 
-#: ../src/ui-pref.c:1590
-msgid "_Show:"
-msgstr "_הצג:"
+#: ../src/ui-pref.c:1625
+msgid "_Show future:"
+msgstr ""
 
-#: ../src/ui-pref.c:1603
+#. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
+#: ../src/ui-pref.c:1634
+msgid "days ahead"
+msgstr ""
+
+#: ../src/ui-pref.c:1638
 msgid "Hide reconciled transactions"
 msgstr "הסתר עסקאות אשר הושלמו"
 
-#: ../src/ui-pref.c:1608
+#: ../src/ui-pref.c:1643
 msgid "Always show remind transactions"
 msgstr "הצג תמיד עסקאות תזכורת"
 
-#: ../src/ui-pref.c:1618
+#: ../src/ui-pref.c:1653
 msgid "Multiple add"
 msgstr "הוספה מרובה"
 
-#: ../src/ui-pref.c:1622
+#: ../src/ui-pref.c:1657
 msgid "Keep the last date"
 msgstr "שמור את המועד האחרון"
 
-#: ../src/ui-pref.c:1674
-msgid "_Language:"
-msgstr "_שפה:"
+#: ../src/ui-pref.c:1667
+msgid "Memo autocomplete"
+msgstr ""
 
-#: ../src/ui-pref.c:1681
+#: ../src/ui-pref.c:1671
+msgid "Active"
+msgstr ""
+
+#: ../src/ui-pref.c:1679
+msgid "rolling days"
+msgstr ""
+
+#: ../src/ui-pref.c:1730
 msgid "_Toolbar:"
 msgstr "סרגל _כלים:"
 
 #. widget = gtk_check_button_new_with_mnemonic (_("Enable rows in alternating colors"));
 #. data->CM_ruleshint = widget;
-#: ../src/ui-pref.c:1691
+#: ../src/ui-pref.c:1752
 msgid "_Grid line:"
 msgstr "_קווי רשת:"
 
-#: ../src/ui-pref.c:1703
+#: ../src/ui-pref.c:1764
 msgid "Amount colors"
 msgstr "צבעי סכום"
 
-#: ../src/ui-pref.c:1707
+#: ../src/ui-pref.c:1768
 msgid "Uses custom colors"
 msgstr "בחר צבעים מותאמים"
 
-#: ../src/ui-pref.c:1727
+#: ../src/ui-pref.c:1783
 msgid "_Expense:"
 msgstr "_הוצאה:"
 
-#: ../src/ui-pref.c:1737
+#: ../src/ui-pref.c:1795
 msgid "_Income:"
 msgstr "ה_כנסה:"
 
-#: ../src/ui-pref.c:1744
+#: ../src/ui-pref.c:1802
 msgid "_Warning:"
 msgstr "_אזהרה:"
 
-#: ../src/ui-pref.c:1771
+#: ../src/ui-pref.c:1833
+msgid "_Enable automatic backups"
+msgstr ""
+
+#: ../src/ui-pref.c:1838
+msgid "_Number of backups to keep:"
+msgstr ""
+
+#: ../src/ui-pref.c:1853
+msgid "Backup frequency is once a day"
+msgstr ""
+
+#: ../src/ui-pref.c:1881
+msgid "_Wallets:"
+msgstr ""
+
+#: ../src/ui-pref.c:1905
+msgid "Exchange files"
+msgstr ""
+
+#: ../src/ui-pref.c:1909
+msgid "_Import:"
+msgstr "י_בוא:"
+
+#: ../src/ui-pref.c:1928
+msgid "_Export:"
+msgstr "י_צוא:"
+
+#: ../src/ui-pref.c:1968
 msgid "Program start"
 msgstr "התחלת תוכנית"
 
-#: ../src/ui-pref.c:1775
+#: ../src/ui-pref.c:1972
 msgid "Show splash screen"
 msgstr "הצג מסך פתיחה"
 
-#: ../src/ui-pref.c:1780
+#: ../src/ui-pref.c:1977
 msgid "Load last opened file"
 msgstr "פתח קובץ אחרון"
 
-#: ../src/ui-pref.c:1790
+#: ../src/ui-pref.c:1987
 msgid "Update currencies online"
 msgstr ""
 
-#: ../src/ui-pref.c:1800
-msgid "Fiscal year"
-msgstr "שנת כספים"
-
-#. TRANSLATORS: (fiscal year) starts on
-#: ../src/ui-pref.c:1805
-msgid "Starts _on:"
-msgstr "מתחילה _ביום:"
-
-#: ../src/ui-pref.c:1823
+#: ../src/ui-pref.c:1998
 msgid "Main window reports"
 msgstr "דיווחי חלון ראשי"
 
-#: ../src/ui-pref.c:1843
-msgid "_Default:"
-msgstr "_שגרתית:"
-
-#: ../src/ui-pref.c:1948
-msgid "Reset all preferences"
-msgstr "איפוס כל העדפות"
-
-#: ../src/ui-pref.c:1949
-msgid ""
-"Do you really want to reset all\n"
-"preferences to default values?"
+#: ../src/ui-pref.c:2097
+msgid "Reset All Preferences"
 msgstr ""
-"האם אתה בטוח כי ברצונך לאפס\n"
-"את כל ההעדפות לערכיהן השגרתיים?"
 
-#: ../src/ui-pref.c:1950
-msgid "Reset"
-msgstr "אפס"
+#: ../src/ui-pref.c:2098
+msgid ""
+"Do you really want to reset\n"
+"all preferences to default\n"
+"values?"
+msgstr ""
 
-#: ../src/ui-pref.c:1968
+#: ../src/ui-pref.c:2117
 msgid "Preferences"
 msgstr "הגדרות"
 
-#: ../src/ui-pref.c:2190
+#: ../src/ui-pref.c:2350
 msgid ""
 "You will have to restart HomeBank\n"
 "for the language change to take effect."
@@ -3311,54 +3163,80 @@ msgstr ""
 "עליך להתחיל מחדש את HomeBank\n"
 "על מנת שהשפה תיכנס לתוקף."
 
-#: ../src/ui-split.c:374
-msgid "_Remove"
-msgstr "הס_ר"
+#: ../src/ui-split.c:778
+msgid "Remove all"
+msgstr ""
 
-#. sum button must appear only when new split add
-#. #1258821
-#. if(data.splittype == TXN_SPLIT_NEW)
-#: ../src/ui-split.c:379
-msgid "Sum"
-msgstr "סכם"
+#: ../src/ui-split.c:782
+msgid "Remove"
+msgstr ""
 
-#: ../src/ui-split.c:464
-msgid "Sum of splits:"
-msgstr "חישוב של פילוגים:"
+#: ../src/ui-split.c:828
+msgid "Apply"
+msgstr ""
 
-#: ../src/ui-split.c:475
-msgid "Unassigned:"
-msgstr "לא מוקצה:"
+#: ../src/ui-split.c:832
+msgid "Cancel"
+msgstr ""
 
-#: ../src/ui-split.c:490
+#: ../src/ui-split.c:840
 msgid "Transaction amount:"
 msgstr "סכום עסקה:"
 
-#: ../src/ui-transaction.c:50
+#: ../src/ui-split.c:849
+msgid "Unassigned:"
+msgstr "לא מוקצה:"
+
+#: ../src/ui-split.c:864
+msgid "Sum of splits:"
+msgstr "חישוב של פילוגים:"
+
+#: ../src/ui-tag.c:450
+#, c-format
+msgid ""
+"Cannot rename this Tag,\n"
+"from '%s' to '%s',\n"
+"this name already exists."
+msgstr ""
+
+#: ../src/ui-tag.c:575
+msgid "Manage Tags"
+msgstr ""
+
+#: ../src/ui-tag.c:642
+msgid "new tag"
+msgstr ""
+
+#: ../src/ui-transaction.c:49
 msgid "Add transaction"
 msgstr "הוספת עסקה"
 
-#: ../src/ui-transaction.c:51
+#: ../src/ui-transaction.c:50
 msgid "Inherit transaction"
 msgstr "הורשת עסקה"
 
-#: ../src/ui-transaction.c:52
+#: ../src/ui-transaction.c:51
 msgid "Modify transaction"
 msgstr "עריכת עסקה"
 
-#: ../src/ui-transaction.c:60
-msgid "Remind"
-msgstr "הזכר"
+# נוקה
+#: ../src/ui-transaction.c:57 ../src/ui-widgets-data.c:127
+msgid "Cleared"
+msgstr "הוסדר"
 
-#: ../src/ui-transaction.c:638
+#: ../src/ui-transaction.c:58 ../src/ui-widgets-data.c:126
+msgid "Reconciled"
+msgstr "הושלם"
+
+#: ../src/ui-transaction.c:662
 msgid "From acc_ount:"
 msgstr "מתוך _חשבון:"
 
-#: ../src/ui-transaction.c:642 ../src/ui-transaction.c:1086
+#: ../src/ui-transaction.c:666 ../src/ui-transaction.c:1245
 msgid "To acc_ount:"
 msgstr "אל _חשבון:"
 
-#: ../src/ui-transaction.c:730
+#: ../src/ui-transaction.c:750
 msgid ""
 "Do you want to break the internal transfer ?\n"
 "\n"
@@ -3368,15 +3246,35 @@ msgstr ""
 "\n"
 "המשך ימחק עסקת יעד."
 
-#: ../src/ui-transaction.c:1005
+#: ../src/ui-transaction.c:752
+msgid "_Break"
+msgstr ""
+
+#: ../src/ui-transaction.c:1019
 msgid "Show _scheduled"
 msgstr ""
 
-#: ../src/ui-transaction.c:1029 ../src/ui-txn-multi.c:401
+#: ../src/ui-transaction.c:1023
+msgid "Show _all accounts"
+msgstr ""
+
+#: ../src/ui-transaction.c:1049
+msgid "Use a _template"
+msgstr ""
+
+#: ../src/ui-transaction.c:1160
+msgid "_Add & keep"
+msgstr ""
+
+#: ../src/ui-transaction.c:1168
+msgid "_Post"
+msgstr "_ממש"
+
+#: ../src/ui-transaction.c:1201 ../src/ui-txn-multi.c:413
 msgid "_Date:"
 msgstr "_תאריך:"
 
-#: ../src/ui-transaction.c:1035
+#: ../src/ui-transaction.c:1207
 msgid ""
 "Date accepted here are:\n"
 "day,\n"
@@ -3388,7 +3286,7 @@ msgstr ""
 "יום/חודש או חודש/יום,\n"
 "ותאריך מלא על פי הנהוג באזור שלך"
 
-#: ../src/ui-transaction.c:1101 ../src/ui-transaction.c:1110
+#: ../src/ui-transaction.c:1286 ../src/ui-transaction.c:1294
 msgid ""
 "Autocompletion and direct seizure\n"
 "is available"
@@ -3396,86 +3294,272 @@ msgstr ""
 "השלמה אוטומטית\n"
 "הינה זמינה"
 
-#: ../src/ui-transaction.c:1121 ../src/ui-txn-multi.c:509
+#: ../src/ui-transaction.c:1308 ../src/ui-txn-multi.c:521
 msgid "M_emo:"
 msgstr "ת_זכיר:"
 
-#: ../src/ui-transaction.c:1129 ../src/ui-txn-multi.c:493
-msgid "Ta_gs:"
-msgstr "ת_גיות:"
-
-#: ../src/ui-transaction.c:1204
-msgid "_Add & keep"
-msgstr ""
-
-#: ../src/ui-transaction.c:1212
-msgid "_Post"
-msgstr "_ממש"
-
-#: ../src/ui-transaction.c:1256
-msgid "Use a _template"
-msgstr ""
-
-#: ../src/ui-transaction.c:1301
+#: ../src/ui-transaction.c:1335
 msgid "Warning: amount and category sign don't match"
 msgstr ""
 
-#: ../src/ui-txn-multi.c:386
+#: ../src/ui-txn-multi.c:398
 msgid "Multiple edit transactions"
 msgstr "עריכה מרובה של עסקאות"
 
-#: ../src/ui-widgets.c:288
+#: ../src/ui-widgets-data.c:29
+msgid "Template"
+msgstr "תבנית"
+
+#: ../src/ui-widgets-data.c:57
+msgid "Inactive"
+msgstr "לא פעיל"
+
+#: ../src/ui-widgets-data.c:58
+msgid "Include"
+msgstr "הכלל"
+
+#: ../src/ui-widgets-data.c:59
+msgid "Exclude"
+msgstr "הוצא"
+
+#: ../src/ui-widgets-data.c:71
+msgid "(no type)"
+msgstr "(אין טיפוס)"
+
+#: ../src/ui-widgets-data.c:73 ../src/ui-widgets.c:983
+msgid "Cash"
+msgstr "מזומן"
+
+#: ../src/ui-widgets-data.c:74
+msgid "Asset"
+msgstr "נכס"
+
+#: ../src/ui-widgets-data.c:75 ../src/ui-widgets.c:981
+msgid "Credit card"
+msgstr "כרטיס אשראי"
+
+#: ../src/ui-widgets-data.c:76
+msgid "Liability"
+msgstr "התחייבות"
+
+#: ../src/ui-widgets-data.c:99
+msgid "Possible"
+msgstr "אפשרי"
+
+#: ../src/ui-widgets-data.c:100
+msgid "Before"
+msgstr "לפני"
+
+#: ../src/ui-widgets-data.c:101
+msgid "After"
+msgstr "אחרי"
+
+#: ../src/ui-widgets-data.c:118
+msgid "Any Type"
+msgstr "כל טיפוס"
+
+#: ../src/ui-widgets-data.c:123
+msgid "Uncategorized"
+msgstr "לא מסווגת"
+
+#: ../src/ui-widgets-data.c:124
+msgid "Unreconciled"
+msgstr "לא הושלם"
+
+# לא מנוקה
+#: ../src/ui-widgets-data.c:125
+msgid "Uncleared"
+msgstr "לא מוסדר"
+
+#: ../src/ui-widgets-data.c:129
+msgid "Any Status"
+msgstr "כל סטטוס"
+
+#: ../src/ui-widgets-data.c:134
+msgid "This month"
+msgstr "חודש נוכחי"
+
+#: ../src/ui-widgets-data.c:135
+msgid "Last month"
+msgstr "חודש קודם"
+
+#: ../src/ui-widgets-data.c:136
+msgid "This quarter"
+msgstr "רבעון נוכחי"
+
+#: ../src/ui-widgets-data.c:137
+msgid "Last quarter"
+msgstr "רבעון קודם"
+
+#: ../src/ui-widgets-data.c:138
+msgid "This year"
+msgstr "שנה נוכחית"
+
+#: ../src/ui-widgets-data.c:139
+msgid "Last year"
+msgstr "שנה שעברה"
+
+#: ../src/ui-widgets-data.c:141
+msgid "Last 30 days"
+msgstr "30 ימים אחרונים"
+
+#: ../src/ui-widgets-data.c:142
+msgid "Last 60 days"
+msgstr "60 ימים אחרונים"
+
+#: ../src/ui-widgets-data.c:143
+msgid "Last 90 days"
+msgstr "90 ימים אחרונים"
+
+#: ../src/ui-widgets-data.c:144
+msgid "Last 12 months"
+msgstr "12 חודשים אחרונים"
+
+#: ../src/ui-widgets-data.c:146
+msgid "Other..."
+msgstr "אחר..."
+
+#: ../src/ui-widgets-data.c:148
+msgid "All date"
+msgstr "כל התאריכים"
+
+#: ../src/ui-widgets-data.c:156
+msgid "All month"
+msgstr "כל החודשים"
+
+#: ../src/ui-widgets-data.c:157 ../src/ui-widgets-data.c:178
+msgid "January"
+msgstr "ינואר"
+
+#: ../src/ui-widgets-data.c:158 ../src/ui-widgets-data.c:179
+msgid "February"
+msgstr "פברואר"
+
+#: ../src/ui-widgets-data.c:159 ../src/ui-widgets-data.c:180
+msgid "March"
+msgstr "מרץ"
+
+#: ../src/ui-widgets-data.c:160 ../src/ui-widgets-data.c:181
+msgid "April"
+msgstr "אפריל"
+
+#: ../src/ui-widgets-data.c:161 ../src/ui-widgets-data.c:182
+#: ../src/ui-widgets-data.c:202
+msgid "May"
+msgstr "מאי"
+
+#: ../src/ui-widgets-data.c:162 ../src/ui-widgets-data.c:183
+msgid "June"
+msgstr "יוני"
+
+#: ../src/ui-widgets-data.c:163 ../src/ui-widgets-data.c:184
+msgid "July"
+msgstr "יולי"
+
+#: ../src/ui-widgets-data.c:164 ../src/ui-widgets-data.c:185
+msgid "August"
+msgstr "אוגוסט"
+
+#: ../src/ui-widgets-data.c:165 ../src/ui-widgets-data.c:186
+msgid "September"
+msgstr "ספטמבר"
+
+#: ../src/ui-widgets-data.c:166 ../src/ui-widgets-data.c:187
+msgid "October"
+msgstr "אוקטובר"
+
+#: ../src/ui-widgets-data.c:167 ../src/ui-widgets-data.c:188
+msgid "November"
+msgstr "נובמבר"
+
+#: ../src/ui-widgets-data.c:168 ../src/ui-widgets-data.c:189
+msgid "December"
+msgstr "דצמבר"
+
+#: ../src/ui-widgets-data.c:198
+msgid "Jan"
+msgstr "ינו׳"
+
+#: ../src/ui-widgets-data.c:199
+msgid "Feb"
+msgstr "פבר׳"
+
+#: ../src/ui-widgets-data.c:200
+msgid "Mar"
+msgstr "מרץ"
+
+#: ../src/ui-widgets-data.c:201
+msgid "Apr"
+msgstr "אפר׳"
+
+#: ../src/ui-widgets-data.c:203
+msgid "Jun"
+msgstr "יונ׳"
+
+#: ../src/ui-widgets-data.c:204
+msgid "Jul"
+msgstr "יול׳"
+
+#: ../src/ui-widgets-data.c:205
+msgid "Aug"
+msgstr "אוג׳"
+
+#: ../src/ui-widgets-data.c:206
+msgid "Sep"
+msgstr "ספט׳"
+
+#: ../src/ui-widgets-data.c:207
+msgid "Oct"
+msgstr "אוק׳"
+
+#: ../src/ui-widgets-data.c:208
+msgid "Nov"
+msgstr "נוב׳"
+
+#: ../src/ui-widgets-data.c:209
+msgid "Dec"
+msgstr "דצמ׳"
+
+#: ../src/ui-widgets.c:314
 msgid "Search..."
 msgstr ""
 
-#: ../src/ui-widgets.c:820
+#: ../src/ui-widgets.c:982
 msgid "Check"
 msgstr "שיק"
 
-#: ../src/ui-widgets.c:822
+#: ../src/ui-widgets.c:984
 msgid "Transfer"
 msgstr "העברה"
 
-#: ../src/ui-widgets.c:823
+#: ../src/ui-widgets.c:985
 msgid "Internal transfer"
 msgstr "העברה פנימית"
 
-#: ../src/ui-widgets.c:824
+#: ../src/ui-widgets.c:986
 msgid "Debit card"
 msgstr "כרטיס חיוב"
 
-#: ../src/ui-widgets.c:825
+#: ../src/ui-widgets.c:987
 msgid "Standing order"
 msgstr "הוראת קבע"
 
-#: ../src/ui-widgets.c:826
+#: ../src/ui-widgets.c:988
 msgid "Electronic payment"
 msgstr "תשלום אלקטרוני"
 
-#: ../src/ui-widgets.c:827
+#: ../src/ui-widgets.c:989
 msgid "Deposit"
 msgstr "הפקדה"
 
 #. TRANSLATORS: Financial institution fee
-#: ../src/ui-widgets.c:829
+#: ../src/ui-widgets.c:991
 msgid "FI fee"
 msgstr "אגרת FI (מוסד פיננסי)"
 
-#: ../src/ui-widgets.c:830
+#: ../src/ui-widgets.c:992
 msgid "Direct Debit"
 msgstr "הרשאה לחיוב"
 
-#: ../src/ui-widgets.c:957
-msgid "Inactive"
-msgstr "לא פעיל"
-
-#: ../src/ui-widgets.c:958
-msgid "Include"
-msgstr "הכלל"
-
-#: ../src/ui-widgets.c:959
-msgid "Exclude"
-msgstr "הוצא"
-
-#~ msgid "expense"
-#~ msgstr "הוצאה"
+#~ msgid "_Scheduled list"
+#~ msgstr "_רשימת מתוכננות"

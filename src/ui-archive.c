@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -25,6 +25,7 @@
 #include "ui-category.h"
 #include "ui-payee.h"
 #include "ui-split.h"
+#include "ui-tag.h"
 
 #include "gtk-dateentry.h"
 
@@ -44,22 +45,14 @@ extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
 
-gchar *CYA_ARCHIVE_TYPE[] = { 
-	N_("Scheduled"), 
-	N_("Template"), 
-	NULL
-};
-
-
-gchar *CYA_UNIT[] = { N_("Day"), N_("Week"), N_("Month"), N_("Year"), NULL };
-
-gchar *CYA_SCHED_WEEKEND[] = { N_("Possible"), N_("Before"), N_("After"), NULL };
-
+extern gchar *RA_ARC_TYPE[];
+extern gchar *CYA_ARC_UNIT[];
+extern gchar *RA_ARC_WEEKEND[];
 extern gchar *CYA_TXN_STATUS[];
 
+
+
 static GtkWidget *ui_arc_listview_new(void);
-
-
 
 
 static void ui_arc_listview_populate(GtkWidget *view, gint type)
@@ -206,12 +199,21 @@ static void ui_arc_listview_cell_data_function_memo (GtkTreeViewColumn *col,
 {
 Archive *item;
 gchar *name;
+#if MYDEBUG
+gchar *string;
+#endif
 
 	gtk_tree_model_get(model, iter, LST_DEFARC_DATAS, &item, -1);
 
 	name = item->memo;
 
-	g_object_set(renderer, "text", name, NULL);
+	#if MYDEBUG
+		string = g_strdup_printf ("[%d] %s", item->key, name );
+		g_object_set(renderer, "text", string, NULL);
+		g_free(string);
+	#else
+		g_object_set(renderer, "text", name, NULL);
+	#endif	
 }
 
 
@@ -344,11 +346,12 @@ gint type;
 	item->memo = g_strdup_printf(_("(template %d)"), g_list_length(GLOBALS->arc_list) + 1);
 	item->unit = 2;
 
-	type = radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? ARC_TYPE_TEMPLATE : ARC_TYPE_SCHEDULED;
+	type = hbtk_radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? ARC_TYPE_TEMPLATE : ARC_TYPE_SCHEDULED;
 	if( type == ARC_TYPE_SCHEDULED )
 		item->flags |= OF_AUTO;
 
-	GLOBALS->arc_list = g_list_append(GLOBALS->arc_list, item);
+	//GLOBALS->arc_list = g_list_append(GLOBALS->arc_list, item);
+	da_archive_append_new(item);
 
 	gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 	gtk_list_store_set (GTK_LIST_STORE(model), &iter,
@@ -464,6 +467,7 @@ GtkTreeSelection *selection;
 GtkTreeModel		 *model;
 GtkTreeIter			 iter;
 Archive *item;
+gchar *tagstr, *txt;
 
 	DB( g_print("\n[ui_scheduled] set\n") );
 
@@ -481,7 +485,7 @@ Archive *item;
 
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), item->amount);
 		
-		radio_set_active(GTK_CONTAINER(data->RA_status), item->status );
+		hbtk_radio_set_active(GTK_CONTAINER(data->RA_status), item->status );
 
 		
 		/*g_signal_handler_block(data->CM_valid, data->handler_id[HID_ARC_VALID]);
@@ -508,6 +512,12 @@ Archive *item;
 		DB( g_print(" -> PO_accto %d\n", item->kxferacc) );
 		ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_accto), item->kxferacc);
 
+		tagstr = tags_tostring(item->tags);
+		txt = (tagstr != NULL) ? tagstr : "";
+		DB( g_print(" - tags: '%s'\n", txt) );
+		gtk_entry_set_text(GTK_ENTRY(data->ST_tags), txt);
+		g_free(tagstr);
+
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_auto), (item->flags & OF_AUTO) ? 1 : 0);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_every), item->every);
 		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_unit), item->unit);
@@ -515,7 +525,7 @@ Archive *item;
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_limit), (item->flags & OF_LIMIT) ? 1 : 0);
 		DB( g_print("nb_limit = %d %g\n", item->limit, (gdouble)item->limit) );
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_limit), (gdouble)item->limit);
-		radio_set_active(GTK_CONTAINER(data->CY_weekend), item->weekend);
+		hbtk_radio_set_active(GTK_CONTAINER(data->CY_weekend), item->weekend);
 	}
 }
 
@@ -559,7 +569,13 @@ gint active;
 		item->kacc		= ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_acc));
 		item->kxferacc	= ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_accto));
 
-		item->status = radio_get_active(GTK_CONTAINER(data->RA_status));
+		item->status = hbtk_radio_get_active(GTK_CONTAINER(data->RA_status));
+
+		/* tags */
+		txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_tags));
+		DB( g_print(" - tags: '%s'\n", txt) );
+		g_free(item->tags);
+		item->tags = tags_parse(txt);
 
 		//#1615245: moved here, after get combo entry key
 		if( item->paymode != PAYMODE_INTXFER )
@@ -596,7 +612,7 @@ gint active;
 		gtk_spin_button_update(GTK_SPIN_BUTTON(data->NB_limit));
 		item->limit   = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data->NB_limit));
 
-		item->weekend = radio_get_active(GTK_CONTAINER(data->CY_weekend));
+		item->weekend = hbtk_radio_get_active(GTK_CONTAINER(data->CY_weekend));
 		
 		data->change++;
 	}
@@ -748,7 +764,7 @@ gboolean sensitive = TRUE;
 	
 	data->lastarcitem->flags &= ~(OF_SPLIT); //First set flag that Splits are cleared
 	
-	if (da_splits_count(data->lastarcitem->splits) > 0)
+	if (da_splits_length(data->lastarcitem->splits) > 0)
 	{
 	/* disable category if split is set */
 		data->lastarcitem->flags |= OF_SPLIT; //Then set flag that Splits are active
@@ -762,6 +778,27 @@ gboolean sensitive = TRUE;
 		ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_grp), 0);
 	gtk_widget_set_sensitive(data->PO_grp, sensitive);
 
+}
+
+
+//1336928 combobox tags
+static void ui_arc_manage_update_tags(GtkWidget *widget, gpointer user_data)
+{
+struct ui_arc_manage_data *data;
+gchar *newtag;
+	
+	DB( g_print("\n[ui_scheduled] update tags\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	newtag = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(data->CY_tags));
+	ui_gtk_entry_tag_name_append(GTK_ENTRY(data->ST_tags), newtag);
+	g_free(newtag);
+	
+	//revert back to ----
+	g_signal_handlers_block_by_func (G_OBJECT (data->CY_tags), G_CALLBACK (ui_arc_manage_update_tags), NULL);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_tags), 0);
+	g_signal_handlers_unblock_by_func (G_OBJECT (data->CY_tags), G_CALLBACK (ui_arc_manage_update_tags), NULL);
 }
 
 
@@ -809,7 +846,7 @@ Archive *arcitem;
 		}
 		data->lastarcitem = arcitem;
 
-		if (da_splits_count(data->lastarcitem->splits) > 0)
+		if (da_splits_length(data->lastarcitem->splits) > 0)
 		{
 
 			data->lastarcitem->flags |= OF_SPLIT; //Then set flag that Splits are active
@@ -884,7 +921,7 @@ gdouble amount;
 
 	amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
 
-	ui_split_dialog(data->window, data->lastarcitem->splits, amount, &ui_arc_manage_update_post_split);
+	ui_split_dialog(data->window, &data->lastarcitem->splits, amount, &ui_arc_manage_update_post_split);
 
 }
 
@@ -904,7 +941,7 @@ gint type;
 
 	DB( g_print("\n[ui_scheduled] populate listview\n") );
 
-	type = radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? ARC_TYPE_TEMPLATE : ARC_TYPE_SCHEDULED;
+	type = hbtk_radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? ARC_TYPE_TEMPLATE : ARC_TYPE_SCHEDULED;
 	ui_arc_listview_populate(data->LV_arc, type);
 	gtk_tree_view_expand_all (GTK_TREE_VIEW(data->LV_arc));
 }
@@ -956,12 +993,14 @@ static void ui_arc_manage_setup(struct ui_arc_manage_data *data)
 	ui_cat_comboboxentry_populate(GTK_COMBO_BOX(data->PO_grp)  , GLOBALS->h_cat);
 	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_acc)  , GLOBALS->h_acc, ACC_LST_INSERT_NORMAL);
 	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_accto), GLOBALS->h_acc, ACC_LST_INSERT_NORMAL);
+
+	ui_tag_combobox_populate(GTK_COMBO_BOX_TEXT(data->CY_tags));
 }
 
 
 static GtkWidget *ui_arc_manage_create_left_txn(struct ui_arc_manage_data *data)
 {
-GtkWidget *group_grid, *hbox, *label, *widget, *image;
+GtkWidget *group_grid, *hbox, *label, *widget;
 gint row;
 	
 	// group :: Transaction detail
@@ -982,27 +1021,9 @@ gint row;
 		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(widget), GTK_ENTRY_ICON_PRIMARY, _("Toggle amount sign"));
 		gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
 
-		image = gtk_image_new_from_icon_name (ICONNAME_HB_BUTTON_SPLIT, GTK_ICON_SIZE_MENU);
-		widget = gtk_button_new();
-		g_object_set (widget, "image", image, NULL);
+		widget = make_image_button(ICONNAME_HB_BUTTON_SPLIT, _("Transaction splits"));
 		data->BT_split = widget;
 		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-		gtk_widget_set_tooltip_text(widget, _("Transaction splits"));
-
-	row++;
-	label = make_label_widget(_("Pay_ment:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = make_paymode(label);
-	data->NU_mode = widget;
-	gtk_widget_set_halign (widget, GTK_ALIGN_START);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-
-	row++;
-	widget = gtk_check_button_new_with_mnemonic(_("Of notebook _2"));
-	data->CM_cheque = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
-
-	/* info should be here some day */
 
 	row++;
 	label = make_label_widget(_("A_ccount:"));
@@ -1021,6 +1042,30 @@ gint row;
 	gtk_widget_set_hexpand (widget, TRUE);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
+
+	row++;
+	label = make_label_widget(_("Pay_ment:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	widget = make_paymode(label);
+	data->NU_mode = widget;
+	gtk_widget_set_halign (widget, GTK_ALIGN_START);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+
+	gtk_widget_set_margin_top(label, SPACING_SMALL);
+	gtk_widget_set_margin_top(widget, SPACING_SMALL);
+
+	gtk_widget_set_margin_bottom(label, SPACING_SMALL);
+	gtk_widget_set_margin_bottom(widget, SPACING_SMALL);
+
+	row++;
+	widget = gtk_check_button_new_with_mnemonic(_("Of notebook _2"));
+	data->CM_cheque = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+	/* info should be here some day */
+
+
+
 	row++;
 	label = make_label_widget(_("_Payee:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
@@ -1037,10 +1082,13 @@ gint row;
 	gtk_widget_set_hexpand (widget, TRUE);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
+	gtk_widget_set_margin_bottom(label, SPACING_SMALL);
+	gtk_widget_set_margin_bottom(widget, SPACING_SMALL);
+
 	row++;
 	label = make_label_widget(_("_Status:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = make_radio(CYA_TXN_STATUS, TRUE, GTK_ORIENTATION_HORIZONTAL);
+	widget = hbtk_radio_new(CYA_TXN_STATUS, TRUE);
 	data->RA_status = widget;
 	gtk_widget_set_halign (widget, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
@@ -1053,9 +1101,21 @@ gint row;
 	data->ST_word = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
-	/* tags should be here some day */
+	row++;
+	label = make_label_widget(_("Ta_gs:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 1, 1);
 
-
+		widget = make_string(label);
+		data->ST_tags = widget;
+		//gtk_widget_set_hexpand (widget, TRUE);
+		gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	
+		widget = ui_tag_combobox_new(NULL);
+		data->CY_tags = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	
 	return group_grid;
 }
 
@@ -1099,7 +1159,7 @@ gint row;
     gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 	//label = gtk_label_new_with_mnemonic (_("_Unit:"));
     //gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-	widget = make_cycle(label, CYA_UNIT);
+	widget = make_cycle(label, CYA_ARC_UNIT);
 	data->CY_unit = widget;
     gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
 
@@ -1108,7 +1168,7 @@ gint row;
 	data->LB_weekend = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 
-	widget = make_radio(CYA_SCHED_WEEKEND, FALSE, GTK_ORIENTATION_HORIZONTAL);
+	widget = hbtk_radio_new(RA_ARC_WEEKEND, FALSE);
 	data->CY_weekend = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
@@ -1177,15 +1237,14 @@ gint w, h, row;
 	gtk_box_pack_start (GTK_BOX (content_area), table, TRUE, TRUE, 0);
 	
 	row = 0;
-	bbox = make_radio(CYA_ARCHIVE_TYPE, TRUE, GTK_ORIENTATION_HORIZONTAL);
+	bbox = hbtk_radio_new(RA_ARC_TYPE, TRUE);
 	data.RA_type = bbox;
 	gtk_widget_set_halign (bbox, GTK_ALIGN_CENTER);
 	gtk_grid_attach (GTK_GRID (table), bbox, 0, row, 2, 1);
 
-	widget = radio_get_nth_widget(GTK_CONTAINER(bbox), 1);
-	if(widget)
-		g_signal_connect (widget, "toggled", G_CALLBACK (ui_arc_manage_type_changed_cb), &data);
+	hbtk_radio_connect (GTK_CONTAINER(bbox), "toggled", G_CALLBACK (ui_arc_manage_type_changed_cb), &data);
 
+	
 	row++;
 	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 	//gtk_container_set_border_width (GTK_CONTAINER(hpaned), SPACING_MEDIUM);
@@ -1247,6 +1306,7 @@ gint w, h, row;
 	//connect all our signals
 	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
 
+	
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data.LV_arc)), "changed", G_CALLBACK (ui_arc_manage_selection), NULL);
 	g_signal_connect (G_OBJECT (data.ST_amount), "icon-release", G_CALLBACK (ui_arc_manage_toggleamount), NULL);
 
@@ -1259,6 +1319,8 @@ gint w, h, row;
 	//data.handler_id[HID_ARC_VALID]  = g_signal_connect (data.CM_valid , "toggled", G_CALLBACK (ui_arc_manage_togglestatus), GINT_TO_POINTER(HID_ARC_VALID));
 	//data.handler_id[HID_ARC_REMIND] = g_signal_connect (data.CM_remind, "toggled", G_CALLBACK (ui_arc_manage_togglestatus), GINT_TO_POINTER(HID_ARC_REMIND));
 
+	g_signal_connect (data.CY_tags , "changed", G_CALLBACK (ui_arc_manage_update_tags), NULL);
+	
 	g_signal_connect (data.CM_auto, "toggled", G_CALLBACK (ui_arc_manage_scheduled), NULL);
 	g_signal_connect (data.CM_limit, "toggled", G_CALLBACK (ui_arc_manage_scheduled), NULL);
 

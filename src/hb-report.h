@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -21,7 +21,37 @@
 #define __HB_REPORT_H__
 
 
-typedef struct _carcost	CarCost;
+typedef enum
+{
+	REPORT_SRC_CATEGORY,
+	REPORT_SRC_SUBCATEGORY,
+	REPORT_SRC_PAYEE,
+	REPORT_SRC_ACCOUNT,
+	REPORT_SRC_TAG,
+	REPORT_SRC_MONTH,
+	REPORT_SRC_YEAR,
+} HbReportSrc;
+
+
+typedef enum {
+	REPORT_TYPE_ALL,
+	REPORT_TYPE_EXPENSE,
+	REPORT_TYPE_INCOME,
+	REPORT_TYPE_BALANCE
+} HbReportType;
+
+
+typedef enum
+{
+	REPORT_INTVL_DAY,
+	REPORT_INTVL_WEEK,
+	REPORT_INTVL_MONTH,
+	REPORT_INTVL_QUARTER,
+	REPORT_INTVL_HALFYEAR,
+	REPORT_INTVL_YEAR,
+} HbReportIntvl;
+
+typedef struct _carcost CarCost;
 
 struct _carcost
 {
@@ -40,6 +70,14 @@ void da_vehiclecost_free(CarCost *item);
 void da_vehiclecost_destroy(GList *list);
 
 
+gint report_items_count(gint src, guint32 jfrom, guint32 jto);
+gint report_items_get_pos(gint tmpsrc, guint jfrom, Transaction *ope);
+
+gint report_interval_get_pos(gint intvl, guint jfrom, Transaction *ope);
+gint report_interval_count(gint intvl, guint32 jfrom, guint32 jto);
+void report_interval_snprint_name(gchar *s, gint slen, gint intvl, guint32 jfrom, gint idx);
+
+gdouble report_txn_amount_get(Filter *flt, Transaction *txn);
 
 #endif
 

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -94,39 +94,63 @@ typedef struct _filter	Filter;
 
 struct _filter
 {
+
+
+
+
 	guint32		mindate, maxdate;
-	gint		nbdaysfuture;
 	gint		range;
-	gint		type;
-	gint		status;
 
 	gshort		option[FILTER_MAX];
 	gboolean	reconciled;
 	gboolean	cleared;
-	gboolean	forceadd;
-	gboolean	forcechg;
-	gboolean	forceremind;
+
 	gboolean	paymode[NUM_PAYMODE_MAX];
 	gdouble		minamount, maxamount;
 	gboolean	exact;
 	gchar		*info;
 	gchar		*memo;
 	gchar		*tag;
-	gchar		last_tab[8];
+
+	/* unsaved datas */
+	gint		nbdaysfuture;
+	gint		type;			/* ! not sure necessary to store this :: dsp_account: inc/exp used */
+	gint		status;			/* ! not sure necessary to store this :: dsp_account */
+	gboolean	forceadd;
+	gboolean	forcechg;
+	gboolean	forceremind;
+	gchar		last_tab[8];	/* keep last active tab */
 };
 
 
-Filter *da_filter_malloc(void);
-void da_filter_free(Filter *flt);
+Filter *da_flt_malloc(void);
+void da_flt_free(Filter *flt);
 
-void filter_default_all_set(Filter *flt);
+void da_flt_destroy(void);
+void da_flt_new(void);
+
+void da_flt_status_acc_set(Filter *flt, guint32 kacc, gboolean status);
+void da_flt_status_pay_set(Filter *flt, guint32 kpay, gboolean status);
+void da_flt_status_cat_set(Filter *flt, guint32 kcat, gboolean status);
+gboolean da_flt_status_acc_get(Filter *flt, guint32 kacc);
+gboolean da_flt_status_pay_get(Filter *flt, guint32 kpay);
+gboolean da_flt_status_cat_get(Filter *flt, guint32 kcat);
+
+void filter_status_acc_clear_except(Filter *flt, guint32 selkey);
+void filter_status_pay_clear_except(Filter *flt, guint32 selkey);
+void filter_status_cat_clear_except(Filter *flt, guint32 selkey);
+
+void filter_reset(Filter *flt);
 void filter_preset_daterange_set(Filter *flt, gint range, guint32 kacc);
 void filter_preset_type_set(Filter *flt, gint value);
 void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays);
+
+void filter_set_tag_by_id(Filter *flt, guint32 key);
 void filter_preset_status_set(Filter *flt, gint value);
+
 gchar *filter_daterange_text_get(Filter *flt);
 gboolean filter_txn_search_match(gchar *needle, Transaction *txn, gint flags);
 
-gint filter_test(Filter *flt, Transaction *ope);
+gint filter_txn_match(Filter *flt, Transaction *ope);
 
 #endif

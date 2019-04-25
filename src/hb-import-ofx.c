@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2018 Maxime DOYEN
+ *	Copyright (C) 1995-2019 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -44,42 +44,6 @@ extern struct Preferences *PREFS;
 
 
 #ifndef NOOFX
-/*
-**** OFX part
-****
-**** this part is quite weird,but works
-** id is ACCTID
-
-*/
-
-static Account * ofx_get_account_by_id(gchar *id)
-{
-GList *lacc, *list;
-
-	DB( g_print("\n[import] ofx_get_account_by_id\n") );
-	DB( g_print(" -> searching for '%s'\n",id) );
-
-	lacc = list = g_hash_table_get_values(GLOBALS->h_acc);
-	while (list != NULL)
-	{
-	Account *accitem = list->data;
-
-		if( accitem->imported == FALSE)
-		{
-			if(accitem->name && accitem->number && strlen(accitem->number) )
-			{
-				// todo: maybe smartness should be done here
-				if(g_strstr_len(id, -1, accitem->number) != NULL)
-				{
-					return accitem;
-				}
-			}
-		}
-		list = g_list_next(list);
-	}
-	g_list_free(lacc);
-	return NULL;
-}
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -92,27 +56,28 @@ GList *lacc, *list;
  *
  */
 static LibofxProcStatementCallback
-ofx_proc_account_cb(const struct OfxAccountData data, OfxContext *ctx)
+ofx_proc_account_cb(const struct OfxAccountData data, ImportContext *ctx)
 {
-Account *tmp_acc, *dst_acc;
+GenAcc *genacc;
+Account *dst_acc;
 
 	DB( g_print("** ofx_proc_account_cb()\n") );
 
 	if(data.account_id_valid==true)
 	{
-		DB( g_print("  account_id: '%s'\n", data.account_id) );
-		DB( g_print("  account_name: '%s'\n", data.account_name) );
+		DB( g_print("  account_id: %s\n", data.account_id) );
+		DB( g_print("  account_name: %s\n", data.account_name) );
 	}
 
 	//if(data.account_number_valid==true)
 	//{
-		DB( g_print("  account_number: '%s'\n", data.account_number) );
+		DB( g_print("  account_number: %s\n", data.account_number) );
 	//}
 
 
 	if(data.account_type_valid==true)
 	{
-		DB( g_print("  account_type: '%d'\n", data.account_type) );
+		DB( g_print("  account_type: %d\n", data.account_type) );
 		/*
 		enum:
 		OFX_CHECKING 	A standard checking account
@@ -127,34 +92,25 @@ Account *tmp_acc, *dst_acc;
 
 	if(data.currency_valid==true)
 	{
-		DB( g_print("  currency: '%s'\n", data.currency) );
+		DB( g_print("  currency: %s\n", data.currency) );
 	}
 
-
-	//find target account
-	dst_acc = ofx_get_account_by_id( (gchar *)data.account_id );
-	DB( g_print(" ** hb account found result is %x\n", (unsigned int)dst_acc) );
-
-
+	//todo: normally should check for validity here
 	// in every case we create an account here
-	tmp_acc = import_create_account((gchar *)data.account_name, (gchar *)data.account_id);
-	DB( g_print(" -> creating tmp account: %d %s - %x\n", tmp_acc->key, data.account_id, (unsigned int)tmp_acc) );
-
-	if( dst_acc != NULL )
-	{
-		tmp_acc->imp_key = dst_acc->key;
-	}
-
-
-	ctx->curr_acc = tmp_acc;
+	DB( g_print(" -> create generic account: '%s':'%s'\n", data.account_id, data.account_name) );
+	genacc = hb_import_gen_acc_get_next (ctx, FILETYPE_OFX, (gchar *)data.account_name, (gchar *)data.account_id);
 	ctx->curr_acc_isnew = TRUE;
 
+	dst_acc = hb_import_acc_find_existing((gchar *)data.account_name, (gchar *)data.account_id );
+	if( dst_acc != NULL )
+	{
+		genacc->kacc = dst_acc->key;
+		ctx->curr_acc_isnew = FALSE;
+		if(dst_acc->type == ACC_TYPE_CREDITCARD)
+			genacc->is_ccard = TRUE;
+	}
 
-
-
-
-
-
+	ctx->curr_acc = genacc;
 
 	DB( fputs("\n",stdout) );
 	return 0;
@@ -169,11 +125,11 @@ Account *tmp_acc, *dst_acc;
  *
  */
 static LibofxProcStatementCallback
-ofx_proc_statement_cb(const struct OfxStatementData data, OfxContext *ctx)
+ofx_proc_statement_cb(const struct OfxStatementData data, ImportContext *ctx)
 {
 	DB( g_print("** ofx_proc_statement_cb()\n") );
 
-#ifdef MYDEBUG
+#if MYDEBUG == 1
 	if(data.ledger_balance_date_valid==true)
 	{
 	struct tm temp_tm;
@@ -204,154 +160,66 @@ ofx_proc_statement_cb(const struct OfxStatementData data, OfxContext *ctx)
  *
  */
 static LibofxProcStatementCallback
-ofx_proc_transaction_cb(const struct OfxTransactionData data, OfxContext *ctx)
+ofx_proc_transaction_cb(const struct OfxTransactionData data, ImportContext *ctx)
 {
 struct tm *temp_tm;
 GDate date;
-Transaction *newope;
+GenTxn *gentxn;
 
-	DB( g_print("\n** ofx_proc_transaction_cb()\n") );
+	DB( g_print("** ofx_proc_transaction_cb()\n") );
 
-	newope = da_transaction_malloc();
+	gentxn = da_gen_txn_malloc();
 
 // date
-	newope->date = 0;
+	gentxn->julian = 0;
 	if(data.date_posted_valid && (data.date_posted != 0))
 	{
 		temp_tm = localtime(&data.date_posted);
 		if( temp_tm != 0)
 		{
 			g_date_set_dmy(&date, temp_tm->tm_mday, temp_tm->tm_mon+1, temp_tm->tm_year+1900);
-			newope->date = g_date_get_julian(&date);
+			gentxn->julian = g_date_get_julian(&date);
 		}
 	}
 	else if (data.date_initiated_valid && (data.date_initiated != 0))
 	{
 		temp_tm = localtime(&data.date_initiated);
-		g_date_set_dmy(&date, temp_tm->tm_mday, temp_tm->tm_mon+1, temp_tm->tm_year+1900);
-		newope->date = g_date_get_julian(&date);
+		if( temp_tm != 0)
+		{
+			g_date_set_dmy(&date, temp_tm->tm_mday, temp_tm->tm_mon+1, temp_tm->tm_year+1900);
+			gentxn->julian = g_date_get_julian(&date);
+		}
 	}
 
 // amount
 	if(data.amount_valid==true)
 	{
-		newope->amount = data.amount;
+		gentxn->amount = data.amount;
+
 	}
 
 // check number :: The check number is most likely an integer and can probably be converted properly with atoi(). 
 	//However the spec allows for up to 12 digits, so it is not garanteed to work
 	if(data.check_number_valid==true)
 	{
-		newope->info = g_strdup(data.check_number);
+		gentxn->rawinfo = g_strdup(data.check_number);
 	}
 	//todo: reference_number ?Might present in addition to or instead of a check_number. Not necessarily a number 
-
-	//ucfirst
-	//ucword
-
-
 
 // ofx:name = Can be the name of the payee or the description of the transaction 
 	if(data.name_valid==true)
 	{
-	Payee *payitem;
-	gchar *name = NULL;
-
-		//#462919 name to payee or memo
-		DB( g_print(" -> ofxname option: '%d'\n", PREFS->dtex_ofxname) );
-		switch(PREFS->dtex_ofxname)
-		{
-			case 1: //to memo
-				DB( g_print(" -> name to memo: '%s'\n", data.name) );
-				newope->memo = g_strdup(data.name);
-
-				//test
-				//strip_extra_spaces(newope->wording);
-
-				break;
-			case 2: //to payee
-				//manage memo append to payee as well
-				if( (data.memo_valid==true) && (PREFS->dtex_ofxmemo == 3) )
-				{
-					name = g_strjoin(" ", data.name, data.memo, NULL);
-				}
-				else
-					name = g_strdup(data.name);
-				
-				g_strstrip(name);
-				//test
-				//strip_extra_spaces(name);
-
-				#ifndef G_OS_UNIX
-					DB( g_print(" ensure UTF-8\n") );
-
-					name = homebank_utf8_ensure(name);
-				#endif
-		
-				DB( g_print(" -> name to payee: '%s'\n", name) );
-				
-				payitem = da_pay_get_by_name(name);
-				if(payitem == NULL)
-				{
-					DB( g_print(" -> create new payee\n") );
-
-					payitem = da_pay_malloc();
-					payitem->name = name;
-					payitem->imported = TRUE;
-					da_pay_append(payitem);
-
-					if( payitem->imported == TRUE )
-						ctx->ictx->cnt_new_pay += 1;
-				}
-				else
-				{
-					g_free(name);
-				}
-				
-				newope->kpay = payitem->key;
-				break;
-		}
+		gentxn->rawpayee = g_strdup(data.name);
 	}
 
-//memo ( new for v4.2) Extra information not included in name 
+//memo ( new for v4.2) #319202 Extra information not included in name 
 
 	DB( g_print(" -> memo is='%d'\n", data.memo_valid) );
 
+
 	if(data.memo_valid==true)
 	{
-	gchar *old = NULL;
-
-		DB( g_print(" -> oxfmemo option: '%d'\n", PREFS->dtex_ofxmemo) );
-		switch(PREFS->dtex_ofxmemo)
-		{
-			case 1:	//add to info
-				old = newope->info;
-				if(old == NULL)
-					newope->info = g_strdup(data.memo);
-				else
-				{
-					newope->info = g_strjoin(" ", old, data.memo, NULL);
-					g_free(old);
-				}
-				break;
-
-			case 2: //add to description
-				old = newope->memo;
-				if(old == NULL)
-					newope->memo = g_strdup(data.memo);
-				else
-				{
-					newope->memo = g_strjoin(" ", old, data.memo, NULL);
-					g_free(old);
-				}
-
-				DB( g_print(" -> should concatenate ='%s'\n", data.memo) );
-				DB( g_print(" -> old='%s', new ='%s'\n", old, newope->wording) );
-
-				break;
-			//case 3 add to payee is managed above
-		}
-		
+		gentxn->rawmemo = g_strdup(data.memo);
 	}
 
 // payment
@@ -361,57 +229,57 @@ Transaction *newope;
 		{
 			//#740373
 			case OFX_CREDIT:
-				if(newope->amount < 0)
-					newope->amount *= -1;
+				if(gentxn->amount < 0)
+					gentxn->amount *= -1;
 				break;
 			case OFX_DEBIT:
-				if(newope->amount > 0)
-					newope->amount *= -1;
+				if(gentxn->amount > 0)
+					gentxn->amount *= -1;
 				break;
 			case OFX_INT:
-					newope->paymode = PAYMODE_XFER;
+					gentxn->paymode = PAYMODE_XFER;
 				break;
 			case OFX_DIV:
-					newope->paymode = PAYMODE_XFER;
+					gentxn->paymode = PAYMODE_XFER;
 				break;
 			case OFX_FEE:
-					newope->paymode = PAYMODE_FEE;
+					gentxn->paymode = PAYMODE_FEE;
 				break;
 			case OFX_SRVCHG:
-					newope->paymode = PAYMODE_XFER;
+					gentxn->paymode = PAYMODE_XFER;
 				break;
 			case OFX_DEP:
-					newope->paymode = PAYMODE_DEPOSIT;
+					gentxn->paymode = PAYMODE_DEPOSIT;
 				break;
 			case OFX_ATM:
-					newope->paymode = PAYMODE_CASH;
+					gentxn->paymode = PAYMODE_CASH;
 				break;
 			case OFX_POS:
-				if(ctx->curr_acc && ctx->curr_acc->type == ACC_TYPE_CREDITCARD)
-					newope->paymode = PAYMODE_CCARD;
+				if(ctx->curr_acc && ctx->curr_acc->is_ccard == TRUE)
+					gentxn->paymode = PAYMODE_CCARD;
 				else
-					newope->paymode = PAYMODE_DCARD;
+					gentxn->paymode = PAYMODE_DCARD;
 				break;
 			case OFX_XFER:
-					newope->paymode = PAYMODE_XFER;
+					gentxn->paymode = PAYMODE_XFER;
 				break;
 			case OFX_CHECK:
-					newope->paymode = PAYMODE_CHECK;
+					gentxn->paymode = PAYMODE_CHECK;
 				break;
 			case OFX_PAYMENT:
-					newope->paymode = PAYMODE_EPAYMENT;
+					gentxn->paymode = PAYMODE_EPAYMENT;
 				break;
 			case OFX_CASH:
-					newope->paymode = PAYMODE_CASH;
+					gentxn->paymode = PAYMODE_CASH;
 				break;
 			case OFX_DIRECTDEP:
-					newope->paymode = PAYMODE_DEPOSIT;
+					gentxn->paymode = PAYMODE_DEPOSIT;
 				break;
 			case OFX_DIRECTDEBIT:
-					newope->paymode = PAYMODE_XFER;
+					gentxn->paymode = PAYMODE_XFER;
 				break;
 			case OFX_REPEATPMT:
-					newope->paymode = PAYMODE_REPEATPMT;
+					gentxn->paymode = PAYMODE_REPEATPMT;
 				break;
 			case OFX_OTHER:
 
@@ -424,24 +292,20 @@ Transaction *newope;
 
 	if( ctx->curr_acc )
 	{
-
-		newope->kacc = ctx->curr_acc->key;
-		newope->flags |= OF_ADDED;
-
-		if( newope->amount > 0)
-			newope->flags |= OF_INCOME;
+		gentxn->account = g_strdup(ctx->curr_acc->name);
 
 		/* ensure utf-8 here, has under windows, libofx not always return utf-8 as it should */
 	#ifndef G_OS_UNIX
 		DB( g_print(" ensure UTF-8\n") );
 
-		newope->info = homebank_utf8_ensure(newope->info);
-		newope->wording = homebank_utf8_ensure(newope->wording);
+		gentxn->rawinfo = homebank_utf8_ensure(gentxn->rawinfo);
+		gentxn->rawmemo = homebank_utf8_ensure(gentxn->rawmemo);
+		gentxn->rawpayee = homebank_utf8_ensure(gentxn->rawpayee);
 	#endif
 
-		ctx->trans_list = g_list_append(ctx->trans_list, newope);
+		da_gen_txn_append(ctx, gentxn);
 
-		DB( g_print(" insert newope: acc=%d\n", newope->kacc) );
+		DB( g_print(" insert gentxn: acc=%s\n", gentxn->account) );
 
 		if( ctx->curr_acc_isnew == TRUE )
 		{
@@ -451,7 +315,8 @@ Transaction *newope;
 	}
 	else
 	{
-		da_transaction_free(newope);
+		da_gen_txn_free(gentxn);
+		DB( g_print(" no account, insert txn skipped\n") );
 	}
 
 	return 0;
@@ -460,7 +325,7 @@ Transaction *newope;
 
 
 static LibofxProcStatusCallback
-ofx_proc_status_cb(const struct OfxStatusData data, OfxContext *ctx)
+ofx_proc_status_cb(const struct OfxStatusData data, ImportContext *ctx)
 {
 	DB( g_print("** ofx_proc_status_cb()\n") );
 
@@ -491,10 +356,8 @@ ofx_proc_status_cb(const struct OfxStatusData data, OfxContext *ctx)
 }
 
 
-GList *homebank_ofx_import(gchar *filename, ImportContext *ictx)
+GList *homebank_ofx_import(ImportContext *ictx, GenFile *genfile)
 {
-OfxContext ctx = { 0 };
-
 /*extern int ofx_PARSER_msg;
 extern int ofx_DEBUG_msg;
 extern int ofx_WARNING_msg;
@@ -510,28 +373,28 @@ extern int ofx_STATUS_msg;*/
 	ofx_ERROR_msg	= false;
 	ofx_INFO_msg	= false;
 	ofx_STATUS_msg	= false;*/
-	
-	ctx.ictx = ictx;
 
 	LibofxContextPtr libofx_context = libofx_get_new_context();
 
-	ofx_set_status_cb     (libofx_context, (LibofxProcStatusCallback)     ofx_proc_status_cb     , &ctx);
-	ofx_set_statement_cb  (libofx_context, (LibofxProcStatementCallback)  ofx_proc_statement_cb  , &ctx);
-	ofx_set_account_cb    (libofx_context, (LibofxProcAccountCallback)    ofx_proc_account_cb    , &ctx);
-	ofx_set_transaction_cb(libofx_context, (LibofxProcTransactionCallback)ofx_proc_transaction_cb, &ctx);
+	ofx_set_status_cb     (libofx_context, (LibofxProcStatusCallback)     ofx_proc_status_cb     , ictx);
+	ofx_set_statement_cb  (libofx_context, (LibofxProcStatementCallback)  ofx_proc_statement_cb  , ictx);
+	ofx_set_account_cb    (libofx_context, (LibofxProcAccountCallback)    ofx_proc_account_cb    , ictx);
+	ofx_set_transaction_cb(libofx_context, (LibofxProcTransactionCallback)ofx_proc_transaction_cb, ictx);
 
 #ifdef G_OS_WIN32
 	//#932959: windows don't like utf8 path, so convert
-	gchar *file = g_win32_locale_filename_from_utf8(filename);
-	libofx_proc_file(libofx_context, file, AUTODETECT);
-	g_free(file);
+	gchar *filepath = g_win32_locale_filename_from_utf8(genfile->filepath);
+	libofx_proc_file(libofx_context, filepath, AUTODETECT);
+	g_free(filepath);
 #else
-	libofx_proc_file(libofx_context, filename, AUTODETECT);
+	libofx_proc_file(libofx_context, genfile->filepath, AUTODETECT);
 #endif
 
 	libofx_free_context(libofx_context);
 
-	return ctx.trans_list;
+	DB( g_print("ofx nb txn=%d\n", g_list_length(ictx->gen_lst_txn) ));
+
+	return ictx->gen_lst_txn;
 }
 
 #endif

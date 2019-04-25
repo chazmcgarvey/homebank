@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -17,9 +17,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdlib.h>	
-#include <string.h>
-#include <time.h>
+
+//#include <time.h>
+#include <stdlib.h>		/* atoi, atof, atol */
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -52,17 +52,121 @@ static guint dateentry_signals[LAST_SIGNAL] = {0,};
 G_DEFINE_TYPE(GtkDateEntry, gtk_date_entry, GTK_TYPE_BOX)
 
 
+// todo:finish this
+// this is to be able to seizure d or d/m or m/d in the gtkdateentry
+
+/* order of these in the current locale */
+static GDateDMY dmy_order[3] = 
+{
+   G_DATE_DAY, G_DATE_MONTH, G_DATE_YEAR
+};
+
+struct _GDateParseTokens {
+  gint num_ints;
+  gint n[3];
+  guint month;
+};
+
+typedef struct _GDateParseTokens GDateParseTokens;
+
+#define NUM_LEN 10
+
+static void
+hb_date_fill_parse_tokens (const gchar *str, GDateParseTokens *pt)
+{
+  gchar num[4][NUM_LEN+1];
+  gint i;
+  const guchar *s;
+  
+  //DB( g_print("\n[dateentry] fill parse token\n") );
+  
+  /* We count 4, but store 3; so we can give an error
+   * if there are 4.
+   */
+  num[0][0] = num[1][0] = num[2][0] = num[3][0] = '\0';
+  
+  s = (const guchar *) str;
+  pt->num_ints = 0;
+  while (*s && pt->num_ints < 4) 
+    {
+      
+      i = 0;
+      while (*s && g_ascii_isdigit (*s) && i < NUM_LEN)
+        {
+          num[pt->num_ints][i] = *s;
+          ++s; 
+          ++i;
+        }
+      
+      if (i > 0) 
+        {
+          num[pt->num_ints][i] = '\0';
+          ++(pt->num_ints);
+        }
+      
+      if (*s == '\0') break;
+      
+      ++s;
+    }
+  
+  pt->n[0] = pt->num_ints > 0 ? atoi (num[0]) : 0;
+  pt->n[1] = pt->num_ints > 1 ? atoi (num[1]) : 0;
+  pt->n[2] = pt->num_ints > 2 ? atoi (num[2]) : 0;
+
+}
+
+
+static void hb_date_parse_tokens(GDate *date, const gchar *str)
+{
+GDateParseTokens pt;
+
+	hb_date_fill_parse_tokens(str, &pt);
+	DB( g_print(" -> parsetoken return %d values: %d %d %d\n", pt.num_ints, pt.n[0], pt.n[1], pt.n[2]) );
+
+	// initialize with today's date
+	g_date_set_time_t(date, time(NULL));
+	
+	switch( pt.num_ints )
+	{
+		case 1:
+			DB( g_print(" -> seizured 1 number\n") );
+			if(g_date_valid_day(pt.n[0]))
+				g_date_set_day(date, pt.n[0]);
+			break;
+		case 2:
+			DB( g_print(" -> seizured 2 numbers\n") );
+			if( dmy_order[0] != G_DATE_YEAR )
+			{
+				if( dmy_order[0] == G_DATE_DAY )
+				{
+					if(g_date_valid_day(pt.n[0]))
+					    g_date_set_day(date, pt.n[0]);
+					if(g_date_valid_month(pt.n[1]))
+						g_date_set_month(date, pt.n[1]);
+				}
+				else
+				{
+					if(g_date_valid_day(pt.n[1]))
+					    g_date_set_day(date, pt.n[1]);
+					if(g_date_valid_month(pt.n[0]))
+						g_date_set_month(date, pt.n[0]);
+				}
+			}
+			break;
+	}	
+}
 
 
 static void
 update_text(GtkDateEntry *self)
 {
 GtkDateEntryPrivate *priv = self->priv;
-gchar label[24];
+gchar label[256];
 
 	DB( g_print("\n[dateentry] update text\n") );
 
-	g_date_strftime (label, 17 - 1, "%x", priv->date);
+	//%x : The preferred date representation for the current locale without the time.
+	g_date_strftime (label, 256 - 1, "%x", priv->date);
 	gtk_entry_set_text (GTK_ENTRY (priv->entry), label);
 	DB( g_print(" = %s\n", label) );
 }
@@ -86,14 +190,27 @@ GtkDateEntryPrivate *priv = self->priv;
 	priv->lastdate = g_date_get_julian(priv->date);
 }
 
+
 static void
 parse_date(GtkDateEntry *self)
 {
 GtkDateEntryPrivate *priv = self->priv;
-
+const gchar *str;
+	
 	DB( g_print("\n[dateentry] parse date\n") );
 
-	g_date_set_parse (priv->date, gtk_entry_get_text (GTK_ENTRY (priv->entry)));
+	str = gtk_entry_get_text (GTK_ENTRY (priv->entry));
+
+	//1) we parse the string according to the locale
+	g_date_set_parse (priv->date, str);
+	if(!g_date_valid(priv->date) || g_date_get_julian (priv->date) <= HB_MINDATE)
+	{
+		//2) give a try to tokens: day, day/month, month/day
+		hb_date_parse_tokens(priv->date, str);
+	}
+
+	//3) at last if date still invalid, put today's dateentry_signals
+	// we should consider just warn the user here
 	if(!g_date_valid(priv->date))
 	{
 		g_date_set_time_t(priv->date, time(NULL));
@@ -363,10 +480,11 @@ GtkDateEntryPrivate *priv;
                                                   GTK_TYPE_DATE_ENTRY,
                                                   GtkDateEntryPrivate);
 	priv = dateentry->priv;
-	
+
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(dateentry)), GTK_STYLE_CLASS_LINKED);
 
 	priv->entry = gtk_entry_new ();
+	//todo: see if really useful
 	gtk_entry_set_width_chars(GTK_ENTRY(priv->entry), 16);
 	gtk_entry_set_max_width_chars(GTK_ENTRY(priv->entry), 16);
 	gtk_box_pack_start (GTK_BOX (dateentry), priv->entry, TRUE, TRUE, 0);

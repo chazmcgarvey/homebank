@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -78,6 +78,7 @@ Currency *da_cur_get_by_name(gchar *name);
 Currency *da_cur_get_by_iso_code(gchar *iso_code);
 Currency *da_cur_get(guint32 key);
 
+gboolean currency_is_euro(guint32 key);
 gboolean currency_is_used(guint32 key);
 Currency *currency_add_from_user(Currency4217 *curfmt);
 gboolean currency_online_sync(GError **error);

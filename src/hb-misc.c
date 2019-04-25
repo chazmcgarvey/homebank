@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -37,11 +37,11 @@ extern struct Preferences *PREFS;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-static const double fac[7] = { 1, 10, 100, 1000, 10000, 100000, 1000000 };
+static const double fac[9] = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
 
 double hb_amount_round(const double x, unsigned int digits)
 {
-	digits = MAX(digits, 6);
+	digits = MAX(digits, 8);
     return floor((x * fac[digits]) + 0.5) / fac[digits];
 }
 
@@ -386,6 +386,39 @@ end:
 }
 
 
+gint hb_string_utf8_strstr(gchar *haystack, gchar *needle, gboolean exact)
+{
+gint retval = FALSE;
+
+	if( exact )
+	{
+		if( g_strstr_len(haystack, -1, needle) != NULL )
+		{
+			DB( g_print(" found case '%s'\n", needle) );
+			retval = 1;
+		}
+	}
+	else
+	{
+	gchar *nchaystack = g_utf8_casefold(haystack, -1);
+	gchar *ncneedle   = g_utf8_casefold(needle, -1);
+
+		if( g_strrstr(nchaystack, ncneedle) != NULL )
+		{
+			DB( g_print(" found nocase '%s'\n", ncneedle) );
+			retval = 1;
+		}
+
+		g_free(nchaystack);
+		g_free(ncneedle);
+	}
+	return retval;
+}
+
+
+
+
+
 /*
  * compare 2 utf8 string
  */
@@ -546,30 +579,32 @@ gchar **str_array;
 	//DB( g_print("(qif) hb_qif_parser_get_dmy for '%s'\n", string) );
 
 	retval = FALSE;
-	str_array = g_strsplit (string, "/", 3);
-	if( g_strv_length( str_array ) != 3 )
+	if( string )
 	{
-		g_strfreev (str_array);
-		str_array = g_strsplit (string, ".", 3);
-		// fix 371381
-		//todo test
+		str_array = g_strsplit (string, "/", 3);
 		if( g_strv_length( str_array ) != 3 )
 		{
 			g_strfreev (str_array);
-			str_array = g_strsplit (string, "-", 3);
+			str_array = g_strsplit (string, ".", 3);
+			// fix 371381
+			//todo test
+			if( g_strv_length( str_array ) != 3 )
+			{
+				g_strfreev (str_array);
+				str_array = g_strsplit (string, "-", 3);
+			}
 		}
+
+		if( g_strv_length( str_array ) == 3 )
+		{
+			*n1 = atoi(str_array[0]);
+			*n2 = atoi(str_array[1]);
+			*n3 = atoi(str_array[2]);
+			retval = TRUE;
+		}
+
+		g_strfreev (str_array);
 	}
-
-	if( g_strv_length( str_array ) == 3 )
-	{
-		*n1 = atoi(str_array[0]);
-		*n2 = atoi(str_array[1]);
-		*n3 = atoi(str_array[2]);
-		retval = TRUE;
-	}
-
-	g_strfreev (str_array);
-
 	return retval;
 }
 
@@ -637,31 +672,174 @@ guint32 julian = 0;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
 
+gint hb_filename_type_get_by_extension(gchar *filepath)
+{
+gint retval = FILETYPE_UNKNOWN;
+gint str_len;
+
+	g_return_val_if_fail(filepath != NULL, FILETYPE_UNKNOWN);
+
+	str_len = strlen(filepath);
+	if( str_len >= 4 )
+	{
+		if( strcasecmp(filepath + str_len - 4, ".ofx") == 0)
+			retval = FILETYPE_OFX;
+		else
+		if( strcasecmp(filepath + str_len - 4, ".qif") == 0)
+			retval = FILETYPE_QIF;
+		else
+		if( strcasecmp(filepath + str_len - 4, ".qfx") == 0)
+			retval = FILETYPE_OFX;
+		else
+		if( strcasecmp(filepath + str_len - 4, ".csv") == 0)
+			retval = FILETYPE_CSV_HB;
+		else
+		if( strcasecmp(filepath + str_len - 4, ".xhb") == 0)
+			retval = FILETYPE_HOMEBANK;
+	}
+	return retval;
+}
+
+
+static gchar *hb_filename_new_without_extension(gchar *filename)
+{
+gchar *lastdot;
+
+	lastdot = g_strrstr (filename, ".");
+	if(lastdot != NULL)
+	{
+		return g_strndup(filename, strlen(filename) - strlen(lastdot));
+	}
+	return g_strdup(filename);
+}
+
+
+static gint hb_filename_backup_list_sort_func(gchar **a, gchar **b)
+{
+gint da = atoi( *a  + strlen(*a) - 12);
+gint db = atoi( *b  + strlen(*b) - 12);
+
+	return db - da;
+}
+
+
+GPtrArray *hb_filename_backup_list(gchar *filename)
+{
+gchar *dirname, *basename;
+gchar *rawfilename, *pattern;
+GDir *dir;
+const gchar *tmpname;
+GPatternSpec *pspec;
+GPtrArray *array;
+
+	DB( g_print("\n[util] filename backup list\n") );
+
+	dirname = g_path_get_dirname(filename);
+	basename = g_path_get_basename(filename);
+
+	DB( g_print(" dir='%s' base='%s'\n", dirname, basename) );
+
+	rawfilename = hb_filename_new_without_extension(basename);
+	pattern = g_strdup_printf("%s-????????.bak", rawfilename);
+	
+	pspec = g_pattern_spec_new(pattern);
+
+
+	DB( g_print(" pattern='%s'\n", pattern) );
+
+	array = g_ptr_array_new_with_free_func(g_free);
+
+	dir = g_dir_open (PREFS->path_hbfile, 0, NULL);
+	if (dir)
+	{
+		while ((tmpname = g_dir_read_name (dir)) != NULL)
+		{
+		gboolean match;
+	
+			match = g_pattern_match_string(pspec, tmpname);
+			if( match )
+			{
+				DB( g_print(" %d => '%s'\n", match, tmpname) );
+				g_ptr_array_add(array, g_strdup(tmpname));
+			}
+		}
+	}
+	g_free(pattern);
+	g_dir_close (dir);
+	g_pattern_spec_free(pspec);
+	g_free(rawfilename);
+
+	g_free(basename);
+	g_free(dirname);
+	
+	g_ptr_array_sort(array, (GCompareFunc)hb_filename_backup_list_sort_func);
+
+	return array;
+}
+
+
+gchar *hb_filename_backup_get_filtername(gchar *filename)
+{
+gchar *dirname, *basename;
+gchar *rawfilename, *pattern;
+
+	DB( g_print("\n[util] filename backup get filtername\n") );
+
+	dirname = g_path_get_dirname(filename);
+	basename = g_path_get_basename(filename);
+
+	DB( g_print(" dir='%s' base='%s'\n", dirname, basename) );
+
+	rawfilename = hb_filename_new_without_extension(basename);
+
+	pattern = g_strdup_printf("%s*.[Bb][Aa][Kk]", rawfilename);
+
+	g_free(rawfilename);
+	g_free(basename);
+	g_free(dirname);
+	
+	return pattern;
+}
+
+
+gchar *hb_filename_new_for_backup(gchar *filename)
+{
+gchar *rawfilename, *newfilename;
+GDate date;
+
+	DB( g_print("\n[util] filename new for backup\n") );
+
+	rawfilename = hb_filename_new_without_extension(filename);
+
+	g_date_clear(&date, 1);
+	g_date_set_julian (&date, GLOBALS->today);
+
+	newfilename = g_strdup_printf("%s-%04d%02d%02d.bak", 
+				rawfilename,
+				g_date_get_year(&date),
+				g_date_get_month(&date),
+				g_date_get_day(&date)
+				);
+	
+	g_free(rawfilename);
+
+	DB( g_print(" - '%s' => '%s'\n", filename, newfilename) );
+
+	return newfilename;
+}
+
 
 gchar *hb_filename_new_with_extension(gchar *filename, const gchar *extension)
 {
-gchar *lastdot, *fwe;
-gchar *newfilename;
+gchar *rawfilename, *newfilename;
 
-	DB( g_print("\n[util] filename with extension\n") );
+	DB( g_print("\n[util] filename new with extension\n") );
 
-	DB( g_print(" - orig: '%s' => '%s'\n", filename, extension) );
+	rawfilename = hb_filename_new_without_extension(filename);
+	newfilename = g_strdup_printf("%s.%s", rawfilename, extension);
+	g_free(rawfilename);
 
-	//duplicate without extensions
-	lastdot = g_strrstr(filename, ".");
-	if(lastdot != NULL)
-	{
-		fwe = g_strndup(filename, strlen(filename) - strlen(lastdot));
-		DB( g_print(" - fwe: '%s'\n", fwe) );
-		newfilename = g_strdup_printf("%s.%s", fwe, extension);
-		g_free(fwe);
-	}
-	else
-	{
-		newfilename = g_strdup_printf("%s.%s", filename, extension);
-	}
-
-	DB( g_print(" - new: '%s'\n", newfilename) );
+	DB( g_print(" - '%s' => '%s'\n", filename, newfilename) );
 
 	return newfilename;
 }

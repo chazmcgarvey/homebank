@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,7 +20,7 @@
 #include "homebank.h"
 
 #include "ui-dialogs.h"
-#include "list_operation.h"
+#include "list-operation.h"
 
 #include "hb-currency.h"
 #include "ui-currency.h"
@@ -70,6 +70,10 @@ gint retval;
 			actionverb, GTK_RESPONSE_OK,
 			NULL);
 
+		gtk_dialog_set_alternative_button_order (GTK_DIALOG(dialog),
+			GTK_RESPONSE_OK,
+			GTK_RESPONSE_CANCEL,
+			-1);
 
 	if(secondtext)
 	{
@@ -331,6 +335,11 @@ gint crow, row;
 		_("_OK"), GTK_RESPONSE_ACCEPT,
 		NULL);
 
+	gtk_dialog_set_alternative_button_order (GTK_DIALOG(dialog),
+		GTK_RESPONSE_ACCEPT,
+		GTK_RESPONSE_CANCEL,
+		-1);
+
 	data.window = dialog;
 
 	widget = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
@@ -417,12 +426,14 @@ gint crow, row;
 
 
 
-static void ui_file_chooser_add_filter(GtkFileChooser *chooser, gchar *name, gchar *pattern)
+static GtkFileFilter *ui_file_chooser_add_filter(GtkFileChooser *chooser, gchar *name, gchar *pattern)
 {
 	GtkFileFilter *filter = gtk_file_filter_new ();
 	gtk_file_filter_set_name (filter, name);
 	gtk_file_filter_add_pattern (filter, pattern);
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER(chooser), filter);
+
+	return filter;
 }
 
 
@@ -441,6 +452,12 @@ gboolean retval;
 					_("_Save"), GTK_RESPONSE_ACCEPT,
 					NULL);
 
+	gtk_dialog_set_alternative_button_order (GTK_DIALOG(chooser),
+		GTK_RESPONSE_ACCEPT,
+		GTK_RESPONSE_CANCEL,
+		-1);
+
+	
 	//todo: change this ?
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(chooser), PREFS->path_export);
 	ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("QIF files"), "*.[Qq][Ii][Ff]");
@@ -496,6 +513,12 @@ gchar *path;
 					button, GTK_RESPONSE_ACCEPT,
 					NULL);
 
+	gtk_dialog_set_alternative_button_order (GTK_DIALOG(chooser),
+		GTK_RESPONSE_ACCEPT,
+		GTK_RESPONSE_CANCEL,
+		-1);
+
+	
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(chooser), path);
 
 	if(name != NULL)
@@ -529,7 +552,7 @@ gchar *path;
 /*
 ** open a file chooser dialog and store filename to GLOBALS if OK
 */
-gboolean ui_file_chooser_xhb(GtkFileChooserAction action, gchar **storage_ptr)
+gboolean ui_file_chooser_xhb(GtkFileChooserAction action, gchar **storage_ptr, gboolean bakmode)
 {
 GtkWidget *chooser;
 gchar *title;
@@ -540,7 +563,7 @@ gboolean retval;
 
 	if( action == GTK_FILE_CHOOSER_ACTION_OPEN )
 	{
-		title = _("Open HomeBank file");
+		title = (bakmode==FALSE) ? _("Open HomeBank file") : _("Open HomeBank backup file");
 		button = _("_Open");
 	}
 	else
@@ -556,10 +579,32 @@ gboolean retval;
 					button, GTK_RESPONSE_ACCEPT,
 					NULL);
 
-	ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("HomeBank files"), "*.[Xx][Hh][Bb]");
-	//ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("Backup files"), "*.[Bb][Aa][Kk]");
-	ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("All files"), "*");
+	gtk_dialog_set_alternative_button_order (GTK_DIALOG(chooser),
+		GTK_RESPONSE_ACCEPT,
+		GTK_RESPONSE_CANCEL,
+		-1);
 
+	if( bakmode == FALSE )
+	{
+		ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("HomeBank files"), "*.[Xx][Hh][Bb]");
+		ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("All files"), "*");
+	}
+	else
+	{
+		if( (action == GTK_FILE_CHOOSER_ACTION_OPEN) )
+		{
+		gchar *pattern;
+		GtkFileFilter *flt;
+
+			pattern = hb_filename_backup_get_filtername(GLOBALS->xhb_filepath);
+			flt = ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("File backup"), pattern);
+			gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(chooser), flt);
+			g_free(pattern);
+
+			ui_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), _("All backups"), "*.[Bb][Aa][Kk]");
+		}
+	}
+	
 	if( action == GTK_FILE_CHOOSER_ACTION_OPEN )
 	{
 	    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(chooser), PREFS->path_hbfile);
@@ -607,6 +652,11 @@ gboolean retval;
 					_("_Cancel"), GTK_RESPONSE_CANCEL,
 					_("_Open"), GTK_RESPONSE_ACCEPT,
 					NULL);
+
+	gtk_dialog_set_alternative_button_order (GTK_DIALOG(chooser),
+		GTK_RESPONSE_ACCEPT,
+		GTK_RESPONSE_CANCEL,
+		-1);
 
 	DB( g_print(" - set folder %s\n", *storage_ptr) );
 
@@ -673,6 +723,12 @@ GtkWidget *dialog = NULL;
 			_("_Save"), 2,
 			NULL);
 
+	gtk_dialog_set_alternative_button_order (GTK_DIALOG(dialog),
+		0,
+		2,
+		1,
+		-1);
+		  
 		gtk_dialog_set_default_response(GTK_DIALOG( dialog ), 2);
 
 		result = gtk_dialog_run( GTK_DIALOG( dialog ) );
@@ -710,13 +766,19 @@ GtkWidget *label, *widget, *BT_folder, *ST_name;
 gchar *tmpstr;
 gint crow, row;
 
-	dialog = gtk_dialog_new_with_buttons (_("Export PDF"),
+	dialog = gtk_dialog_new_with_buttons (_("Export as PDF"),
 		GTK_WINDOW (parent),
 		0,
 		_("_Cancel"), GTK_RESPONSE_CANCEL,
-		_("_Export"), GTK_RESPONSE_ACCEPT,
+		_("Export as _PDF"), GTK_RESPONSE_ACCEPT,
 		NULL);
 
+	gtk_dialog_set_alternative_button_order (GTK_DIALOG(dialog),
+		GTK_RESPONSE_ACCEPT,
+		GTK_RESPONSE_CANCEL,
+		-1);
+
+	
 	gtk_window_set_default_size (GTK_WINDOW(dialog), HB_MINWIDTH_LIST, -1);
 	
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
@@ -770,14 +832,19 @@ gint crow, row;
 
 	if(result == GTK_RESPONSE_ACCEPT)
 	{
-	gchar *nufolder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(BT_folder));
-	gchar *nufilename = hb_filename_new_with_extension((gchar *)gtk_entry_get_text (GTK_ENTRY(ST_name)), "pdf");
-		
+	gchar *hostname;
+	//#300380 fixed export path problem (was always the export of preference)
+	//not to be used -- gchar *nufolder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(BT_folder));
+	gchar *urifolder  = gtk_file_chooser_get_uri(GTK_FILE_CHOOSER(BT_folder));
+	gchar *nufolder   = g_filename_from_uri(urifolder, &hostname, NULL);
+	gchar *nufilename = hb_filename_new_with_extension((gchar *)gtk_entry_get_text (GTK_ENTRY(ST_name)), "pdf");	
+
 		g_free(*storage_ptr);
 		*storage_ptr = g_build_filename(nufolder, nufilename, NULL);
 
 		g_free(nufilename);
 		g_free(nufolder);
+		g_free(urifolder);
 	}
 
 	// cleanup and destroy
@@ -797,6 +864,7 @@ struct xfer_data
 	GtkWidget   *window;
 	GtkWidget	*radio[2];
 	GtkWidget	*srctreeview;
+	GtkWidget	*lb_several;
 	GtkWidget	*treeview;
 };
 
@@ -807,25 +875,26 @@ struct xfer_data *data;
 GtkTreeSelection *selection;
 gboolean btnew, sensitive;
 gint count;
-	
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(radiobutton), GTK_TYPE_WINDOW)), "inst_data");
 
 	DB( g_print("(import) account type toggle\n") );
+	
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(radiobutton), GTK_TYPE_WINDOW)), "inst_data");
 
 	btnew = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->radio[0]));
-	gtk_widget_set_sensitive(data->treeview, btnew^1);
-
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->treeview));
 	count = gtk_tree_selection_count_selected_rows(selection);
 
+	if(btnew)
+		gtk_tree_selection_unselect_all(selection);
+
+	sensitive = btnew^1;
+	gtk_widget_set_sensitive(data->lb_several, sensitive);
+	gtk_widget_set_sensitive(data->treeview, sensitive);
 	
 	sensitive = (btnew || count > 0) ? TRUE : FALSE;
+	gtk_dialog_set_response_sensitive(GTK_DIALOG(data->window), GTK_RESPONSE_ACCEPT, sensitive);
 
 	DB( g_print("test count %d btnew %d sensitive %d\n", count, btnew, sensitive) );
-
-	
-	gtk_dialog_set_response_sensitive(GTK_DIALOG(data->window), GTK_RESPONSE_ACCEPT, sensitive);
 
 }
 
@@ -835,24 +904,26 @@ static void ui_dialog_transaction_xfer_select_child_selection_cb(GtkTreeSelectio
 }
 
 
-Transaction *ui_dialog_transaction_xfer_select_child(Transaction *stxn, GList *matchlist)
+gint ui_dialog_transaction_xfer_select_child(GtkWindow *parent, Transaction *stxn, GList *matchlist, Transaction **child)
 {
 struct xfer_data data;
-GtkWidget *window, *content, *mainvbox, *vbox, *sw, *label, *LB_several;
+GtkWidget *window, *content, *mainvbox, *vbox, *sw, *label;
 GtkTreeModel		 *newmodel;
 GtkTreeIter			 newiter;
-Transaction *retval = NULL;
 
 	window = gtk_dialog_new_with_buttons (
     			_("Select among possible transactions..."),
-    			GTK_WINDOW (GLOBALS->mainwindow),
+    			parent,
 			    0,
-			    _("_Cancel"),
-			    GTK_RESPONSE_REJECT,
-			    _("_OK"),
-			    GTK_RESPONSE_ACCEPT,
+			    _("_Cancel"), GTK_RESPONSE_CANCEL,
+			    _("_OK"), GTK_RESPONSE_ACCEPT,
 			    NULL);
 
+	gtk_dialog_set_alternative_button_order (GTK_DIALOG(window),
+		GTK_RESPONSE_ACCEPT,
+		GTK_RESPONSE_CANCEL,
+		-1);
+	
 	g_object_set_data(G_OBJECT(window), "inst_data", (gpointer)&data);
 	data.window = window;
 
@@ -895,7 +966,7 @@ Transaction *retval = NULL;
 		"HomeBank has found some transaction that may be " \
 		"the associated transaction for the internal transfer."), 0.0, 0.5
 		);
-	LB_several = label;
+	data.lb_several = label;
 	gimp_label_set_attributes (GTK_LABEL (label),
                              PANGO_ATTR_SCALE,  PANGO_SCALE_SMALL,
                              -1);
@@ -957,12 +1028,12 @@ Transaction *retval = NULL;
 	{
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data.radio[0]), TRUE);
 		gtk_widget_set_sensitive (data.radio[1], FALSE);
-		gtk_widget_set_visible (LB_several, FALSE);
+		gtk_widget_set_visible (data.lb_several, FALSE);
 	}
 	else
 	{
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data.radio[1]), TRUE);
-		gtk_widget_set_visible (LB_several, TRUE);
+		gtk_widget_set_visible (data.lb_several, TRUE);
 	}
 	
 	ui_dialog_transaction_xfer_select_child_cb(data.radio[0], NULL);
@@ -970,6 +1041,7 @@ Transaction *retval = NULL;
 	//wait for the user
 	gint result = gtk_dialog_run (GTK_DIALOG (window));
 
+	*child = NULL;	
 	if(result == GTK_RESPONSE_ACCEPT)
 	{
 	gboolean bnew;
@@ -984,16 +1056,15 @@ Transaction *retval = NULL;
 			selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data.treeview));
 			if (gtk_tree_selection_get_selected(selection, &model, &iter))
 			{
-				gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, &retval, -1);
+				gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, child, -1);
 			}
 		}
-
 	}
 
 	// cleanup and destroy
 	gtk_widget_destroy (window);
 
-	return retval;
+	return result;
 }
 
 

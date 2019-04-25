@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal rulounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *

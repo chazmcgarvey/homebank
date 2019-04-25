@@ -12,7 +12,8 @@
   </div>
   <div class="title">
     <h1>Split transaction dialog</h1>
-    <p>The split dialog is used to edit,modify and manage the <a href="00-lexicon.html#split">split</a> of a transaction.</p>
+    <p>The split dialog is used to edit,modify and manage the <a href="00-lexicon.html#split">split</a> of a transaction.<br>
+    The split number is limited to 60.</p>
     <h2>Dialog call</h2>
     <ul>
       <li>transaction dialog: S button</li>
@@ -21,15 +22,20 @@
   <div class="rounded content">
     <h2>Using split transaction dialog</h2>
     <p><img class="gtkshot right" src="images/dlg-split1.png"></p>
-    <h3><img align="bottom" border="0" height="12" id="graphics5" name="graphics5" src="images/1.png" width="12"> - / + buttons</h3>
+   
+    <h3><img align="bottom" border="0" height="12" id="graphics4" name="graphics4" src="images/1.png" width="12"> split list</h3>
+    <p>The split list shows the split number, Category, Memo and Amount.<br>
+    <img src="images/d-info.png" width="16" height="16" />&nbsp;you can use drag and drop to reorder the split lines</p>
+
+    <h3><img align="bottom" border="0" height="12" id="graphics5" name="graphics5" src="images/2.png" width="12"> remove buttons</h3>
     <table class="widgetinfo">
       <tr>
         <th>-</th>
-        <td>allows to remove a split line</td>
+        <td>remove a single split line</td>
       </tr>
       <tr>
-        <th>+</th>
-        <td>allows to add a split line</td>
+        <th>=</th>
+        <td>remove all splits lines</td>
       </tr>
     </table>
     <h3><img align="bottom" border="0" height="12" id="graphics6" name="graphics6" src="images/2.png" width="12"> Split line details</h3>
@@ -47,20 +53,25 @@
         <td>the amount of the split line</td>
       </tr>
     </table>
+    <p><b>Add</b><br>
+    Enter the different fields, the add button will be enabled when the amount is different of 0.00</p>
+    <p><b>Edit</b><br>
+    Double-clic the split line to edit, then you will get 2 more buttond to Apply, or Cancel your changes</p>
+
     <h3><img align="bottom" border="0" height="12" id="graphics7" name="graphics7" src="images/3.png" width="12"> Split informations</h3>
     <p>Depending on the context, the following will be displayed:</p>
     <table class="widgetinfo">
       <tr>
-        <th>Sum of splits</th>
-        <td>sum of every split lines</td>
+        <th>Transaction amount</th>
+        <td>transaction amount as a remind</td>
       </tr>
       <tr>
         <th>Unassigned</th>
         <td>remaining amount for the split: transaction amount - sum of splits</td>
       </tr>
       <tr>
-        <th>Transaction amount</th>
-        <td>transaction amount as a remind</td>
+        <th>Sum of splits</th>
+        <td>sum of every split lines</td>
       </tr>
     </table>
   </div>

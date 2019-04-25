@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -38,7 +38,11 @@ extern struct HomeBank *GLOBALS;
 
 Archive *da_archive_malloc(void)
 {
-	return g_malloc0(sizeof(Archive));
+Archive *item;
+
+	item = g_malloc0(sizeof(Archive));
+	item->key = 1;
+	return item;
 }
 
 
@@ -51,7 +55,14 @@ Archive *new_item = g_memdup(src_item, sizeof(Archive));
 		//duplicate the string
 		new_item->memo = g_strdup(src_item->memo);
 
-		if( da_splits_clone(src_item->splits, new_item->splits) > 0)
+		//duplicate tags
+		//no g_free here to avoid free the src tags (memdup copie dthe ptr)
+		new_item->tags = tags_clone(src_item->tags);
+
+		//duplicate splits
+		//no g_free here to avoid free the src tags (memdup copie dthe ptr)
+		new_item->splits = da_splits_clone(src_item->splits);
+		if( da_splits_length (new_item->splits) > 0 )
 			new_item->flags |= OF_SPLIT; //Flag that Splits are active
 	}
 	return new_item;
@@ -64,10 +75,8 @@ void da_archive_free(Archive *item)
 	{
 		if(item->memo != NULL)
 			g_free(item->memo);
-
-		da_splits_free(item->splits);
-		//item->flags &= ~(OF_SPLIT); //Flag that Splits are cleared		
-		
+		if(item->splits != NULL)
+			da_split_destroy(item->splits);
 		g_free(item);
 	}
 }
@@ -108,11 +117,70 @@ guint da_archive_length(void)
 }
 
 
+/* append a fav with an existing key (from xml file only) */
+gboolean
+da_archive_append(Archive *item)
+{
+	GLOBALS->arc_list = g_list_append(GLOBALS->arc_list, item);
+	return TRUE;
+}
+
+
+gboolean
+da_archive_append_new(Archive *item)
+{
+	item->key = da_archive_get_max_key() + 1;
+	GLOBALS->arc_list = g_list_append(GLOBALS->arc_list, item);
+	return TRUE;
+}
+
+
+guint32
+da_archive_get_max_key(void)
+{
+GList *tmplist = g_list_first(GLOBALS->arc_list);
+guint32 max_key = 0;
+
+	while (tmplist != NULL)
+	{
+	Archive *item = tmplist->data;
+
+		max_key = MAX(item->key, max_key);		
+		tmplist = g_list_next(tmplist);
+	}
+	
+	return max_key;
+}
+
+
+Archive *
+da_archive_get(guint32 key)
+{
+GList *tmplist;
+Archive *retval = NULL;
+
+	tmplist = g_list_first(GLOBALS->arc_list);
+	while (tmplist != NULL)
+	{
+	Archive *item = tmplist->data;
+
+		if(item->key == key)
+		{
+			retval = item;
+			break;
+		}
+		tmplist = g_list_next(tmplist);
+	}
+	return retval;
+}
+
+
 void da_archive_consistency(Archive *item)
 {
 Account *acc;
 Category *cat;
 Payee *pay;
+guint nbsplit;
 
 	// check category exists
 	cat = da_cat_get(item->kcat);
@@ -122,8 +190,19 @@ Payee *pay;
 		item->kcat = 0;
 		GLOBALS->changes_count++;
 	}
-	
-	split_cat_consistency(item->splits);
+
+	//#1340142 check split category 	
+	if( item->splits != NULL )
+	{
+		nbsplit = da_splits_consistency(item->splits);
+		//# 1416624 empty category when split
+		if(nbsplit > 0 && item->kcat > 0)
+		{
+			g_warning("txn consistency: fixed invalid cat on split txn");
+			item->kcat = 0;
+			GLOBALS->changes_count++;
+		}
+	}
 	
 	// check payee exists
 	pay = da_pay_get(item->kpay);
@@ -166,11 +245,13 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn)
 	arc->kpay		= txn->kpay;
 	arc->kcat		= txn->kcat;
 	if(txn->memo != NULL)
-		arc->memo 	= g_strdup(txn->memo);
+		arc->memo = g_strdup(txn->memo);
 	else
-		arc->memo 	= g_strdup(_("(new archive)"));
+		arc->memo = g_strdup(_("(new archive)"));
 
-	if( da_splits_clone(txn->splits, arc->splits) > 0)
+	arc->tags    = tags_clone(txn->tags);
+	arc->splits  = da_splits_clone(txn->splits);
+	if( da_splits_length (arc->splits) > 0 )
 		arc->flags |= OF_SPLIT; //Flag that Splits are active
 	
 	return arc;
@@ -324,7 +405,7 @@ guint32 nblate = 0;
 		curdate = _sched_date_get_next_post(post_date, arc, curdate);
 		nblate++;
 		// break if over limit or at 11 max (to display +10)
-		if(nblate >= arc->limit || nblate >= 11)
+		if( nblate >= 11 || ( (arc->flags & OF_LIMIT) && (nblate >= arc->limit) ) )
 			break;
 	}
 
@@ -476,7 +557,7 @@ Transaction *txn;
 					txn->date = scheduled_get_postdate(arc, mydate);
 					/* todo: ? fill in cheque number */
 
-					transaction_add(txn);
+					transaction_add(NULL, txn);
 					GLOBALS->changes_count++;
 					count++;
 

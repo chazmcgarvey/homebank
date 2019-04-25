@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -23,47 +23,61 @@
 
 struct defpref_data
 {
+	// common
 	GtkWidget	*window;
-
 	GtkWidget	*LV_page;
 	GtkWidget	*GR_page;
-
 	GtkWidget	*label;
 	GtkWidget	*image;
 	GtkWidget   *BT_clear;
 
+	// general
+	GtkWidget	*CM_show_splash;
+	GtkWidget	*CM_load_last;
+	GtkWidget	*CM_append_scheduled;
+	GtkWidget   *CM_do_update_currency;
+	GtkWidget	*ST_path_hbfile, *BT_path_hbfile;
+	GtkWidget   *CM_bak_is_automatic;
+	GtkWidget	*GR_bak_freq;
+	GtkWidget   *LB_bak_max_num_copies, *NB_bak_max_num_copies;
+	GtkWidget	*CY_daterange_wal;
+	GtkWidget   *NB_fiscyearday;
+	GtkWidget   *CY_fiscyearmonth;
+
+
+
 	GtkWidget	*CY_language;
 	GtkWidget	*CY_toolbar;
 
+
+
+
+
+	GtkWidget	*LB_colors, *CY_colors;
+
 	GtkWidget   *GR_colors;
-	GtkWidget	*CY_colors;
 	GtkWidget	*CM_custom_colors;
-	GtkWidget	*CP_exp_color;
+	GtkWidget	*LB_exp_color, *CP_exp_color;
 	GtkWidget	*CP_inc_color;
 	GtkWidget	*CP_warn_color;
 	//GtkWidget	*CM_ruleshint;
 	GtkWidget	*CY_gridlines;
 
-	GtkWidget	*LV_opecolumns;
+	//GtkWidget	*LV_opecolumns;
 	GtkWidget	*BT_go_up;
 	GtkWidget	*BT_go_down;
 
-	GtkWidget   *NB_fiscyearday;
-	GtkWidget   *CY_fiscyearmonth;
 	
 	GtkWidget	*CM_runwizard;
 
-	GtkWidget	*ST_path_hbfile, *BT_path_hbfile;
 	GtkWidget	*ST_path_import, *BT_path_import;
 	GtkWidget	*ST_path_export, *BT_path_export;
 
-	GtkWidget	*CM_load_last;
-	GtkWidget	*CM_show_splash;
-	GtkWidget	*CM_append_scheduled;
-	GtkWidget   *CM_do_update_currency;
 	GtkWidget	*CM_herit_date;
 	GtkWidget	*CM_hide_reconciled;
 	GtkWidget	*CM_show_remind;
+	GtkWidget	*CM_memoacp;
+	GtkWidget	*ST_memoacp_days;
 
 	GtkWidget	*ST_datefmt;
 	GtkWidget	*LB_date;
@@ -71,7 +85,6 @@ struct defpref_data
 	GtkWidget	*CM_unitismile;
 	GtkWidget	*CM_unitisgal;
 
-	GtkWidget	*CY_daterange_wal;
 	GtkWidget	*CY_daterange_txn;
 	GtkWidget   *ST_datefuture_nbdays;
 	GtkWidget	*CY_daterange_rep;
@@ -116,6 +129,7 @@ struct defpref_data
 	GtkWidget	*CY_dtex_ofxmemo;
 	GtkWidget	*CM_dtex_qifmemo;
 	GtkWidget	*CM_dtex_qifswap;
+	GtkWidget	*CM_dtex_ucfirst;
 
 	gint		country;
 
@@ -145,6 +159,11 @@ typedef struct
 } EuroParams;
 
 
+enum {
+	PRF_PATH_WALLET,
+	PRF_PATH_IMPORT,
+	PRF_PATH_EXPORT,
+};
 
 void free_pref_icons(void);
 void load_pref_icons(void);

@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2018 Maxime DOYEN
+ *	Copyright (C) 1995-2019 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -25,7 +25,7 @@
 #include "ui-payee.h"
 #include "ui-category.h"
 #include "gtk-dateentry.h"
-#include "list_operation.h"
+#include "list-operation.h"
 
 
 /****************************************************************************/
@@ -81,7 +81,7 @@ gchar *tagstr;
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_cat), TRUE);
 				break;
 			case LST_DSPOPE_TAGS:
-				tagstr = transaction_tags_tostring(ope);
+				tagstr = tags_tostring(ope->tags);
 				gtk_entry_set_text(GTK_ENTRY(data->ST_tags), (tagstr != NULL) ? tagstr : "");
 				g_free(tagstr);
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_tags), TRUE);
@@ -161,11 +161,12 @@ GList *selection, *list;
 }
 
 
-gint ui_multipleedit_dialog_apply( GtkWidget *widget, gpointer user_data )
+gint ui_multipleedit_dialog_apply( GtkWidget *widget, gboolean *do_sort )
 {
 struct ui_multipleedit_dialog_data *data;
 GtkTreeModel *model;
 GList *selection, *list;
+gboolean tmp_sort = FALSE;
 guint changes;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
@@ -194,8 +195,15 @@ guint changes;
 		{
 			if( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_date)) )
 			{
+			guint32 olddate = txn->date;
+
 				txn->date = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_date));
 				DB( g_print(" -> date: '%d'\n", txn->date) );
+
+				//#1270687/1792808: sort if date changed
+				if(olddate != txn->date)
+					tmp_sort = TRUE;
+				
 				change = TRUE;
 			}
 		}
@@ -271,7 +279,8 @@ guint changes;
 				txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_tags));
 				if (txt && *txt)
 				{
-					transaction_tags_parse(txn, txt);
+					g_free(txn->tags);
+					txn->tags = tags_parse(txt);
 					DB( g_print(" -> tags: '%s'\n", txt) );
 					change = TRUE;
 				}
@@ -333,6 +342,9 @@ guint changes;
 	g_list_foreach(selection, (GFunc)gtk_tree_path_free, NULL);
 	g_list_free(selection);
 
+	if( do_sort != NULL )
+		*do_sort = tmp_sort;
+	
 	return GLOBALS->changes_count - changes;
 }
 

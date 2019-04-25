@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -21,7 +21,7 @@
 #include "homebank.h"
 
 #include "ui-pref.h"
-#include "dsp_mainwindow.h"
+#include "dsp-mainwindow.h"
 #include "gtk-chart-colors.h"
 
 #include "ui-currency.h"
@@ -55,10 +55,12 @@ enum
 {
 	PREF_GENERAL,
 	PREF_INTERFACE,
-	PREF_COLUMNS,
-	PREF_DISPLAY,
+	PREF_LOCALE,	//old DISPLAY
+	PREF_TXN,		//old COLUMNS
 	PREF_IMPORT,
 	PREF_REPORT,
+	PREF_BACKUP,
+	PREF_FOLDERS,
 	PREF_EURO,
 	PREF_MAX
 };
@@ -67,10 +69,13 @@ enum
 static gchar *pref_iconname[PREF_MAX] = {
 "prf-general",
 "prf-interface",
+"prf-locale",
 "prf-columns",
-"prf-display",
+//"prf-display", 
 "prf-import",
 "prf-report",
+"prf-backup",
+"prf-folder",
 "prf-euro",			// to be renamed
 //"prf_charts.svg"
 };
@@ -78,10 +83,12 @@ static gchar *pref_iconname[PREF_MAX] = {
 static gchar *pref_name[PREF_MAX]    = {
 N_("General"),
 N_("Interface"),
+N_("Locale"),
 N_("Transactions"),
-N_("Display format"),
 N_("Import/Export"),
 N_("Report"),
+N_("Backup"),
+N_("Folders"),
 N_("Euro minor")
 //
 };
@@ -123,6 +130,7 @@ gchar *CYA_IMPORT_OFXNAME[] = {
 N_("Ignore"),
 N_("Memo"),
 N_("Payee"),
+N_("Info"),
 NULL
 };
 
@@ -624,17 +632,17 @@ gboolean r;
 
 	switch( type )
 	{
-		case 1:
+		case PRF_PATH_WALLET:
 			path = &PREFS->path_hbfile;
 			entry = data->ST_path_hbfile;
 			title = _("Choose a default HomeBank files folder");
 			break;
-		case 2:
+		case PRF_PATH_IMPORT:
 			path = &PREFS->path_import;
 			entry = data->ST_path_import;
 			title = _("Choose a default import folder");
 			break;
-		case 3:
+		case PRF_PATH_EXPORT:
 			path = &PREFS->path_export;
 			entry = data->ST_path_export;
 			title = _("Choose a default export folder");
@@ -800,8 +808,26 @@ gboolean sensitive;
 
 	sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_custom_colors));
 
+	gtk_widget_set_sensitive(data->LB_colors	 , sensitive);
+	gtk_widget_set_sensitive(data->CY_colors	 , sensitive);
+	gtk_widget_set_sensitive(data->LB_exp_color	 , sensitive);
 	gtk_widget_set_sensitive(data->GR_colors	 , sensitive);
+}
 
+
+static void defpref_backuptoggle(GtkWidget *widget, gpointer user_data)
+{
+struct defpref_data *data;
+gboolean sensitive;
+
+	DB( g_print("\n[ui-pref] backup toggle\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_bak_is_automatic));
+	gtk_widget_set_sensitive(data->LB_bak_max_num_copies, sensitive);
+	gtk_widget_set_sensitive(data->NB_bak_max_num_copies, sensitive);
+	gtk_widget_set_sensitive(data->GR_bak_freq          , sensitive);
 }
 
 
@@ -910,8 +936,8 @@ GdkRGBA rgba;
 
 	// files/backup
 	gtk_entry_set_text(GTK_ENTRY(data->ST_path_hbfile), PREFS->path_hbfile);
-
-
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_bak_is_automatic), PREFS->bak_is_automatic);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_bak_max_num_copies), PREFS->bak_max_num_copies);
 
 	// interface
 	if(PREFS->language != NULL)
@@ -937,6 +963,8 @@ GdkRGBA rgba;
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_hide_reconciled), PREFS->hidereconciled);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_show_remind), PREFS->showremind);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_herit_date), PREFS->heritdate);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_memoacp), PREFS->txn_memoacp);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_memoacp_days), PREFS->txn_memoacp_days);
 
 	// display format
 	gtk_entry_set_text(GTK_ENTRY(data->ST_datefmt), PREFS->date_format);
@@ -945,6 +973,7 @@ GdkRGBA rgba;
 
 	// import/export
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_dtex_datefmt), PREFS->dtex_datefmt);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_dtex_ucfirst), PREFS->dtex_ucfirst);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_dtex_ofxname), PREFS->dtex_ofxname);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_dtex_ofxmemo), PREFS->dtex_ofxmemo);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_dtex_qifmemo), PREFS->dtex_qifmemo);
@@ -1006,10 +1035,10 @@ const gchar *lang;
 	PREFS->fisc_year_month = 1 + gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_fiscyearmonth));
 
 	// files/backup
-	g_free(PREFS->path_hbfile);
-	PREFS->path_hbfile = g_strdup(gtk_entry_get_text(GTK_ENTRY(data->ST_path_hbfile)));
+	ui_gtk_entry_replace_text(data->ST_path_hbfile, &PREFS->path_hbfile);
 
-
+	PREFS->bak_is_automatic  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_bak_is_automatic));
+	PREFS->bak_max_num_copies = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_bak_max_num_copies));
 
 	g_free(PREFS->language);
 	PREFS->language = NULL;
@@ -1042,6 +1071,8 @@ const gchar *lang;
 	PREFS->hidereconciled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_hide_reconciled));
 	PREFS->showremind = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_show_remind));
 	PREFS->heritdate = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_herit_date));
+	PREFS->txn_memoacp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_memoacp));
+	PREFS->txn_memoacp_days = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_memoacp_days));
 
 	// display format
 	g_free(PREFS->date_format);
@@ -1051,6 +1082,7 @@ const gchar *lang;
 
 	// import/export
 	PREFS->dtex_datefmt = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_dtex_datefmt));
+	PREFS->dtex_ucfirst = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_dtex_ucfirst));
 	PREFS->dtex_ofxname = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_dtex_ofxname));
 	PREFS->dtex_ofxmemo = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_dtex_ofxmemo));
 	PREFS->dtex_qifmemo = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_dtex_qifmemo));
@@ -1084,7 +1116,7 @@ const gchar *lang;
 
 static GtkWidget *defpref_page_import (struct defpref_data *data)
 {
-GtkWidget *content_grid, *group_grid, *hbox, *label, *widget;
+GtkWidget *content_grid, *group_grid, *label, *widget;
 gint crow, row;
 
 	content_grid = gtk_grid_new();
@@ -1121,7 +1153,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 	
 	row = 1;
-	label = make_label_widget(_("_Name field:"));
+	label = make_label_widget(_("OFX _Name:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_cycle(label, CYA_IMPORT_OFXNAME);
@@ -1130,7 +1162,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	row++;
-	label = make_label_widget(_("_Memo field:"));
+	label = make_label_widget(_("OFX _Memo:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_cycle(label, CYA_IMPORT_OFXMEMO);
@@ -1148,62 +1180,27 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 	
 	row = 1;
-	label = make_label_widget(_("Memos:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = gtk_check_button_new_with_mnemonic (_("_Import"));
+	widget = gtk_check_button_new_with_mnemonic (_("_Import memos"));
 	data->CM_dtex_qifmemo = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-	widget = gtk_check_button_new_with_mnemonic (_("_Swap with payees"));
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	widget = gtk_check_button_new_with_mnemonic (_("_Swap memos with payees"));
 	data->CM_dtex_qifswap = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 3, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
-
-	// group :: Files folder
+	// group :: other options
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
 	
-	label = make_label_group(_("Files folder"));
+	label = make_label_group(_("Other options"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
-	
+
 	row = 1;
-	label = make_label_widget(_("_Import:"));
-	//----------------------------------------- l, r, t, b
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_widget_set_hexpand (hbox, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 1, 1);
-
-	widget = make_string(label);
-	data->ST_path_import = widget;
-	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_LINKED);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
-
-	//widget = gtk_button_new_with_label("...");
-	widget = gtk_button_new_from_icon_name(ICONNAME_FOLDER, GTK_ICON_SIZE_BUTTON);
-	data->BT_path_import = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-
-	row++;
-	label = make_label_widget(_("_Export:"));
-	//----------------------------------------- l, r, t, b
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_widget_set_hexpand (hbox, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 1, 1);
-
-	widget = make_string(label);
-	data->ST_path_export = widget;
-	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_LINKED);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
-
-	//widget = gtk_button_new_with_label("...");
-	widget = gtk_button_new_from_icon_name(ICONNAME_FOLDER, GTK_ICON_SIZE_BUTTON);
-	data->BT_path_export = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	widget = gtk_check_button_new_with_mnemonic (_("Sentence _case memo/payee"));
+	data->CM_dtex_ucfirst = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	
 
 	return content_grid;
 }
@@ -1262,7 +1259,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 	
 	row = 1;
-	label = make_label_widget(_("Date _range:"));
+	label = make_label_widget(_("_Range:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_daterange(label, FALSE);
@@ -1470,7 +1467,7 @@ gint crow, row;
 
 static GtkWidget *defpref_page_display (struct defpref_data *data)
 {
-GtkWidget *content_grid, *group_grid, *label, *widget, *expander;
+GtkWidget *content_grid, *group_grid, *label, *widget, *expander, *hbox;
 gint crow, row;
 
 	content_grid = gtk_grid_new();
@@ -1478,30 +1475,40 @@ gint crow, row;
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
 
 	crow = 0;
-	// group :: Date options
+	// group :: General
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
 	
-	label = make_label_group(_("Date"));
+	label = make_label_group(_("User interface"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
+	label = make_label(_("_Language:"), 0, 0.5);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = ui_language_combobox_new(label);
+	data->CY_language = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+	row++;
+	row++;
+	label = make_label(_("_Date display:"), 0, 0.5);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_label(NULL, 0, 0.5);
 	data->LB_date = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	row++;
 	expander = gtk_expander_new_with_mnemonic(_("_Customize"));
-	gtk_grid_attach (GTK_GRID (group_grid), expander, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), expander, 2, row, 1, 1);
 
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	gtk_container_add (GTK_CONTAINER (expander), group_grid);
 
-	row = 1;
+	row++;
 	label = make_label_widget(_("_Format:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
@@ -1528,13 +1535,41 @@ gint crow, row;
 "%m month as a decimal number [01,12]. \n"
 "%p locale's appropriate date representation. \n"
 "%y year without century as a decimal number [00,99]. \n"
-"%Y year with century as a decimal number. \n")
+"%Y year with century as a decimal number.")
 );
 
 	row++;
 	widget = make_label(NULL, 0.0, 0.5);
 	gtk_label_set_markup (GTK_LABEL(widget), "<small><a href=\"http://man7.org/linux/man-pages/man3/strftime.3.html\">online reference</a></small>");
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+
+
+
+	// group :: Fiscal year
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+
+	label = make_label_group(_("Fiscal year"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row = 1;
+	//TRANSLATORS: (fiscal year) starts on
+	label = make_label_widget(_("Starts _on:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 1, 1);
+	widget = make_numeric (label, 1, 28);
+	data->NB_fiscyearday = widget;
+	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	widget = make_cycle (NULL, CYA_MONTHS);
+	data->CY_fiscyearmonth = widget;
+	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+
 
 	// group :: Measurement units
     group_grid = gtk_grid_new ();
@@ -1579,7 +1614,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	label = make_label_widget(_("Date _range:"));
+	label = make_label(_("_Range:"), 0, 0.5);
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_daterange(label, FALSE);
@@ -1587,7 +1622,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	row++;
-	label = make_label_widget(_("_Show:"));
+	label = make_label(_("_Show future:"), 0, 0.5);
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_numeric(NULL, 0, 366);
@@ -1596,18 +1631,18 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	//TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
-	label = make_label(_("days in advance the current date"), 0, 0.5);
+	label = make_label(_("days ahead"), 0, 0.5);
 	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
 
 	row++;
 	widget = gtk_check_button_new_with_mnemonic (_("Hide reconciled transactions"));
 	data->CM_hide_reconciled = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
 	row++;
 	widget = gtk_check_button_new_with_mnemonic (_("Always show remind transactions"));
 	data->CM_show_remind = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
 	// group :: Multiple add
     group_grid = gtk_grid_new ();
@@ -1622,6 +1657,27 @@ gint crow, row;
 	widget = gtk_check_button_new_with_mnemonic (_("Keep the last date"));
 	data->CM_herit_date = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+	// group :: Memo autocomplete
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	
+	label = make_label_group(_("Memo autocomplete"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row = 1;
+	widget = gtk_check_button_new_with_mnemonic (_("Active"));
+	data->CM_memoacp = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+	row++;
+	widget = make_numeric(NULL, 0, 1460);
+	data->ST_memoacp_days = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	label = make_label(_("rolling days"), 0, 0.5);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
 
 	// group :: Column list
 	/*
@@ -1671,24 +1727,29 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	label = make_label_widget(_("_Language:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = ui_language_combobox_new(label);
-	data->CY_language = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-	
-	row++;
-	label = make_label_widget(_("_Toolbar:"));
+	label = make_label(_("_Toolbar:"), 0, 0.5);
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_cycle(label, CYA_TOOLBAR_STYLE);
 	data->CY_toolbar = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 	row++;
 	//widget = gtk_check_button_new_with_mnemonic (_("Enable rows in alternating colors"));
 	//data->CM_ruleshint = widget;
-	label = make_label_widget(_("_Grid line:"));
+	label = make_label(_("_Grid line:"), 0, 0.5);
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_cycle(label, CYA_GRID_LINES);
 	data->CY_gridlines = widget;
@@ -1706,16 +1767,11 @@ gint crow, row;
 	row = 1;
 	widget = gtk_check_button_new_with_mnemonic (_("Uses custom colors"));
 	data->CM_custom_colors = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-    group_grid = gtk_grid_new ();
-	data->GR_colors = group_grid;
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 	row++;
-	label = make_label_widget(_("_Preset:"));
+	label = make_label(_("_Preset:"), 0, 0.5);
+	data->LB_colors = label;
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_cycle(label, CYA_TANGO_COLORS);
@@ -1724,10 +1780,12 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	row++;
-	label = make_label_widget(_("_Expense:"));
+	label = make_label(_("_Expense:"), 0, 0.5);
+	data->LB_exp_color = label;
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	data->GR_colors = hbox;
 	gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 1, 1);
 	
 	widget = gtk_color_button_new ();
@@ -1752,9 +1810,148 @@ gint crow, row;
 }
 
 
-static GtkWidget *defpref_page_general (struct defpref_data *data)
+static GtkWidget *defpref_page_filebackup (struct defpref_data *data)
 {
 GtkWidget *content_grid, *group_grid, *hbox, *label, *widget;
+gint crow, row;
+
+	content_grid = gtk_grid_new();
+	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+
+	crow = 0;
+	// group :: Backup
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	
+	label = make_label_group(_("Backup"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row = 1;
+	widget = gtk_check_button_new_with_mnemonic (_("_Enable automatic backups"));
+	data->CM_bak_is_automatic = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+	row++;
+	label = make_label_widget(_("_Number of backups to keep:"));
+	data->LB_bak_max_num_copies = label;
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = make_numeric (label, 1, 99);
+	data->NB_bak_max_num_copies = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+	row++;
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	data->GR_bak_freq = hbox;
+	//gtk_widget_set_hexpand (hbox, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 2, 1);
+
+		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		label = make_label_widget(_("Backup frequency is once a day"));
+		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+
+	return content_grid;
+}
+
+
+static GtkWidget *defpref_page_folders (struct defpref_data *data)
+{
+GtkWidget *content_grid, *group_grid, *hbox, *label, *widget;
+gint crow, row;
+
+	content_grid = gtk_grid_new();
+	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+
+	crow = 0;
+	// group :: Files folder
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	
+	label = make_label_group(_("HomeBank files"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row = 1;
+	label = make_label_widget(_("_Wallets:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_set_hexpand (hbox, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 1, 1);
+
+	widget = make_string(label);
+	data->ST_path_hbfile = widget;
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_LINKED);
+	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+
+	//widget = gtk_button_new_with_label("...");
+	widget = gtk_button_new_from_icon_name(ICONNAME_FOLDER, GTK_ICON_SIZE_BUTTON);
+	data->BT_path_hbfile = widget;
+	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+
+	// group :: Files folder
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	
+	label = make_label_group(_("Exchange files"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+	
+	row = 1;
+	label = make_label_widget(_("_Import:"));
+	//----------------------------------------- l, r, t, b
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_set_hexpand (hbox, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 1, 1);
+
+	widget = make_string(label);
+	data->ST_path_import = widget;
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_LINKED);
+	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+
+	//widget = gtk_button_new_with_label("...");
+	widget = gtk_button_new_from_icon_name(ICONNAME_FOLDER, GTK_ICON_SIZE_BUTTON);
+	data->BT_path_import = widget;
+	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+	row++;
+	label = make_label_widget(_("_Export:"));
+	//----------------------------------------- l, r, t, b
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_set_hexpand (hbox, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 1, 1);
+
+	widget = make_string(label);
+	data->ST_path_export = widget;
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_LINKED);
+	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+
+	//widget = gtk_button_new_with_label("...");
+	widget = gtk_button_new_from_icon_name(ICONNAME_FOLDER, GTK_ICON_SIZE_BUTTON);
+	data->BT_path_export = widget;
+	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+
+
+	return content_grid;
+}
+
+
+static GtkWidget *defpref_page_general (struct defpref_data *data)
+{
+GtkWidget *content_grid, *group_grid, *label, *widget;
 gint crow, row;
 
 	content_grid = gtk_grid_new();
@@ -1791,28 +1988,6 @@ gint crow, row;
 	data->CM_do_update_currency = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
-	// group :: Fiscal year
-    group_grid = gtk_grid_new ();
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
-
-	label = make_label_group(_("Fiscal year"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
-
-	row = 1;
-	//TRANSLATORS: (fiscal year) starts on
-	label = make_label_widget(_("Starts _on:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 1, 1);
-	widget = make_numeric (label, 1, 28);
-	data->NB_fiscyearday = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-	widget = make_cycle (NULL, CYA_MONTHS);
-	data->CY_fiscyearmonth = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
 	// group :: Main window reports
     group_grid = gtk_grid_new ();
@@ -1824,41 +1999,15 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	label = make_label_widget(_("Date _range:"));
+	label = make_label(_("_Range:"), 0, 0.5);
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_daterange(label, FALSE);
 	data->CY_daterange_wal = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
-	// group :: Files folder
-    group_grid = gtk_grid_new ();
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
-	
-	label = make_label_group(_("Files folder"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
-
-	row = 1;
-	label = make_label_widget(_("_Default:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_widget_set_hexpand (hbox, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 1, 1);
-
-	widget = make_string(label);
-	data->ST_path_hbfile = widget;
-	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_LINKED);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
-
-	//widget = gtk_button_new_with_label("...");
-	widget = gtk_button_new_from_icon_name(ICONNAME_FOLDER, GTK_ICON_SIZE_BUTTON);
-	data->BT_path_hbfile = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-
 	return content_grid;
 }
+
 
 static void defpref_selection(GtkTreeSelection *treeselection, gpointer user_data)
 {
@@ -1935,19 +2084,19 @@ GtkTreeModel *model;
 /*
 ** add an empty new account to our temp GList and treeview
 */
-static void defpref_clear(GtkWidget *widget, gpointer user_data)
+static void defpref_reset(GtkWidget *widget, gpointer user_data)
 {
 struct defpref_data *data;
 gint result;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(defpref_clear) (data=%p)\n", data) );
+	DB( g_print("\n(defpref_reset) (data=%p)\n", data) );
 
 	result = ui_dialog_msg_confirm_alert(
 		GTK_WINDOW(data->window),
-		_("Reset all preferences"),
-		_("Do you really want to reset all\npreferences to default values?"),
-	    _("Reset")
+		_("Reset All Preferences"),
+		_("Do you really want to reset\nall preferences to default\nvalues?"),
+	    _("_Reset")
 		);
 	if( result == GTK_RESPONSE_OK )
 	{
@@ -1968,6 +2117,8 @@ GtkWidget *hbox, *vbox, *sw, *widget, *notebook, *page, *ebox, *image, *label;
       window = gtk_dialog_new_with_buttons (_("Preferences"),
 				GTK_WINDOW(GLOBALS->mainwindow),
 				0,
+				_("_Reset"),
+				55,
 				_("_Cancel"),
 				GTK_RESPONSE_REJECT,
 				_("_OK"),
@@ -2003,11 +2154,7 @@ GtkWidget *hbox, *vbox, *sw, *widget, *notebook, *page, *ebox, *image, *label;
 	data.LV_page = widget;
 	gtk_container_add (GTK_CONTAINER (sw), widget);
 
-	// clear button
-	data.BT_clear = gtk_button_new_with_mnemonic(_("_Reset"));
-	gtk_box_pack_start (GTK_BOX (vbox), data.BT_clear, FALSE, TRUE, 0);
 
-	
 	//right part : notebook
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
@@ -2065,12 +2212,16 @@ GtkWidget *hbox, *vbox, *sw, *widget, *notebook, *page, *ebox, *image, *label;
     gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
 
 /*
-"general",
-"interface",
-"display",
-"help",
-"euro",
-"report"
+	PREF_GENERAL,
+	PREF_INTERFACE,
+	PREF_LOCALE,	//old DISPLAY
+	PREF_TXN,		//old COLUMNS
+	PREF_IMPORT,
+	PREF_REPORT,
+	PREF_BACKUP,
+	PREF_FOLDERS,
+	PREF_EURO,
+	PREF_MAX
 */
 
 	//general
@@ -2081,12 +2232,12 @@ GtkWidget *hbox, *vbox, *sw, *widget, *notebook, *page, *ebox, *image, *label;
 	page = defpref_page_interface(&data);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
 
-	//columns
-	page = defpref_page_transactions(&data);
+	//locale
+	page = defpref_page_display(&data);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
 
-	//display
-	page = defpref_page_display(&data);
+	//transaction
+	page = defpref_page_transactions(&data);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
 
 	//import
@@ -2095,6 +2246,14 @@ GtkWidget *hbox, *vbox, *sw, *widget, *notebook, *page, *ebox, *image, *label;
 
 	//report
 	page = defpref_page_reports(&data);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
+
+	//backup
+	page = defpref_page_filebackup(&data);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
+
+	//folders
+	page = defpref_page_folders(&data);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
 
 	//euro
@@ -2108,12 +2267,13 @@ GtkWidget *hbox, *vbox, *sw, *widget, *notebook, *page, *ebox, *image, *label;
 	//connect all our signals
 	g_signal_connect (window, "destroy", G_CALLBACK (gtk_widget_destroyed), &window);
 
-	g_signal_connect (G_OBJECT (data.BT_clear), "clicked", G_CALLBACK (defpref_clear), NULL);
+	g_signal_connect (data.CM_bak_is_automatic, "toggled", G_CALLBACK (defpref_backuptoggle), NULL);
+
 	
 	//path selector
-	g_signal_connect (data.BT_path_hbfile, "pressed", G_CALLBACK (defpref_pathselect), GINT_TO_POINTER(1));
-	g_signal_connect (data.BT_path_import, "pressed", G_CALLBACK (defpref_pathselect), GINT_TO_POINTER(2));
-	g_signal_connect (data.BT_path_export, "pressed", G_CALLBACK (defpref_pathselect), GINT_TO_POINTER(3));
+	g_signal_connect (data.BT_path_hbfile, "pressed", G_CALLBACK (defpref_pathselect), GINT_TO_POINTER(PRF_PATH_WALLET));
+	g_signal_connect (data.BT_path_import, "pressed", G_CALLBACK (defpref_pathselect), GINT_TO_POINTER(PRF_PATH_IMPORT));
+	g_signal_connect (data.BT_path_export, "pressed", G_CALLBACK (defpref_pathselect), GINT_TO_POINTER(PRF_PATH_EXPORT));
 
 	g_signal_connect (data.CM_custom_colors, "toggled", G_CALLBACK (defpref_colortoggle), NULL);
     g_signal_connect (data.CY_colors, "changed", G_CALLBACK (defpref_colorpreset), NULL);
@@ -2193,6 +2353,10 @@ GtkWidget *hbox, *vbox, *sw, *widget, *notebook, *page, *ebox, *image, *label;
 				}
 
 				g_free(old_lang);
+				break;
+
+			case 55:
+				defpref_reset (window, NULL);
 				break;
 		}
 	

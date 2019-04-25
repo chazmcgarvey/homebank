@@ -1,9 +1,11 @@
 datasdir   = $(datadir)/homebank/datas
 datas_DATA = \
+hb-categories-cy.csv \
 hb-categories-de.csv \
 hb-categories-en.csv \
 hb-categories-es.csv \
 hb-categories-fr.csv \
+hb-categories-hu.csv \
 hb-categories-it.csv \
 hb-categories-lt.csv \
 hb-categories-pt.csv \

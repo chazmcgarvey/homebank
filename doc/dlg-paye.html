@@ -13,6 +13,8 @@
   <div class="title">
     <h1>Payees dialog</h1>
     <p>The payees dialog is used to add, edit and manage the <a href="00-lexicon.html#payees">payees</a> of the current wallet.</p>
+    <p>For each payee, you can define a default <i>payment mode</i> and <i>category</i>, later, into the transaction/scheduled/template dialog, if you choose a payee, the payment mode will be filled (if set to (none)), as well as the category (if it is empty).
+    </p>
     <h2>Dialog call</h2>
     <ul>
       <li>main window menu: Manage / Payees...</li>
@@ -21,28 +23,9 @@
   </div>
   <div class="rounded content">
     <h2>Using payees dialog</h2>
-    <p class="gtkshot right"><img src="images/dlg-payee1.png"><br>
-    <img align="right" src="images/dlg-payee2.png"></p>
-    <h3><img src="images/1.png"> Payee name</h3>
-    <p>type a new payee name here and press return to add.</p>
-    <h3><img src="images/2.png"> Payee list</h3>
-    <p>display payee name, usage count and default category</p>
-    <h3><img src="images/3.png"> Buttons</h3>
-    <table class="widgetinfo">
-      <tr>
-        <th>Edit</th>
-        <td>open a dialog to edit the selected payee</td>
-      </tr>
-      <tr>
-        <th>Merge</th>
-        <td>merge the current payee to a new one you will select</td>
-      </tr>
-      <tr>
-        <th>Delete</th>
-        <td>delete the selected payee</td>
-      </tr>
-    </table>
-    <h3><img src="images/4.png"> Menu Button</h3>
+    <p class="gtkshot right"><img src="images/dlg-payee.png"></p>
+
+    <h3><img src="images/1.png"> Search & Menu Button</h3>
     <table class="widgetinfo">
       <tr>
         <th>Import</th>
@@ -58,6 +41,39 @@
       </tr>
     </table>
     <p>Please refer to <a href="misc-csvformat.html#pay">CSV file format</a> for the file description.</p>
+
+    <h3><img src="images/2.png"> Quick search</h3>
+    <p>The quick search area with input and close</p>
+
+
+    <h3><img src="images/3.png"> Payee list</h3>
+    <p>display payee name, usage count and default category<br>
+    the usage count:</p>
+    <ul>
+    <li>transaction
+    <li>template/scheduled transaction
+    <li>assignment rule
+    </ul>
+
+    <h3><img src="images/4.png"> Payee name</h3>
+    <p>type a new payee name here and press return to add.</p>
+    <h3><img src="images/5.png"> Buttons</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Add</th>
+        <td>toggle the payee name widget to visible/invisible</td>
+      </tr>
+      <tr>
+        <th>Merge</th>
+        <td>merge the current payee to a new one you will select</td>
+      </tr>
+      <tr>
+        <th>Delete</th>
+        <td>delete the selected payee</td>
+      </tr>
+    </table>
+    <p><b>Edit</b><br>
+      To edit a payee, double click on it.</p>
   </div>
 </body>
 </html>
