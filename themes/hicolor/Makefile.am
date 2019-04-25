@@ -10,18 +10,11 @@ public_icons = \
 	$(NULL)
 
 private_icons = \
-	hicolor_actions_16x16_btn-collapse.png \
-	hicolor_actions_16x16_btn-expand.png \
-	hicolor_status_16x16_btn-split.png \
-	hicolor_status_16x16_flt-exclude.png \
-	hicolor_status_16x16_flt-inactive.png \
-	hicolor_status_16x16_flt-include.png \
-	hicolor_actions_16x16_hb-ope-auto.png \
-	hicolor_actions_16x16_hb-ope-budget.png \
-	hicolor_actions_16x16_hb-ope-edit.png \
-	hicolor_actions_16x16_hb-ope-cleared.png \
-	hicolor_actions_16x16_hb-ope-remind.png \
-	hicolor_actions_16x16_hb-ope-reconciled.png \
+	hicolor_actions_16x16_hb-ope-future.png \
+	hicolor_actions_24x24_hb-document-new.png \
+	hicolor_actions_24x24_hb-document-open.png \
+	hicolor_actions_24x24_hb-document-save.png \
+	hicolor_actions_24x24_hb-document-save-as.png \
 	hicolor_actions_24x24_hb-account.png \
 	hicolor_actions_24x24_hb-archive.png \
 	hicolor_actions_24x24_hb-assign.png \
@@ -58,6 +51,18 @@ private_icons = \
 	hicolor_actions_24x24_hb-view-list.png \
 	hicolor_actions_24x24_hb-view-pie.png \
 	hicolor_actions_24x24_hb-view-stack.png \
+	hicolor_actions_24x24_hb-view-refresh.png \
+	hicolor_status_16x16_flt-exclude.png \
+	hicolor_status_16x16_flt-inactive.png \
+	hicolor_status_16x16_flt-include.png \
+	hicolor_status_16x16_hb-ope-new.png \
+	hicolor_status_16x16_hb-ope-similar.png \
+	hicolor_status_16x16_hb-ope-auto.png \
+	hicolor_status_16x16_hb-ope-budget.png \
+	hicolor_status_16x16_hb-ope-edit.png \
+	hicolor_status_16x16_hb-ope-cleared.png \
+	hicolor_status_16x16_hb-ope-remind.png \
+	hicolor_status_16x16_hb-ope-reconciled.png \
 	hicolor_status_16x16_pm-none.png \
 	hicolor_status_16x16_pm-ccard.png \
 	hicolor_status_16x16_pm-dcard.png \
@@ -71,16 +76,19 @@ private_icons = \
 	hicolor_status_16x16_pm-deposit.png \
 	hicolor_status_16x16_pm-fifee.png \
 	hicolor_status_16x16_pm-directdebit.png \
+	hicolor_status_48x48_prf-backup.png \
 	hicolor_status_48x48_prf-columns.png \
-	hicolor_status_48x48_prf-display.png \
 	hicolor_status_48x48_prf-euro.png \
+	hicolor_status_48x48_prf-folder.png \
 	hicolor_status_48x48_prf-general.png \
 	hicolor_status_48x48_prf-import.png \
 	hicolor_status_48x48_prf-interface.png \
+	hicolor_status_48x48_prf-locale.png \
 	hicolor_status_48x48_prf-report.png \
+	hicolor_actions_scalable_edit-split-symbolic.svg \
 	hicolor_actions_scalable_toggle-sign-symbolic.svg \
-	hicolor_actions_scalable_btn-collapse-symbolic.svg \
-	hicolor_actions_scalable_btn-expand-symbolic.svg \
+	hicolor_actions_scalable_list-collapse-all-symbolic.svg \
+	hicolor_actions_scalable_list-expand-all-symbolic.svg \
 	$(NULL)
 
 

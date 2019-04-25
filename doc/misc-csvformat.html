@@ -28,11 +28,21 @@
     <table class="widgetinfo">
       <tr>
         <th>date</th>
-        <td>format must be DD-MM-YY</td>
+        <td>the date format can be:
+          <ul>
+            <li>y-m-d
+            <li>m-d-y
+            <li>d-m-y
+          </ul>
+          <p>year can be 2 or 4 digits<br>
+          separators can be / . or -</td>
       </tr>
       <tr>
         <th>payment</th>
-        <td>from 0=none to 10=FI fee</td>
+        <td>
+          <img src="images/d-warn.png">&nbsp;<span class="warning">You cannot import transaction with payment type=5 (internal xfer)</span><br>
+          from 0=none to 10=FI fee (in the same order of the list)<br>
+        </td>
       </tr>
       <tr>
         <th>info</th>
@@ -62,8 +72,8 @@
     </table>
     <p>Example:</p>
     <pre class="csvexample">
-15-02-04;0;;;Some cash;-40,00;Bill:Withdrawal of cash;tag1
-15-02-04;1;;;Internet DSL;-45,00;Inline service/Internet;tag2
+15-02-04;0;;;Some cash;-40,00;Bill:Withdrawal of cash;tag1 tag2
+15-02-04;1;;;Internet DSL;-45,00;Inline service/Internet;tag2 my-tag3
 ... 
 </pre>
     <p class="top"><a href="#top">↑ Back to Top</a></p>

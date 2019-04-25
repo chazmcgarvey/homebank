@@ -1,0 +1,153 @@
+1;-;Adók
+2;-;Illetékek
+2;-;Kommunális adó
+2;-;Telekadó
+2;-;Építményadó
+1;-;Közlekedés, gépjárművek
+2;-;Bérlet
+2;-;Jegy
+2;-;Üzemanyag
+2;-;Parkolás
+2;-;Autópálya-matrica
+2;-;Súlyadó
+2;-;KGFB, Casco
+2;-;Műszaki vizsga
+2;-;Szerviz
+2;-;Autóápolás
+1;-;Banki ügyek
+2;-;Szolgáltatási díj
+2;-;Kártyadíjak
+2;-;Kamatfizetés
+2;-;Életbiztosítás
+2;-;Kötvények
+2;-;Babakötvény
+2;-;Nyugdíjpénztár
+2;-;Megtakarítások
+2;-;Részvények, állampapírok
+2;-;Lekötött betétek
+2;-;Lakástakarék
+2;-;Befektetések
+1;-;Hitel
+2;-;Hitelkártya
+2;-;Áruvásárlási hitel
+2;-;Lakáshitel
+2;-;Diákhitel
+2;-;Jelzáloghitel
+2;-;Lízing
+2;-;Személyi kölcsön
+1;-;Kommunikáció
+2;-;Telefon
+2;-;Mobil
+2;-;Internet
+2;-;TV
+2;-;Újság
+1;-;Ház, lakás
+2;-;Lakbér
+2;-;Bútorok
+2;-;Háztartási textilek
+2;-;Berendezési tárgyak
+2;-;Elektronikai cikkek
+2;-;Konyhai eszközök
+2;-;Otthonbiztosítás
+2;-;Felújítás
+1;-;Háztartás, rezsi
+2;-;Közös költség
+2;-;Szemétszállítás
+2;-;Víz- és csatornadíj
+2;-;Földgáz vagy olaj
+2;-;Áram
+2;-;Fűtés
+2;-;Távhő
+2;-;Tűzifa
+2;-;Takarítószerek
+2;-;Bejárónő
+1;-;Gyerekek
+2;-;Játékok
+2;-;Óvodai csoportpénz
+2;-;Osztálypénz
+2;-;Zsebpénz
+2;-;Közétkeztetés
+2;-;Bébiszitter
+2;-;Tartásdíj
+1;-;Közösség
+2;-;Tagdíj
+2;-;Klubtagság
+1;-;Szórakozás és kultúra
+2;-;Hobbi
+2;-;Utazás
+2;-;Szállás
+2;-;Nyaralás
+2;-;Belépők
+2;-;Kulturális események
+2;-;Mozi
+2;-;Színház, hangversenyek, opera
+2;-;Sportesemények
+2;-;Étterem, cukrászda
+1;-;Sport
+2;-;Bérletek, tagsági díjak
+2;-;Sportcikkek
+2;-;Sportruházat
+1;-;Ruházat
+2;-;Napi ruházat
+2;-;Alkalmi öltözet
+2;-;Évszakfüggő ruházat
+2;-;Munkaruházat
+2;-;Cipő
+1;-;Testápolás
+2;-;Higiéniai cikkek
+2;-;Testápolási cikkek
+2;-;Kozmetikumok
+2;-;Szépségszalon
+1;-;Egészség
+2;-;Magánorvos
+2;-;Magánkórház
+2;-;Gyógyszerek
+2;-;Fogászat
+2;-;Optikus
+1;-;Tanulás
+2;-;Tanszerek
+2;-;Tandíj
+2;-;Tanfolyamdíjak
+2;-;Különórák
+2;-;Könyvek
+1;-;Étkezés
+2;-;Élelmiszer-vásárlás
+2;-;Menza
+2;-;Nasi és italok
+2;-;Élvezeti cikkek
+1;-;Adományok és ajándékok
+2;-;Jótékonysági adomány
+2;-;Havi rendszeres adakozás
+2;-;Ajándékok
+2;-;Tized
+1;-;Állattartás, kedvencek
+2;-;Állatorvos
+2;-;Eledel
+2;-;Alom
+1;+;Munkáltatás
+2;+;Fizetés
+2;+;Béren kívüli juttatás
+2;+;Bónusz
+2;+;Jutalom
+2;+;Cafeteria
+1;+;Állami és önkormányzati juttatások
+2;+;Önkormányzati segély
+2;+;Munkanélküli segély
+2;+;Segély
+2;+;Családi pótlék
+2;+;Anyasági támogatás
+2;+;CSED
+2;+;GYED
+2;+;GYES
+2;+;Gyermeknevelési támogatás
+2;+;Táppénz
+2;+;Nyugdíj
+1;+;Ajándékok
+1;+;Családi támogatások
+2;+;Szülői támogatás
+2;+;Tartásdíj
+1;+;Ösztöndíj
+1;+;Befektetési nyereségek
+2;+;Osztalék
+2;+;Jutalék
+2;+;Bérleti díj

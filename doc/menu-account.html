@@ -16,8 +16,7 @@
 		<ul class="toc">
 			<li><a href="#menu1">Account</a></li>
 			<li><a href="#menu2">Transaction</a></li>
-			<li><a href="#menu3">Actions</a></li>
-			<li><a href="#menu4">Tools</a></li>
+			<li><a href="#menu3">Tools</a></li>
 		</ul>
 	</div>
 	<div class="rounded content">
@@ -31,6 +30,10 @@
 				<th>Export CSV...</th>
 				<td>export transaction to a CSV file, see <a href="misc-csvformat.html">CSV file format</a></td>
 			</tr>
+			<tr>
+				<th>Export PDF...</th>
+				<td>export transaction to a PDF file (for print purpose)</td>
+			</tr>			
 			<tr>
 				<th>Close...</th>
 				<td>close the account window</td>
@@ -78,8 +81,16 @@
 		</table>
 	</div>
 	<div class="rounded content">
-		<h2><a id="menu4" name="menu4"></a>Tools</h2>
+		<h2><a id="menu3" name="menu3"></a>Tools</h2>
 		<table class="widgetinfo">
+			<tr>
+				<th>Mark dulicate</th>
+				<td>toggle the view to duplicate finder mode</a></td>
+			</tr>
+			<tr>
+				<th>Check internal transfer...</th>
+				<td>run a consistency check on internal transfer for this account</td>
+			</tr>
 			<tr>
 				<th>Filter...</th>
 				<td>open the <a href="dlg-filt.html">filter dialog</a></td>
@@ -87,10 +98,6 @@
 			<tr>
 				<th>Auto. assignments</th>
 				<td>run automatic assignment rules on the current account, see <a href="use-auto_assign.html">automatic assignments</a></td>
-			</tr>
-			<tr>
-				<th>Check internal transfer...</th>
-				<td>run a consistency check on internal transfer for this account</td>
 			</tr>
 			<tr>
 				<th>Convert to euro...</th>

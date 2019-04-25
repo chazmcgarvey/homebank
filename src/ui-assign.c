@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal ruleing for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -36,11 +36,8 @@
 extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
-gchar *CYA_ASG_FIELD[] = { 
-	N_("Memo"), 
-	N_("Payee"), 
-	NULL
-};
+
+extern gchar *CYA_ASG_FIELD[];
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -319,7 +316,7 @@ gint active;
 	{
 		data->change++;
 
-		item->field = radio_get_active(GTK_CONTAINER(data->CY_field));
+		item->field = hbtk_radio_get_active(GTK_CONTAINER(data->CY_field));
 		
 		/*txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_text));
 		if (txt && *txt)
@@ -343,17 +340,17 @@ gint active;
 		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_re));
 		if(active == 1) item->flags |= ASGF_REGEX;
 
-		active = radio_get_active (GTK_CONTAINER(data->RA_pay));
+		active = hbtk_radio_get_active (GTK_CONTAINER(data->RA_pay));
 		if(active == 1) item->flags |= ASGF_DOPAY;
 		else 
 			if(active == 2) item->flags |= ASGF_OVWPAY;
 		
-		active = radio_get_active (GTK_CONTAINER(data->RA_cat));
+		active = hbtk_radio_get_active (GTK_CONTAINER(data->RA_cat));
 		if(active == 1) item->flags |= ASGF_DOCAT;
 		else 
 			if(active == 2) item->flags |= ASGF_OVWCAT;
 		
-		active = radio_get_active (GTK_CONTAINER(data->RA_mod));
+		active = hbtk_radio_get_active (GTK_CONTAINER(data->RA_mod));
 		if(active == 1) item->flags |= ASGF_DOMOD;
 		else 
 			if(active == 2) item->flags |= ASGF_OVWMOD;
@@ -392,7 +389,7 @@ gint active;
 
 		DB( g_print(" -> set rul id=%d\n", item->key) );
 
-		radio_set_active(GTK_CONTAINER(data->CY_field), item->field);
+		hbtk_radio_set_active(GTK_CONTAINER(data->CY_field), item->field);
 		
 		gtk_entry_set_text(GTK_ENTRY(data->ST_text), item->text);
 
@@ -402,19 +399,19 @@ gint active;
 		active = 0;
 		if(item->flags & ASGF_DOPAY) active = 1;
 		else if(item->flags & ASGF_OVWPAY) active = 2;
-		radio_set_active(GTK_CONTAINER(data->RA_pay), active);
+		hbtk_radio_set_active(GTK_CONTAINER(data->RA_pay), active);
 		ui_pay_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_pay), item->kpay);
 
 		active = 0;
 		if(item->flags & ASGF_DOCAT) active = 1;
 		else if(item->flags & ASGF_OVWCAT) active = 2;
-		radio_set_active(GTK_CONTAINER(data->RA_cat), active);
+		hbtk_radio_set_active(GTK_CONTAINER(data->RA_cat), active);
 		ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_cat), item->kcat);
 
 		active = 0;
 		if(item->flags & ASGF_DOMOD) active = 1;
 		else if(item->flags & ASGF_OVWMOD) active = 2;
-		radio_set_active(GTK_CONTAINER(data->RA_mod), active);
+		hbtk_radio_set_active(GTK_CONTAINER(data->RA_mod), active);
 		gtk_combo_box_set_active(GTK_COMBO_BOX(data->NU_mod), item->paymode);
 
 	}
@@ -438,15 +435,15 @@ gboolean sensitive;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	sensitive = (radio_get_active (GTK_CONTAINER(data->RA_pay)) > 0) ? TRUE : FALSE;
+	sensitive = (hbtk_radio_get_active (GTK_CONTAINER(data->RA_pay)) > 0) ? TRUE : FALSE;
 	gtk_widget_set_sensitive(data->LB_pay, sensitive);
 	gtk_widget_set_sensitive(data->PO_pay, sensitive);
 	
-	sensitive = (radio_get_active (GTK_CONTAINER(data->RA_cat)) > 0) ? TRUE : FALSE;
+	sensitive = (hbtk_radio_get_active (GTK_CONTAINER(data->RA_cat)) > 0) ? TRUE : FALSE;
 	gtk_widget_set_sensitive(data->LB_cat, sensitive);
 	gtk_widget_set_sensitive(data->PO_cat, sensitive);
 	
-	sensitive = (radio_get_active (GTK_CONTAINER(data->RA_mod)) > 0) ? TRUE : FALSE;
+	sensitive = (hbtk_radio_get_active (GTK_CONTAINER(data->RA_mod)) > 0) ? TRUE : FALSE;
 	gtk_widget_set_sensitive(data->LB_mod, sensitive);
 	gtk_widget_set_sensitive(data->NU_mod, sensitive);
 
@@ -800,7 +797,7 @@ gint w, h, crow, row;
 	row++;
 	label = make_label_widget(_("Search _in:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_radio(CYA_ASG_FIELD, FALSE, GTK_ORIENTATION_HORIZONTAL);
+	widget = hbtk_radio_new(CYA_ASG_FIELD, FALSE);
 	data.CY_field = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 
@@ -838,7 +835,7 @@ gint w, h, crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 3, 1);
 
 	row++;
-	widget = make_radio(CYA_ASG_ACTION, FALSE, GTK_ORIENTATION_HORIZONTAL);
+	widget = hbtk_radio_new(CYA_ASG_ACTION, FALSE);
 	data.RA_pay = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
@@ -867,7 +864,7 @@ gint w, h, crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 3, 1);
 
 	row++;
-	widget = make_radio(CYA_ASG_ACTION, FALSE, GTK_ORIENTATION_HORIZONTAL);
+	widget = hbtk_radio_new(CYA_ASG_ACTION, FALSE);
 	data.RA_cat = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
@@ -895,7 +892,7 @@ gint w, h, crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 3, 1);
 
 	row++;
-	widget = make_radio(CYA_ASG_ACTION, FALSE, GTK_ORIENTATION_HORIZONTAL);
+	widget = hbtk_radio_new (CYA_ASG_ACTION, FALSE);
 	data.RA_mod = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
@@ -920,17 +917,11 @@ gint w, h, crow, row;
 
 	g_signal_connect (G_OBJECT (data.ST_text), "changed", G_CALLBACK (ui_asg_manage_rename), NULL);
 
-	widget = radio_get_nth_widget(GTK_CONTAINER(data.RA_pay), 0);
-	if(widget)
-		g_signal_connect (widget, "toggled", G_CALLBACK (ui_asg_manage_update_assignments), NULL);
+	hbtk_radio_connect (GTK_CONTAINER(data.RA_pay), "toggled", G_CALLBACK (ui_asg_manage_update_assignments), NULL);
 
-	widget = radio_get_nth_widget(GTK_CONTAINER(data.RA_cat), 0);
-	if(widget)
-		g_signal_connect (widget, "toggled", G_CALLBACK (ui_asg_manage_update_assignments), NULL);
+	hbtk_radio_connect (GTK_CONTAINER(data.RA_cat), "toggled", G_CALLBACK (ui_asg_manage_update_assignments), NULL);
 
-	widget = radio_get_nth_widget(GTK_CONTAINER(data.RA_mod), 0);
-	if(widget)
-		g_signal_connect (widget, "toggled", G_CALLBACK (ui_asg_manage_update_assignments), NULL);
+	hbtk_radio_connect (GTK_CONTAINER(data.RA_mod), "toggled", G_CALLBACK (ui_asg_manage_update_assignments), NULL);
 
 	g_signal_connect (G_OBJECT (data.BT_add), "clicked", G_CALLBACK (ui_asg_manage_add), NULL);
 	g_signal_connect (G_OBJECT (data.BT_rem), "clicked", G_CALLBACK (ui_asg_manage_delete), NULL);

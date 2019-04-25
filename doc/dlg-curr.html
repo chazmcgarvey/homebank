@@ -28,7 +28,7 @@
       <tr>
         <th>Update on-line</th>
         <td>Trigger to update exchanges rate on-line. This is disabled when you only have a single currency.<br>
-        This is an extra feature relying on third party (>= 5.1.7: fixer.io, prior was yahoo).</td>
+        <img src="images/d-warn.png">&nbsp;<span class="warning">This is an extra feature relying on third party, your currencies may not be supported. See additional notes below.</span></td>
       </tr>
     </table>
     <h3><img align="bottom" border="0" height="12" id="graphics6" name="graphics6" src="images/2.png" width="12"> Currencies list</h3>
@@ -64,6 +64,14 @@
     - the ISO code is optional, but you cannot change it easily later on<br>
     - the ISO code must be 3 chars long and cannot be the same an existing ISO 4217 one
     </p>
+
+    <h3>Online Currency Update</h3>
+    <p>Here are the list of third party API service current and used in the past.<br>
+    - current:     https://frankfurter.app<br>
+    - until 5.2:   https://api.fixer.io, see <a href="https://bugs.launchpad.net/homebank/+bug/1785210">#1785210</a><br>
+    - until 5.1.7: yahoo, see <a href="https://bugs.launchpad.net/homebank/+bug/1730527">#1730527</a><br>
+  </p>
+
   </div>
   <div class="rounded content">
     <h2>Using the edit currency dialog</h2>

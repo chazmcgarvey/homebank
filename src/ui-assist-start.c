@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2018 Maxime DOYEN
+ *	Copyright (C) 1995-2019 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -20,7 +20,7 @@
 #include "homebank.h"
 
 #include "ui-assist-start.h"
-#include "dsp_mainwindow.h"
+#include "dsp-mainwindow.h"
 #include "ui-currency.h"
 
 
@@ -35,7 +35,7 @@
 /* our global datas */
 extern struct HomeBank *GLOBALS;
 
-extern gchar *CYA_ACC_TYPE[];
+extern HbKvData CYA_ACC_TYPE[];
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -84,8 +84,7 @@ gdouble value;
 	}
 
 	item->kcur = GLOBALS->kcur;
-	
-	item->type = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_type));
+	item->type = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_type));
 
 	item->number = g_strdup(gtk_entry_get_text(GTK_ENTRY(data->ST_number)));
 
@@ -373,7 +372,7 @@ gint row;
 	gtk_box_pack_start (GTK_BOX (box), table, TRUE, TRUE, 0);
 
 	row = 0;
-	label = make_label_group(_("Informations"));
+	label = make_label_group(_("Information"));
 	gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
 
 	row++;
@@ -391,7 +390,8 @@ gint row;
 	row++;
 	label = make_label_widget(_("_Type:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	widget = make_cycle(label, CYA_ACC_TYPE);
+	//widget = make_cycle(label, CYA_ACC_TYPE);
+	widget = hbtk_combo_box_new_with_data(label, CYA_ACC_TYPE);
 	data->CY_type = widget;
 	gtk_widget_set_hexpand(widget, TRUE);
 	gtk_grid_attach (GTK_GRID (table), widget, 2, row, 1, 1);

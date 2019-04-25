@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -26,6 +26,7 @@
 #include "ui-category.h"
 #include "ui-account.h"
 #include "ui-split.h"
+#include "ui-tag.h"
 
 
 /****************************************************************************/
@@ -43,8 +44,6 @@
 extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
-
-extern gchar *CYA_TYPE[];
 
 gchar *CYA_OPERATION[] = {
 	N_("Add transaction"),
@@ -79,14 +78,36 @@ gboolean sensitive;
 	if( (data->ope->flags & (OF_SPLIT)) )
 	{
 		//# 1416624 empty category when split
-		ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_grp), 0);
+		ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_cat), 0);
 	}
 
 	/* disable amount+category if split is set */
 	sensitive = (data->ope->flags & (OF_SPLIT)) ? FALSE : TRUE;
 	gtk_widget_set_sensitive(data->ST_amount, sensitive);
-	gtk_widget_set_sensitive(data->PO_grp, sensitive);
+	gtk_widget_set_sensitive(data->PO_cat, sensitive);
 }
+
+
+//1336928 combobox tags
+static void deftransaction_update_tags(GtkWidget *widget, gpointer user_data)
+{
+struct deftransaction_data *data;
+gchar *newtag;
+	
+	DB( g_print("\n[ui-transaction] update tags\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	newtag = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(data->CY_tags));
+	ui_gtk_entry_tag_name_append(GTK_ENTRY(data->ST_tags), newtag);
+	g_free(newtag);
+	
+	//revert back to ----
+	g_signal_handlers_block_by_func (G_OBJECT (data->CY_tags), G_CALLBACK (deftransaction_update_tags), NULL);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_tags), 0);
+	g_signal_handlers_unblock_by_func (G_OBJECT (data->CY_tags), G_CALLBACK (deftransaction_update_tags), NULL);
+}
+
 
 static void deftransaction_update_warnsign(GtkWidget *widget, gpointer user_data)
 {
@@ -100,7 +121,7 @@ Category *cat;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	cat = ui_cat_comboboxentry_get(GTK_COMBO_BOX(data->PO_grp));
+	cat = ui_cat_comboboxentry_get(GTK_COMBO_BOX(data->PO_cat));
 	if(cat != NULL && cat->key > 0)
 	{
 		amount = hb_amount_round(gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount)), 2);
@@ -112,7 +133,11 @@ Category *cat;
 	}
 
 	if(warning)
+	{
 		gtk_widget_show_all(data->IB_warnsign);
+		//#GTK+710888: hack waiting a fix 
+		gtk_widget_queue_resize (data->IB_warnsign);
+	}
 	else
 		gtk_widget_hide(data->IB_warnsign);
 
@@ -169,8 +194,8 @@ end:
 	//#1437551
 	//gtk_widget_set_sensitive(gtk_dialog_get_action_area(GTK_DIALOG (data->window)), sensitive);
 	gtk_dialog_set_response_sensitive(GTK_DIALOG (data->window), GTK_RESPONSE_ACCEPT, sensitive);
-	gtk_dialog_set_response_sensitive(GTK_DIALOG (data->window), GTK_RESPONSE_ADD, sensitive);
-	gtk_dialog_set_response_sensitive(GTK_DIALOG (data->window), GTK_RESPONSE_ADDKEEP, sensitive);
+	gtk_dialog_set_response_sensitive(GTK_DIALOG (data->window), HB_RESPONSE_ADD, sensitive);
+	gtk_dialog_set_response_sensitive(GTK_DIALOG (data->window), HB_RESPONSE_ADDKEEP, sensitive);
 
 }
 
@@ -186,23 +211,28 @@ Payee *pay;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	// only set for empty category
-	// 1635053 and also paymode unset
-	cat = ui_cat_comboboxentry_get(GTK_COMBO_BOX(data->PO_grp));
-	paymode = gtk_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
-	if( (cat == NULL || cat->key == 0) && (paymode == PAYMODE_NONE) )
+	pay = ui_pay_comboboxentry_get(GTK_COMBO_BOX(data->PO_pay));
+	if( pay != NULL )
 	{
-		pay = ui_pay_comboboxentry_get(GTK_COMBO_BOX(data->PO_pay));
-		if( pay != NULL )
+		// only set for empty category
+		// #1635053 and also paymode unset
+		// #1817278 and independently
+		cat = ui_cat_comboboxentry_get(GTK_COMBO_BOX(data->PO_cat));
+		if( (cat == NULL || cat->key == 0) )
 		{
-			g_signal_handlers_block_by_func (G_OBJECT (data->PO_grp), G_CALLBACK (deftransaction_update_warnsign), NULL);
-			ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_grp), pay->kcat);
-			g_signal_handlers_unblock_by_func (G_OBJECT (data->PO_grp), G_CALLBACK (deftransaction_update_warnsign), NULL);
+			g_signal_handlers_block_by_func (G_OBJECT (data->PO_cat), G_CALLBACK (deftransaction_update_warnsign), NULL);
+			ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_cat), pay->kcat);
+			g_signal_handlers_unblock_by_func (G_OBJECT (data->PO_cat), G_CALLBACK (deftransaction_update_warnsign), NULL);
+		}
 
+		paymode = gtk_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
+		if( (paymode == PAYMODE_NONE) )
+		{
 			gtk_combo_box_set_active(GTK_COMBO_BOX(data->NU_mode), pay->paymode);
 		}
 	}
 }
+
 
 static void deftransaction_set_cheque(GtkWidget *widget, gpointer user_data)
 {
@@ -336,7 +366,7 @@ gchar *tagstr, *txt;
 	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_date), (guint)entry->date);
 
 	txt = (entry->memo != NULL) ? entry->memo : "";
-	gtk_entry_set_text(GTK_ENTRY(data->ST_word), txt);
+	gtk_entry_set_text(GTK_ENTRY(data->ST_memo), txt);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), entry->amount);
 	//gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_amount), (entry->ope_Flags & OF_INCOME) ? 1 : 0);
 
@@ -344,18 +374,16 @@ gchar *tagstr, *txt;
 
 	txt = (entry->info != NULL) ? entry->info : "";
 	gtk_entry_set_text(GTK_ENTRY(data->ST_info), txt);
-	ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_grp), entry->kcat);
+	ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_cat), entry->kcat);
 	ui_pay_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_pay), entry->kpay);
 
-	tagstr = transaction_tags_tostring(entry);
-
+	tagstr = tags_tostring(entry->tags);
 	DB( g_print(" - tags: '%s'\n", txt) );
-
 	txt = (tagstr != NULL) ? tagstr : "";
 	gtk_entry_set_text(GTK_ENTRY(data->ST_tags), txt);
 	g_free(tagstr);
 
-	radio_set_active(GTK_CONTAINER(data->RA_status), entry->status );
+	hbtk_radio_set_active(GTK_CONTAINER(data->RA_status), entry->status );
 	
 	//as we trigger an event on this
 	//let's place it at the end to avoid missvalue on the trigger function
@@ -398,7 +426,7 @@ gint active;
 		g_free(entry->memo);
 		entry->memo = NULL;
 	}
-	txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_word));
+	txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_memo));
 	// ignore if entry is empty
 	if (txt && *txt)
 	{
@@ -411,7 +439,7 @@ gint active;
 		GtkTreeModel *model;
 		GtkTreeIter  iter;
 
-			completion = gtk_entry_get_completion (GTK_ENTRY(data->ST_word));
+			completion = gtk_entry_get_completion (GTK_ENTRY(data->ST_memo));
 			model = gtk_entry_completion_get_model (completion);
 			gtk_list_store_insert_with_values(GTK_LIST_STORE(model), &iter, -1,
 				0, txt, 
@@ -447,7 +475,7 @@ gint active;
 	}
 
 	entry->paymode  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
-	entry->kcat     = ui_cat_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->PO_grp));
+	entry->kcat     = ui_cat_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->PO_cat));
 	entry->kpay     = ui_pay_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->PO_pay));
 	entry->kacc     = ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_acc));
 	entry->kxferacc = ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_accto));
@@ -455,9 +483,10 @@ gint active;
 	/* tags */
 	txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_tags));
 	DB( g_print(" - tags: '%s'\n", txt) );
-	transaction_tags_parse(entry, txt);
+	g_free(entry->tags);
+	entry->tags = tags_parse(txt);
 
-	entry->status = radio_get_active(GTK_CONTAINER(data->RA_status));
+	entry->status = hbtk_radio_get_active(GTK_CONTAINER(data->RA_status));
 
 	//#1615245: moved here, after get combo entry key
 	if( entry->paymode != PAYMODE_INTXFER )
@@ -541,11 +570,11 @@ gdouble value;
 	
 		if( data->ope->flags & OF_SPLIT )
 		{
-			count = da_splits_count(data->ope->splits);
+			count = da_splits_length(data->ope->splits);
 			DB( g_print("- count = %d\n", count) );
 			for(i=0;i<count;i++)
 			{
-				split = data->ope->splits[i];
+				split = da_splits_get(data->ope->splits, i);
 				split->amount *= -1;
 			}
 		}
@@ -570,11 +599,11 @@ gint nbsplit;
 	ope = data->ope;
 
 	amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
-	ui_split_dialog(data->window, ope->splits, amount, &deftransaction_set_amount_from_split);
+	ui_split_dialog(data->window, &ope->splits, amount, &deftransaction_set_amount_from_split);
 
 	//eval split to garantee disabled items
 	ope->flags &= ~(OF_SPLIT);
-	nbsplit = da_splits_count(ope->splits);
+	nbsplit = da_splits_length(ope->splits);
 	if(nbsplit > 0)
 		data->ope->flags |= (OF_SPLIT);
 
@@ -582,11 +611,6 @@ gint nbsplit;
 }
 
 
-
-
-/*
-**
-*/
 static void deftransaction_paymode(GtkWidget *widget, gpointer user_data)
 {
 struct deftransaction_data *data;
@@ -657,7 +681,7 @@ gboolean sensitive;
 
 
 /*
-** called from outside
+** called from outside (register/report detail)
 */
 gint deftransaction_external_edit(GtkWindow *parent, Transaction *old_txn, Transaction *new_txn)
 {
@@ -667,7 +691,7 @@ gboolean result;
 	DB( g_print("\n[ui-transaction] external edit (from out)\n") );
 
 
-	dialog = create_deftransaction_window(GTK_WINDOW(parent), TRANSACTION_EDIT_MODIFY, FALSE);
+	dialog = create_deftransaction_window(GTK_WINDOW(parent), TRANSACTION_EDIT_MODIFY, FALSE, 0);
 	deftransaction_set_transaction(dialog, new_txn);
 
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
@@ -682,9 +706,9 @@ gboolean result;
 
 			* new is intxfer
 				a) old was not
-					transaction_xfer_search_or_add_child
+					check for existing child or add it
 				b) old was
-					sync (acc chnage is inside now)
+					sync (acc change is inside now)
 
 			* new is not intxfer
 				a) old was
@@ -699,7 +723,7 @@ gboolean result;
 			if( old_txn->paymode != PAYMODE_INTXFER )
 			{
 				// this call can popup a user dialog to choose
-				transaction_xfer_search_or_add_child(GTK_WINDOW(dialog), new_txn, FALSE);
+				transaction_xfer_search_or_add_child(GTK_WINDOW(dialog), new_txn, new_txn->kxferacc);
 			}
 			else
 			{
@@ -716,25 +740,19 @@ gboolean result;
 			//#1250061 : manage ability to break an internal xfer
 			if(old_txn->paymode == PAYMODE_INTXFER)
 			{
-			GtkWidget *p_dialog;
-			gboolean break_result;
+			gint break_result;
 		
 				DB( g_print(" - should break internal xfer\n") );
 
-				p_dialog = gtk_message_dialog_new
-				(
-					GTK_WINDOW(parent),
-					GTK_DIALOG_MODAL,
-					GTK_MESSAGE_WARNING,
-					GTK_BUTTONS_YES_NO,
-					_("Do you want to break the internal transfer ?\n\n"
-					  "Proceeding will delete the target transaction.")
-				);
-
-				break_result = gtk_dialog_run( GTK_DIALOG( p_dialog ) );
-				gtk_widget_destroy( p_dialog );
-
-				if(break_result == GTK_RESPONSE_YES)
+				break_result = ui_dialog_msg_confirm_alert(
+						GTK_WINDOW(parent),
+						NULL,
+						_("Do you want to break the internal transfer ?\n\n"
+						  "Proceeding will delete the target transaction."),
+						_("_Break")
+					);
+	
+				if(break_result == GTK_RESPONSE_OK)
 				{
 					//we must use old_txn to ensure get the child
 					//#1663789 but we must clean new as well
@@ -787,25 +805,13 @@ struct deftransaction_data *data;
 }
 
 
-void deftransaction_dispose(GtkWidget *widget, gpointer user_data)
-{
-struct deftransaction_data *data;
-
-	DB( g_print("\n[ui-transaction] dispose\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	g_free(data);
-}
-
-
 static void deftransaction_setup(struct deftransaction_data *data)
 {
 
 	DB( g_print("\n[ui-transaction] setup\n") );
 
 	ui_pay_comboboxentry_populate(GTK_COMBO_BOX(data->PO_pay), GLOBALS->h_pay);
-	ui_cat_comboboxentry_populate(GTK_COMBO_BOX(data->PO_grp), GLOBALS->h_cat);
+	ui_cat_comboboxentry_populate(GTK_COMBO_BOX(data->PO_cat), GLOBALS->h_cat);
 	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_acc), GLOBALS->h_acc, ACC_LST_INSERT_NORMAL);
 	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_accto), GLOBALS->h_acc, ACC_LST_INSERT_NORMAL);
 
@@ -814,6 +820,9 @@ static void deftransaction_setup(struct deftransaction_data *data)
 		deftransaction_template_popover_populate (data, GLOBALS->arc_list);
 		gtk_tree_model_filter_refilter(GTK_TREE_MODEL_FILTER(data->modelfilter));
 	}
+
+	ui_tag_combobox_populate(GTK_COMBO_BOX_TEXT(data->CY_tags));
+
 }
 
 static GtkWidget *
@@ -859,8 +868,6 @@ GtkTreeIter			 iter;
 
 		txn = data->ope;
 		da_transaction_init_from_template(txn, arc);
-		if( da_splits_clone(arc->splits, txn->splits) > 0)
-			txn->flags |= OF_SPLIT; //Flag that Splits are active
 
 		DB( g_print(" calls\n") );
 
@@ -920,8 +927,10 @@ Archive *entry;
 gchar *str;
 gboolean visible = TRUE;
 gboolean showsched;
-	
-	showsched = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_showsched));
+gboolean showallacc;
+
+	showsched  = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_showsched));
+	showallacc = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_showallacc));
 
 	gchar *needle = g_ascii_strdown(gtk_entry_get_text(GTK_ENTRY(data->ST_search)), -1);
 
@@ -931,22 +940,27 @@ gboolean showsched;
 
 	if( entry )
 	{
-		if( (entry->flags & OF_AUTO) && !showsched)
-		{
+		if( !showallacc && (data->kacc != 0) && (entry->kacc != data->kacc) )
 			visible = FALSE;
-		}
 		else
 		{
-			gchar *haystack = g_ascii_strdown(str, -1);
-
-			if (str && g_strrstr (haystack, needle) == NULL )
+			if( (entry->flags & OF_AUTO) && !showsched)
 			{
 				visible = FALSE;
 			}
+			else
+			{
+				gchar *haystack = g_ascii_strdown(str, -1);
 
-			DB( g_print("filter: '%s' '%s' %d\n", str, needle, visible) );
+				if (str && g_strrstr (haystack, needle) == NULL )
+				{
+					visible = FALSE;
+				}
 
-			g_free(haystack);
+				DB( g_print("filter: '%s' '%s' %d\n", str, needle, visible) );
+
+				g_free(haystack);
+			}
 		}
 	}
 	g_free(needle);
@@ -965,7 +979,7 @@ GtkWidget *box, *widget, *scrollwin, *treeview;
 
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
 
-	widget = make_search(NULL);
+	widget = make_search();
 	data->ST_search = widget;
 	gtk_box_pack_start (GTK_BOX(box), widget, FALSE, FALSE, 0);
 
@@ -1006,134 +1020,60 @@ GtkWidget *box, *widget, *scrollwin, *treeview;
 	data->CM_showsched = widget;
 	gtk_box_pack_start (GTK_BOX(box), widget, FALSE, FALSE, 0);
 
+	widget = gtk_check_button_new_with_mnemonic(_("Show _all accounts"));
+	data->CM_showallacc = widget;
+	gtk_box_pack_start (GTK_BOX(box), widget, FALSE, FALSE, 0);
+
 	gtk_widget_show_all (box);
 
+	//#1796564 hide show all template if no account
+	gtk_widget_set_visible (data->CM_showallacc, data->kacc == 0 ? FALSE : TRUE);
+	
 	//signals
 	g_signal_connect (data->CM_showsched, "toggled", G_CALLBACK (deftransaction_template_popover_refilter), data);
+	g_signal_connect (data->CM_showallacc, "toggled", G_CALLBACK (deftransaction_template_popover_refilter), data);
 	g_signal_connect (data->ST_search, "search-changed", G_CALLBACK (deftransaction_template_popover_refilter), data);
 
 	return box;
 }
 
 
-static GtkWidget *deftransaction_make_block1(struct deftransaction_data *data)
+
+static GtkWidget *deftransaction_create_template(struct deftransaction_data *data)
 {
-GtkWidget *group_grid, *hbox, *label, *widget, *image;
-gint row;
+GtkWidget *box, *menubutton, *image, *label;
 
-	group_grid = gtk_grid_new ();
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	menubutton = gtk_menu_button_new ();
+	data->MB_template = menubutton;
+	box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	label = gtk_label_new_with_mnemonic (_("Use a _template"));
+	gtk_box_pack_start (GTK_BOX(box), label, FALSE, FALSE, 0);
+	image = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
+	gtk_box_pack_start (GTK_BOX(box), image, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(menubutton), box);
 
-	row = 0;
-	label = make_label_widget(_("_Date:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = gtk_date_entry_new();
-	data->PO_date = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
-	gtk_widget_set_halign (widget, GTK_ALIGN_START);
-	gtk_widget_set_tooltip_text(widget, _("Date accepted here are:\nday,\nday/month or month/day,\nand complete date into your locale"));
+	gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_DOWN );
+	gtk_widget_set_halign (menubutton, GTK_ALIGN_END);
+	gtk_widget_set_hexpand (menubutton, TRUE);
+	gtk_widget_show_all(menubutton);
 
-	row++;
-	label = make_label_widget(_("_Amount:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 1, 1);
 
-		widget = make_amount(label);
-		data->ST_amount = widget;
-		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(widget), GTK_ENTRY_ICON_PRIMARY, ICONNAME_HB_TOGGLE_SIGN);
-		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(widget), GTK_ENTRY_ICON_PRIMARY, _("Toggle amount sign"));
-		gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	GtkWidget *template = deftransaction_template_popover_create(data);
+	GtkWidget *popover = create_popover (menubutton, template, GTK_POS_BOTTOM);
+	gtk_widget_set_size_request (popover, 2*HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
+	//gtk_widget_set_vexpand (popover, TRUE);
+	//gtk_widget_set_hexpand (popover, TRUE);
 
-		image = gtk_image_new_from_icon_name (ICONNAME_HB_BUTTON_SPLIT, GTK_ICON_SIZE_BUTTON);
-		widget = gtk_button_new();
-		g_object_set (widget, "image", image, NULL);
-		data->BT_split = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-		gtk_widget_set_tooltip_text(widget, _("Transaction splits"));
+	/*gtk_widget_set_margin_start (popover, 10);
+	gtk_widget_set_margin_end (popover, 10);
+	gtk_widget_set_margin_bottom (popover, 10);*/
 
-	row++;
-	label = make_label_widget(_("Pa_yment:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = make_paymode(label);
-	data->NU_mode = widget;
-	gtk_widget_set_halign (widget, GTK_ALIGN_START);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
+	gtk_menu_button_set_popover(GTK_MENU_BUTTON(menubutton), popover);
 
-	row++;
-	widget = gtk_check_button_new_with_mnemonic(_("Of notebook _2"));
-	data->CM_cheque = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
+	g_signal_connect (GTK_TREE_VIEW(data->LV_arc), "row-activated", G_CALLBACK (deftransaction_template_popover_onRowActivated), NULL);
 
-	row++;
-	label = make_label_widget(_("_Info:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = make_string(label);
-	data->ST_info = widget;
-	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
-	row++;
-	label = make_label_widget(_("A_ccount:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = ui_acc_comboboxentry_new(label);
-	data->PO_acc = widget;
-	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
-
-	row++;
-	label = make_label_widget(_("To acc_ount:"));
-	data->LB_accto = label;
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = ui_acc_comboboxentry_new(label);
-	data->PO_accto = widget;
-	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
-
-	row++;
-	label = make_label_widget(_("_Payee:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = ui_pay_comboboxentry_new(label);
-	data->PO_pay = widget;
-	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
-	gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
-
-	row++;
-	label = make_label_widget(_("_Category:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = ui_cat_comboboxentry_new(label);
-	data->PO_grp = widget;
-	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
-	gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
-
-	row++;
-	label = make_label_widget(_("_Status:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = make_radio(CYA_TXN_STATUS, TRUE, GTK_ORIENTATION_HORIZONTAL);
-	data->RA_status = widget;
-	gtk_widget_set_halign (widget, GTK_ALIGN_START);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
-
-	row++;
-	label = make_label_widget(_("M_emo:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = make_memo_entry(label);
-	data->ST_word = widget;
-	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
-
-	row++;
-	label = make_label_widget(_("Ta_gs:"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = make_string(label);
-	data->ST_tags = widget;
-	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
-
-	return group_grid;
+	return menubutton;
 }
 
 
@@ -1154,13 +1094,28 @@ struct WinGeometry *wg;
 }
 
 
-GtkWidget *create_deftransaction_window (GtkWindow *parent, gint type, gboolean postmode)
+void deftransaction_dispose(GtkWidget *widget, gpointer user_data)
+{
+struct deftransaction_data *data;
+
+	DB( g_print("\n[ui-transaction] dispose\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	deftransaction_getgeometry(data->window, NULL, data);
+	
+	g_free(data);
+}
+
+
+GtkWidget *create_deftransaction_window (GtkWindow *parent, gint type, gboolean postmode, guint32 kacc)
 {
 struct deftransaction_data *data;
 struct WinGeometry *wg;
-GtkWidget *dialog, *content_area, *content_grid, *group_grid;
-GtkWidget *label, *bar;
-gint crow;
+GtkWidget *dialog, *content, *mainvbox;
+GtkWidget *bar;
+GtkWidget *group_grid, *hbox, *label, *widget;
+gint row;
 
 	DB( g_print("\n[ui-transaction] new\n") );
 
@@ -1186,6 +1141,7 @@ gint crow;
 
 	data->window = dialog;
 	data->type = type;
+	data->kacc = kacc;
 
 	// if you add/remove response_id also change into deftransaction_update_transfer
 	if(type == TRANSACTION_EDIT_MODIFY)
@@ -1201,15 +1157,15 @@ gint crow;
 		{
 			gtk_dialog_add_buttons (GTK_DIALOG(dialog),
 				_("_Close"), GTK_RESPONSE_REJECT,
-				_("_Add & keep"), GTK_RESPONSE_ADDKEEP,
-				_("_Add"), GTK_RESPONSE_ADD,
+				_("_Add & keep"), HB_RESPONSE_ADDKEEP,
+				_("_Add"), HB_RESPONSE_ADD,
 				NULL);
 		}
 		else
 		{
 			gtk_dialog_add_buttons (GTK_DIALOG(dialog),
 				_("_Close"), GTK_RESPONSE_REJECT,
-				_("_Post"), GTK_RESPONSE_ADD,
+				_("_Post"), HB_RESPONSE_ADD,
 				NULL);
 		}
 	}
@@ -1229,83 +1185,164 @@ gint crow;
 
 	//gtk_window_set_decorated(GTK_WINDOW(dialog), TRUE);
 
-	//window contents
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
+	//dialog contents
+	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
+	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
+	gtk_box_pack_start (GTK_BOX (content), mainvbox, TRUE, TRUE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER(mainvbox), SPACING_MEDIUM);
 
-	content_grid = gtk_grid_new();
-	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
-	gtk_grid_set_column_spacing (GTK_GRID (content_grid), SPACING_LARGE);
-	//gtk_grid_set_column_homogeneous(GTK_GRID (content_grid), TRUE);
-	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
-	gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_MEDIUM);
-	gtk_container_add (GTK_CONTAINER (content_area), content_grid);
-	gtk_widget_show_all(content_grid);
-	
-	crow = 0;
+	//group main
+	group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_box_pack_start (GTK_BOX (mainvbox), group_grid, FALSE, FALSE, 0);
+
+	row=0;
+	label = make_label_widget(_("_Date:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	widget = gtk_date_entry_new();
+	data->PO_date = widget;
+	gtk_widget_set_halign(widget, GTK_ALIGN_START);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_widget_set_tooltip_text(widget, _("Date accepted here are:\nday,\nday/month or month/day,\nand complete date into your locale"));
 
 	data->showtemplate = FALSE;
 	if( data->type != TRANSACTION_EDIT_MODIFY && da_archive_length() > 0 && !postmode )
 	{
-	GtkWidget *box, *menubutton, *image;
-
 		data->showtemplate = TRUE;
-
-		menubutton = gtk_menu_button_new ();
-		data->MB_template = menubutton;
-		box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-		label = gtk_label_new_with_mnemonic (_("Use a _template"));
-		gtk_box_pack_start (GTK_BOX(box), label, FALSE, FALSE, 0);
-		image = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
-		gtk_box_pack_start (GTK_BOX(box), image, FALSE, FALSE, 0);
-		gtk_container_add(GTK_CONTAINER(menubutton), box);
-
-		gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_DOWN );
-		gtk_widget_set_halign (menubutton, GTK_ALIGN_END);
-		gtk_widget_set_hexpand (menubutton, TRUE);
-		gtk_grid_attach (GTK_GRID (content_grid), menubutton, 1, crow, 1, 1);
-		gtk_widget_show_all(menubutton);
-
-
-		GtkWidget *template = deftransaction_template_popover_create(data);
-		GtkWidget *popover = create_popover (menubutton, template, GTK_POS_BOTTOM);
-		gtk_widget_set_size_request (popover, 2*HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
-		//gtk_widget_set_vexpand (popover, TRUE);
-		//gtk_widget_set_hexpand (popover, TRUE);
-
-		/*gtk_widget_set_margin_start (popover, 10);
-		gtk_widget_set_margin_end (popover, 10);
-		gtk_widget_set_margin_bottom (popover, 10);*/
-
-		gtk_menu_button_set_popover(GTK_MENU_BUTTON(menubutton), popover);
-	
-		g_signal_connect (GTK_TREE_VIEW(data->LV_arc), "row-activated", G_CALLBACK (deftransaction_template_popover_onRowActivated), NULL);
-	
+		widget = deftransaction_create_template(data);
+		gtk_widget_set_halign (widget, GTK_ALIGN_END);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 	}
 
-	crow++;
-	group_grid = deftransaction_make_block1(data);
-	//gtk_widget_set_hexpand (GTK_WIDGET(group_grid), TRUE);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 2, 1);
-	gtk_widget_show_all(group_grid);
-	
-	/*crow++;
-	group_grid = deftransaction_make_block2(data);
-	gtk_widget_set_hexpand (GTK_WIDGET(group_grid), TRUE);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 1, crow, 2, 1);
-	gtk_widget_show_all(group_grid);*/
+	row++;
+	label = make_label_widget(_("_Amount:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_set_hexpand(hbox, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 1, 1);
 
-	crow++;
+		widget = make_amount(label);
+		data->ST_amount = widget;
+		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(widget), GTK_ENTRY_ICON_PRIMARY, ICONNAME_HB_TOGGLE_SIGN);
+		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(widget), GTK_ENTRY_ICON_PRIMARY, _("Toggle amount sign"));
+		gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+
+		widget = make_image_button(ICONNAME_HB_BUTTON_SPLIT, _("Transaction splits"));
+		data->BT_split = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+
+	row++;
+	label = make_label_widget(_("A_ccount:"));
+	data->LB_accfrom = label;
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	widget = ui_acc_comboboxentry_new(label);
+	data->PO_acc = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+	row++;
+	label = make_label_widget(_("To acc_ount:"));
+	data->LB_accto = label;
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	widget = ui_acc_comboboxentry_new(label);
+	data->PO_accto = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+	
+	row++;
+	label = make_label_widget(_("Pa_yment:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	widget = make_paymode(label);
+	data->NU_mode = widget;
+	gtk_widget_set_halign(widget, GTK_ALIGN_START);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+
+	gtk_widget_set_margin_top(label, SPACING_SMALL);
+	gtk_widget_set_margin_top(widget, SPACING_SMALL);
+
+	
+	widget = gtk_check_button_new_with_mnemonic(_("Of notebook _2"));
+	data->CM_cheque = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+	row++;
+	label = make_label_widget(_("_Info:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	widget = make_string(label);
+	data->ST_info = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+
+	gtk_widget_set_margin_bottom(label, SPACING_SMALL);
+	gtk_widget_set_margin_bottom(widget, SPACING_SMALL);
+
+
+	row++;
+	label = make_label_widget(_("_Payee:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	widget = ui_pay_comboboxentry_new(label);
+	data->PO_pay = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+	gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
+
+	row++;
+	label = make_label_widget(_("_Category:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	widget = ui_cat_comboboxentry_new(label);
+	data->PO_cat = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+	gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
+
+	gtk_widget_set_margin_bottom(label, SPACING_SMALL);
+	gtk_widget_set_margin_bottom(widget, SPACING_SMALL);
+
+	
+	row++;
+	label = make_label_widget(_("_Status:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	widget = hbtk_radio_new (CYA_TXN_STATUS, TRUE);
+	data->RA_status = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+	row++;
+	label = make_label_widget(_("M_emo:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	widget = make_memo_entry(label);
+	data->ST_memo = widget;
+	gtk_widget_set_hexpand(widget, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+	row++;
+	label = make_label_widget(_("Ta_gs:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_set_hexpand(hbox, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 2, 1);
+
+		widget = make_string(label);
+		data->ST_tags = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+
+		widget = ui_tag_combobox_new(NULL);
+		data->CY_tags = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	
+	gtk_widget_show_all(mainvbox);
+	
 	bar = gtk_info_bar_new ();
 	data->IB_warnsign = bar;
 	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_WARNING);
 	label = gtk_label_new (_("Warning: amount and category sign don't match"));
-    gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label, TRUE, TRUE, 0);
-	gtk_grid_attach (GTK_GRID (content_grid), bar, 0, crow, 2, 1);
+	gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (mainvbox), bar, TRUE, TRUE, 0);
 
 	
 	//connect all our signals
-	g_signal_connect (dialog, "configure-event", G_CALLBACK (deftransaction_getgeometry), (gpointer)data);
+	//g_signal_connect (dialog, "configure-event", G_CALLBACK (deftransaction_getgeometry), (gpointer)data);
 
+
+	g_signal_connect (data->PO_acc  , "changed", G_CALLBACK (deftransaction_update_accto), NULL);
+	g_signal_connect (data->PO_accto, "changed", G_CALLBACK (deftransaction_update_transfer), NULL);
 
 	g_signal_connect (G_OBJECT (data->ST_amount), "focus-out-event", G_CALLBACK (deftransaction_amount_focusout), NULL);
 	g_signal_connect (G_OBJECT (data->ST_amount), "icon-release", G_CALLBACK (deftransaction_toggleamount), NULL);
@@ -1315,10 +1352,9 @@ gint crow;
 	g_signal_connect (data->CM_cheque, "toggled", G_CALLBACK (deftransaction_paymode), NULL);
 
 	g_signal_connect (data->PO_pay  , "changed", G_CALLBACK (deftransaction_update_payee), NULL);
-	g_signal_connect (data->PO_acc  , "changed", G_CALLBACK (deftransaction_update_accto), NULL);
-	g_signal_connect (data->PO_accto, "changed", G_CALLBACK (deftransaction_update_transfer), NULL);
-	g_signal_connect (data->PO_grp  , "changed", G_CALLBACK (deftransaction_update_warnsign), NULL);
+	g_signal_connect (data->PO_cat  , "changed", G_CALLBACK (deftransaction_update_warnsign), NULL);
 
+	g_signal_connect (data->CY_tags , "changed", G_CALLBACK (deftransaction_update_tags), NULL);
 
 	//setup, init and show window
 	deftransaction_setup(data);

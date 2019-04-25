@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -32,6 +32,13 @@ void hb_strfmon(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolea
 void hb_strfmon_int(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor);
 void hb_strfnum(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor);
 
+gint hb_filename_type_get_by_extension(gchar *filepath);
+
+gchar *hb_filename_new_for_backup(gchar *filename);
+GPtrArray *hb_filename_backup_list(gchar *filename);
+
+gchar *hb_filename_backup_get_filtername(gchar *filename);
+
 gchar *hb_filename_new_with_extension(gchar *filename, const gchar *extension);
 
 gchar *get_normal_color_amount(gdouble value);
@@ -44,6 +51,7 @@ void hb_label_set_colvalue(GtkLabel *label, gdouble value, guint32 kcur, gboolea
 //void get_range_minmax(guint32 refdate, gint range, guint32 *mindate, guint32 *maxdate);
 
 gint hb_string_compare(gchar *s1, gchar *s2);
+gint hb_string_utf8_strstr(gchar *haystack, gchar *needle, gboolean exact);
 gint hb_string_utf8_compare(gchar *s1, gchar *s2);
 
 void hb_string_strip_crlf(gchar *str);

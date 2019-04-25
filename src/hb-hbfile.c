@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -44,31 +44,62 @@ extern struct Preferences *PREFS;
 
 gboolean hbfile_file_isbackup(gchar *filepath)
 {
-	return g_str_has_suffix(filepath, "xhb~");
+gboolean retval = FALSE;
+
+	if( filepath == NULL )
+		return FALSE;
+
+	if( g_str_has_suffix(filepath, "xhb~") || g_str_has_suffix(filepath, "bak") )
+		retval = TRUE;
+
+	return retval;
 }
 
 
-
-
-
-gboolean hbfile_file_hasbackup(gchar *filepath)
+gboolean hbfile_file_hasrevert(gchar *filepath)
 {
 gchar *bakfilepath;
 
 	bakfilepath = hb_filename_new_with_extension(GLOBALS->xhb_filepath, "xhb~");
-	GLOBALS->xhb_hasbak = g_file_test(bakfilepath, G_FILE_TEST_EXISTS);
+	GLOBALS->xhb_hasrevert = g_file_test(bakfilepath, G_FILE_TEST_EXISTS);
 	g_free(bakfilepath);
 	//todo check here if need to return something
-	return GLOBALS->xhb_hasbak;
+	return GLOBALS->xhb_hasrevert;
+}
+
+
+//#1750161
+guint64 hbfile_file_get_time_modified(gchar *filepath)
+{
+guint64 retval = 0ULL;
+GFile *gfile;
+GFileInfo *gfileinfo;
+
+	DB( g_print("\n[hbfile] get time modified\n") );
+
+	gfile = g_file_new_for_path(filepath);
+	gfileinfo = g_file_query_info (gfile, G_FILE_ATTRIBUTE_TIME_MODIFIED, 0, NULL, NULL);
+	if( gfileinfo )
+	{
+		retval = g_file_info_get_attribute_uint64 (gfileinfo, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+		DB( g_print("- '%s' last access = %lu\n", filepath, retval) );	
+		g_object_unref(gfileinfo);
+	}
+	g_object_unref(gfile);
+
+	return retval;
 }
 
 
 void hbfile_file_default(void)
 {
+	DB( g_print("\n[hbfile] default\n") );
+
 	//todo: maybe translate this also
 	hbfile_change_filepath(g_build_filename(PREFS->path_hbfile, "untitled.xhb", NULL));
 	GLOBALS->hbfile_is_new = TRUE;
 	GLOBALS->hbfile_is_bak = FALSE;
+	GLOBALS->xhb_timemodified = 0ULL;
 	
 	DB( g_print("- path_hbfile is '%s'\n", PREFS->path_hbfile) );
 	DB( g_print("- xhb_filepath is '%s'\n", GLOBALS->xhb_filepath) );
@@ -102,7 +133,7 @@ void hbfile_replace_basecurrency(Currency4217 *curfmt)
 Currency *item;
 guint32 oldkcur;
 
-	DB( g_print("\n[hbfile] replace base currency \n") );
+	DB( g_print("\n[hbfile] replace base currency\n") );
 	
 	oldkcur = GLOBALS->kcur;
 	da_cur_remove(oldkcur);
@@ -463,9 +494,10 @@ guint cnt, i;
 		
 			if(item->flags & OF_SPLIT)
 			{
-				for(i=0;i<TXN_MAX_SPLIT;i++)
+				cnt = da_splits_length (item->splits);
+				for(i=0;i<cnt;i++)
 				{
-					split = item->splits[i];
+					split = da_splits_get(item->splits, i);
 					if( split == NULL ) break;
 
 					if(split->memo != NULL)
@@ -554,12 +586,7 @@ void hbfile_setup(gboolean file_clear)
 
 	if(file_clear == TRUE)
 	{
-		//todo: maybe translate this also
-		hbfile_change_filepath(g_build_filename(PREFS->path_hbfile, "untitled.xhb", NULL));
-		GLOBALS->hbfile_is_new = TRUE;
-		
-		DB( g_print("- path_hbfile is '%s'\n", PREFS->path_hbfile) );
-		DB( g_print("- xhb_filepath is '%s'\n", GLOBALS->xhb_filepath) );
+		hbfile_file_default();
 	}
 	else
 	{
@@ -578,7 +605,7 @@ void hbfile_setup(gboolean file_clear)
 	
 	GLOBALS->changes_count = 0;
 
-	GLOBALS->xhb_hasbak = FALSE;
+	GLOBALS->xhb_hasrevert = FALSE;
 
 }
 

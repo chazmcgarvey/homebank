@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -66,21 +66,21 @@
 #define N_(str) gettext_noop (str)
 
 /* = = = = = = = = = = = = = = = = */
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 #define HB_UNSTABLE			FALSE
 #define HB_UNSTABLE_SHOW	FALSE
 
 
 #define HB_VERSION_MAJOR	5
-#define HB_VERSION_MINOR	1
-#define HB_VERSION_MICRO	7
+#define HB_VERSION_MINOR	2
+#define HB_VERSION_MICRO	4
 
-#define HB_VERSION			"5.1.7"
+#define HB_VERSION		"5.2.4"
 #define HB_VERSION_NUM	(HB_VERSION_MAJOR*10000) + (HB_VERSION_MINOR*100) + HB_VERSION_MICRO
 
-#define FILE_VERSION		1.2
-#define PREF_VERSION		517
+#define FILE_VERSION		1.3
+#define PREF_VERSION		524
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -113,7 +113,9 @@
 #define SPACING_MEDIUM		12
 #define SPACING_LARGE		18
 
+#define HB_DATE_MAX_GAP	7
 
+// those 2 line are duplicated into dateentry
 #define HB_MINDATE  693596	  //01/01/1900
 #define HB_MAXDATE  803533	  //31/12/2200
 
@@ -128,16 +130,14 @@
 /* miscellaneous */
 #define PHI 1.61803399
 
-/* official GTK_RESPONSE are negative */
-#define GTK_RESPONSE_ADD		 1
-#define GTK_RESPONSE_ADDKEEP	 2
+
 
 #define HB_NUMBER_SAMPLE	1234567.89
 
 
 typedef enum
 {
-	FILETYPE_UNKNOW,
+	FILETYPE_UNKNOWN,
 	FILETYPE_HOMEBANK,
 	FILETYPE_OFX,
 	FILETYPE_QIF,
@@ -158,40 +158,52 @@ typedef enum
 
 
 /* -------- named icons (Standard Icon Name) -------- */
-#define ICONNAME_NEW				"document-new"
-#define ICONNAME_OPEN				"document-open"
-#define ICONNAME_SAVE				"document-save"
+
+
+//obsolete, as since since gtk3.10 : no more icons for dialogs and menu
 #define ICONNAME_SAVE_AS			"document-save-as"	  //obsolete
-#define ICONNAME_REVERT			    "document-revert"	  //obsolete
-#define ICONNAME_PRINT				"document-print"		//unused
+#define ICONNAME_REVERT		    "document-revert"	  //obsolete
 #define ICONNAME_PROPERTIES			"document-properties"   //obsolete
 #define ICONNAME_CLOSE				"window-close"	  //obsolete
 #define ICONNAME_QUIT				"application-exit"	  //obsolete
-#define ICONNAME_FIND				"edit-find"
-#define ICONNAME_CLEAR				"edit-clear"
-#define ICONNAME_WARNING			"dialog-warning"
-#define ICONNAME_ERROR				"dialog-error"
-#define ICONNAME_INFO				"dialog-information"
 #define ICONNAME_HELP				"help-browser"	  //obsolete
 #define ICONNAME_ABOUT				"help-about"	  //obsolete
 #define ICONNAME_PREFERENCES		"preferences-system"	  //obsolete
-#define ICONNAME_REFRESH			"view-refresh"		
+
+
+//#define ICONNAME_FIND				"edit-find"				//unused
+//#define ICONNAME_CLEAR			"edit-clear"			//unused
+//#define ICONNAME_HB_SCHED_SKIP		"media-skip-forward"
+//#define ICONNAME_HB_SCHED_POST		"media-playback-start"
+
+//in 5.2 no themeable icon to keep a consistent iconset
+
+#define ICONNAME_WARNING			"dialog-warning"
+#define ICONNAME_ERROR				"dialog-error"
+#define ICONNAME_INFO				"dialog-information"
+
 
 #define ICONNAME_FOLDER				"folder-symbolic"
+#define ICONNAME_EMBLEM_OK			"emblem-ok-symbolic"
 #define ICONNAME_EMBLEM_SYSTEM		"emblem-system-symbolic"
-
-
+#define ICONNAME_WINDOW_CLOSE		"window-close-symbolic"
 #define ICONNAME_LIST_ADD			"list-add-symbolic"
 #define ICONNAME_LIST_REMOVE		"list-remove-symbolic"
-
+#define ICONNAME_LIST_REMOVE_ALL	"list-remove-all-symbolic"
 #define ICONNAME_CHANGES_PREVENT	"changes-prevent-symbolic"
+#define ICONNAME_SYSTEM_SEARCH		"system-search-symbolic"
 
 // custom or gnome not found
 #define ICONNAME_HB_BUTTON_MENU		"open-menu-symbolic"
+#define ICONNAME_HB_BUTTON_COLLAPSE	"list-collapse-all-symbolic"
+#define ICONNAME_HB_BUTTON_EXPAND	"list-expand-all-symbolic"
+#define ICONNAME_HB_BUTTON_SPLIT	"edit-split-symbolic"
 #define ICONNAME_HB_TOGGLE_SIGN		"toggle-sign-symbolic"
 
 
 /* -------- named icons (Custom to homebank) -------- */
+
+
 #define ICONNAME_HB_CURRENCY		"hb-currency"
 #define ICONNAME_HB_ACCOUNT         "hb-account"
 #define ICONNAME_HB_ARCHIVE         "hb-archive"
@@ -213,18 +225,19 @@ typedef enum
 #define ICONNAME_HB_VIEW_STACK	    "hb-view-stack"  //"view-chart-stack"
 #define ICONNAME_HB_VIEW_PIE	    "hb-view-pie"    //"view-chart-pie"
 #define ICONNAME_HB_VIEW_DONUT	    "hb-view-donut"  //"view-chart-donut"
-#define ICONNAME_HB_SHOW_LEGEND	    "hb-legend"		 //"view-legend"
-#define ICONNAME_HB_SHOW_RATE	    "hb-rate"	    // obsolete ?
-#define ICONNAME_HB_FILTER          "hb-filter"		 //"edit-filter"
+#define ICONNAME_HB_SHOW_LEGEND	    "hb-legend"		//"view-legend"
+#define ICONNAME_HB_SHOW_RATE	    "hb-rate"	    	// obsolete ?
+#define ICONNAME_HB_REFRESH		    "hb-view-refresh"	//"view-refresh"	
+#define ICONNAME_HB_FILTER		    "hb-filter"		//"edit-filter"
 
-#define ICONNAME_HB_FILE_IMPORT		"hb-file-import"	//document-import
-#define ICONNAME_HB_FILE_EXPORT		"hb-file-export"	//document-export
+#define ICONNAME_HB_FILE_NEW		"hb-document-new"		//document-new
+#define ICONNAME_HB_FILE_OPEN		"hb-document-open"	//document-open
+#define ICONNAME_HB_FILE_SAVE		"hb-document-save"	//document-save
+//#define ICONNAME_PRINT				"document-print"
+#define ICONNAME_HB_FILE_IMPORT		"hb-file-import"		//document-import
+#define ICONNAME_HB_FILE_EXPORT		"hb-file-export"		//document-export
 #define ICONNAME_HB_FILE_VALID		"hb-file-valid"
 #define ICONNAME_HB_FILE_INVALID	"hb-file-invalid"
-
-#define ICONNAME_HB_BUTTON_COLLAPSE	"btn-collapse-symbolic"
-#define ICONNAME_HB_BUTTON_EXPAND	"btn-expand-symbolic"
-#define ICONNAME_HB_BUTTON_SPLIT	"btn-split"
 
 #define ICONNAME_HB_OPE_AUTO        "hb-ope-auto"   //? 
 #define ICONNAME_HB_OPE_BUDGET      "hb-ope-budget" //? 
@@ -233,14 +246,17 @@ typedef enum
 #define ICONNAME_HB_OPE_EDIT        "hb-ope-edit"   //
 #define ICONNAME_HB_OPE_MULTIEDIT   "hb-ope-multiedit"   //
 #define ICONNAME_HB_OPE_DELETE      "hb-ope-delete" //? "edit-delete"
-#define ICONNAME_CONVERT			"hb-ope-convert"
+#define ICONNAME_CONVERT			"hb-ope-convert"	// obsolete ?
 #define ICONNAME_HB_ASSIGN_RUN      "hb-assign-run"
 
-#define ICONNAME_HB_OPE_VALID       "hb-ope-valid"  // obsolete ?
+#define ICONNAME_HB_OPE_NEW		     "hb-ope-new"
+// edit is defined above
+#define ICONNAME_HB_OPE_REMIND      "hb-ope-remind"
+#define ICONNAME_HB_OPE_SIMILAR     "hb-ope-similar"
+
 #define ICONNAME_HB_OPE_CLEARED     "hb-ope-cleared"
 #define ICONNAME_HB_OPE_RECONCILED  "hb-ope-reconciled"
-#define ICONNAME_HB_OPE_REMIND      "hb-ope-remind"
-
+#define ICONNAME_HB_OPE_FUTURE      "hb-ope-future"
 
 
 /*
@@ -277,7 +293,8 @@ struct HomeBank
 	gboolean		hbfile_is_new;
 	gboolean		hbfile_is_bak;
 	gchar			*xhb_filepath;
-	gboolean		xhb_hasbak;		//file has backup (*.xhb~) used for revert menu sensitivity
+	gboolean		xhb_hasrevert;		//file has backup (*.xhb~) used for revert menu sensitivity
+	guint64			xhb_timemodified;
 
 	// really global stuffs
 	gboolean		first_run;
@@ -286,6 +303,7 @@ struct HomeBank
 	gboolean		minor;
 
 	GtkWidget		*mainwindow;	//should be global to access attached window data
+	GtkWidget		*alltxnwindow;	//window to mutex all txn show
 	GtkIconTheme	*icontheme;
 	//GdkPixbuf		*lst_pixbuf[NUM_LST_PIXBUF];
 	//gint			lst_pixbuf_maxwidth;

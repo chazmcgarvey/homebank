@@ -22,31 +22,11 @@
   <div class="rounded content">
     <h2>Using categories dialog</h2>
     <p><img class="gtkshot right" src="images/dlg-category1.png"></p>
+
     <h3><img src="images/1.png"> Expense/Income switcher</h3>
     <p>Toggle the category list with Expense/Income categories only</p>
-    <h3><img src="images/2.png"> Category name</h3>
-    <p>type a new category name here and press return to add.</p>
-    <h3><img src="images/2.png"> Subcategory name</h3>
-    <p>- select the category to add subcategory to in the category list<br>
-    - type a new subcategory name here and press return to add.</p>
-    <h3><img src="images/3.png"> Categories list</h3>
-    <p>display category name and usage count</p>
-    <h3><img src="images/4.png"> Buttons</h3>
-    <table class="widgetinfo">
-      <tr>
-        <th>Edit</th>
-        <td>open a dialog to edit the selected category</td>
-      </tr>
-      <tr>
-        <th>Merge</th>
-        <td>merge the current category to a new one you will select</td>
-      </tr>
-      <tr>
-        <th>Delete</th>
-        <td>delete the selected branch or categories, i.e. if a category is selected, all subcategories will be deleted</td>
-      </tr>
-    </table>
-    <h3><img src="images/5.png"> Menu Button</h3>
+
+    <h3><img src="images/2.png"> Menu Button</h3>
     <table class="widgetinfo">
       <tr>
         <th>Import</th>
@@ -62,6 +42,43 @@
       </tr>
     </table>
     <p>Please refer to <a href="misc-csvformat.html#cat">CSV file format</a> for the file description.</p>
+
+
+    <h3><img src="images/3.png"> Categories list</h3>
+    <p>display category name and usage count<br>
+    the usage count:</p>
+    <ul>
+    <li>transaction/split
+    <li>payee default category
+    <li>template/scheduled transaction
+    <li>assignment rule
+    <li>default car cost usage is also by default 'No category'
+  </ul>
+
+    <h3><img src="images/4.png"> Category name</h3>
+    <p>type a new category name here and press return to add.</p>
+    <h3><img src="images/4.png"> Subcategory name</h3>
+    <p>- select the category to add subcategory to in the category list<br>
+    - type a new subcategory name here and press return to add.</p>
+
+    <h3><img src="images/5.png"> Buttons</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Add</th>
+        <td>toggle the categoryname widget visible/invisible</td>
+      </tr>
+      <tr>
+        <th>Merge</th>
+        <td>merge the current category to a new one you will select</td>
+      </tr>
+      <tr>
+        <th>Delete</th>
+        <td>delete the selected branch or categories, i.e. if a category is selected, all subcategories will be deleted</td>
+      </tr>
+    </table> 
+    <p><b>Edit</b><br>
+      To edit a category, double click on it.</p>
+
   </div>
 </body>
 </html>

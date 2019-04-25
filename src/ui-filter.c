@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -42,66 +42,12 @@
 extern struct HomeBank *GLOBALS;
 
 
+extern gchar *CYA_FLT_TYPE[];
+extern gchar *CYA_FLT_STATUS[];
+extern gchar *CYA_FLT_RANGE[];
+extern gchar *CYA_SELECT[];
 extern char *paymode_label_names[];
-
-
-gchar *CYA_FLT_TYPE[] = {
-	N_("Expense"),
-	N_("Income"),
-	"",
-	N_("Any Type"),
-	NULL
-};
-
-gchar *CYA_FLT_STATUS[] = {
-	N_("Uncategorized"),
-	N_("Unreconciled"),
-	N_("Uncleared"),
-	N_("Reconciled"),
-	N_("Cleared"),
-	"",
-	N_("Any Status"),
-	NULL
-};
-
-gchar *CYA_FLT_RANGE[] = {
-	N_("This month"),
-	N_("Last month"),
-	N_("This quarter"),
-	N_("Last quarter"),
-	N_("This year"),
-	N_("Last year"),
-	"",
-	N_("Last 30 days"),
-	N_("Last 60 days"),
-	N_("Last 90 days"),
-	N_("Last 12 months"),
-	"",
-	N_("Other..."),
-	"",
-	N_("All date"),
-	NULL
-};
-
-
-gchar *CYA_SELECT[] =
-{
-	"----",
-	N_("All month"),
-	N_("January"),
-	N_("February"),
-	N_("March"),
-	N_("April"),
-	N_("May"),
-	N_("June"),
-	N_("July"),
-	N_("August"),
-	N_("September"),
-	N_("October"),
-	N_("November"),
-	N_("December"),
-	NULL
-};
+extern gchar *nainex_label_names[];
 
 
 /* = = = = = = = = = = = = = = = = = = = = */
@@ -140,7 +86,7 @@ gint i;
 
 			//data->filter->cat[i] = gtk_tree_selection_iter_is_selected(selection, &iter);
 			//data->filter->cat[i] = toggled;
-			catitem->filter = toggled;
+			catitem->flt_select = toggled;
 
 			n_child = gtk_tree_model_iter_n_children (GTK_TREE_MODEL(model), &iter);
 			gtk_tree_model_iter_children (GTK_TREE_MODEL(model), &child, &iter);
@@ -156,7 +102,7 @@ gint i;
 
 				//data->filter->cat[i] = toggled;
 				//data->filter->cat[i] = gtk_tree_selection_iter_is_selected(selection, &child);
-				catitem->filter = toggled;
+				catitem->flt_select = toggled;
 
 				n_child--;
 				gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &child);
@@ -200,7 +146,7 @@ static void ui_flt_panel_category_set(struct ui_flt_manage_data *data)
 				LST_DEFCAT_DATAS, &catitem,
 				-1);
 
-			if(catitem->filter == TRUE)
+			if(catitem->flt_select == TRUE)
 				gtk_tree_store_set (GTK_TREE_STORE (model), &iter, LST_DEFCAT_TOGGLE, TRUE, -1);
 
 			n_child = gtk_tree_model_iter_n_children (GTK_TREE_MODEL(model), &iter);
@@ -213,7 +159,7 @@ static void ui_flt_panel_category_set(struct ui_flt_manage_data *data)
 					LST_DEFCAT_DATAS, &catitem,
 					-1);
 
-				if(catitem->filter == TRUE)
+				if(catitem->flt_select == TRUE)
 					gtk_tree_store_set (GTK_TREE_STORE (model), &child, LST_DEFCAT_TOGGLE, TRUE, -1);
 
 				n_child--;
@@ -799,7 +745,7 @@ gchar *txt;
 					-1);
 
 				//data->filter->acc[i] = gtk_tree_selection_iter_is_selected(selection, &iter);
-				accitem->filter = toggled;
+				accitem->flt_select = toggled;
 
 				/* Make iter point to the next row in the list store */
 				i++; valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
@@ -822,7 +768,7 @@ gchar *txt;
 				-1);
 
 			//data->filter->pay[i] = gtk_tree_selection_iter_is_selected(selection, &iter);
-			payitem->filter = toggled;
+			payitem->flt_select = toggled;
 
 			/* Make iter point to the next row in the list store */
 			i++; valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
@@ -921,7 +867,7 @@ static void ui_flt_manage_set(struct ui_flt_manage_data *data)
 					LST_DEFACC_DATAS, &accitem,
 					-1);
 
-				if(accitem->filter == TRUE)
+				if(accitem->flt_select == TRUE)
 					//gtk_tree_selection_select_iter(selection, &iter);
 					gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 						LST_DEFACC_TOGGLE, TRUE, -1);
@@ -945,7 +891,7 @@ static void ui_flt_manage_set(struct ui_flt_manage_data *data)
 				LST_DEFPAY_DATAS, &payitem,
 				-1);
 
-			if(payitem->filter == TRUE)
+			if(payitem->flt_select == TRUE)
 				gtk_list_store_set (GTK_LIST_STORE (model), &iter, LST_DEFPAY_TOGGLE, TRUE, -1);
 
 			/* Make iter point to the next row in the list store */
@@ -972,7 +918,7 @@ struct ui_flt_manage_data *data;
 
 	DB( g_print("(ui_flt_manage) clear\n") );
 
-	filter_default_all_set(data->filter);
+	filter_reset(data->filter);
 
 	ui_flt_manage_set(data);
 
@@ -999,7 +945,7 @@ static void ui_flt_manage_setup(struct ui_flt_manage_data *data)
 	{
 		//gtk_tree_selection_set_mode(GTK_TREE_SELECTION(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_pay))), GTK_SELECTION_MULTIPLE);
 
-		ui_pay_listview_populate(data->LV_pay);
+		ui_pay_listview_populate(data->LV_pay, NULL);
 		//populate_view_pay(data->LV_pay, GLOBALS->pay_list, FALSE);
 	}
 
@@ -1316,9 +1262,11 @@ gint row;
 
 		row++;
 		label = make_label_widget(_("Force:"));
+		data->LB_force = label;
 		gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
 
 		vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+		data->GR_force = vbox;
 		gtk_grid_attach (GTK_GRID (table), vbox, 2, row, 1, 1);
 
 		widget = gtk_check_button_new_with_mnemonic (_("display 'Added'"));
@@ -1386,19 +1334,17 @@ gint i, row;
 /*
 **
 */
-gint ui_flt_manage_dialog_new(GtkWidget *widget, Filter *filter, gboolean show_account)
+gint ui_flt_manage_dialog_new(GtkWindow *parentwindow, Filter *filter, gboolean show_account, gboolean txnmode)
 {
 struct ui_flt_manage_data data;
-GtkWidget *parentwindow, *window, *content, *mainbox, *box, *sidebar, *stack, *page;
-gint w, h;
+GtkWidget *window, *content, *mainbox, *box, *sidebar, *stack, *page;
+//gint w, h;
 
 	//data = g_malloc0(sizeof(struct ui_flt_manage_data));
 	//if(!data) return NULL;
-	memset(&data, 0, sizeof(data));
+	memset(&data, 0, sizeof(struct ui_flt_manage_data));
 
 	data.filter = filter;
-
-	parentwindow = gtk_widget_get_ancestor(GTK_WIDGET(widget), GTK_TYPE_WINDOW);
 
 	window = gtk_dialog_new_with_buttons (_("Edit filter"),
 					    GTK_WINDOW (parentwindow),
@@ -1414,8 +1360,8 @@ gint w, h;
 	gtk_window_set_icon_name(GTK_WINDOW (window), ICONNAME_HB_FILTER);
 
 	//set a nice dialog size
-	gtk_window_get_size(GTK_WINDOW(parentwindow), &w, &h);
-	gtk_window_set_default_size (GTK_WINDOW(window), -1, 0.8*h);
+	//gtk_window_get_size(GTK_WINDOW(parentwindow), &w, &h);
+	//gtk_window_set_default_size (GTK_WINDOW(window), -1, 0.8*h);
 
 
 	//store our window private data
@@ -1491,7 +1437,6 @@ gint w, h;
 	ui_flt_manage_set(&data);
 
 	ui_flt_manage_option_update(window, NULL);
-
 	
 	/* signal connect */
     g_signal_connect (data.CY_option[FILTER_STATUS]  , "changed", G_CALLBACK (ui_flt_manage_option_update), NULL);
@@ -1514,6 +1459,12 @@ gint w, h;
 
 
 	gtk_widget_show_all (window);
+
+	if(!txnmode)
+	{
+		hb_widget_visible (data.LB_force, FALSE);
+		hb_widget_visible (data.GR_force, FALSE);
+	}
 
 
 	if( *data.filter->last_tab != '\0' )

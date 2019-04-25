@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2018 Maxime DOYEN
+ *	Copyright (C) 1995-2019 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -217,10 +217,10 @@ gchar *remainder;
 }
 
 
-GList *homebank_csv_import(gchar *filename, ImportContext *ictx)
+GList *homebank_csv_import(ImportContext *ictx, GenFile *genfile)
 {
 GIOChannel *io;
-GList *list = NULL;
+//GList *list = NULL;
 static gint csvtype[7] = {
 					CSV_DATE,
 					CSV_INT,
@@ -233,7 +233,7 @@ static gint csvtype[7] = {
 
 	DB( g_print("\n[import] homebank csv\n") );
 
-	io = g_io_channel_new_file(filename, "r", NULL);
+	io = g_io_channel_new_file(genfile->filepath, "r", NULL);
 	if(io != NULL)
 	{
 	gchar *tmpstr;
@@ -242,20 +242,15 @@ static gint csvtype[7] = {
 	gboolean isvalid;
 	gint count = 0;
 	gint error = 0;
-	Account *tmp_acc;
-	Payee *payitem;
-	Category *catitem;
+	GenAcc *newacc;
 	GError *err = NULL;
 
 
-		gchar *accname = g_strdup_printf(_("(account %d)"), da_acc_get_max_key() + 1);
-		tmp_acc = import_create_account(accname, NULL);
-		g_free(accname);
+		newacc = hb_import_gen_acc_get_next(ictx, FILETYPE_CSV_HB, NULL, NULL);
 
-
-		if( ictx->encoding != NULL )
+		if( genfile->encoding != NULL )
 		{
-			g_io_channel_set_encoding(io, ictx->encoding, NULL);
+			g_io_channel_set_encoding(io, genfile->encoding, NULL);
 		}
 
 		for(;;)
@@ -293,60 +288,28 @@ static gint csvtype[7] = {
 					}
 					else
 					{
-					Transaction *newope = da_transaction_malloc();
+					GenTxn *newope = da_gen_txn_malloc();;
 
-						//DB( g_print(" ->%s\n", tmpstr ) );
+						DB( g_print(" ->%s\n", tmpstr ) );
 
-						newope->date		 = hb_date_get_julian(str_array[0], ictx->datefmt);
-						if( newope->date == 0 )
-						{
-							g_warning ("csv parse: line %d, parse date failed", count);
-							ictx->cnt_err_date++;
-						}
-						
-						newope->paymode		 = atoi(str_array[1]);
-						newope->info		 = g_strdup(str_array[2]);
+						/* convert to generic transaction */
+						newope->date		= g_strdup(str_array[0]);			
+						newope->paymode		= atoi(str_array[1]);
+						//added 5.1.8 forbid to import 5=internal xfer
+						if(newope->paymode == PAYMODE_INTXFER)
+							newope->paymode = PAYMODE_XFER;
+						newope->rawinfo		= g_strdup(str_array[2]);
+						newope->rawpayee	= g_strdup(g_strstrip(str_array[3]));						
+						newope->rawmemo		= g_strdup(str_array[4]);
+						newope->amount		= hb_qif_parser_get_amount(str_array[5]);
+						newope->category	= g_strdup(g_strstrip(str_array[6]));
+						newope->tags		= g_strdup(str_array[7]);
+						newope->account		= g_strdup(newacc->name);
 
-						/* payee */
-						g_strstrip(str_array[3]);
-						payitem = da_pay_get_by_name(str_array[3]);
-						if(payitem == NULL)
-						{
-							payitem = da_pay_malloc();
-							payitem->name = g_strdup(str_array[3]);
-							payitem->imported = TRUE;
-							da_pay_append(payitem);
-
-							if( payitem->imported == TRUE )
-								ictx->cnt_new_pay += 1;
-						}
-
-						newope->kpay = payitem->key;
-						newope->memo		 = g_strdup(str_array[4]);
-						newope->amount		 = hb_qif_parser_get_amount(str_array[5]);
-
-						/* category */
-						g_strstrip(str_array[6]);
-						catitem = da_cat_append_ifnew_by_fullname(str_array[6], TRUE);
-						if( catitem != NULL )
-						{
-							newope->kcat = catitem->key;
-
-							if( catitem->imported == TRUE && catitem->key > 0 )
-								ictx->cnt_new_cat += 1;
-						}
-
-						/* tags */
-						transaction_tags_parse(newope, str_array[7]);
-
-
-						newope->kacc		= tmp_acc->key;
-						//newope->kxferacc = accnum;
-
-						newope->flags |= OF_ADDED;
-
-						if( newope->amount > 0)
-							newope->flags |= OF_INCOME;
+						/* todo: move this eval date valid */
+						//guint32 juliantmp = hb_date_get_julian(str_array[0], ictx->datefmt);
+						///if( juliantmp == 0 )
+						//	ictx->cnt_err_date++;
 
 						/*
 						DB( g_print(" storing %s : %s : %s :%s : %s : %s : %s : %s\n",
@@ -355,8 +318,11 @@ static gint csvtype[7] = {
 							str_array[6], str_array[7]
 							) );
 						*/
+						/* csv file are standalone, so no way to link a target txn */
+						if(newope->paymode == PAYMODE_INTXFER)
+							newope->paymode = PAYMODE_XFER;
 
-						list = g_list_append(list, newope);
+						da_gen_txn_append(ictx, newope);
 
 						g_strfreev (str_array);
 					}
@@ -376,7 +342,7 @@ static gint csvtype[7] = {
 	}
 
 
-	return list;
+	return ictx->gen_lst_txn;
 }
 
 

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2018 Maxime DOYEN
+ *  Copyright (C) 1995-2019 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -23,15 +23,18 @@
 
 typedef struct _tag		Tag;
 
-
 struct _tag
 {
 	guint32   	key;
 	gchar   	*name;
+
+	/* unsaved datas */
+	//gboolean	flt_select;
+	guint		usage_count;
 };
 
-void
-da_tag_free(Tag *item);
+
+void da_tag_free(Tag *item);
 Tag *da_tag_malloc(void);
 
 void da_tag_destroy(void);
@@ -45,6 +48,14 @@ gboolean	da_tag_append(Tag *acc);
 guint32		da_tag_get_max_key(void);
 Tag		*da_tag_get_by_name(gchar *name);
 Tag		*da_tag_get(guint32 key);
+
+
+guint tags_count(guint32 *tags);
+guint32 *tags_clone(guint32 *tags);
+guint32 *tags_parse(const gchar *tagstring);
+gchar *tags_tostring(guint32 *tags);
+
+gboolean tag_rename(Tag *item, const gchar *newname);
 
 GList *tag_glist_sorted(gint column);
 

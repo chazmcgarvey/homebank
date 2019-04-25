@@ -16,11 +16,13 @@
     <ul class="toc">
       <li><a href="#tab1">General</a></li>
       <li><a href="#tab2">Interface</a></li>
-      <li><a href="#tab3">Transactions</a></li>
-      <li><a href="#tab4">Display format</a></li>
+      <li><a href="#tab3">Locale</a></li>
+      <li><a href="#tab4">Transactions</a></li>
       <li><a href="#tab5">Import/Export</a></li>
       <li><a href="#tab6">Report</a></li>
-      <li><a href="#tab7">Euro minor</a></li>
+      <li><a href="#tab7">Backup</a></li>
+      <li><a href="#tab8">Folders</a></li>
+      <li><a href="#tab9">Euro minor</a></li>
     </ul><!-- separator -->
   </div>
   <div class="rounded content">
@@ -45,13 +47,6 @@
         <td>trigger a on-line update for currencies exchange rate start</td>
       </tr>
     </table>
-    <h3>Fiscal year</h3>
-    <table class="widgetinfo">
-      <tr>
-        <th>Start on</th>
-        <td>define on which day and month the fiscal year start</td>
-      </tr>
-    </table>
     <h3>Main window reports</h3>
     <table class="widgetinfo">
       <tr>
@@ -59,13 +54,7 @@
         <td>default range initial value for the main window reports</td>
       </tr>
     </table>
-    <h3>Files folder</h3>
-    <table class="widgetinfo">
-      <tr>
-        <th>Default</th>
-        <td>default folder to load/save HomeBank files</td>
-      </tr>
-    </table><!-- separator -->
+    <!-- separator -->
     <div class="clear"></div>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
@@ -74,10 +63,6 @@
     <p><img class="gtkshot right" src="images/dlg-prefs2.png"></p>
     <h3>General</h3>
     <table class="widgetinfo">
-      <tr>
-        <th>Language</th>
-        <td>define what language to use for the interface</td>
-      </tr>
       <tr>
         <th>Tool-bar</th>
         <td>tool-bar style to be used</td>
@@ -121,9 +106,51 @@
     <div class="clear"></div>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
+
+
   <div class="rounded content">
-    <h2><a id="tab3" name="tab3"></a>Transactions</h2>
+    <h2><a id="tab3" name="tab3"></a>Locale</h2>
     <p><img class="gtkshot right" src="images/dlg-prefs3.png"></p>
+    <h3>User interface</h3>
+    <table class="widgetinfo">
+       <tr>
+        <th>Language</th>
+        <td>define what language to use for the interface</td>
+      </tr>
+     <tr>
+        <th>Date display</th>
+        <td>A date sample is displayed</td>
+      </tr>
+      <tr>
+        <th>Customize</th>
+        <td>display format used to display <u>(and not input)</u> date</td>
+      </tr>
+    </table>
+    <h3>Fiscal year</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Start on</th>
+        <td>define on which day and month the fiscal year start</td>
+      </tr>
+    </table>
+    <h3>Measurement units</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Use miles for metre</th>
+        <td>use the mile labels and abbreviation for the vehicle cost</td>
+      </tr>
+      <tr>
+        <th>Use gallon for fuel</th>
+        <td>use the gallon labels and abbreviation for the vehicle cost</td>
+      </tr>
+    </table><!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h2><a id="tab4" name="tab4"></a>Transactions</h2>
+    <p><img class="gtkshot right" src="images/dlg-prefs4.png"></p>
     <h3>Transaction window</h3>
     <table class="widgetinfo">
       <tr>
@@ -150,40 +177,23 @@
         <td>Set the date to be kept when you add several transaction successively</td>
       </tr>
     </table>
-    <h3>Column list</h3>
-    <p>Removed on 5.17, now use the context menu on the transaction listview column header</p>
-    <p>Set the column to display and their order for the transaction list</p><!-- separator -->
-    <div class="clear"></div>
-    <p class="top"><a href="#top">↑ Back to Top</a></p>
-  </div>
-  <div class="rounded content">
-    <h2><a id="tab4" name="tab4"></a>Display format</h2>
-    <p><img class="gtkshot right" src="images/dlg-prefs4.png"></p>
-    <h3>Date options</h3>
+    <h3>Memo autocomplete</h3>
     <table class="widgetinfo">
       <tr>
-        <th>Date</th>
-        <td>A date sample is displayed</td>
+        <th>Active</th>
+        <td>to collect and propose memo for autocomplete or not</td>
       </tr>
       <tr>
-        <th>Customize &gt; Format</th>
-        <td>display format used for date</td>
+        <th>xxx rolling days</th>
+        <td>to define how many days into the past to grab memo for autocomplete, if for example 30 days, you will only see the last 30 days autocomplete memo</td>
       </tr>
     </table>
-    <h3>Measurement units</h3>
-    <table class="widgetinfo">
-      <tr>
-        <th>Use miles for meter</th>
-        <td>use the mile labels and abbreviation for the vehicle cost</td>
-      </tr>
-      <tr>
-        <th>Use gallons for fuel</th>
-        <td>use the gallons labels and abbreviation for the vehicle cost</td>
-      </tr>
-    </table><!-- separator -->
+    <!-- separator -->
     <div class="clear"></div>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
+
+
   <div class="rounded content">
     <h2><a id="tab5" name="tab5"></a>Import/Export</h2>
     <p><img class="gtkshot right" src="images/dlg-prefs5.png"></p>
@@ -204,26 +214,45 @@
     <h3>OFX/QFX options</h3>
     <table class="widgetinfo">
       <tr>
-        <th>Memo field</th>
+        <th>OFX Name</th>
+        <td>
+          define what to do for name field during import:<br>
+          <ul>
+            <li>ignore</li>
+            <li>memo</li>
+            <li>payee</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>OFX Memo</th>
         <td>
           define what to do for memo field during import:<br>
           <ul>
             <li>ignore</li>
-            <li>append to memo</li>
-            <li>append to info</li>
+            <li>append to Info</li>
+            <li>append to Memo</li>
+            <li>append to Payee</li>
           </ul>
         </td>
       </tr>
     </table>
-    <h3>Files folder</h3>
+    <h3>QIF options</h3>
     <table class="widgetinfo">
       <tr>
-        <th>Import</th>
-        <td>default folder to load files to import</td>
+        <th>Import memos</th>
+        <td>to import the M field from files</td>
       </tr>
       <tr>
-        <th>Export</th>
-        <td>default folder to save files to export</td>
+        <th>Swap memos with payees</th>
+        <td>to swap M and P field from files</td>
+      </tr>
+    </table>
+    <h3>Other options</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Sentence case memo/payee</th>
+        <td>will change the case for memo and payee (lowercase starting with a capital letter)</td>
       </tr>
     </table><!-- separator -->
     <div class="clear"></div>
@@ -253,6 +282,7 @@
             <li>Office 2010</li>
             <li>Office 2013</li>
             <li>Analytics</li>
+            <li>YNAB</li>
           </ul>
         </td>
       </tr>
@@ -282,9 +312,62 @@
     <div class="clear"></div>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
+
   <div class="rounded content">
-    <h2><a id="tab7" name="tab7"></a>Euro minor</h2>
+    <h2><a id="tab7" name="tab7"></a>Backup</h2>
     <p><img class="gtkshot right" src="images/dlg-prefs7.png"></p>
+    <h3>Backup</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Enable automatic backups</th>
+        <td>to activate backup of your xhb files</td>
+      </tr>
+      <tr>
+        <th>Number of backups to keep</th>
+        <td>the number of backups to keep</td>
+      </tr>
+      <tr>
+        <th>Frequency</th>
+        <td>is once a day<br>
+        which means a backup file will be created the first time you save your file during a day, so if you save it 3 times the same day, only the first save will be backuped, so that you can revert to the day before with ease.</td>
+      </tr>
+    </table>
+    <!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+
+  <div class="rounded content">
+    <h2><a id="tab8" name="tab8"></a>Folders</h2>
+    <p><img class="gtkshot right" src="images/dlg-prefs8.png"></p>
+    <h3>HomeBank files</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Default</th>
+        <td>default folder to load/save HomeBank files</td>
+      </tr>
+    </table>
+    <h3>Exchange files</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Import</th>
+        <td>default folder to load files to import</td>
+      </tr>
+      <tr>
+        <th>Export</th>
+        <td>default folder to save files to export</td>
+      </tr>
+    </table>
+<!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+
+  <div class="rounded content">
+    <h2><a id="tab9" name="tab9"></a>Euro minor</h2>
+    <p><img class="gtkshot right" src="images/dlg-prefs9.png"></p>
     <h3>General</h3>
     <table class="widgetinfo">
       <tr>
@@ -310,6 +393,7 @@
     </table>
     <h3>Format</h3>
     <table class="widgetinfo">
+      <p>A sample is displayed and can be customized</p>
       <tr>
         <th>Symbol</th>
         <td>Symbol that prefix the amount</td>
