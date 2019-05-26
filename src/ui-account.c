@@ -1296,7 +1296,7 @@ gint w, h, row;
 
 	table = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
+	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_SMALL);
 	gtk_box_pack_start (GTK_BOX (vbox), table, TRUE, TRUE, 0);
 
 	row = 0;

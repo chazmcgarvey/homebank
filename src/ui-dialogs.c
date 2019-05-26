@@ -991,7 +991,7 @@ GtkTreeIter			 newiter;
 		gtk_list_store_append (GTK_LIST_STORE(newmodel), &newiter);
 
 		gtk_list_store_set (GTK_LIST_STORE(newmodel), &newiter,
-		LST_DSPOPE_DATAS, stxn,
+		MODEL_TXN_POINTER, stxn,
 		-1);
 	}
 
@@ -1008,7 +1008,7 @@ GtkTreeIter			 newiter;
 			gtk_list_store_append (GTK_LIST_STORE(newmodel), &newiter);
 
 			gtk_list_store_set (GTK_LIST_STORE(newmodel), &newiter,
-			LST_DSPOPE_DATAS, tmp,
+			MODEL_TXN_POINTER, tmp,
 			-1);
 
 		//DB( g_print(" - fill: %s %.2f %x\n", item->memo, item->amount, (unsigned int)item->same) );
@@ -1056,11 +1056,14 @@ GtkTreeIter			 newiter;
 			selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data.treeview));
 			if (gtk_tree_selection_get_selected(selection, &model, &iter))
 			{
-				gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, child, -1);
+				gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, child, -1);
 			}
 		}
 	}
 
+	DB( g_print(" return %d child = %p\n", result, child) );
+
+	
 	// cleanup and destroy
 	gtk_widget_destroy (window);
 

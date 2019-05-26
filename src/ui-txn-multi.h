@@ -26,6 +26,7 @@ struct ui_multipleedit_dialog_data
 	GtkWidget	*window;
 
 	GtkWidget	*CM_date, *PO_date;
+	GtkWidget	*CM_amount, *ST_amount;
 	GtkWidget	*LB_mode, *CM_mode, *NU_mode;
 	GtkWidget	*CM_info, *ST_info;
 	GtkWidget	*LB_acc, *CM_acc, *PO_acc;

@@ -38,6 +38,97 @@ extern struct Preferences *PREFS;
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
+
+
+static gint homebank_alienfile_recognize(gchar *filename)
+{
+GIOChannel *io;
+gint i, retval = FILETYPE_UNKNOWN;
+gchar *tmpstr;
+gint io_stat;
+GError *err = NULL;
+
+	DB( g_print("\n[homebank] alienfile_recognize\n") );
+
+	io = g_io_channel_new_file(filename, "r", NULL);
+	if(io != NULL)
+	{
+		g_io_channel_set_encoding(io, NULL, NULL);	/* set to binary mode */
+
+		for(i=0;i<25;i++)
+		{
+			if( retval != FILETYPE_UNKNOWN )
+				break;
+
+			io_stat = g_io_channel_read_line(io, &tmpstr, NULL, NULL, &err);
+			if( io_stat == G_IO_STATUS_EOF)
+				break;
+			if( io_stat == G_IO_STATUS_ERROR )
+			{
+				DB (g_print(" + ERROR %s\n",err->message));
+				break;
+			}
+			if( io_stat == G_IO_STATUS_NORMAL)
+			{
+				if( *tmpstr != '\0' )
+				{
+					DB( g_print(" line %d: '%s' retval=%d\n", i, tmpstr, retval) );
+
+					// OFX/QFX file ?
+					if( g_strstr_len(tmpstr, -1, "<OFX>") != NULL 
+					 || g_strstr_len(tmpstr, -1, "<ofx>") != NULL
+					 /*||	strcasestr(tmpstr, "<OFC>") != NULL*/
+					  )
+					{
+						DB( g_print(" type is OFX\n") );
+						retval = FILETYPE_OFX;
+					}
+					else
+
+					// QIF file ?
+					if( g_str_has_prefix(tmpstr, "!Type") ||
+					    g_str_has_prefix(tmpstr, "!type") ||
+					    g_str_has_prefix(tmpstr, "!Option") ||
+					    g_str_has_prefix(tmpstr, "!option") ||
+					    g_str_has_prefix(tmpstr, "!Account") ||
+					    g_str_has_prefix(tmpstr, "!account")
+					  )
+					{
+						DB( g_print(" type is QIF\n") );
+						retval = FILETYPE_QIF;
+					}
+					else
+
+					// CSV homebank format ?
+					if( hb_csv_test_line(tmpstr) )
+					{
+						DB( g_print(" type is CSV homebank\n") );
+						retval = FILETYPE_CSV_HB;
+					}
+					else
+					
+					// native homebank file ?
+					if( g_str_has_prefix(tmpstr, "<homebank v="))
+					{
+						DB( g_print(" type is HomeBank\n") );
+						retval = FILETYPE_HOMEBANK;
+					}
+
+
+					g_free(tmpstr);
+				}
+			}
+		}
+		g_io_channel_unref (io);
+	}
+
+	return retval;
+}
+
+
+
+
+
 static void 
 da_import_context_gen_txn_destroy(ImportContext *context)
 {
@@ -1153,6 +1244,7 @@ gint nsplit;
 		}
 		
 		// splits, if not a xfer
+		//TODO: it seems this never happen
 		if( gentxn->paymode != PAYMODE_INTXFER )
 		{
 			if( gentxn->nb_splits > 0 )
@@ -1303,6 +1395,7 @@ guint changes = 0;
 
 	g_list_free(txnlist);
 
+	DB( g_print(" adding %d changes\n", changes) );
 	GLOBALS->changes_count += changes;
 	
 }

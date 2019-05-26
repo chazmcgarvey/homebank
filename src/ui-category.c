@@ -1217,7 +1217,7 @@ gint type;
 			/* if cat use new id */
 			if(subcat == FALSE)
 			{
-				type = hbtk_radio_get_active(GTK_CONTAINER(data->RA_type));
+				type = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type));
 				if(type == 1)
 					item->flags |= GF_INCOME;
 
@@ -1758,7 +1758,7 @@ static void ui_cat_manage_populate_listview(struct ui_cat_manage_dialog_data *da
 {
 gint type;
 
-	type = hbtk_radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
+	type = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
 	ui_cat_listview_populate(data->LV_cat, type);
 	gtk_tree_view_expand_all (GTK_TREE_VIEW(data->LV_cat));
 }
@@ -1836,12 +1836,12 @@ gint w, h, row;
 	gtk_box_pack_start (GTK_BOX (mainvbox), table, TRUE, TRUE, 0);
 
 	row = 0;
-	bbox = hbtk_radio_new(CYA_CAT_TYPE, TRUE);
+	bbox = hbtk_radio_button_new(CYA_CAT_TYPE, TRUE);
 	data.RA_type = bbox;
 	gtk_widget_set_halign (bbox, GTK_ALIGN_CENTER);
 	gtk_grid_attach (GTK_GRID (table), bbox, 0, row, 2, 1);
 
-	hbtk_radio_connect (GTK_CONTAINER(bbox), "toggled", G_CALLBACK (ui_cat_manage_type_changed_cb), &data);
+	hbtk_radio_button_connect (GTK_CONTAINER(bbox), "toggled", G_CALLBACK (ui_cat_manage_type_changed_cb), &data);
 
 	menu = gtk_menu_new ();
 	gtk_widget_set_halign (menu, GTK_ALIGN_END);

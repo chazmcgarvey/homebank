@@ -942,7 +942,7 @@ static void ui_bud_manage_populate_listview(struct ui_bud_manage_data *data)
 {
 gint type;
 
-	type = hbtk_radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
+	type = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
 
 	ui_cat_listview_populate(data->LV_cat, type);
 	gtk_tree_view_expand_all (GTK_TREE_VIEW(data->LV_cat));
@@ -1020,12 +1020,12 @@ gint crow, row;
 	gtk_box_pack_start (GTK_BOX (content_area), table, TRUE, TRUE, 0);
 
 	crow = 0;
-	bbox = hbtk_radio_new(CYA_CAT_TYPE, TRUE);
+	bbox = hbtk_radio_button_new(CYA_CAT_TYPE, TRUE);
 	data.RA_type = bbox;
 	gtk_widget_set_halign (bbox, GTK_ALIGN_CENTER);
 	gtk_grid_attach (GTK_GRID (table), bbox, 0, crow, 1, 1);
 
-	hbtk_radio_connect (GTK_CONTAINER(bbox), "toggled", G_CALLBACK (ui_bud_manage_type_changed_cb), &data);
+	hbtk_radio_button_connect (GTK_CONTAINER(bbox), "toggled", G_CALLBACK (ui_bud_manage_type_changed_cb), &data);
 
 	menu = gtk_menu_new ();
 	gtk_widget_set_halign (menu, GTK_ALIGN_END);
@@ -1171,7 +1171,8 @@ gint crow, row;
 		l = ((i<6) ? 1 : 3);
 		t = row + ((i<6) ? i : i-6);
 
-		label = make_label_widget(_(CYA_ABMONTHS[i]));
+		//#1826659 budget dialog month widget label decay by one
+		label = make_label_widget(_(CYA_ABMONTHS[i+1]));
 		data.label[i+1] = label;
 		gtk_grid_attach (GTK_GRID (group_grid), label, l, t, 1, 1);
 

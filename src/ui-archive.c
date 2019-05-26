@@ -346,7 +346,7 @@ gint type;
 	item->memo = g_strdup_printf(_("(template %d)"), g_list_length(GLOBALS->arc_list) + 1);
 	item->unit = 2;
 
-	type = hbtk_radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? ARC_TYPE_TEMPLATE : ARC_TYPE_SCHEDULED;
+	type = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? ARC_TYPE_TEMPLATE : ARC_TYPE_SCHEDULED;
 	if( type == ARC_TYPE_SCHEDULED )
 		item->flags |= OF_AUTO;
 
@@ -485,7 +485,7 @@ gchar *tagstr, *txt;
 
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), item->amount);
 		
-		hbtk_radio_set_active(GTK_CONTAINER(data->RA_status), item->status );
+		hbtk_radio_button_set_active(GTK_CONTAINER(data->RA_status), item->status );
 
 		
 		/*g_signal_handler_block(data->CM_valid, data->handler_id[HID_ARC_VALID]);
@@ -525,7 +525,7 @@ gchar *tagstr, *txt;
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_limit), (item->flags & OF_LIMIT) ? 1 : 0);
 		DB( g_print("nb_limit = %d %g\n", item->limit, (gdouble)item->limit) );
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_limit), (gdouble)item->limit);
-		hbtk_radio_set_active(GTK_CONTAINER(data->CY_weekend), item->weekend);
+		hbtk_radio_button_set_active(GTK_CONTAINER(data->CY_weekend), item->weekend);
 	}
 }
 
@@ -569,7 +569,7 @@ gint active;
 		item->kacc		= ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_acc));
 		item->kxferacc	= ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_accto));
 
-		item->status = hbtk_radio_get_active(GTK_CONTAINER(data->RA_status));
+		item->status = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_status));
 
 		/* tags */
 		txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_tags));
@@ -612,7 +612,7 @@ gint active;
 		gtk_spin_button_update(GTK_SPIN_BUTTON(data->NB_limit));
 		item->limit   = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data->NB_limit));
 
-		item->weekend = hbtk_radio_get_active(GTK_CONTAINER(data->CY_weekend));
+		item->weekend = hbtk_radio_button_get_active(GTK_CONTAINER(data->CY_weekend));
 		
 		data->change++;
 	}
@@ -941,7 +941,7 @@ gint type;
 
 	DB( g_print("\n[ui_scheduled] populate listview\n") );
 
-	type = hbtk_radio_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? ARC_TYPE_TEMPLATE : ARC_TYPE_SCHEDULED;
+	type = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? ARC_TYPE_TEMPLATE : ARC_TYPE_SCHEDULED;
 	ui_arc_listview_populate(data->LV_arc, type);
 	gtk_tree_view_expand_all (GTK_TREE_VIEW(data->LV_arc));
 }
@@ -1088,7 +1088,7 @@ gint row;
 	row++;
 	label = make_label_widget(_("_Status:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = hbtk_radio_new(CYA_TXN_STATUS, TRUE);
+	widget = hbtk_radio_button_new(CYA_TXN_STATUS, TRUE);
 	data->RA_status = widget;
 	gtk_widget_set_halign (widget, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
@@ -1168,7 +1168,7 @@ gint row;
 	data->LB_weekend = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 
-	widget = hbtk_radio_new(RA_ARC_WEEKEND, FALSE);
+	widget = hbtk_radio_button_new(RA_ARC_WEEKEND, FALSE);
 	data->CY_weekend = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
@@ -1237,12 +1237,12 @@ gint w, h, row;
 	gtk_box_pack_start (GTK_BOX (content_area), table, TRUE, TRUE, 0);
 	
 	row = 0;
-	bbox = hbtk_radio_new(RA_ARC_TYPE, TRUE);
+	bbox = hbtk_radio_button_new(RA_ARC_TYPE, TRUE);
 	data.RA_type = bbox;
 	gtk_widget_set_halign (bbox, GTK_ALIGN_CENTER);
 	gtk_grid_attach (GTK_GRID (table), bbox, 0, row, 2, 1);
 
-	hbtk_radio_connect (GTK_CONTAINER(bbox), "toggled", G_CALLBACK (ui_arc_manage_type_changed_cb), &data);
+	hbtk_radio_button_connect (GTK_CONTAINER(bbox), "toggled", G_CALLBACK (ui_arc_manage_type_changed_cb), &data);
 
 	
 	row++;
@@ -1254,7 +1254,7 @@ gint w, h, row;
 	/* left area */
 	hgrid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (hgrid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (hgrid), SPACING_MEDIUM);
+	gtk_grid_set_column_spacing (GTK_GRID (hgrid), SPACING_SMALL);
 	gtk_widget_set_margin_right(hgrid, SPACING_SMALL);
 	gtk_paned_pack1 (GTK_PANED(hpaned), hgrid, FALSE, FALSE);
 

@@ -39,6 +39,18 @@ extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
 
+static gint csvtype[7] = {
+					CSV_DATE,
+					CSV_INT,
+					CSV_STRING,
+					CSV_STRING,
+					CSV_STRING,
+					CSV_DOUBLE,
+					CSV_STRING,
+					};
+
+
+
 static gchar *hb_csv_strndup (gchar *str, gsize n)
 {
 gchar *new_str;
@@ -72,14 +84,14 @@ gchar *twoquote;
 }
 
 
-static gchar *hb_csv_find_delimiter(gchar *string)
+static gchar *hb_csv_find_delimiter(gchar *string, gchar delimiter)
 {
  gchar *s = string;
 gboolean enclosed = FALSE;
 
 	while( *s != '\0' )
 	{
-		if( *s == ';' && enclosed == FALSE )
+		if( (*s == delimiter) && (enclosed == FALSE) )
 			break;
 
 		if( *s == '\"' )
@@ -94,7 +106,7 @@ gboolean enclosed = FALSE;
 }
 
 
-gboolean hb_csv_row_valid(gchar **str_array, guint nbcolumns, gint *csvtype)
+static gboolean hb_csv_row_valid(gchar **str_array, guint nbcolumns, gint *csvtype)
 {
 gboolean valid = TRUE;
 guint i;
@@ -162,7 +174,7 @@ csvend:
 }
 
 
-gchar **hb_csv_row_get(gchar *string, gchar *delimiter, gint max_tokens)
+static gchar **hb_csv_row_get(gchar *string, gchar delimiter, gint max_tokens)
 {
 GSList *string_list = NULL, *slist;
 gchar **str_array, *s;
@@ -170,18 +182,15 @@ guint n = 0;
 gchar *remainder;
 
 	g_return_val_if_fail (string != NULL, NULL);
-	g_return_val_if_fail (delimiter != NULL, NULL);
-	g_return_val_if_fail (delimiter[0] != '\0', NULL);
+	g_return_val_if_fail (delimiter != '\0', NULL);
 
 	if (max_tokens < 1)
 		max_tokens = G_MAXINT;
 
 	remainder = string;
-	s = hb_csv_find_delimiter (remainder);
+	s = hb_csv_find_delimiter (remainder, delimiter);
 	if (s)
 	{
-	gsize delimiter_len = strlen (delimiter);
-
 		while (--max_tokens && s && *s != '\0')
 		{
 		gsize len;
@@ -191,8 +200,8 @@ gchar *remainder;
 			DB( g_print("   stored=[%s]\n", (gchar *)string_list->data) );
 
 			n++;
-			remainder = s + delimiter_len;
-			s = hb_csv_find_delimiter (remainder);
+			remainder = s + 1;
+			s = hb_csv_find_delimiter (remainder, delimiter);
 		}
 	}
 	if (*string)
@@ -217,19 +226,34 @@ gchar *remainder;
 }
 
 
+static gchar hb_csv_get_separator(void)
+{
+static const gchar sep[] = PRF_DTEX_CSVSEP_BUFFER;
+	return sep[PREFS->dtex_csvsep];	
+}
+
+
+gboolean hb_csv_test_line(gchar *rawline)
+{
+gchar **str_array;
+gchar sep;
+gboolean isvalid = FALSE;
+
+	hb_string_strip_crlf(rawline);
+	sep = hb_csv_get_separator();
+	str_array = hb_csv_row_get(rawline, sep, 8);
+	isvalid = hb_csv_row_valid(str_array, 8, csvtype);
+
+	g_strfreev (str_array);
+
+	return isvalid;
+}
+
+
 GList *homebank_csv_import(ImportContext *ictx, GenFile *genfile)
 {
 GIOChannel *io;
 //GList *list = NULL;
-static gint csvtype[7] = {
-					CSV_DATE,
-					CSV_INT,
-					CSV_STRING,
-					CSV_STRING,
-					CSV_STRING,
-					CSV_DOUBLE,
-					CSV_STRING,
-					};
 
 	DB( g_print("\n[import] homebank csv\n") );
 
@@ -237,6 +261,7 @@ static gint csvtype[7] = {
 	if(io != NULL)
 	{
 	gchar *tmpstr;
+	gchar sep;
 	gsize length;
 	gint io_stat;
 	gboolean isvalid;
@@ -271,14 +296,16 @@ static gint csvtype[7] = {
 
 					count++;
 
+					sep = hb_csv_get_separator();
+
 					hb_string_strip_crlf(tmpstr);
-					DB( g_print("\n (row-%04d) ->|%s|<-\n", count, tmpstr) );
+					str_array = hb_csv_row_get(tmpstr, sep, 8);
 
 					// 0:date; 1:paymode; 2:info; 3:payee, 4:wording; 5:amount; 6:category; 7:tags
-					str_array = hb_csv_row_get(tmpstr, ";", 8);
 					isvalid = hb_csv_row_valid(str_array, 8, csvtype);
 
-					 DB( g_print(" valid %d, '%s'\n", isvalid, tmpstr) );
+					DB( g_print("\n (row-%04d) ->|%s|<-\n", count, tmpstr) );
+					DB( g_print(" valid %d, '%s'\n", isvalid, tmpstr) );
 
 					if( !isvalid )
 					{
@@ -290,11 +317,13 @@ static gint csvtype[7] = {
 					{
 					GenTxn *newope = da_gen_txn_malloc();;
 
-						DB( g_print(" ->%s\n", tmpstr ) );
+						DB( g_print(" adding txn\n" ) );
 
 						/* convert to generic transaction */
 						newope->date		= g_strdup(str_array[0]);			
 						newope->paymode		= atoi(str_array[1]);
+						//todo: reinforce controls here
+						// csv file are standalone, so no way to link a target txn
 						//added 5.1.8 forbid to import 5=internal xfer
 						if(newope->paymode == PAYMODE_INTXFER)
 							newope->paymode = PAYMODE_XFER;
@@ -318,9 +347,6 @@ static gint csvtype[7] = {
 							str_array[6], str_array[7]
 							) );
 						*/
-						/* csv file are standalone, so no way to link a target txn */
-						if(newope->paymode == PAYMODE_INTXFER)
-							newope->paymode = PAYMODE_XFER;
 
 						da_gen_txn_append(ictx, newope);
 

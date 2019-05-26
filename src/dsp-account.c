@@ -256,7 +256,7 @@ gint count;
 	Transaction *txn;
 
 		gtk_tree_model_get (model, &iter,
-			LST_DSPOPE_DATAS, &txn,
+			MODEL_TXN_POINTER, &txn,
 			-1);
 
 		if( txn->paymode == PAYMODE_INTXFER )
@@ -554,7 +554,7 @@ gint result, count;
 			GtkTreeIter iter;
 
 				gtk_tree_model_get_iter(model, &iter, list->data);
-				gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, &ope, -1);
+				gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, &ope, -1);
 
 				DB( g_print(" create archive %s %.2f\n", ope->memo, ope->amount) );
 
@@ -607,7 +607,7 @@ gint range;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	range  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_range));
+	range  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
 	future = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_future));
 
 	data->filter->nbdaysfuture = 0;
@@ -680,7 +680,7 @@ struct register_panel_data *data;
 	filter_preset_daterange_set (data->filter, PREFS->date_range_txn, (data->showall == FALSE) ? data->acc->key : 0);
 
 	if(PREFS->hidereconciled)
-		filter_preset_status_set (data->filter, 1);
+		filter_preset_status_set (data->filter, FLT_STATUS_UNRECONCILED);
 
 	// add eventual x days into future display
 	if( PREFS->date_future_nbdays > 0 )
@@ -693,7 +693,7 @@ struct register_panel_data *data;
 	g_signal_handler_block(data->CY_type, data->handler_id[HID_TYPE]);
 	g_signal_handler_block(data->CY_status, data->handler_id[HID_STATUS]);
 
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), data->filter->range);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), data->filter->range);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_type), data->filter->type);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_status), data->filter->status);
 
@@ -719,7 +719,7 @@ gushort lpos = 1;
 	if(data->showall)
 		return;
 
-	DB( g_print("\n[account] balance refresh\n") );
+	DB( g_print("\n[account %d] balance refresh\n", data->acc != NULL ? (gint)data->acc->key : -1) );
 
 	balance = data->acc->initial;
 
@@ -884,7 +884,7 @@ guint i, qs_flag;
 			//gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 	 		//gtk_list_store_set (GTK_LIST_STORE(model), &iter,
 	 		gtk_list_store_insert_with_values(GTK_LIST_STORE(model), &iter, -1,
-				LST_DSPOPE_DATAS, txn,
+				MODEL_TXN_POINTER, txn,
 				-1);
 
 			if( data->showall == FALSE )
@@ -933,7 +933,7 @@ gint count = 0;
 
 
 		gtk_tree_model_get_iter(model, &iter, list->data);
-		gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, &txn, -1);
+		gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, &txn, -1);
 		if(txn->status == TXN_STATUS_RECONCILED)
 			count++;
 		
@@ -959,7 +959,7 @@ GtkTreeIter  iter;
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(treeview));
 	gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 	gtk_list_store_set (GTK_LIST_STORE(model), &iter,
-		LST_DSPOPE_DATAS, ope,
+		MODEL_TXN_POINTER, ope,
 		-1);
 
 	//activate that new line
@@ -993,7 +993,7 @@ gboolean valid;
 	Transaction *tmp;
 
 		gtk_tree_model_get (model, &iter,
-			LST_DSPOPE_DATAS, &tmp,
+			MODEL_TXN_POINTER, &tmp,
 			-1);
 
 		if( txn == tmp )
@@ -1011,7 +1011,7 @@ static void status_selected_foreach_func (GtkTreeModel *model, GtkTreePath *path
 gint targetstatus = GPOINTER_TO_INT(userdata);
 Transaction *txn;
 
-	gtk_tree_model_get(model, iter, LST_DSPOPE_DATAS, &txn, -1);
+	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &txn, -1);
 
 	account_balances_sub(txn);
 	
@@ -1224,8 +1224,8 @@ gboolean result;
 					if(old_txn->date != new_txn->date)
 						data->do_sort = TRUE;
 
-					// manage account change
-					//maybe this should move to deftransaction_external_edit
+					// txn changed of account
+					//TODO: maybe this should move to deftransaction_external_edit
 					if( data->acc != NULL && (new_txn->kacc != data->acc->key) )
 					{
 					Account *nacc;
@@ -1233,9 +1233,9 @@ gboolean result;
 						delete_active_transaction(GTK_TREE_VIEW(data->LV_ope));
 						//#1667501 update target account window is open
 						nacc = da_acc_get(new_txn->kacc);
-						if( nacc->window != NULL )
+						if( nacc != NULL && nacc->window != NULL )
 						{
-							DB( g_print("- account changed and window is open\n") );
+							DB( g_print("- account %d changed and window is open\n", nacc->key) );
 							if( GTK_IS_WINDOW(nacc->window) )
 							{
 								register_panel_add_single_transaction(nacc->window, new_txn);
@@ -1243,7 +1243,21 @@ gboolean result;
 							}
 						}
 					}
-					
+
+					//#1812470 txn is xfer update target account window is open
+					if( (old_txn->paymode == PAYMODE_INTXFER) && (old_txn->amount != new_txn->amount) )
+					{
+					Account *nacc = da_acc_get(new_txn->kxferacc);
+
+						if( nacc != NULL && nacc->window != NULL )
+						{
+							if( GTK_IS_WINDOW(nacc->window) )
+							{
+								register_panel_update(GTK_WIDGET(nacc->window), GINT_TO_POINTER(UF_BALANCE));
+							}
+						}
+					}
+
 					//da_transaction_copy(new_txn, old_txn);
 
 					register_panel_update(widget, GINT_TO_POINTER(UF_BALANCE));
@@ -1285,7 +1299,7 @@ gboolean result;
 				GtkTreeIter iter;
 
 					gtk_tree_model_get_iter(model, &iter, list->data);
-					gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, &entry, -1);
+					gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, &entry, -1);
 
 					DB( g_print(" delete %s %.2f\n", entry->memo, entry->amount) );
 
@@ -1431,7 +1445,7 @@ gboolean result;
 				register_panel_update(data->LV_ope, GINT_TO_POINTER(UF_SENSITIVE+UF_BALANCE));
 
 				g_signal_handler_block(data->CY_range, data->handler_id[HID_RANGE]);
-				gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_OTHER);
+				hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), FLT_RANGE_OTHER);
 				g_signal_handler_unblock(data->CY_range, data->handler_id[HID_RANGE]);
 			}
 
@@ -1479,11 +1493,12 @@ GtkTreeSelection *selection;
 gint flags = GPOINTER_TO_INT(user_data);
 gint count = 0;
 
-	DB( g_print("\n[account] update\n") );
-
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 	//data = INST_DATA(widget);
 
+	DB( g_print("\n[account %d] update\n", data->acc != NULL ? (gint)data->acc->key : -1) );
+
+	
 	GLOBALS->minor = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_minor));
 
 	/* set window title */
@@ -1650,7 +1665,7 @@ gint count = 0;
 		Transaction *item;
 
 			gtk_tree_model_get_iter(model, &iter, tmplist->data);
-			gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, &item, -1);
+			gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, &item, -1);
 
 			if( data->showall == FALSE )
 			{
@@ -1720,7 +1735,7 @@ Transaction *ope;
 
 	//get transaction double clicked to initiate the widget
 	gtk_tree_model_get_iter(model, &iter, path);
-	gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, &ope, -1);
+	gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, &ope, -1);
 
 
 	DB( g_print ("%d rows been double-clicked on column=%d! ope=%s\n", count, col_id, ope->memo) );
@@ -1842,11 +1857,13 @@ struct WinGeometry *wg;
 */
 static gboolean register_panel_dispose(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
-//struct register_panel_data *data = user_data;
+struct register_panel_data *data = user_data;
 
-	//data = g_object_get_data(G_OBJECT(widget), "inst_data");
+	data = g_object_get_data(G_OBJECT(widget), "inst_data");
 
 	DB( g_print("\n[account] delete-event\n") );
+
+	register_panel_getgeometry(data->window, NULL, data);
 
 	return FALSE;
 }
@@ -2059,8 +2076,8 @@ GError *error = NULL;
 		G_CALLBACK (register_panel_destroy), (gpointer)data);
 
 	// connect our dispose function
-	g_signal_connect (window, "configure-event",
-		G_CALLBACK (register_panel_getgeometry), (gpointer)data);
+	//g_signal_connect (window, "configure-event",
+	//	G_CALLBACK (register_panel_getgeometry), (gpointer)data);
 
 #if UI == 1
 	//start test uimanager
@@ -2194,7 +2211,7 @@ GError *error = NULL;
 
 	label = make_label_widget(_("_Range:"));
 	gtk_grid_attach (GTK_GRID(table), label, 0, 0, 1, 1);
-	data->CY_range = make_daterange(label, TRUE);
+	data->CY_range = make_daterange(label, DATE_RANGE_CUSTOM_SHOW);
 	gtk_grid_attach (GTK_GRID(table), data->CY_range, 1, 0, 1, 1);
 
 	widget = gtk_toggle_button_new();

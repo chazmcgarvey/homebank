@@ -570,6 +570,62 @@ hb_strdup_nobrackets (const gchar *str)
 }
 
 
+/* if we found a . or , within last x digits it might be a dchar */
+static gchar hb_string_raw_amount_guess_dchar(const gchar *s, gint len, gshort digit)
+{
+gint nbc, nbd, i;
+gchar gdc='?';
+
+	DB( g_print(" digit=%d maxidx=%d\n", digit, len-digit-1) );
+	
+	nbc = nbd = 0;
+	for(i=len-1;i>=0;i--)
+	{
+		DB( g_print(" [%2d] '%c' %d %d '%c'\n", i, s[i], nbc, nbd, gdc) );
+		//store rightmost ,. within digit-1
+		if( i>=(len-digit-1) )
+		{
+			if(s[i]=='.' || s[i]==',')
+				gdc=s[i];
+		}
+		if(s[i]=='.') nbd++;
+		else if(s[i]==',') nbc++;
+	}
+	if( gdc=='.' && nbd > 1) gdc='?';
+	else if( gdc==',' && nbc > 1) gdc='?';
+	
+	return gdc;
+}
+
+
+gchar *hb_string_dup_raw_amount_clean(const gchar *string, gint digits)
+{
+gint l;
+gchar *new_str, *d;
+gchar gdc;
+const gchar *p = string;
+
+	l = strlen(string);
+	gdc = hb_string_raw_amount_guess_dchar(string, l, digits);
+
+	new_str = d = g_malloc (l+1);
+	while(*p)
+	{
+		if(*p=='-' || g_ascii_isdigit(*p) )
+			*d++ = *p;
+		else
+			if( *p==gdc )
+			{
+				*d++ = '.';
+			}
+		p++;
+	}
+	*d++ = '\0';
+
+	return new_str;	
+}
+
+
 static gboolean
 hb_date_parser_get_nums(gchar *string, gint *n1, gint *n2, gint *n3)
 {

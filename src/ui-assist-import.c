@@ -988,7 +988,7 @@ guint count = 0;
 	{
 	GenTxn *gentxn;
 
-		gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, &gentxn, -1);
+		gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, &gentxn, -1);
 
 		if( gentxn->lst_existing != NULL )
 		{
@@ -1002,7 +1002,7 @@ guint count = 0;
 				//gtk_list_store_set (GTK_LIST_STORE(dupmodel), &newiter,
 				count++;
 				gtk_list_store_insert_with_values(GTK_LIST_STORE(dupmodel), &newiter, -1,
-					LST_DSPOPE_DATAS, tmp,
+					MODEL_TXN_POINTER, tmp,
 					-1);
 
 				//DB( g_print(" - fill: %s %.2f %x\n", item->memo, item->amount, (unsigned int)item->same) );

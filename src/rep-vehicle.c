@@ -93,7 +93,7 @@ struct repvehicle_data *data;
 	gtk_date_entry_set_mindate(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->mindate);
 
 	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPVEHICLE_RANGE]);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), 11);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), FLT_RANGE_OTHER);
 	g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPVEHICLE_RANGE]);
 
 
@@ -127,9 +127,9 @@ gint range;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	range = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_range));
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
 
-	if(range != 11)
+	if(range != FLT_RANGE_OTHER)
 	{
 		filter_preset_daterange_set(data->filter, range, 0);
 
@@ -748,7 +748,7 @@ GError *error = NULL;
 	row++;
 	label = make_label_widget(_("_Range:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	data->CY_range = make_daterange(label, FALSE);
+	data->CY_range = make_daterange(label, DATE_RANGE_CUSTOM_DISABLE);
 	gtk_grid_attach (GTK_GRID (table), data->CY_range, 2, row, 1, 1);
 
 	row++;
@@ -916,7 +916,7 @@ GError *error = NULL;
 
 
 	if( PREFS->date_range_rep )
-		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_rep);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), PREFS->date_range_rep);
 	else
 		repvehicle_compute(window, NULL);
 

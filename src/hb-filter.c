@@ -74,7 +74,6 @@ gpointer key, value;
 		item->flt_select = item->key == selkey ? TRUE : FALSE;
 	}
 
-
 }
 
 
@@ -91,7 +90,6 @@ gpointer key, value;
 		item->flt_select = item->key == selkey ? TRUE : FALSE;
 	}
 
-
 }
 
 
@@ -100,12 +98,20 @@ void filter_status_cat_clear_except(Filter *flt, guint32 selkey)
 GHashTableIter iter;
 gpointer key, value;
 
-	// set all payee
+	// set all category
 	g_hash_table_iter_init (&iter, GLOBALS->h_cat);
 	while (g_hash_table_iter_next (&iter, &key, &value))
 	{
 	Category *item = value;
-		item->flt_select = item->key == selkey ? TRUE : FALSE;
+
+
+		item->flt_select = FALSE;
+		if( (item->key == selkey) 
+		//#1824561 don't forget subcat
+		//#1829076 but not when selkey is 0
+		   || ((item->parent == selkey) && selkey > 0)
+		)
+			item->flt_select = TRUE;
 	}
 
 }

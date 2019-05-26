@@ -62,8 +62,8 @@ static   gint
 	Transaction *ope1, *ope2;
 	gdouble tmpval = 0;
 
-	gtk_tree_model_get(model, a, LST_DSPOPE_DATAS, &ope1, -1);
-	gtk_tree_model_get(model, b, LST_DSPOPE_DATAS, &ope2, -1);
+	gtk_tree_model_get(model, a, MODEL_TXN_POINTER, &ope1, -1);
+	gtk_tree_model_get(model, b, MODEL_TXN_POINTER, &ope2, -1);
 
     switch (sortcol)
     {
@@ -238,7 +238,7 @@ static void list_txn_status_cell_data_function (GtkTreeViewColumn *col, GtkCellR
 Transaction *txn;
 gchar *iconname = NULL;
 
-	gtk_tree_model_get(model, iter, LST_DSPOPE_DATAS, &txn, -1);
+	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &txn, -1);
 
 	/*
 		stat[0] = ( entry->ope_Flags & OF_ADDED  ) ? data->istatus[2] : data->istatus[0];
@@ -280,7 +280,7 @@ static void list_txn_account_cell_data_function (GtkTreeViewColumn *col, GtkCell
 Transaction *ope;
 Account *acc;
 
-	gtk_tree_model_get(model, iter, LST_DSPOPE_DATAS, &ope, -1);
+	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &ope, -1);
 
 	acc = da_acc_get(ope->kacc);
 	if( acc )
@@ -300,7 +300,7 @@ Transaction *ope;
 gchar buffer[256];
 GDate date;
 
-	gtk_tree_model_get(model, iter, LST_DSPOPE_DATAS, &ope, -1);
+	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &ope, -1);
 	list_txn_eval_future(renderer, ope);
 
 	if(ope->date > 0)
@@ -326,7 +326,7 @@ static void list_txn_info_cell_data_function (GtkTreeViewColumn *col, GtkCellRen
 {
 Transaction *ope;
 
-	gtk_tree_model_get(model, iter, LST_DSPOPE_DATAS, &ope, -1);
+	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &ope, -1);
 
 	switch(GPOINTER_TO_INT(user_data))
 	{
@@ -347,7 +347,7 @@ static void list_txn_payee_cell_data_function (GtkTreeViewColumn *col, GtkCellRe
 {
 Transaction *ope;
 
-	gtk_tree_model_get(model, iter, LST_DSPOPE_DATAS, &ope, -1);
+	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &ope, -1);
 	list_txn_eval_future(renderer, ope);
 
 	//#926782
@@ -374,7 +374,7 @@ static void list_txn_tags_cell_data_function (GtkTreeViewColumn *col, GtkCellRen
 Transaction *ope;
 gchar *str;
 
-	gtk_tree_model_get(model, iter, LST_DSPOPE_DATAS, &ope, -1);
+	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &ope, -1);
 	list_txn_eval_future(renderer, ope);
 
 	if(ope->tags != NULL)
@@ -397,7 +397,7 @@ static void list_txn_memo_cell_data_function (GtkTreeViewColumn *col, GtkCellRen
 {
 Transaction *ope;
 
-	gtk_tree_model_get(model, iter, LST_DSPOPE_DATAS, &ope, -1);
+	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &ope, -1);
 	list_txn_eval_future(renderer, ope);
 	
     g_object_set(renderer, "text", ope->memo, NULL);
@@ -413,7 +413,7 @@ Transaction *ope;
 gchar *iconname = NULL;
 //const gchar *c = "";
 	
-	gtk_tree_model_get(model, iter, LST_DSPOPE_DATAS, &ope, -1);
+	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &ope, -1);
 	switch(ope->status)
 	{
 		/*case TXN_STATUS_CLEARED: c = "c"; break;
@@ -436,15 +436,21 @@ gchar *iconname = NULL;
 */
 static void list_txn_amount_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
+struct list_txn_data *data = NULL;
+GtkWidget *widget;
 Transaction *ope;
 gint column = GPOINTER_TO_INT(user_data);
 gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
 gint type;
-gdouble amount;
+gdouble amount, samount;
 gchar *color;
 
+	widget = gtk_tree_view_column_get_tree_view(col);
+	if( widget )
+		data = g_object_get_data(G_OBJECT(widget), "inst_data");
+	
 	// get the transaction
-	gtk_tree_model_get(model, iter, LST_DSPOPE_DATAS, &ope, -1);
+	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &ope, MODEL_TXN_SPLITAMT, &samount, -1);
 	list_txn_eval_future(renderer, ope);
 
 	if(column == LST_DSPOPE_BALANCE)
@@ -452,6 +458,10 @@ gchar *color;
 	else
 		amount = ope->amount;
 
+	//for detail display the split part (if any)
+	if( data && (data->list_type == LIST_TXN_TYPE_DETAIL) )
+		amount = samount;
+	
 	if(column == LST_DSPOPE_INCOME || column == LST_DSPOPE_EXPENSE)
 	{
 		type = (ope->flags & OF_INCOME) ? LST_DSPOPE_INCOME : LST_DSPOPE_EXPENSE;
@@ -490,7 +500,7 @@ static void list_txn_category_cell_data_function (GtkTreeViewColumn *col, GtkCel
 Transaction *ope;
 Category *cat;
 
-	gtk_tree_model_get(model, iter, LST_DSPOPE_DATAS, &ope, -1);
+	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &ope, -1);
 	list_txn_eval_future(renderer, ope);
 
 	if(ope->flags & OF_SPLIT)
@@ -516,6 +526,7 @@ Category *cat;
 
 GString *list_txn_to_string(GtkTreeView *treeview, gboolean clipboard)
 {
+struct list_txn_data *data = NULL;
 GtkTreeModel *model;
 GtkTreeIter	iter;
 gboolean valid;
@@ -524,11 +535,14 @@ const gchar *format;
 Transaction *ope;
 gchar datebuf[16];
 gchar *info, *payeename, *categoryname;
+gdouble amount, samount;
 Payee *payee;
 Category *category;
 gchar *tags;
 char amountbuf[G_ASCII_DTOSTR_BUF_SIZE];
 
+	data = g_object_get_data(G_OBJECT(treeview), "inst_data");
+	
 	node = g_string_new(NULL);
 
 	//title line
@@ -543,7 +557,8 @@ char amountbuf[G_ASCII_DTOSTR_BUF_SIZE];
 	while (valid)
 	{
 		gtk_tree_model_get (model, &iter,
-			LST_DSPOPE_DATAS, &ope,
+			MODEL_TXN_POINTER, &ope,
+		    MODEL_TXN_SPLITAMT, &samount,
 			-1);
 
 		hb_sprint_date(datebuf, ope->date);
@@ -556,13 +571,18 @@ char amountbuf[G_ASCII_DTOSTR_BUF_SIZE];
 		categoryname = (category->name == NULL) ? NULL : category->fullname;
 		tags = tags_tostring(ope->tags);
 
+		amount = ope->amount;
+		//for detail display the split part (if any)
+		if( data && (data->list_type == LIST_TXN_TYPE_DETAIL) )
+			amount = samount;
+
 		//#793719
 		//g_ascii_dtostr (amountbuf, sizeof (amountbuf), ope->amount);
 		//#1750257 use locale numdigit
 		//g_ascii_formatd (amountbuf, sizeof (amountbuf), "%.2f", ope->amount);
-		g_snprintf(amountbuf, sizeof (amountbuf), "%.2f", ope->amount);
+		g_snprintf(amountbuf, sizeof (amountbuf), "%.2f", amount);
 
-		DB( g_print("amount = %f '%s'\n", ope->amount, amountbuf) );
+		DB( g_print("amount = %f '%s'\n", amount, amountbuf) );
 
 		format = (clipboard == TRUE) ? "%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\n" : "%s;%d;%s;%s;%s;%s;%s;%s\n";
 		g_string_append_printf(node, format,
@@ -1062,7 +1082,7 @@ Transaction *ope;
 	GtkTreeIter iter;
 
 		gtk_tree_model_get_iter(model, &iter, list->data);
-		gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, &ope, -1);
+		gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, &ope, -1);
 	}
 
 	g_list_foreach(list, (GFunc)gtk_tree_path_free, NULL);
@@ -1093,7 +1113,8 @@ GtkTreeViewColumn  *column, *col_acc = NULL, *col_status = NULL;
 	
 	/* create list store */
 	store = gtk_list_store_new(
-		1, G_TYPE_POINTER	/*only really used column */   
+		2, G_TYPE_POINTER,	// MODEL_TXN_POINTER
+	       G_TYPE_DOUBLE	// MODEL_TXN_SPLITAMT amount part of split for detail only
 		);
 
 	//treeview

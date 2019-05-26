@@ -1,9 +1,39 @@
 
 
+2019-06-24  Maxime Doyen
+
+ Made 5.2.6 release.
+
+ * change: access to the show all transaction with the toolbar
+ * bugfix: #1829630	homebank: _cairo_arc_in_direction(): homebank killed by SIGABRT 
+ * bugfix: #1829076 status "no category" filter not working
+ * bugfix: #1829603 multi currencies problem in Trend Time Report
+ * wish  : #1829007 prefill txn dialog with account if single
+ * wish  : #1828209 multiple edit could allow updating transaction amount
+ * wish  : #1809022 detail txn show only category amount split part
+ * wish  : #1792749 main window date 'other...' consistency 
+
+
+2019-05-12  Maxime Doyen
+
+ Made 5.2.5 release.
+
+ * change: fixed some margin layout (buttonbox, popover)
+ * bugfix: #1827193 crash when select create new xfer target txn
+ * bugfix: #1826659 budget dialog month widget label decay by one
+ * bugfix: #1826080 paste an amount with mixed dot & comma is misinterpreted
+ * bugfix: #1825653 subcategories without budget not computed
+ * bugfix: #1824561 trend time report by category don't show results
+ * bugfix: #1824515 changing a transaction in future list doesn't update accounts summary
+ * bugfix: #1812470 balance column dont update after change from another account 
+ * wish  : #1818071 configurable separator for CSV import
+
+
 2019-04-10  Maxime Doyen
 
  Made 5.2.4 release.
 
+ * change: windows: upgraded to GTK+ 3.24.5
  * change: add more console message for i/o error
  * change: improved disable state into target xfer dialog
  * change: remind icon was changed to a bell icon
@@ -13,6 +43,7 @@
  * bugfix: cancelling the select xfer dialog was creating a target transaction
  * bugfix: #1821850 account column missing in detail list
  * bugfix: #1821458 budget report incorrect when no budget is set for subcategory
+ * bugfix: #1821283 win/gtk: tooltip blink or flash on toolbar and graph
  * bugfix: #1821106 home scheduled column width not remembered
  * bugfix: #1820853 Homebank crashes on confirming new file
  * bugfix: #1820618 any import crash with systems having glib < 2.58.0
@@ -27,6 +58,7 @@
 
  Made 5.2.3 release.
 
+ * change: windows: upgraded to GTK+ 3.24.1
  * change: conforming to Windows HIG for button order in dialogs
  * new   : statistics report, added account
  * new   : trend time report, added half year interval
@@ -86,9 +118,9 @@
 
  Made 5.2 release.
 
- * change: win32: downgraded to gtk+ 3.22.16
- * change: import, you can drop file to import on the main window
  * change: xhb data file format (v1.3)
+ * change: windows: downgraded to GTK+ 3.22.16
+ * change: import, you can drop file to import on the main window
  * change: optimized XML close tag
  * change: preferences, reorganised the pages and elements
  * change: improved the split dialog with a listview and new layout
@@ -200,7 +232,7 @@
 
  Made 5.1.6 release.
 
- * change: win32: upgraded to gtk+ 3.22.16
+ * change: windows: upgraded to GTK+ 3.22.16
  * wish  : #1710955 warn when opening a backup file
  * bugfix: #1716182 New memo doesn't get added to quick list
  * bugfix: #1716181 New/deleted transactions and search box show inconsistency
@@ -222,7 +254,7 @@
 
  Made 5.1.5 release.
 
- * change: win32: upgraded to gtk+ 3.22.7
+ * change: windows: upgraded to GTK+ 3.22.7
  * bugfix: updating currency rate was not updating file changes (and enable save)
  * bugfix: #1689308 category usage count does not get updated for split transactions
  * bugfix: #1687117 statistic report filter do not update date range
@@ -428,14 +460,14 @@
 
  Made 5.0.4 release.
 
- * change: win32: upgraded to gtk+ 3.16.6
+ * change: windows: upgraded to GTK+ 3.16.6
  * change: amount toggle sign button changed from text button to entry icon
  * change: added/changed transaction are always showed by default filter
  * bugfix: #1492634 using memo filter does not list memos in split categories
  * bugfix: #1475969 no help file. F1 does nothing. Windows 10
  * bugfix: #1473717 year on statistics is preset to 1900 instead of e.g. current year
  * bugfix: #1464961 inconsistency in internal xfer
- * bugfix: #1391506 win32: (gtk3.6.4 bug) Dropdown list appear on the wrong Screen (dualscreen)
+ * bugfix: #1391506 windows: (gtk3.6.4 bug) Dropdown list appear on the wrong Screen (dualscreen)
  * wish  : #1469424 bank Account window should remember user column arrangement
  * wish  : #1338052 add option to show x days future ledger txn
  * wish  : #1330156 in the ledger, a way to identify graphically the past from the future.
@@ -445,14 +477,14 @@
 
  Made 5.0.3 release.
 
- * change: win32: upgraded to libofx 0.9.9 again
+ * change: windows: upgraded to libofx 0.9.9 again
  * wish  : #1460370 internal xfer credit should display 'From account'
  * wish  : #1444792 button to expand/collapse all in "Manage Categories"
  * wish  : #1429413 thinking of icon credit vs debit card
  * wish  : #1416957 add ability to modify transaction when posting from template
  * bugfix: #1460390 Saving a file as do not work since last 5.0.2
- * bugfix: #1434972 (libofx 0.8.3 bug) win32: some OFX files leads to crash
- * bugfix: #1424660 (libofx 0.8.3 bug) win32: memo field truncated
+ * bugfix: #1434972 (libofx 0.8.3 bug) windows: some OFX files leads to crash
+ * bugfix: #1424660 (libofx 0.8.3 bug) windows: memo field truncated
  * bugfix: #1080093 (libofx bug 39) OFX imports incorrect date
 
 
@@ -508,7 +540,7 @@
 
  Made 5.0  release.
 
- * new   : migrated to GTK+ 3 (win32 target is 3.6.4)
+ * new   : migrated to GTK+ 3 (windows target is 3.6.4)
  * new   : budget report is now a stack chart
  * new   : file statistics dialog was added
  * new   : cleared status added for transaction
@@ -524,7 +556,7 @@
  * new   : charts now uses your system fonts
  * new   : icon set was reworked
  * change: xhb data file format (v1.0)
- * change: win32: downgraded to libofx 0.8.3
+ * change: windows: downgraded to libofx 0.8.3
  * change: payee/category: renamed the action move to merge, as it is more relevant
  * change: reworked all the confirmation dialogs
  * change: relayouted all dialogs/windows spacing to be more Gnome HIG compliant
@@ -538,20 +570,20 @@
  * wish  : #1341202 txn state add of cleared
  * wish  : #1318284 persist transaction list column width
  * wish  : #1254650 transaction entry boc too small and fiddly
- * wish  : #1231865 win32 add version in EXE properties
+ * wish  : #1231865 windows add version in EXE properties
  * wish  : #1202500 top5 spending for subcategories
  * wish  : #995436  average in Trendtime Report
  * wish  : #706600  euro major conversion feature
  * bugfix: #1412200 Text fields to input a new category name (or subcategories) writes in reverse (right to left)
  * bugfix: #1410166 add transaction crash after selecting cheque payment
  * bugfix: #1400403 5.0-rc Reconciled status lost at reload <=4.6.3 converted file
- * bugfix: #1354789 win32: (libofx 0.9.9 bug 42) QFX import dates show as year 2059
+ * bugfix: #1354789 windows: (libofx 0.9.9 bug 42) QFX import dates show as year 2059
  * bugfix: #1419032 Scheduled transaction amount not saved in some case
  * bugfix: #1418968 Transaction list scroll reset when deleting transaction
  * bugfix: #1416742 5.0-rc Merge 2 payees and they remain on the display
  * bugfix: #1416624 5.0-rc category still display in txn dialog after split
  * bugfix: #1414267 5.0-rc Budget Report sort order
- * bugfix: #1411898 win32: (libofx 0.9.9) Incorrect encoding when reading .QFX files
+ * bugfix: #1411898 windows: (libofx 0.9.9) Incorrect encoding when reading .QFX files
  * bugfix: #1408966 move a category still display it in the list just after
  * bugfix: #1407091 5.0-rc cannot sort by clicking on C column
  * bugfix: #1400381 5.0-rc Memo column empty in OFX import assistant
@@ -571,8 +603,8 @@
  Made 4.6.3 release.
 
  * new   : enhanced categories completion (complete is done with partial match on both categories and subcategories)
- * change: win32: upgraded to libofx 0.9.9
- * bugfix: #1351098 win32: OFX import freeze HomeBank
+ * change: windows: upgraded to libofx 0.9.9
+ * bugfix: #1351098 windows: OFX import freeze HomeBank
  * bugfix: #1349160 layout are not persisted well on maximized windows
 
 
@@ -697,8 +729,8 @@
  * bugfix: #1216321 reversed transactions
  * bugfix: #1216284 balance report do not exclude account with exclude from report checked
  * bugfix: #1215521 when importing qif, automatic assignments are not made
- * bugfix: #1214077 win32: my csv file exported crash when import again
- * bugfix: #1213569 win32: program not all translated in french since 4.5.1
+ * bugfix: #1214077 windows: my csv file exported crash when import again
+ * bugfix: #1213569 windows: program not all translated in french since 4.5.1
 
 
 2013-08-15  Maxime Doyen
@@ -712,7 +744,7 @@
 
  Made 4.5.1 release.
 
- * change: win32: upgraded to libofx 0.9.8
+ * change: windows: upgraded to libofx 0.9.8
  * change: lot of code warning fix with gcc -Wextra and cppcheck
  * change: source code preparation for gtk3 migration
  * wish  : #1163319 revert back date range 'Last Year'
@@ -766,7 +798,7 @@
  * new   : ms windows, number/currency default value from user locale
  * change: xhb data file format (v0.7)
  * change: upgraded to gtk 2.24 / glib 2.28
- * change: win32: upgraded to libofx 0.8.3
+ * change: windows: upgraded to libofx 0.8.3
  * change: preference dialog, moved the clear button position
  * change: homebank, clarified the error load messages
  * change: homebank, optimized xml
@@ -901,7 +933,7 @@
  * change: xhb data file format (v0.5)
  * change: remember last folder location during import assistant
  * wish  : #427710 Total into the automated transactions list
- * bugfix: #378992 win32: libofx not always convert string to utf-8 causes partial load on file reopen
+ * bugfix: #378992 windows: libofx not always convert string to utf-8 causes partial load on file reopen
  * bugfix: #528923 slackware64+kde4: crashes on start / load saved files
  * bugfix: #528993 opening other wallet with account window open causes a crash
  * bugfix: #527260 trend time report for category don't sum subcategories
@@ -1033,7 +1065,7 @@
 2009-05-01  Maxime Doyen
 
  Made 4.0.3 release.
- * bugfix: #364480 win32: 4.0.2 some French translation missing
+ * bugfix: #364480 windows: 4.0.2 some French translation missing
  * bugfix: #349067 dsp_wallet.c - missing translation string
  * bugfix: #349033 4.0.2 German translation error causing half translated homebank
  * bugfix: #339871 [OpenBSD] Regress tests failed
@@ -1073,7 +1105,7 @@
 
  Made 4.0.1 release.
  * bugfix: #303886 after a multiple change of categories in account window, stats and budget report crash
- * bugfix: #294755 win32 saving of file is not working with non ascii folder name
+ * bugfix: #294755 windows saving of file is not working with non ascii folder name
  * bugfix: #303738 after removing payees or categories, statistics and buget reports crash
  * bugfix: #303666 removing an internal transfer transaction was causing a crash
  * bugfix: #304484 does not build on either GCC 3.4x or amd64 on FreeBSD
@@ -1112,7 +1144,7 @@
  * bugfix: #188236 monetary display - the grouping char was causing bad display for some countries
  * bugfix: #210497 import csv - lines containing UTF-8 characters were ignored
  * bugfix: #244365 in account window future transaction were badly also summed for today total
- * bugfix: #256703 win32 crash on saving when no owner set into wallet properties
+ * bugfix: #256703 windows crash on saving when no owner set into wallet properties
  * bugfix: #226122 crash when exporting payee
  * bugfix: #260973 filter by amount doesn't work
  * bugfix: #238571 balances sometimes wrong in account operation window
