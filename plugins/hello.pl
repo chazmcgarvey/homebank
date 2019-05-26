@@ -33,22 +33,22 @@ sub new {
     my $self  = $class->SUPER::new(@_);
 
     $self->on(account_inserted => sub {
-            my $acc = shift;
-            print "account inserted: ", Dumper($acc);
-            print "account name is ", $acc->name, " and balance is ", $acc->bank_balance, "\n";
-            #$acc->name("FOOOOBAR!");
-            if ($acc->name eq 'Vacation') {
-                $acc->remove;
-                $ACC = $acc;
-            }
-            print Dumper($acc->is_inserted);
-            if ($acc->is_inserted) {
-                print "IT IS INSERTED\n";
-            } else {
-                print "not inserted\n";
-            }
-            print Dumper($acc->transactions);
-        });
+        my $acc = shift;
+        print "account inserted: ", Dumper($acc);
+        print "account name is ", $acc->name, " and balance is ", $acc->bank_balance, "\n";
+        #$acc->name("FOOOOBAR!");
+        if ($acc->name eq 'Vacation') {
+            $acc->remove;
+            $ACC = $acc;
+        }
+        print Dumper($acc->is_inserted);
+        if ($acc->is_inserted) {
+            print "IT IS INSERTED\n";
+        } else {
+            print "not inserted\n";
+        }
+        print Dumper($acc->transactions);
+    });
 
     #print $self->cool_beans, "\n";
     #$self->cool_beans(123);
@@ -92,21 +92,20 @@ sub on_test {
     Dump($button);
     print Dumper($button);
     $button->signal_connect(clicked => sub {
-            print "Hello Gtk3-Perl: $counter (perl plugin: $self)\n";
-            $counter++;
-            #if ($temp->is_inserted) {
-                #print "$temp is inserted\n";
-            #} else {
-                #print "$temp is NOT inserted\n";
-            #}
-            #if ($counter == 5) {
-                #$temp = undef;
-            #}
-    my $acc = HomeBank::Account->get(rand(10));
-    print "Changin account named ", $acc->name, " to ", $acc->name($acc), "\n";
-    HomeBank->main_window->queue_draw;
-
-        });
+        print "Hello Gtk3-Perl: $counter (perl plugin: $self)\n";
+        $counter++;
+        #if ($temp->is_inserted) {
+            #print "$temp is inserted\n";
+        #} else {
+            #print "$temp is NOT inserted\n";
+        #}
+        #if ($counter == 5) {
+            #$temp = undef;
+        #}
+        my $acc = HomeBank::Account->get(rand(10));
+        print "Changin account named ", $acc->name, " to ", $acc->name($acc), "\n";
+        HomeBank->main_window->queue_draw;
+    });
     $window->add($button);
 
     $window->show_all;

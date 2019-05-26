@@ -72,10 +72,10 @@ GValue* EXT_JULIAN(GValue* v, guint32 d)
 #define obj(CTYPE, _2, _3, _4, PREFIX)                  \
 GType PREFIX##get_type()                                \
 {                                                       \
-	static GType type = 0;                              \
-	if (type == 0)                                      \
-		type = g_pointer_type_register_static(#CTYPE);  \
-	return type;                                        \
+    static GType type = 0;                              \
+    if (type == 0)                                      \
+        type = g_pointer_type_register_static(#CTYPE);  \
+    return type;                                        \
 }
 #include "ext-value.h"
 #undef obj

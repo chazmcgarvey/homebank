@@ -183,7 +183,7 @@ Category *parent;
 		if( parent != NULL )
 			item->fullname = g_strconcat(parent->name, ":", item->name, NULL);
 	}
-
+	
 	DB( g_print("- updated %d:'%s' fullname='%s'\n", item->key, item->name, item->fullname) );
 
 }
@@ -194,23 +194,23 @@ da_cat_rename(Category *item, gchar *newname)
 {
 
 	DB( g_print("- renaming %s' => '%s'\n", item->name, newname) );
-
+	
 	g_free(item->name);
 	item->name = g_strdup(newname);
 	da_cat_build_fullname(item);
-
+	
 	if( item->parent == 0 )
 	{
 	GHashTableIter iter;
 	gpointer value;
 
 		DB( g_print("- updating subcat fullname\n") );
-
+		
 		g_hash_table_iter_init (&iter, GLOBALS->h_cat);
 		while (g_hash_table_iter_next (&iter, NULL, &value))
 		{
 		Category *subcat = value;
-
+			
 			if( subcat->parent == item->key )
 				da_cat_build_fullname(subcat);
 		}
@@ -235,13 +235,13 @@ guint32 *new_key;
 	DB( g_print("\nda_cat_insert\n") );
 
 	DB( g_print("- '%s'\n", item->name) );
-
+	
 	new_key = g_new0(guint32, 1);
 	*new_key = item->key;
 	g_hash_table_insert(GLOBALS->h_cat, new_key, item);
 
 	da_cat_build_fullname(item);
-
+	
 	return TRUE;
 }
 
@@ -264,7 +264,7 @@ Category *existitem;
 
 	if( !cat->fullname )
 		da_cat_build_fullname(cat);
-
+	
 	existitem = da_cat_get_by_fullname( cat->fullname );
 	if( existitem == NULL )
 	{
@@ -324,7 +324,7 @@ gboolean valid = TRUE;
 
 	if( outlen != NULL )
 		*outlen = len;
-
+	
 	if(len >= 1)
 	{
 		g_strstrip(partstr[0]);
@@ -356,7 +356,7 @@ gchar **partstr;
 Category *parent = NULL;
 Category *retval = NULL;
 guint len;
-
+	
 	DB( g_print("\nda_cat_get_by_fullname\n") );
 
 	if( rawfullname )
@@ -368,7 +368,7 @@ guint len;
 				parent = da_cat_get_by_name_find_internal(0, partstr[0]);
 				retval = parent;
 			}
-
+			
 			if( len == 2 && parent != NULL )
 			{
 				retval = da_cat_get_by_name_find_internal(parent->key, partstr[1]);
@@ -377,7 +377,7 @@ guint len;
 			g_strfreev(partstr);
 		}
 	}
-
+		
 	return retval;
 }
 
@@ -417,7 +417,7 @@ guint len;
 				}
 				retval = parent;
 			}
-
+				
 			/* if we have a subcategory - xxx:xxx */
 			if( len == 2 && parent != NULL )
 			{
@@ -436,7 +436,7 @@ guint len;
 				}
 				retval = newcat;
 			}
-
+				   
 			g_strfreev(partstr);
 		}
 	}
@@ -511,7 +511,7 @@ gboolean isIncome;
 		g_warning("category consistency: fixed null name");
 		GLOBALS->changes_count++;
 	}
-
+	
 }
 
 
@@ -568,11 +568,11 @@ guint32 retval = 0;
 }
 
 
-void
+void 
 category_delete_unused(void)
 {
 GList *lcat, *list;
-
+	
 	lcat = list = g_hash_table_get_values(GLOBALS->h_cat);
 	while (list != NULL)
 	{
@@ -587,7 +587,7 @@ GList *lcat, *list;
 }
 
 
-static void
+static void 
 category_fill_usage_count(guint32 kcat)
 {
 Category *cat = da_cat_get (kcat);
@@ -645,12 +645,12 @@ guint i, nbsplit;
 				for(i=0;i<nbsplit;i++)
 				{
 				Split *split = da_splits_get(txn->splits, i);
-
+					
 					category_fill_usage_count(split->kcat);
 				}
 			}
 			else
-				category_fill_usage_count(txn->kcat);
+				category_fill_usage_count(txn->kcat);		
 
 			lnk_txn = g_list_next(lnk_txn);
 		}
@@ -681,7 +681,7 @@ guint i, nbsplit;
 			for(i=0;i<nbsplit;i++)
 			{
 			Split *split = da_splits_get(entry->splits, i);
-
+				
 				category_fill_usage_count(split->kcat);
 			}
 		}
@@ -723,7 +723,7 @@ guint i, nbsplit;
 		while (lnk_txn != NULL)
 		{
 		Transaction *txn = lnk_txn->data;
-
+		
 			if(txn->kcat == key1)
 			{
 				txn->kcat = key2;
@@ -745,7 +745,7 @@ guint i, nbsplit;
 
 			lnk_txn = g_list_next(lnk_txn);
 		}
-
+		
 		lnk_acc = g_list_next(lnk_acc);
 	}
 	g_list_free(lst_acc);
@@ -1067,7 +1067,7 @@ category_get_type_char(Category *item)
 }
 
 
-static gint
+static gint 
 category_change_type_eval(Category *item, gboolean isIncome)
 {
 	if( (item->flags & (GF_INCOME)) && !isIncome )
@@ -1076,14 +1076,14 @@ category_change_type_eval(Category *item, gboolean isIncome)
 }
 
 
-gint
+gint 
 category_change_type(Category *item, gboolean isIncome)
 {
 gint changes = 0;
 GList *lcat, *list;
 
 	changes += category_change_type_eval(item, isIncome);
-
+	
 	item->flags &= ~(GF_INCOME);	//delete flag
 	if(isIncome == TRUE)
 		item->flags |= GF_INCOME;

@@ -83,33 +83,33 @@ fi
 AM_CONDITIONAL(NOOFX, test x$noofx = xtrue)
 
 AC_ARG_WITH(perl,
-	[  --with-perl             build with perl plug-in support [default=without]],
-	[build_perl=$withval],
-	[build_perl=no]
+    [  --with-perl             build with perl plug-in support [default=without]],
+    [build_perl=$withval],
+    [build_perl=no]
 )
 if test x$build_perl != xno
 then
-	test x$build_perl != xyes -a -x "$build_perl" && PERL=$build_perl
-	AC_PATH_PROG(PERL, perl, perl)
-	AC_MSG_CHECKING(if perl can be embedded)
-	if $PERL -MExtUtils::Embed -e "use v5.8" >/dev/null 2>&1
-	then
-		AC_MSG_RESULT(yes)
-		CPPFLAGS="${CPPFLAGS} -DPERL_ENABLE"
-		PERL_CPPFLAGS="`$PERL -MExtUtils::Embed -e ccopts`"
-		PERL_OBJS="ext-perl.o perlxsi.o"
-		PERL_PRIVLIBEXP="`$PERL -MConfig -e 'print $Config{privlibexp}'`"
-		PERL_SITELIBEXP="`$PERL -MConfig -e 'print $Config{sitelibexp}'`"
-		DEPS_LIBS="`$PERL -MExtUtils::Embed -e ldopts` ${DEPS_LIBS}"
-		if test -e "$PERL_SITELIBEXP/ExtUtils/xsubpp"
-		then
-			XSUBPP="$PERL $PERL_SITELIBEXP/ExtUtils/xsubpp"
-		else
-			XSUBPP="$PERL $PERL_PRIVLIBEXP/ExtUtils/xsubpp"
-		fi
-	else
-		AC_MSG_ERROR([no working perl found, or perl not version >= 5.8])
-	fi
+    test x$build_perl != xyes -a -x "$build_perl" && PERL=$build_perl
+    AC_PATH_PROG(PERL, perl, perl)
+    AC_MSG_CHECKING(if perl can be embedded)
+    if $PERL -MExtUtils::Embed -e "use v5.8" >/dev/null 2>&1
+    then
+        AC_MSG_RESULT(yes)
+        CPPFLAGS="${CPPFLAGS} -DPERL_ENABLE"
+        PERL_CPPFLAGS="`$PERL -MExtUtils::Embed -e ccopts`"
+        PERL_OBJS="ext-perl.o perlxsi.o"
+        PERL_PRIVLIBEXP="`$PERL -MConfig -e 'print $Config{privlibexp}'`"
+        PERL_SITELIBEXP="`$PERL -MConfig -e 'print $Config{sitelibexp}'`"
+        DEPS_LIBS="`$PERL -MExtUtils::Embed -e ldopts` ${DEPS_LIBS}"
+        if test -e "$PERL_SITELIBEXP/ExtUtils/xsubpp"
+        then
+            XSUBPP="$PERL $PERL_SITELIBEXP/ExtUtils/xsubpp"
+        else
+            XSUBPP="$PERL $PERL_PRIVLIBEXP/ExtUtils/xsubpp"
+        fi
+    else
+        AC_MSG_ERROR([no working perl found, or perl not version >= 5.8])
+    fi
 fi
 AC_SUBST(PERL_CPPFLAGS)
 AC_SUBST(PERL_OBJS)

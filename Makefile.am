@@ -1,6 +1,6 @@
 # HomeBank Makefile.am
 
-ACLOCAL_AMFLAGS	= -I m4
+ACLOCAL_AMFLAGS = -I m4
 
 #SUBDIRS = src
 SUBDIRS = src data images mime pixmaps themes po doc plugins
@@ -27,6 +27,7 @@ DISTCLEANFILES = ... intltool-extract \
                  intltool-merge \
                  intltool-update \
                  po/.intltool-merge-cache
+
 
 # we clean every folder under /usr/share/homebank as well on uninstall
 uninstall-hook:

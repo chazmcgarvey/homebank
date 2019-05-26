@@ -50,9 +50,9 @@ da_acc_free(Account *item)
 		g_free(item->number);
 		g_free(item->bankname);
 		g_free(item->notes);
-
+		
 		g_queue_free (item->txn_queue);
-
+		
 		rc_free(item);
 	}
 }
@@ -238,7 +238,7 @@ gchar *stripname;
 		g_free(stripname);
 	}
 
-	return retval;
+	return retval; 
 }
 
 
@@ -355,14 +355,14 @@ gboolean retval;
 	while (lnk_acc != NULL)
 	{
 	Account *acc = lnk_acc->data;
-
+	
 		if(acc->key != key)
 		{
 			lnk_txn = g_queue_peek_head_link(acc->txn_queue);
 			while (lnk_txn != NULL)
 			{
 			Transaction *entry = lnk_txn->data;
-
+			
 				if( key == entry->kxferacc)
 				{
 					retval = TRUE;
@@ -437,12 +437,12 @@ gchar *stripname = account_get_stripname(newname);
 
 		g_free(stripname);
 	}
-
+	
 	return FALSE;
 }
 
 
-/*
+/* 
  * change the account currency
  * change every txn to currency
  * ensure dst xfer transaction account will be set to same currency
@@ -483,7 +483,7 @@ guint32 maxkey, i;
 
 	acc->kcur = kcur;
 	DB( g_print(" - '%s'\n", acc->name) );
-
+	
 	for(i=1;i<maxkey;i++)
 	{
 		DB( g_print(" - %d '%d'\n", i, xfer_list[i]) );
@@ -578,25 +578,25 @@ GList *lnk_txn;
 	while (lnk_acc != NULL)
 	{
 	Account *acc = lnk_acc->data;
-
+	
 		/* set initial amount */
 		acc->bal_bank = acc->initial;
 		acc->bal_today = acc->initial;
 		acc->bal_future = acc->initial;
-
+		
 		/* add every txn */
 		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
 		while (lnk_txn != NULL)
 		{
 		Transaction *txn = lnk_txn->data;
-
+		
 			if(!(txn->status == TXN_STATUS_REMIND))
 			{
 				account_balances_add_internal(acc, txn);
 			}
 			lnk_txn = g_list_next(lnk_txn);
 		}
-
+		
 		lnk_acc = g_list_next(lnk_acc);
 	}
 	g_list_free(lst_acc);

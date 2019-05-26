@@ -83,7 +83,7 @@ void ext_register(const gchar* type,
 	engine->unload_plugin = unload_plugin;
 	engine->execute = execute;
 	engine->call_hook = call_hook;
-    _engine_list = g_list_append(_engine_list, engine);
+	_engine_list = g_list_append(_engine_list, engine);
 }
 
 

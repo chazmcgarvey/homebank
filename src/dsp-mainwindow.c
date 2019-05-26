@@ -194,7 +194,7 @@ static GtkActionEntry entries[] = {
   //{ "ImportQIF" , ICONNAME_HB_FILE_IMPORT  , N_("QIF file...")     , NULL, N_("Open the import assistant"),    G_CALLBACK (ui_mainwindow_action_import) },
   //{ "ImportOFX" , ICONNAME_HB_FILE_IMPORT  , N_("OFX/QFX file...")     , NULL, N_("Open the import assistant"),    G_CALLBACK (ui_mainwindow_action_import) },
   //{ "ImportCSV" , ICONNAME_HB_FILE_IMPORT  , N_("CSV file...")     , NULL, N_("Open the import assistant"),    G_CALLBACK (ui_mainwindow_action_import) },
-
+	
   { "ExportQIF" , ICONNAME_HB_FILE_EXPORT  , N_("Export as QIF...")     , NULL, N_("Export all account in a QIF file"),    G_CALLBACK (ui_mainwindow_action_export) },
 
   /* EditMenu */
@@ -398,7 +398,7 @@ gint result;
 	title = g_strdup_printf (
 		_("Revert unsaved changes to file '%s'?"), basename);
 
-	secondtext =
+	secondtext = 
 		_("- Changes made to the file will be permanently lost\n"
 		"- File will be reloaded from the last save (.xhb~)");
 
@@ -415,7 +415,7 @@ gint result;
 	if( result == GTK_RESPONSE_OK )
 	{
 		DB( g_print(" - should revert\n") );
-
+		
 		hbfile_change_filepath(hb_filename_new_with_extension(GLOBALS->xhb_filepath, "xhb~"));
 		ui_mainwindow_open_internal(widget, NULL);
 		hbfile_change_filepath(hb_filename_new_with_extension(GLOBALS->xhb_filepath, "xhb"));
@@ -430,7 +430,7 @@ activate_url (GtkAboutDialog *about,
 	      gpointer        data)
 {
 	DB( g_print("activate url %s\n", link) );
-
+	
 	homebank_util_url_show (link);
 }
 
@@ -470,18 +470,18 @@ gchar *version;
                                                      gtk_get_major_version (),
                                                      gtk_get_minor_version (),
                                                      gtk_get_micro_version ());
-
+	
 	dialog = gtk_about_dialog_new();
 
 	gtk_window_set_transient_for (GTK_WINDOW(dialog), GTK_WINDOW(GLOBALS->mainwindow));
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
-
+	
 	gtk_about_dialog_set_program_name (GTK_ABOUT_DIALOG(dialog), g_get_application_name ());
 	gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), version);
 	gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog), copyright);
 	gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog), _("Free, easy, personal accounting for everyone"));
 	gtk_about_dialog_set_license_type (GTK_ABOUT_DIALOG(dialog), GTK_LICENSE_GPL_2_0);
-
+	
 	//gtk_about_dialog_set_wrap_license(GTK_ABOUT_DIALOG(dialog), );
 	gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog), "http://homebank.free.fr");
 	gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(dialog), "Visit the HomeBank website");
@@ -497,7 +497,7 @@ gchar *version;
 		gtk_about_dialog_set_logo(GTK_ABOUT_DIALOG(dialog), pixbuf);
 		g_object_unref (pixbuf);
 	}
-
+	
 	gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(dialog), authors);
 	gtk_about_dialog_set_artists(GTK_ABOUT_DIALOG(dialog), artists);
 	//gtk_about_dialog_set_documenters(GTK_ABOUT_DIALOG(dialog), );
@@ -510,7 +510,7 @@ gchar *version;
 	gtk_widget_destroy (dialog);
 
 	g_free(version);
-
+	
 }
 
 
@@ -606,7 +606,7 @@ gchar *secondtext;
 
 	title = _("Are you sure you want to anonymize the file?");
 
-	secondtext =
+	secondtext = 
 		_("Proceeding will anonymize any text, \n"
 		"like 'account x', 'payee y', 'memo z', ...");
 
@@ -619,7 +619,7 @@ gchar *secondtext;
 
 	//#1707201
 	//if( result == GTK_RESPONSE_CANCEL )
-	//	return;
+	//	return;	
 	if( result == GTK_RESPONSE_OK )
 	{
 		hbfile_anonymize();
@@ -770,7 +770,7 @@ struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "ins
 
 	// top spending
 	gtk_chart_show_minor(GTK_CHART(data->RE_pie), GLOBALS->minor);
-
+	
 	ui_hub_spending_update(data->window, data);
 
 }
@@ -836,7 +836,7 @@ static void ui_mainwindow_action_statistic(void)
 static void ui_mainwindow_action_trendtime(void)
 {
 struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "inst_data");
-
+	
 	ui_reptime_window_new(data->acc != NULL ? data->acc->key : 0);
 }
 
@@ -964,7 +964,7 @@ GtkWidget *mainvbox, *widget, *label;
 			NULL);
 
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
-
+	
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start (GTK_BOX (content_area), mainvbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER(mainvbox), SPACING_MEDIUM);
@@ -990,11 +990,11 @@ GtkWidget *mainvbox, *widget, *label;
 	widget = gtk_button_new_with_mnemonic(_("Read HomeBank _Manual"));
 	gtk_box_pack_start (GTK_BOX (mainvbox), widget, FALSE, FALSE, 0);
 	g_signal_connect (widget, "clicked", G_CALLBACK (ui_mainwindow_action_help_welcome1), dialog);
-
+	
 	widget = gtk_button_new_with_mnemonic(_("Configure _preferences"));
 	gtk_box_pack_start (GTK_BOX (mainvbox), widget, FALSE, FALSE, 0);
 	g_signal_connect (widget, "clicked", G_CALLBACK (ui_mainwindow_action_help_welcome2), dialog);
-
+	
 	widget = gtk_button_new_with_mnemonic(_("Create a _new file"));
 	gtk_box_pack_start (GTK_BOX (mainvbox), widget, FALSE, FALSE, 0);
 	g_signal_connect (widget, "clicked", G_CALLBACK (ui_mainwindow_action_help_welcome3), dialog);
@@ -1129,10 +1129,10 @@ gboolean file_clear = GPOINTER_TO_INT(user_data);
 	gtk_tree_store_clear(GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc))));
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_upc))));
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_top))));
-
+	
 	data->showall = FALSE;
 	ui_hub_account_setup(data);
-
+	
 	hbfile_cleanup(file_clear);
 	hbfile_setup(file_clear);
 
@@ -1177,7 +1177,7 @@ gint account, count;
 
 			if( PREFS->heritdate == FALSE ) //fix: 318733
 				ope->date = GLOBALS->today;
-
+			
 			da_transaction_set_default_template(ope);
 		}
 
@@ -1197,7 +1197,7 @@ gint account, count;
 			DB( g_print(" - added 1 transaction to %d\n", ope->kacc) );
 
 			ui_hub_account_populate(GLOBALS->mainwindow, NULL);
-
+			
 			count++;
 			//todo: still usefull ? store last date
 			date = ope->date;
@@ -1232,21 +1232,21 @@ gboolean result;
 
 	basename = g_path_get_basename(filepath);
 	secondtext = g_strdup_printf (
-	_("Your are about to open the backup file '%s'.\n\nAre you sure you want to do this ?"), basename);
+	_("Your are about to open the backup file '%s'.\n\nAre you sure you want to do this ?"), basename);		
 
 	result = ui_dialog_msg_confirm_alert(
 		GTK_WINDOW(GLOBALS->mainwindow),
 		_("Open the backup file ?"),
 		secondtext,
 		_("_Open backup")
-	);
+	);	
 
 	g_free(secondtext);
 	g_free(basename);
 
 	if( result == GTK_RESPONSE_OK )
 		retval = TRUE;
-
+	
 	return retval;
 }
 
@@ -1285,7 +1285,7 @@ gchar *filename = NULL;
 					g_free(filename);
 					return;
 				}
-			}
+			}			
 
 			hbfile_change_filepath(filename);
 			ui_mainwindow_open_internal(widget, NULL);
@@ -1320,7 +1320,7 @@ gint r;
 
 			GLOBALS->xhb_timemodified = hbfile_file_get_time_modified(GLOBALS->xhb_filepath);
 			hbfile_file_hasrevert(GLOBALS->xhb_filepath);
-
+			
 			if(PREFS->appendscheduled)
 				scheduled_post_all_pending();
 
@@ -1365,7 +1365,7 @@ gint r;
 		ui_hub_scheduled_populate(GLOBALS->mainwindow, NULL);
 		ui_hub_spending_populate(GLOBALS->mainwindow, NULL);
 		ui_hub_transaction_populate(data);
-
+	
 		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_VISUAL));
 	}
 
@@ -1427,7 +1427,7 @@ gint r = XML_UNSET;
 					_("If you save it, all the external changes could be lost. Save it anyway?"),
 					_("S_ave Anyway")
 				);
-
+				
 			if( result != GTK_RESPONSE_OK )
 				return;
 		}
@@ -1491,7 +1491,7 @@ gint flags;
 #else
 		data->wintitle = g_strdup_printf("%s%s - %s - " PROGNAME, changed, basename, GLOBALS->owner);
 #endif
-
+		
 	    gtk_window_set_title (GTK_WINDOW (gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), data->wintitle);
 
 		g_free(basename);
@@ -1617,7 +1617,7 @@ gint flags;
 			gtk_widget_hide(GTK_WIDGET(data->GR_top));
 
 
-
+		
 		DB( g_print(" - show upcoming=%d\n", PREFS->wal_upcoming) );
 		if(PREFS->wal_upcoming)
 			gtk_widget_show(GTK_WIDGET(data->GR_upc));
@@ -1729,7 +1729,7 @@ gboolean retval = FALSE;
 	if(PREFS->pnl_list_tab)
 		g_free(PREFS->pnl_list_tab);
 	PREFS->pnl_list_tab = g_strdup(gtk_stack_get_visible_child_name(GTK_STACK(data->stack)));
-
+	
 	//todo
 	if(ui_dialog_msg_savechanges(widget, NULL) == FALSE)
 	{
@@ -1744,7 +1744,7 @@ gboolean retval = FALSE;
 		g_free(data->wintitle);
 		da_flt_free(data->filter);
 		g_free(user_data);
-
+		
 		gtk_main_quit();
 	}
 
@@ -1858,7 +1858,7 @@ gchar **uris, **str;
 gchar *newseldata;
 gint n_uris, filetype, slen;
 GError *error = NULL;
-
+	
 	if (info != TARGET_URI_LIST)
 		return;
 
@@ -1871,7 +1871,7 @@ GError *error = NULL;
 	newseldata[slen] = 0;
 	//DB( g_print(" - seldata ='%s'\n", gtk_selection_data_get_data(selection_data) ) );
 	//DB( g_print(" - newseldata ='%s'\n", newseldata ) );
-
+	
 	uris = g_uri_list_extract_uris (newseldata);
 	n_uris = g_strv_length(uris);
 	DB( g_print(" - dragged %d files (len=%d)\n", n_uris, slen ) );
@@ -1880,7 +1880,7 @@ GError *error = NULL;
 
 	//single file: check for xhb
 	if(n_uris == 1)
-	{
+	{		
 		filetype = hb_filename_type_get_by_extension(*uris);
 
 		DB( g_print(" - filetype is homebank (%d)\n", filetype) );
@@ -1913,7 +1913,7 @@ GError *error = NULL;
 
 	//collect known filetype to import
 	DB( g_print(" - collect %d files\n", n_uris) );
-
+	
 	gchar **paths = g_new (gchar *, n_uris + 1);
 	slen = 0;
 	for (str = uris; *str; str++)
@@ -1928,7 +1928,7 @@ GError *error = NULL;
 				DB( g_print(" - append %d '%s'\n", slen, path ) );
 				paths[slen++] = path;
 			}
-		}
+		}   
 	}
 	paths[slen] = NULL;
 
@@ -1936,8 +1936,8 @@ GError *error = NULL;
 	{
 		ui_import_assistant_new( paths );
 	}
-
-
+	
+	
 end_drop:
 	g_strfreev (uris);
 }
@@ -2139,7 +2139,7 @@ GtkWidget *bar, *label;
 	gtk_label_set_markup (GTK_LABEL(label), "Unstable Development Version");
 	gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label, FALSE, FALSE, 0);
 #endif
-
+	
 	/* Add the main area */
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     //gtk_container_set_border_width (GTK_CONTAINER(vbox), SPACING_MEDIUM);
@@ -2173,7 +2173,7 @@ GtkWidget *bar, *label;
 	gtk_stack_sidebar_set_stack (GTK_STACK_SIDEBAR (sidebar), GTK_STACK (stack));
 	data->stack = stack;
     gtk_box_pack_start (GTK_BOX (box), stack, TRUE, TRUE, 0);
-
+	
 		page = ui_hub_scheduled_create(data);
 		gtk_stack_add_titled (GTK_STACK (stack), page, "sched", _("Scheduled"));
 		//gtk_paned_pack2 (GTK_PANED(vpaned), widget, TRUE, FALSE);
@@ -2183,7 +2183,7 @@ GtkWidget *bar, *label;
 
 		page = ui_hub_transaction_create(data, HUB_TXN_TYPE_REMIND);
 		gtk_stack_add_titled (GTK_STACK (stack), page, "remin", _("Remind"));
-
+	
 
 	//setup, init and show window
 	wg = &PREFS->wal_wg;
@@ -2208,7 +2208,7 @@ GtkWidget *bar, *label;
 	if( PREFS->pnl_list_tab != NULL )
 		gtk_stack_set_visible_child_name (GTK_STACK(data->stack), PREFS->pnl_list_tab);
 
-
+	
 	//todo: move this elsewhere
 	DB( g_print(" - setup stuff\n") );
 

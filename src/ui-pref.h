@@ -67,7 +67,7 @@ struct defpref_data
 	GtkWidget	*BT_go_up;
 	GtkWidget	*BT_go_down;
 
-
+	
 	GtkWidget	*CM_runwizard;
 
 	GtkWidget	*ST_path_import, *BT_path_import;
@@ -88,24 +88,24 @@ struct defpref_data
 	GtkWidget	*CY_daterange_txn;
 	GtkWidget   *ST_datefuture_nbdays;
 	GtkWidget	*CY_daterange_rep;
-
+	
 	/* currencies */
 	GtkWidget	*LB_default;
-	GtkWidget	*BT_default;
-
+	GtkWidget	*BT_default; 
+	
 	GtkWidget	*CM_euro_enable;
 	GtkWidget	*GRP_currency;
 	GtkWidget	*GRP_rate;
 	GtkWidget	*GRP_format;
-
+	 
 	GtkWidget	*CY_euro_preset;
 	GtkWidget	*ST_euro_country;
 	GtkWidget	*NB_euro_value;
 
 	GtkWidget	*ST_euro_symbol;
 	GtkWidget	*CM_euro_isprefix;
-	GtkWidget	*ST_euro_decimalchar;
-	GtkWidget	*ST_euro_groupingchar;
+	GtkWidget	*ST_euro_decimalchar;	
+	GtkWidget	*ST_euro_groupingchar;	
 	GtkWidget	*NB_euro_fracdigits;
 	GtkWidget	*LB_numbereuro;
 
@@ -152,8 +152,7 @@ enum
 	PREF_MAX
 };
 
-
-typedef struct
+typedef struct 
 {
 	gchar   *locale;
 	gchar   *name;
