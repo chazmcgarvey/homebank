@@ -135,7 +135,7 @@ Category *cat;
 	if(warning)
 	{
 		gtk_widget_show_all(data->IB_warnsign);
-		//#GTK+710888: hack waiting a fix 
+		//#GTK+710888: hack waiting a GTK fix 
 		gtk_widget_queue_resize (data->IB_warnsign);
 	}
 	else
@@ -383,16 +383,25 @@ gchar *tagstr, *txt;
 	gtk_entry_set_text(GTK_ENTRY(data->ST_tags), txt);
 	g_free(tagstr);
 
-	hbtk_radio_set_active(GTK_CONTAINER(data->RA_status), entry->status );
+	hbtk_radio_button_set_active(GTK_CONTAINER(data->RA_status), entry->status );
 	
 	//as we trigger an event on this
 	//let's place it at the end to avoid missvalue on the trigger function
 	g_signal_handlers_block_by_func (G_OBJECT (data->PO_acc), G_CALLBACK (deftransaction_update_accto), NULL);
+	if( entry->kacc > 0 )
+	{
+		ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_acc), entry->kacc);
+	}	
+	else  //1829007 set first item if only 1 account
+	{
+	GtkTreeModel *model = gtk_combo_box_get_model(GTK_COMBO_BOX(data->PO_acc));
 
-	ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_acc), entry->kacc);
-	ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_accto), entry->kxferacc);
-	
+		if(gtk_tree_model_iter_n_children(model, NULL) == 1)
+			gtk_combo_box_set_active(GTK_COMBO_BOX(data->PO_acc), 0);
+	}
 	g_signal_handlers_unblock_by_func (G_OBJECT (data->PO_acc), G_CALLBACK (deftransaction_update_accto), NULL);
+
+	ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_accto), entry->kxferacc);
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->NU_mode), entry->paymode);
 
@@ -486,7 +495,7 @@ gint active;
 	g_free(entry->tags);
 	entry->tags = tags_parse(txt);
 
-	entry->status = hbtk_radio_get_active(GTK_CONTAINER(data->RA_status));
+	entry->status = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_status));
 
 	//#1615245: moved here, after get combo entry key
 	if( entry->paymode != PAYMODE_INTXFER )
@@ -687,6 +696,7 @@ gint deftransaction_external_edit(GtkWindow *parent, Transaction *old_txn, Trans
 {
 GtkWidget *dialog;
 gboolean result;
+Account *acc;
 
 	DB( g_print("\n[ui-transaction] external edit (from out)\n") );
 
@@ -702,6 +712,11 @@ gboolean result;
 		account_balances_sub(old_txn);
 		account_balances_add(new_txn);
 
+		/* update account flag */
+		acc = da_acc_get(new_txn->kacc);
+		if(acc)
+			acc->flags |= AF_CHANGED;
+		
 		/* ok different case here
 
 			* new is intxfer
@@ -830,20 +845,19 @@ create_popover (GtkWidget       *parent,
                 GtkWidget       *child,
                 GtkPositionType  pos)
 {
-  GtkWidget *popover;
+GtkWidget *popover;
 
-  popover = gtk_popover_new (parent);
-  gtk_popover_set_position (GTK_POPOVER (popover), pos);
-  gtk_container_add (GTK_CONTAINER (popover), child);
-  gtk_container_set_border_width (GTK_CONTAINER (popover), SPACING_SMALL);
-  gtk_widget_show (child);
+	popover = gtk_popover_new (parent);
+	gtk_popover_set_position (GTK_POPOVER (popover), pos);
+	gtk_container_add (GTK_CONTAINER (popover), child);
+	gtk_widget_show (child);
 
-/*	gtk_widget_set_margin_start (popover, SPACING_MEDIUM);
-	gtk_widget_set_margin_end (popover, SPACING_MEDIUM);
-	gtk_widget_set_margin_top (popover, SPACING_MEDIUM);
-	gtk_widget_set_margin_bottom (popover, SPACING_MEDIUM);*/
+	gtk_widget_set_margin_start (child, SPACING_POPOVER);
+	gtk_widget_set_margin_end (child, SPACING_POPOVER);
+	gtk_widget_set_margin_top (child, SPACING_POPOVER);
+	gtk_widget_set_margin_bottom (child, SPACING_POPOVER);
 
-  return popover;
+	return popover;
 }
 
 
@@ -1300,7 +1314,7 @@ gint row;
 	row++;
 	label = make_label_widget(_("_Status:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = hbtk_radio_new (CYA_TXN_STATUS, TRUE);
+	widget = hbtk_radio_button_new (CYA_TXN_STATUS, TRUE);
 	data->RA_status = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 

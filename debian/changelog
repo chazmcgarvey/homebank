@@ -1,4 +1,4 @@
-homebank (5.2.4-1) stable; urgency=medium
+homebank (5.2.6-1) stable; urgency=medium
 
   * debian/control: changed description (Closes: #734503, #639536)
     (LP: #155059)

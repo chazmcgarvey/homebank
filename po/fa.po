@@ -6,17 +6,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-10 16:14+0200\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2019-05-12 16:29+0200\n"
 "PO-Revision-Date: 2017-11-21 15:56+0000\n"
 "Last-Translator: Mojtaba Rezaee <Unknown>\n"
 "Language-Team: Persian <fa@li.org>\n"
-"Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2019-04-10 13:13+0000\n"
-"X-Generator: Launchpad (build 18920)\n"
+"X-Launchpad-Export-Date: 2019-05-12 14:41+0000\n"
+"X-Generator: Launchpad (build 18962)\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:943
 msgid "HomeBank"
@@ -37,11 +36,11 @@ msgstr "امور مالی؛ حسابداری؛ بودجه؛ شخصی؛ پول؛"
 
 #: ../data/homebank.appdata.xml.in.h:1
 msgid ""
-"HomeBank is a free software (as in \"free speech\" and also as in \"free beer"
-"\") that will assist you to manage your personal accounting."
+"HomeBank is a free software (as in \"free speech\" and also as in \"free "
+"beer\") that will assist you to manage your personal accounting."
 msgstr ""
-"HomeBank یک نرم افزار آزاد ( در \"آزادی بیان\" و همچنین مانند \"آبجو رایگان"
-"\") که به شما در مدیریت حسابداری شخصی کمک می‌کند."
+"HomeBank یک نرم افزار آزاد ( در \"آزادی بیان\" و همچنین مانند \"آبجو "
+"رایگان\") که به شما در مدیریت حسابداری شخصی کمک می‌کند."
 
 #: ../data/homebank.appdata.xml.in.h:2
 msgid ""
@@ -128,7 +127,7 @@ msgstr ""
 msgid "_Create"
 msgstr ""
 
-#: ../src/dsp-account.c:1272
+#: ../src/dsp-account.c:1286
 msgid ""
 "Do you want to delete\n"
 "each of the selected transaction ?"
@@ -136,7 +135,7 @@ msgstr ""
 "آیا شما مایل به حذف\n"
 "تمام تراکنش های انتخاب شده هستید؟"
 
-#: ../src/dsp-account.c:1273 ../src/ui-account.c:1041 ../src/ui-account.c:1319
+#: ../src/dsp-account.c:1287 ../src/ui-account.c:1041 ../src/ui-account.c:1319
 #: ../src/ui-archive.c:400 ../src/ui-archive.c:1277 ../src/ui-assign.c:556
 #: ../src/ui-assign.c:772 ../src/ui-category.c:1105 ../src/ui-category.c:1561
 #: ../src/ui-category.c:1987 ../src/ui-currency.c:1547
@@ -145,275 +144,275 @@ msgstr ""
 msgid "_Delete"
 msgstr "_حذف"
 
-#: ../src/dsp-account.c:1336
+#: ../src/dsp-account.c:1350
 msgid "Are you sure you want to change the status to None?"
 msgstr "آیا مایل به تغییر وضعیت به هیچ هستید؟"
 
-#: ../src/dsp-account.c:1337 ../src/dsp-account.c:1397
+#: ../src/dsp-account.c:1351 ../src/dsp-account.c:1411
 msgid "Some transaction in your selection are already Reconciled."
 msgstr "برخی از تراکنش های انتخابی شما در حال حاضر در وضعیت موافق هستند."
 
-#: ../src/dsp-account.c:1338 ../src/ui-assist-start.c:280
+#: ../src/dsp-account.c:1352 ../src/ui-assist-start.c:280
 #: ../src/ui-dialogs.c:383
 msgid "_Change"
 msgstr "تغییر"
 
-#: ../src/dsp-account.c:1396
+#: ../src/dsp-account.c:1410
 msgid "Are you sure you want to toggle the status Reconciled?"
 msgstr "آیا مایل به تغییر وضعیت به موافق هستید؟"
 
-#: ../src/dsp-account.c:1398
+#: ../src/dsp-account.c:1412
 msgid "_Toggle"
 msgstr "ـتعویض"
 
 #. label = g_strdup_printf(_("Account %d of %d"), acckey+1, nbacc);
 #. gtk_label_set_markup (GTK_LABEL(txndata->LB_acc_count), label);
 #. g_free(label);
-#: ../src/dsp-account.c:1689 ../src/ui-assist-import.c:1288
+#: ../src/dsp-account.c:1703 ../src/ui-assist-import.c:1288
 #, c-format
 msgid "%d transactions"
 msgstr ""
 
-#: ../src/dsp-account.c:1692
+#: ../src/dsp-account.c:1706
 #, c-format
 msgid "%d transactions, %d selected, avg: %s, sum: %s (%s - %s)"
 msgstr ""
 
-#: ../src/dsp-account.c:1791 ../src/dsp-account.c:2047
+#: ../src/dsp-account.c:1805 ../src/dsp-account.c:2061
 msgid "All transactions"
 msgstr ""
 
 #. name, icon-name, label
-#: ../src/dsp-account.c:1906
+#: ../src/dsp-account.c:1920
 msgid "A_ccount"
 msgstr "حساب"
 
-#: ../src/dsp-account.c:1907
+#: ../src/dsp-account.c:1921
 msgid "Transacti_on"
 msgstr "تراکنش"
 
-#: ../src/dsp-account.c:1908
+#: ../src/dsp-account.c:1922
 msgid "_Status"
 msgstr "ـوضعیت"
 
-#: ../src/dsp-account.c:1909 ../src/dsp-mainwindow.c:167
+#: ../src/dsp-account.c:1923 ../src/dsp-mainwindow.c:167
 msgid "_Tools"
 msgstr "_ابزارها"
 
 #. name, icon-name, label, accelerator, tooltip
-#: ../src/dsp-account.c:1913
+#: ../src/dsp-account.c:1927
 msgid "Export as PDF..."
 msgstr ""
 
-#: ../src/dsp-account.c:1913
+#: ../src/dsp-account.c:1927
 msgid "Export to a PDF file"
 msgstr ""
 
-#: ../src/dsp-account.c:1914
+#: ../src/dsp-account.c:1928
 msgid "Export QIF..."
 msgstr "صدور QIF..."
 
-#: ../src/dsp-account.c:1914 ../src/ui-dialogs.c:448
+#: ../src/dsp-account.c:1928 ../src/ui-dialogs.c:448
 msgid "Export as QIF"
 msgstr "صدور با فرمت QIF"
 
-#: ../src/dsp-account.c:1915
+#: ../src/dsp-account.c:1929
 msgid "Export CSV..."
 msgstr "صدور به فرمت ساده (CSV)"
 
-#: ../src/dsp-account.c:1915 ../src/rep-vehicle.c:67 ../src/ui-dialogs.c:504
+#: ../src/dsp-account.c:1929 ../src/rep-vehicle.c:67 ../src/ui-dialogs.c:504
 msgid "Export as CSV"
 msgstr "صدور با فرمت ساده (CSV)"
 
-#: ../src/dsp-account.c:1916 ../src/dsp-mainwindow.c:184
+#: ../src/dsp-account.c:1930 ../src/dsp-mainwindow.c:184
 #: ../src/dsp-mainwindow.c:933 ../src/ui-account.c:1261
 #: ../src/ui-archive.c:1212 ../src/ui-assign.c:720 ../src/ui-budget.c:995
 #: ../src/ui-category.c:1805 ../src/ui-currency.c:1658 ../src/ui-dialogs.c:183
-#: ../src/ui-payee.c:1253 ../src/ui-tag.c:578 ../src/ui-transaction.c:1159
-#: ../src/ui-transaction.c:1167
+#: ../src/ui-payee.c:1253 ../src/ui-tag.c:578 ../src/ui-transaction.c:1164
+#: ../src/ui-transaction.c:1172
 msgid "_Close"
 msgstr "_بستن"
 
-#: ../src/dsp-account.c:1916
+#: ../src/dsp-account.c:1930
 msgid "Close the current account"
 msgstr "حساب فعلی را ببند"
 
-#: ../src/dsp-account.c:1918
+#: ../src/dsp-account.c:1932
 msgid "_Add..."
 msgstr "_افزودن"
 
-#: ../src/dsp-account.c:1918
+#: ../src/dsp-account.c:1932
 msgid "Add a new transaction"
 msgstr "اضافه کردن رویداد مالی جدید"
 
-#: ../src/dsp-account.c:1919
+#: ../src/dsp-account.c:1933
 msgid "_Inherit..."
 msgstr "ـجانشینی..."
 
-#: ../src/dsp-account.c:1919
+#: ../src/dsp-account.c:1933
 msgid "Inherit from the active transaction"
 msgstr "جانشین رویداد مالی حاضر"
 
-#: ../src/dsp-account.c:1920
+#: ../src/dsp-account.c:1934
 msgid "_Edit..."
 msgstr "_ویرایش..."
 
-#: ../src/dsp-account.c:1920
+#: ../src/dsp-account.c:1934
 msgid "Edit the active transaction"
 msgstr "ویرایش رویداد مالی حاضر"
 
-#: ../src/dsp-account.c:1922
+#: ../src/dsp-account.c:1936
 msgid "_None"
 msgstr "_هیچکدام"
 
-#: ../src/dsp-account.c:1922
+#: ../src/dsp-account.c:1936
 msgid "Toggle none for selected transaction(s)"
 msgstr "تغییر به هیچ برای تراکنش های انتخاب شده"
 
-#: ../src/dsp-account.c:1923
+#: ../src/dsp-account.c:1937
 msgid "_Cleared"
 msgstr "ـپاک"
 
-#: ../src/dsp-account.c:1923
+#: ../src/dsp-account.c:1937
 msgid "Toggle cleared for selected transaction(s)"
 msgstr "تغییر به پاک شده برای تراکنش های انتخاب شده"
 
-#: ../src/dsp-account.c:1924
+#: ../src/dsp-account.c:1938
 msgid "_Reconciled"
 msgstr "مطابق"
 
-#: ../src/dsp-account.c:1924
+#: ../src/dsp-account.c:1938
 msgid "Toggle reconciled for selected transaction(s)"
 msgstr "تغییر به موافق برای تراکنش های انتخاب شده"
 
-#: ../src/dsp-account.c:1926
+#: ../src/dsp-account.c:1940
 msgid "_Multiple Edit..."
 msgstr "ـویرایش چندگانه..."
 
-#: ../src/dsp-account.c:1926
+#: ../src/dsp-account.c:1940
 msgid "Edit multiple transaction"
 msgstr "ویرایش تراکنش چندگانه"
 
-#: ../src/dsp-account.c:1927
+#: ../src/dsp-account.c:1941
 msgid "Create template..."
 msgstr "ایجاد الگو..."
 
-#: ../src/dsp-account.c:1927
+#: ../src/dsp-account.c:1941
 msgid "Create template"
 msgstr "ایجاد الگو"
 
-#: ../src/dsp-account.c:1928
+#: ../src/dsp-account.c:1942
 msgid "_Delete..."
 msgstr "_حذف..."
 
-#: ../src/dsp-account.c:1928
+#: ../src/dsp-account.c:1942
 msgid "Delete selected transaction(s)"
 msgstr "حذف تراکنش های انتخاب شده"
 
-#: ../src/dsp-account.c:1930
+#: ../src/dsp-account.c:1944
 msgid "Mark duplicate..."
 msgstr ""
 
 #. { "DuplicateClear", NULL                      , N_("Unmark duplicate"), NULL,	NULL, G_CALLBACK (register_panel_action_duplicate_unmark) },
-#: ../src/dsp-account.c:1933
+#: ../src/dsp-account.c:1947
 msgid "Check internal xfer"
 msgstr ""
 
-#: ../src/dsp-account.c:1934
+#: ../src/dsp-account.c:1948
 msgid "Auto. assignments"
 msgstr "انتساب خودکار"
 
-#: ../src/dsp-account.c:1934
+#: ../src/dsp-account.c:1948
 msgid "Run automatic assignments"
 msgstr "اجرای انتساب خودکار"
 
-#: ../src/dsp-account.c:1936
+#: ../src/dsp-account.c:1950
 msgid "_Filter..."
 msgstr "فیلتر"
 
-#: ../src/dsp-account.c:1936
+#: ../src/dsp-account.c:1950
 msgid "Open the list filter"
 msgstr "فیلتر فهرست را باز کن"
 
-#: ../src/dsp-account.c:1937
+#: ../src/dsp-account.c:1951
 msgid "Convert to Euro..."
 msgstr "تبدیل به یورو..."
 
-#: ../src/dsp-account.c:1937
+#: ../src/dsp-account.c:1951
 msgid "Convert this account to Euro currency"
 msgstr "تبدیل این حساب به ارز یورو"
 
-#: ../src/dsp-account.c:2040
+#: ../src/dsp-account.c:2054
 msgid "(closed)"
 msgstr ""
 
-#: ../src/dsp-account.c:2047
+#: ../src/dsp-account.c:2061
 #, c-format
 msgid "%s - HomeBank"
 msgstr ""
 
-#: ../src/dsp-account.c:2079 ../src/dsp-mainwindow.c:1991 ../src/ui-split.c:824
+#: ../src/dsp-account.c:2093 ../src/dsp-mainwindow.c:1991 ../src/ui-split.c:824
 msgid "Add"
 msgstr "افزودن"
 
-#: ../src/dsp-account.c:2082
+#: ../src/dsp-account.c:2096
 msgid "Inherit"
 msgstr "جانشینی"
 
-#: ../src/dsp-account.c:2085 ../src/ui-split.c:786
+#: ../src/dsp-account.c:2099 ../src/ui-split.c:786
 msgid "Edit"
 msgstr "ویرایش"
 
-#: ../src/dsp-account.c:2088 ../src/rep-stats.c:72
+#: ../src/dsp-account.c:2102 ../src/rep-stats.c:72
 msgid "Filter"
 msgstr "فیلتر"
 
 #. info bar for duplicate
-#: ../src/dsp-account.c:2125
+#: ../src/dsp-account.c:2139
 msgid "_Refresh"
 msgstr "نوسازی"
 
 #. balances area
-#: ../src/dsp-account.c:2160
+#: ../src/dsp-account.c:2174
 msgid "Bank:"
 msgstr "بانک:"
 
-#: ../src/dsp-account.c:2166
+#: ../src/dsp-account.c:2180
 msgid "Today:"
 msgstr "امروز:"
 
-#: ../src/dsp-account.c:2172
+#: ../src/dsp-account.c:2186
 msgid "Future:"
 msgstr "آینده:"
 
-#: ../src/dsp-account.c:2195 ../src/rep-balance.c:942 ../src/rep-budget.c:1170
+#: ../src/dsp-account.c:2209 ../src/rep-balance.c:942 ../src/rep-budget.c:1183
 #: ../src/rep-stats.c:1539 ../src/rep-time.c:1270 ../src/rep-vehicle.c:749
-#: ../src/ui-pref.c:1262 ../src/ui-pref.c:1617 ../src/ui-pref.c:2002
+#: ../src/ui-pref.c:1283 ../src/ui-pref.c:1638 ../src/ui-pref.c:2023
 msgid "_Range:"
 msgstr "دامنه"
 
-#: ../src/dsp-account.c:2203
+#: ../src/dsp-account.c:2217
 msgid "Toggle show future transaction"
 msgstr ""
 
-#: ../src/dsp-account.c:2207 ../src/rep-budget.c:1145 ../src/rep-stats.c:1497
+#: ../src/dsp-account.c:2221 ../src/rep-budget.c:1158 ../src/rep-stats.c:1497
 #: ../src/ui-account.c:1349 ../src/ui-assist-start.c:391
 msgid "_Type:"
 msgstr "_نوع:"
 
-#: ../src/dsp-account.c:2212 ../src/ui-archive.c:1089
-#: ../src/ui-transaction.c:1301
+#: ../src/dsp-account.c:2226 ../src/ui-archive.c:1089
+#: ../src/ui-transaction.c:1306
 msgid "_Status:"
 msgstr "_وضعیت:"
 
 #. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
-#: ../src/dsp-account.c:2218 ../src/ui-filter.c:1352 ../src/ui-pref.c:2099
-#: ../src/ui-pref.c:2120
+#: ../src/dsp-account.c:2232 ../src/ui-filter.c:1352 ../src/ui-pref.c:2120
+#: ../src/ui-pref.c:2141
 msgid "_Reset"
 msgstr "_تنظیم به حالت اولیه"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2223 ../src/rep-balance.c:921 ../src/rep-budget.c:1157
+#: ../src/dsp-account.c:2237 ../src/rep-balance.c:921 ../src/rep-budget.c:1170
 #: ../src/rep-stats.c:1511 ../src/rep-time.c:1249 ../src/rep-vehicle.c:736
 msgid "Euro _minor"
 msgstr "واحد کوچکتر یورو"
@@ -658,7 +657,7 @@ msgstr "پیکربندی زمانبندی تراکنش"
 msgid "Post scheduled"
 msgstr "ارسال برنامه ریزی شده"
 
-#: ../src/dsp-mainwindow.c:213 ../src/ui-pref.c:1982
+#: ../src/dsp-mainwindow.c:213 ../src/ui-pref.c:2003
 msgid "Post pending scheduled transactions"
 msgstr "ارسال تراکنش های زمان بندی شده درحال بررسی"
 
@@ -899,7 +898,8 @@ msgid "The file has been modified since reading it."
 msgstr ""
 
 #: ../src/dsp-mainwindow.c:1398
-msgid "If you save it, all the external changes could be lost. Save it anyway?"
+msgid ""
+"If you save it, all the external changes could be lost. Save it anyway?"
 msgstr ""
 
 #: ../src/dsp-mainwindow.c:1399
@@ -931,7 +931,7 @@ msgstr "دریافت کننده وجه"
 
 #. category
 #: ../src/dsp-mainwindow.c:1978 ../src/list-operation.c:1239
-#: ../src/rep-budget.c:1465 ../src/rep-budget.c:1646 ../src/rep-stats.c:146
+#: ../src/rep-budget.c:1478 ../src/rep-budget.c:1659 ../src/rep-stats.c:146
 #: ../src/rep-time.c:126 ../src/ui-assist-import.c:390 ../src/ui-budget.c:232
 #: ../src/ui-dialogs.c:238 ../src/ui-split.c:202 ../src/ui-split.c:791
 #: ../src/ui-widgets-data.c:49
@@ -945,7 +945,7 @@ msgstr "آرشیو"
 
 #. column: Income
 #: ../src/dsp-mainwindow.c:1985 ../src/dsp-mainwindow.c:1997
-#: ../src/rep-budget.c:911 ../src/rep-budget.c:1465 ../src/rep-budget.c:1661
+#: ../src/rep-budget.c:924 ../src/rep-budget.c:1478 ../src/rep-budget.c:1674
 msgid "Budget"
 msgstr "بودجه"
 
@@ -1010,7 +1010,7 @@ msgid "Date"
 msgstr "تاریخ"
 
 #: ../src/hb-export.c:442 ../src/list-operation.c:1003
-#: ../src/ui-assist-import.c:372 ../src/ui-pref.c:133 ../src/ui-pref.c:2349
+#: ../src/ui-assist-import.c:372 ../src/ui-pref.c:133 ../src/ui-pref.c:2370
 msgid "Info"
 msgstr "اطلاعات"
 
@@ -1073,20 +1073,20 @@ msgstr "اطلاعات نسخه را خروجی بده و خارج شو"
 msgid "[FILE]"
 msgstr "[فایل]"
 
-#: ../src/homebank.c:361
+#: ../src/homebank.c:249
 msgid "Browser error."
 msgstr "خطای مرورگر"
 
-#: ../src/homebank.c:362
+#: ../src/homebank.c:250
 #, c-format
 msgid "Could not display the URL '%s'"
 msgstr "نمایش آدرس '%s' ممکن نیست"
 
-#: ../src/homebank.c:971 ../src/homebank.c:972
+#: ../src/homebank.c:859 ../src/homebank.c:860
 msgid "HomeBank options"
 msgstr "تنظیمات HomeBank"
 
-#: ../src/homebank.c:1101
+#: ../src/homebank.c:989
 #, c-format
 msgid "Unable to open '%s', the file does not exist.\n"
 msgstr "ناتوان از باز کردن «%s»، فایل وجود ندارد.\n"
@@ -1124,10 +1124,6 @@ msgid "By type"
 msgstr "بر اساس نوع"
 
 #: ../src/hub-account.c:469
-msgid "By group"
-msgstr ""
-
-#: ../src/hub-account.c:470
 msgid "By institution"
 msgstr ""
 
@@ -1185,7 +1181,7 @@ msgstr "موارد دیگر"
 msgid "Where your money goes"
 msgstr "جایی که پول‌تان می‌رود"
 
-#: ../src/hb-import.c:1229
+#: ../src/hb-import.c:1321
 msgid "imported account"
 msgstr ""
 
@@ -1297,13 +1293,13 @@ msgstr "%d/%d تحت %s"
 msgid "Balance report"
 msgstr "گزارش تراز"
 
-#: ../src/rep-balance.c:899 ../src/rep-budget.c:1133 ../src/rep-stats.c:1485
+#: ../src/rep-balance.c:899 ../src/rep-budget.c:1146 ../src/rep-stats.c:1485
 #: ../src/rep-time.c:1181 ../src/rep-vehicle.c:724
 msgid "Display"
 msgstr "نمایش"
 
 #: ../src/rep-balance.c:903 ../src/rep-time.c:1193 ../src/ui-archive.c:1029
-#: ../src/ui-transaction.c:1237 ../src/ui-txn-multi.c:457
+#: ../src/ui-transaction.c:1242 ../src/ui-txn-multi.c:457
 msgid "A_ccount:"
 msgstr "ـ‌حساب"
 
@@ -1319,18 +1315,18 @@ msgstr "هر _روز"
 msgid "_Zoom X:"
 msgstr "_بزرگنمایی X:"
 
-#: ../src/rep-balance.c:938 ../src/rep-budget.c:1166 ../src/rep-stats.c:1535
+#: ../src/rep-balance.c:938 ../src/rep-budget.c:1179 ../src/rep-stats.c:1535
 #: ../src/rep-time.c:1266 ../src/rep-vehicle.c:745
 msgid "Date filter"
 msgstr "فیلتر تاریخ"
 
-#: ../src/rep-balance.c:948 ../src/rep-budget.c:1176 ../src/rep-stats.c:1545
+#: ../src/rep-balance.c:948 ../src/rep-budget.c:1189 ../src/rep-stats.c:1545
 #: ../src/rep-time.c:1276 ../src/rep-vehicle.c:755 ../src/ui-filter.c:1109
 #: ../src/ui-filter.c:1212
 msgid "_From:"
 msgstr "_از:"
 
-#: ../src/rep-balance.c:954 ../src/rep-budget.c:1182 ../src/rep-stats.c:1551
+#: ../src/rep-balance.c:954 ../src/rep-budget.c:1195 ../src/rep-stats.c:1551
 #: ../src/rep-time.c:1282 ../src/rep-vehicle.c:761 ../src/ui-filter.c:1115
 #: ../src/ui-filter.c:1219
 msgid "_To:"
@@ -1344,81 +1340,81 @@ msgstr "پشته"
 msgid "View results as stack bars"
 msgstr "نمایش نتایج به صورت پشته میله ای"
 
-#: ../src/rep-budget.c:853
+#: ../src/rep-budget.c:866
 msgid " over"
 msgstr " بالغ بر"
 
-#: ../src/rep-budget.c:859
+#: ../src/rep-budget.c:872
 msgid " left"
 msgstr " چپ"
 
-#: ../src/rep-budget.c:862
+#: ../src/rep-budget.c:875
 msgid " under"
 msgstr " کمتر از"
 
 #. update stack chart
-#: ../src/rep-budget.c:905
+#: ../src/rep-budget.c:918
 #, c-format
 msgid "Budget for %s"
 msgstr "بودجه برای %s"
 
 #. column: Result
-#: ../src/rep-budget.c:911 ../src/rep-budget.c:1465 ../src/rep-budget.c:1665
+#: ../src/rep-budget.c:924 ../src/rep-budget.c:1478 ../src/rep-budget.c:1678
 #: ../src/rep-stats.c:1820 ../src/rep-stats.c:1980
 msgid "Result"
 msgstr "نتیجه"
 
-#: ../src/rep-budget.c:1108
+#: ../src/rep-budget.c:1121
 msgid "Budget report"
 msgstr "گزارش بودجه"
 
-#: ../src/rep-budget.c:1137 ../src/rep-stats.c:1489 ../src/rep-time.c:1185
+#: ../src/rep-budget.c:1150 ../src/rep-stats.c:1489 ../src/rep-time.c:1185
 msgid "_View by:"
 msgstr "ـنمایش بر اساس"
 
-#: ../src/rep-budget.c:1152
+#: ../src/rep-budget.c:1165
 msgid "Only out of budget"
 msgstr ""
 
 #. gtk_widget_set_halign (menu, GTK_ALIGN_END);
-#: ../src/rep-budget.c:1246 ../src/rep-stats.c:1624 ../src/rep-time.c:1349
+#: ../src/rep-budget.c:1259 ../src/rep-stats.c:1624 ../src/rep-time.c:1349
 msgid "_Result to clipboard"
 msgstr ""
 
-#: ../src/rep-budget.c:1250 ../src/rep-stats.c:1628 ../src/rep-time.c:1353
+#: ../src/rep-budget.c:1263 ../src/rep-stats.c:1628 ../src/rep-time.c:1353
 msgid "_Result to CSV"
 msgstr ""
 
-#: ../src/rep-budget.c:1254 ../src/rep-stats.c:1632 ../src/rep-time.c:1357
+#: ../src/rep-budget.c:1267 ../src/rep-stats.c:1632 ../src/rep-time.c:1357
 msgid "_Detail to clipboard"
 msgstr ""
 
-#: ../src/rep-budget.c:1259 ../src/rep-stats.c:1637 ../src/rep-time.c:1362
+#: ../src/rep-budget.c:1272 ../src/rep-stats.c:1637 ../src/rep-time.c:1362
 msgid "_Detail to CSV"
 msgstr ""
 
-#: ../src/rep-budget.c:1293
+#: ../src/rep-budget.c:1306
 msgid "Result:"
 msgstr "نتیجه:"
 
-#: ../src/rep-budget.c:1299
+#: ../src/rep-budget.c:1312
 msgid "Budget:"
 msgstr "بودجه:"
 
-#: ../src/rep-budget.c:1305
+#: ../src/rep-budget.c:1318
 msgid "Spent:"
 msgstr "هزینه شده"
 
-#: ../src/rep-budget.c:1426
+#: ../src/rep-budget.c:1439
 msgid "No account is defined to be part of the budget."
 msgstr "هیچ حسابی به عنوان بخشی از بودجه تعریف نشده"
 
-#: ../src/rep-budget.c:1427
+#: ../src/rep-budget.c:1440
 msgid "You should include some accounts from the account dialog."
 msgstr "باید از گفتگوی حساب حسابی را انتخاب کنید"
 
 #. column: Expense
-#: ../src/rep-budget.c:1465 ../src/rep-budget.c:1657
+#: ../src/rep-budget.c:1478 ../src/rep-budget.c:1670
 msgid "Spent"
 msgstr "هزینه شده"
 
@@ -1548,13 +1544,13 @@ msgid "Trend Time Report"
 msgstr "گزارش زمان روند"
 
 #: ../src/rep-time.c:1201 ../src/ui-archive.c:1078 ../src/ui-assign.c:872
-#: ../src/ui-hbfile.c:279 ../src/ui-payee.c:925 ../src/ui-transaction.c:1289
+#: ../src/ui-hbfile.c:279 ../src/ui-payee.c:925 ../src/ui-transaction.c:1294
 #: ../src/ui-txn-multi.c:489
 msgid "_Category:"
 msgstr "_دسته بندی:"
 
 #: ../src/rep-time.c:1209 ../src/ui-archive.c:1070 ../src/ui-assign.c:843
-#: ../src/ui-transaction.c:1281 ../src/ui-txn-multi.c:473
+#: ../src/ui-transaction.c:1286 ../src/ui-txn-multi.c:473
 msgid "_Payee:"
 msgstr "_دریافت کننده وجه:"
 
@@ -1582,7 +1578,7 @@ msgstr "مقطع زمانی"
 msgid "Export"
 msgstr "صدور"
 
-#.
+#. 
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1591,10 +1587,10 @@ msgstr "صدور"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#.
-#.
+#. 
+#. 
 #. column: Memo
-#.
+#. 
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1602,7 +1598,7 @@ msgstr "صدور"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#.
+#. 
 #. column: Meter
 #: ../src/rep-vehicle.c:219 ../src/rep-vehicle.c:1131
 msgid "Meter"
@@ -1654,7 +1650,7 @@ msgstr "بهای کل:"
 #. populate_view_acc(data->LV_acc, GLOBALS->acc_list, TRUE);
 #. populate template
 #: ../src/ui-account.c:338 ../src/ui-account.c:1231 ../src/ui-assign.c:98
-#: ../src/ui-currency.c:245 ../src/ui-tag.c:137 ../src/ui-widgets.c:980
+#: ../src/ui-currency.c:245 ../src/ui-tag.c:137 ../src/ui-widgets.c:991
 msgid "(none)"
 msgstr "(هیچ‌کدام)"
 
@@ -1670,8 +1666,8 @@ msgstr "نمايان"
 #: ../src/ui-dialogs.c:451 ../src/ui-dialogs.c:512 ../src/ui-dialogs.c:578
 #: ../src/ui-dialogs.c:652 ../src/ui-dialogs.c:722 ../src/ui-dialogs.c:772
 #: ../src/ui-dialogs.c:918 ../src/ui-filter.c:1354 ../src/ui-hbfile.c:194
-#: ../src/ui-payee.c:883 ../src/ui-payee.c:1046 ../src/ui-pref.c:2122
-#: ../src/ui-split.c:726 ../src/ui-tag.c:389 ../src/ui-transaction.c:1150
+#: ../src/ui-payee.c:883 ../src/ui-payee.c:1046 ../src/ui-pref.c:2143
+#: ../src/ui-split.c:726 ../src/ui-tag.c:389 ../src/ui-transaction.c:1155
 #: ../src/ui-txn-multi.c:379
 msgid "_Cancel"
 msgstr "_لغو"
@@ -1680,8 +1676,8 @@ msgstr "_لغو"
 #: ../src/ui-account.c:649 ../src/ui-category.c:1292 ../src/ui-currency.c:779
 #: ../src/ui-currency.c:1147 ../src/ui-dialogs.c:335 ../src/ui-dialogs.c:919
 #: ../src/ui-filter.c:1356 ../src/ui-hbfile.c:196 ../src/ui-payee.c:885
-#: ../src/ui-pref.c:2124 ../src/ui-split.c:740 ../src/ui-tag.c:391
-#: ../src/ui-transaction.c:1151 ../src/ui-txn-multi.c:381
+#: ../src/ui-pref.c:2145 ../src/ui-split.c:740 ../src/ui-tag.c:391
+#: ../src/ui-transaction.c:1156 ../src/ui-txn-multi.c:381
 msgid "_OK"
 msgstr "_تایید"
 
@@ -1749,12 +1745,12 @@ msgstr ""
 
 #: ../src/ui-account.c:1315 ../src/ui-archive.c:1273 ../src/ui-assign.c:768
 #: ../src/ui-category.c:1977 ../src/ui-currency.c:1726 ../src/ui-payee.c:1370
-#: ../src/ui-tag.c:652 ../src/ui-transaction.c:1161
+#: ../src/ui-tag.c:652 ../src/ui-transaction.c:1166
 msgid "_Add"
 msgstr "افزودن"
 
 #: ../src/ui-account.c:1336 ../src/ui-hbfile.c:222 ../src/ui-pref.c:84
-#: ../src/ui-pref.c:1354 ../src/ui-pref.c:1726
+#: ../src/ui-pref.c:1375 ../src/ui-pref.c:1747
 msgid "General"
 msgstr "عمومی"
 
@@ -1786,7 +1782,7 @@ msgstr "دسته‌چک‌ـ۱:"
 msgid "Checkbook _2:"
 msgstr "دسته‌چک‌ـ۲:"
 
-#: ../src/ui-account.c:1422 ../src/ui-budget.c:1198
+#: ../src/ui-account.c:1422 ../src/ui-budget.c:1199
 msgid "Options"
 msgstr "گزینه‌ها"
 
@@ -1845,15 +1841,15 @@ msgid "If you delete a scheduled/template, it will be permanently lost."
 msgstr ""
 "اگر شما یک برنامه ریزی یا قالب را حذف کنید، به طور دائم آن از دست خواهید داد."
 
-#: ../src/ui-archive.c:1013 ../src/ui-transaction.c:1219
+#: ../src/ui-archive.c:1013 ../src/ui-transaction.c:1224
 msgid "_Amount:"
 msgstr "_مقدار:"
 
-#: ../src/ui-archive.c:1021 ../src/ui-transaction.c:1228
+#: ../src/ui-archive.c:1021 ../src/ui-transaction.c:1233
 msgid "Toggle amount sign"
 msgstr "سوییچ کردن علامت مقدار"
 
-#: ../src/ui-archive.c:1024 ../src/ui-split.c:723 ../src/ui-transaction.c:1231
+#: ../src/ui-archive.c:1024 ../src/ui-split.c:723 ../src/ui-transaction.c:1236
 msgid "Transaction splits"
 msgstr "انشعاب های تراکنش"
 
@@ -1865,7 +1861,7 @@ msgstr "_به حساب:"
 msgid "Pay_ment:"
 msgstr "پرداخت"
 
-#: ../src/ui-archive.c:1061 ../src/ui-transaction.c:1265
+#: ../src/ui-archive.c:1061 ../src/ui-transaction.c:1270
 msgid "Of notebook _2"
 msgstr "از دفتر یادداشت‌ـ۲"
 
@@ -1873,7 +1869,7 @@ msgstr "از دفتر یادداشت‌ـ۲"
 msgid "_Memo:"
 msgstr "ـ‌یادداشت:"
 
-#: ../src/ui-archive.c:1105 ../src/ui-transaction.c:1316
+#: ../src/ui-archive.c:1105 ../src/ui-transaction.c:1321
 #: ../src/ui-txn-multi.c:505
 msgid "Ta_gs:"
 msgstr "برچـسب‌ها:"
@@ -2035,7 +2031,8 @@ msgstr "ساخت یک حساب"
 
 #: ../src/ui-assist-start.c:441
 msgid "This is a confirmation page, press 'Apply' to apply changes"
-msgstr "این صفحه ی تایید است. برای إعمال تغییرات بر دگمه‌ی 'Apply' کلیک کنید."
+msgstr ""
+"این صفحه ی تایید است. برای إعمال تغییرات بر دگمه‌ی 'Apply' کلیک کنید."
 
 #: ../src/ui-assist-start.c:447 ../src/ui-assist-import.c:2201
 msgid "Confirmation"
@@ -2177,23 +2174,23 @@ msgstr ""
 msgid "Target account identification by name or number failed."
 msgstr ""
 
-#: ../src/ui-assist-import.c:1635 ../src/ui-pref.c:1137
+#: ../src/ui-assist-import.c:1635 ../src/ui-pref.c:1147
 msgid "Date order:"
 msgstr "ترتیب تاریخ:"
 
-#: ../src/ui-assist-import.c:1651 ../src/ui-pref.c:1183
+#: ../src/ui-assist-import.c:1651 ../src/ui-pref.c:1198
 msgid "_Import memos"
 msgstr ""
 
-#: ../src/ui-assist-import.c:1655 ../src/ui-pref.c:1186
+#: ../src/ui-assist-import.c:1655 ../src/ui-pref.c:1201
 msgid "_Swap memos with payees"
 msgstr ""
 
-#: ../src/ui-assist-import.c:1665 ../src/ui-pref.c:1156
+#: ../src/ui-assist-import.c:1665 ../src/ui-pref.c:1171
 msgid "OFX _Name:"
 msgstr ""
 
-#: ../src/ui-assist-import.c:1671 ../src/ui-pref.c:1165
+#: ../src/ui-assist-import.c:1671 ../src/ui-pref.c:1180
 msgid "OFX _Memo:"
 msgstr ""
 
@@ -2217,7 +2214,7 @@ msgstr "هیچ‌کدام"
 msgid "Invert"
 msgstr "معکوس"
 
-#: ../src/ui-assist-import.c:1715 ../src/ui-pref.c:1200
+#: ../src/ui-assist-import.c:1715 ../src/ui-pref.c:1156
 msgid "Sentence _case memo/payee"
 msgstr ""
 
@@ -2312,7 +2309,7 @@ msgstr "ـپاک کردن ورودی"
 msgid "is different"
 msgstr "متفاوت است"
 
-#: ../src/ui-budget.c:1203
+#: ../src/ui-budget.c:1204
 msgid "_Force monitoring this category"
 msgstr "ـ‌نظارت الزامی این گروه"
 
@@ -2410,7 +2407,7 @@ msgstr "ارز پایه"
 msgid "Symbol"
 msgstr "نماد"
 
-#: ../src/ui-currency.c:639 ../src/ui-currency.c:819 ../src/ui-pref.c:1396
+#: ../src/ui-currency.c:639 ../src/ui-currency.c:819 ../src/ui-pref.c:1417
 msgid "Exchange rate"
 msgstr "نرخ ارز"
 
@@ -2422,35 +2419,35 @@ msgstr ""
 msgid "Edit currency"
 msgstr "ویرایش ارز"
 
-#: ../src/ui-currency.c:805 ../src/ui-pref.c:1369
+#: ../src/ui-currency.c:805 ../src/ui-pref.c:1390
 msgid "Currency"
 msgstr "واحد پول"
 
-#: ../src/ui-currency.c:838 ../src/ui-pref.c:1414
+#: ../src/ui-currency.c:838 ../src/ui-pref.c:1435
 msgid "Format"
 msgstr "قالب"
 
-#: ../src/ui-currency.c:847 ../src/ui-pref.c:1423 ../src/ui-pref.c:1503
+#: ../src/ui-currency.c:847 ../src/ui-pref.c:1444 ../src/ui-pref.c:1524
 msgid "_Customize"
 msgstr "_شخصی سازی"
 
-#: ../src/ui-currency.c:856 ../src/ui-pref.c:1432
+#: ../src/ui-currency.c:856 ../src/ui-pref.c:1453
 msgid "_Symbol:"
 msgstr "_سمبل:"
 
-#: ../src/ui-currency.c:863 ../src/ui-pref.c:1439
+#: ../src/ui-currency.c:863 ../src/ui-pref.c:1460
 msgid "Is pre_fix"
 msgstr "پیشوند است"
 
-#: ../src/ui-currency.c:868 ../src/ui-pref.c:1444
+#: ../src/ui-currency.c:868 ../src/ui-pref.c:1465
 msgid "_Decimal char:"
 msgstr "جدول دهدهی:"
 
-#: ../src/ui-currency.c:875 ../src/ui-pref.c:1451
+#: ../src/ui-currency.c:875 ../src/ui-pref.c:1472
 msgid "_Frac digits:"
 msgstr "رقم‌های ـ‌کسری:"
 
-#: ../src/ui-currency.c:882 ../src/ui-pref.c:1458
+#: ../src/ui-currency.c:882 ../src/ui-pref.c:1479
 msgid "_Grouping char:"
 msgstr "_گروه بندی نمودار:"
 
@@ -2550,7 +2547,7 @@ msgstr ""
 msgid "Save HomeBank file as"
 msgstr "ذخیره فایل HomeBank به عنوان"
 
-#: ../src/ui-dialogs.c:589 ../src/ui-pref.c:1877
+#: ../src/ui-dialogs.c:589 ../src/ui-pref.c:1898
 msgid "HomeBank files"
 msgstr "فایل‌های homebank"
 
@@ -2656,7 +2653,7 @@ msgstr "_سال:"
 msgid "Texts"
 msgstr "متن‌ها"
 
-#: ../src/ui-filter.c:1166 ../src/ui-transaction.c:1270
+#: ../src/ui-filter.c:1166 ../src/ui-transaction.c:1275
 #: ../src/ui-txn-multi.c:443
 msgid "_Info:"
 msgstr "_اطلاعات:"
@@ -2745,7 +2742,7 @@ msgstr ""
 msgid "Default"
 msgstr "پیش فرض"
 
-#: ../src/ui-payee.c:933 ../src/ui-transaction.c:1254 ../src/ui-txn-multi.c:429
+#: ../src/ui-payee.c:933 ../src/ui-transaction.c:1259 ../src/ui-txn-multi.c:429
 msgid "Pa_yment:"
 msgstr "پرـداخت:"
 
@@ -2815,7 +2812,7 @@ msgstr "فراخوانی/صدور"
 msgid "Report"
 msgstr "گزارش"
 
-#: ../src/ui-pref.c:90 ../src/ui-pref.c:1829
+#: ../src/ui-pref.c:90 ../src/ui-pref.c:1850
 msgid "Backup"
 msgstr ""
 
@@ -2895,96 +2892,120 @@ msgstr "افزودن به یادداشت"
 msgid "Append to Payee"
 msgstr "الحاق به دریافت کننده وجه"
 
-#: ../src/ui-pref.c:477
+#: ../src/ui-pref.c:146
+msgid "Tab"
+msgstr ""
+
+#: ../src/ui-pref.c:147
+msgid "Comma"
+msgstr ""
+
+#: ../src/ui-pref.c:148
+msgid "Semicolon"
+msgstr ""
+
+#: ../src/ui-pref.c:149
+msgid "Space"
+msgstr ""
+
+#: ../src/ui-pref.c:486
 msgid "System Language"
 msgstr "زبان سیستم"
 
-#: ../src/ui-pref.c:638
+#: ../src/ui-pref.c:647
 msgid "Choose a default HomeBank files folder"
 msgstr "پوشه‌ی پیش‌فرضی برای فایل‌های HomeBank برگزینید"
 
-#: ../src/ui-pref.c:643
+#: ../src/ui-pref.c:652
 msgid "Choose a default import folder"
 msgstr "پوشه‌ی پیش‌فرضی برای فایل‌های فراخوانی برگزینید"
 
-#: ../src/ui-pref.c:648
+#: ../src/ui-pref.c:657
 msgid "Choose a default export folder"
 msgstr "پوشه‌ی پیش‌فرضی برای فایل‌های صادره برگزینید"
 
-#: ../src/ui-pref.c:1133
+#: ../src/ui-pref.c:1143
 msgid "Date options"
 msgstr "گزینه‌های تاریخ"
 
-#: ../src/ui-pref.c:1152
+#: ../src/ui-pref.c:1167
 msgid "OFX/QFX options"
 msgstr "گزینه‌های QFX/OFX"
 
-#: ../src/ui-pref.c:1179
+#: ../src/ui-pref.c:1194
 msgid "QIF options"
 msgstr "گزینه های QIF"
 
-#: ../src/ui-pref.c:1196
-msgid "Other options"
+#: ../src/ui-pref.c:1211
+msgid "CSV options"
 msgstr ""
 
-#: ../src/ui-pref.c:1258
+#: ../src/ui-pref.c:1215
+msgid "(transaction import only)"
+msgstr ""
+
+#: ../src/ui-pref.c:1219
+msgid "Separator:"
+msgstr ""
+
+#: ../src/ui-pref.c:1279
 msgid "Initial filter"
 msgstr "فیلتر اولیه"
 
-#: ../src/ui-pref.c:1276
+#: ../src/ui-pref.c:1297
 msgid "Charts options"
 msgstr "گزینه‌های نمودارها"
 
-#: ../src/ui-pref.c:1280
+#: ../src/ui-pref.c:1301
 msgid "Color scheme:"
 msgstr "طرح رنگ:"
 
-#: ../src/ui-pref.c:1302
+#: ../src/ui-pref.c:1323
 msgid "Statistics options"
 msgstr "گزینه‌های آماری"
 
-#: ../src/ui-pref.c:1306
+#: ../src/ui-pref.c:1327
 msgid "Show by _amount"
 msgstr "بر حسب مقدار نشان بده"
 
-#: ../src/ui-pref.c:1311
+#: ../src/ui-pref.c:1332
 msgid "Show _rate column"
 msgstr "ستون ـ‌نرخ را نشان بده"
 
-#: ../src/ui-pref.c:1316 ../src/ui-pref.c:1330
+#: ../src/ui-pref.c:1337 ../src/ui-pref.c:1351
 msgid "Show _details"
 msgstr "جزییات را نشان بده"
 
-#: ../src/ui-pref.c:1326
+#: ../src/ui-pref.c:1347
 msgid "Budget options"
 msgstr "گزینه‌های بودجه"
 
-#: ../src/ui-pref.c:1358
+#: ../src/ui-pref.c:1379
 msgid "_Enable"
 msgstr "_فعال‌سازی"
 
 #. row++;
-#: ../src/ui-pref.c:1379 ../src/ui-pref.c:1773
+#: ../src/ui-pref.c:1400 ../src/ui-pref.c:1794
 msgid "_Preset:"
 msgstr "ـ‌پیش‌فرض:"
 
-#: ../src/ui-pref.c:1484
+#: ../src/ui-pref.c:1505
 msgid "User interface"
 msgstr ""
 
-#: ../src/ui-pref.c:1488
+#: ../src/ui-pref.c:1509
 msgid "_Language:"
 msgstr "_زبان:"
 
-#: ../src/ui-pref.c:1496
+#: ../src/ui-pref.c:1517
 msgid "_Date display:"
 msgstr ""
 
-#: ../src/ui-pref.c:1512
+#: ../src/ui-pref.c:1533
 msgid "_Format:"
 msgstr "_قالب:"
 
-#: ../src/ui-pref.c:1525
+#: ../src/ui-pref.c:1546
 msgid ""
 "%a locale's abbreviated weekday name.\n"
 "%A locale's full weekday name. \n"
@@ -3004,162 +3025,162 @@ msgid ""
 "%Y year with century as a decimal number."
 msgstr ""
 
-#: ../src/ui-pref.c:1555
+#: ../src/ui-pref.c:1576
 msgid "Fiscal year"
 msgstr "سال مالی"
 
 #. TRANSLATORS: (fiscal year) starts on
-#: ../src/ui-pref.c:1560
+#: ../src/ui-pref.c:1581
 msgid "Starts _on:"
 msgstr "شروع از:"
 
-#: ../src/ui-pref.c:1580
+#: ../src/ui-pref.c:1601
 msgid "Measurement units"
 msgstr "واحدهای اندازه‌گیری"
 
-#: ../src/ui-pref.c:1584
+#: ../src/ui-pref.c:1605
 msgid "Use _miles for meter"
 msgstr "به کار گیری ـمایل به جای مت"
 
-#: ../src/ui-pref.c:1589
+#: ../src/ui-pref.c:1610
 msgid "Use _gallon for fuel"
 msgstr "استفاده از واحد گالن برای سوخت"
 
-#: ../src/ui-pref.c:1613
+#: ../src/ui-pref.c:1634
 msgid "Transaction window"
 msgstr "پنجره‌ی رویداد"
 
-#: ../src/ui-pref.c:1625
+#: ../src/ui-pref.c:1646
 msgid "_Show future:"
 msgstr ""
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
-#: ../src/ui-pref.c:1634
+#: ../src/ui-pref.c:1655
 msgid "days ahead"
 msgstr ""
 
-#: ../src/ui-pref.c:1638
+#: ../src/ui-pref.c:1659
 msgid "Hide reconciled transactions"
 msgstr "رویدادهای مطابق را پنهان کن"
 
-#: ../src/ui-pref.c:1643
+#: ../src/ui-pref.c:1664
 msgid "Always show remind transactions"
 msgstr "همیشه یادآوری های تراکنش هارا نشان بده"
 
-#: ../src/ui-pref.c:1653
+#: ../src/ui-pref.c:1674
 msgid "Multiple add"
 msgstr "چندافزونی"
 
-#: ../src/ui-pref.c:1657
+#: ../src/ui-pref.c:1678
 msgid "Keep the last date"
 msgstr "آخرین تاریخ را حفظ کن"
 
-#: ../src/ui-pref.c:1667
+#: ../src/ui-pref.c:1688
 msgid "Memo autocomplete"
 msgstr ""
 
-#: ../src/ui-pref.c:1671
+#: ../src/ui-pref.c:1692
 msgid "Active"
 msgstr ""
 
-#: ../src/ui-pref.c:1679
+#: ../src/ui-pref.c:1700
 msgid "rolling days"
 msgstr ""
 
-#: ../src/ui-pref.c:1730
+#: ../src/ui-pref.c:1751
 msgid "_Toolbar:"
 msgstr "_نوار‌ابزار:"
 
 #. widget = gtk_check_button_new_with_mnemonic (_("Enable rows in alternating colors"));
 #. data->CM_ruleshint = widget;
-#: ../src/ui-pref.c:1752
+#: ../src/ui-pref.c:1773
 msgid "_Grid line:"
 msgstr "_خط شبکه:"
 
-#: ../src/ui-pref.c:1764
+#: ../src/ui-pref.c:1785
 msgid "Amount colors"
 msgstr "رنگ‌های مبلغ"
 
-#: ../src/ui-pref.c:1768
+#: ../src/ui-pref.c:1789
 msgid "Uses custom colors"
 msgstr "از رنگ‌های سفارشی استفاده می‌کند"
 
-#: ../src/ui-pref.c:1783
+#: ../src/ui-pref.c:1804
 msgid "_Expense:"
 msgstr "ـ‌هزینه:"
 
-#: ../src/ui-pref.c:1795
+#: ../src/ui-pref.c:1816
 msgid "_Income:"
 msgstr "_درآمد:"
 
-#: ../src/ui-pref.c:1802
+#: ../src/ui-pref.c:1823
 msgid "_Warning:"
 msgstr "_اخطار:"
 
-#: ../src/ui-pref.c:1833
+#: ../src/ui-pref.c:1854
 msgid "_Enable automatic backups"
 msgstr ""
 
-#: ../src/ui-pref.c:1838
+#: ../src/ui-pref.c:1859
 msgid "_Number of backups to keep:"
 msgstr ""
 
-#: ../src/ui-pref.c:1853
+#: ../src/ui-pref.c:1874
 msgid "Backup frequency is once a day"
 msgstr ""
 
-#: ../src/ui-pref.c:1881
+#: ../src/ui-pref.c:1902
 msgid "_Wallets:"
 msgstr ""
 
-#: ../src/ui-pref.c:1905
+#: ../src/ui-pref.c:1926
 msgid "Exchange files"
 msgstr ""
 
-#: ../src/ui-pref.c:1909
+#: ../src/ui-pref.c:1930
 msgid "_Import:"
 msgstr "ـ‌فراخوانی:"
 
-#: ../src/ui-pref.c:1928
+#: ../src/ui-pref.c:1949
 msgid "_Export:"
 msgstr "ـ‌صدور:"
 
-#: ../src/ui-pref.c:1968
+#: ../src/ui-pref.c:1989
 msgid "Program start"
 msgstr "راه‌اندازی برنامه"
 
-#: ../src/ui-pref.c:1972
+#: ../src/ui-pref.c:1993
 msgid "Show splash screen"
 msgstr "نمایش اسپلش اسکرین"
 
-#: ../src/ui-pref.c:1977
+#: ../src/ui-pref.c:1998
 msgid "Load last opened file"
 msgstr "آخرین فایل باز شده را بارگذاری کن"
 
-#: ../src/ui-pref.c:1987
+#: ../src/ui-pref.c:2008
 msgid "Update currencies online"
 msgstr "به روز رسانی ارز به صورت آنلاین"
 
-#: ../src/ui-pref.c:1998
+#: ../src/ui-pref.c:2019
 msgid "Main window reports"
 msgstr "گزارش‌های پنجره‌ی اصلی"
 
-#: ../src/ui-pref.c:2097
+#: ../src/ui-pref.c:2118
 msgid "Reset All Preferences"
 msgstr ""
 
-#: ../src/ui-pref.c:2098
+#: ../src/ui-pref.c:2119
 msgid ""
 "Do you really want to reset\n"
 "all preferences to default\n"
 "values?"
 msgstr ""
 
-#: ../src/ui-pref.c:2117
+#: ../src/ui-pref.c:2138
 msgid "Preferences"
 msgstr "تنظیمات"
 
-#: ../src/ui-pref.c:2350
+#: ../src/ui-pref.c:2371
 msgid ""
 "You will have to restart HomeBank\n"
 "for the language change to take effect."
@@ -3235,11 +3256,11 @@ msgstr "تسویه شد"
 msgid "From acc_ount:"
 msgstr "از حساب:"
 
-#: ../src/ui-transaction.c:666 ../src/ui-transaction.c:1245
+#: ../src/ui-transaction.c:666 ../src/ui-transaction.c:1250
 msgid "To acc_ount:"
 msgstr "به حسـاب:"
 
-#: ../src/ui-transaction.c:750
+#: ../src/ui-transaction.c:756
 msgid ""
 "Do you want to break the internal transfer ?\n"
 "\n"
@@ -3249,35 +3270,35 @@ msgstr ""
 "\n"
 "ادامه دادن رویداد مالی مقصد را  حذف خواهد کرد."
 
-#: ../src/ui-transaction.c:752
+#: ../src/ui-transaction.c:758
 msgid "_Break"
 msgstr ""
 
-#: ../src/ui-transaction.c:1019
+#: ../src/ui-transaction.c:1024
 msgid "Show _scheduled"
 msgstr "نمایش برنامه ریزی ها"
 
-#: ../src/ui-transaction.c:1023
+#: ../src/ui-transaction.c:1028
 msgid "Show _all accounts"
 msgstr ""
 
-#: ../src/ui-transaction.c:1049
+#: ../src/ui-transaction.c:1054
 msgid "Use a _template"
 msgstr "استفاده از یک قالب"
 
-#: ../src/ui-transaction.c:1160
+#: ../src/ui-transaction.c:1165
 msgid "_Add & keep"
 msgstr "_افزودن و ماندن"
 
-#: ../src/ui-transaction.c:1168
+#: ../src/ui-transaction.c:1173
 msgid "_Post"
 msgstr "_ارسال"
 
-#: ../src/ui-transaction.c:1201 ../src/ui-txn-multi.c:413
+#: ../src/ui-transaction.c:1206 ../src/ui-txn-multi.c:413
 msgid "_Date:"
 msgstr "_تاریخ:"
 
-#: ../src/ui-transaction.c:1207
+#: ../src/ui-transaction.c:1212
 msgid ""
 "Date accepted here are:\n"
 "day,\n"
@@ -3289,7 +3310,7 @@ msgstr ""
 "روز/ماه یا ماه/روز،\n"
 "و تاریخ کامل محلی شما"
 
-#: ../src/ui-transaction.c:1286 ../src/ui-transaction.c:1294
+#: ../src/ui-transaction.c:1291 ../src/ui-transaction.c:1299
 msgid ""
 "Autocompletion and direct seizure\n"
 "is available"
@@ -3297,11 +3318,11 @@ msgstr ""
 "تکمیل خودکار و تصرف مستقیم\n"
 "موجود است"
 
-#: ../src/ui-transaction.c:1308 ../src/ui-txn-multi.c:521
+#: ../src/ui-transaction.c:1313 ../src/ui-txn-multi.c:521
 msgid "M_emo:"
 msgstr "یاـدداشت:"
 
-#: ../src/ui-transaction.c:1335
+#: ../src/ui-transaction.c:1340
 msgid "Warning: amount and category sign don't match"
 msgstr "هشدار:مقدار و علامت دسته بندی باهم مطابقت ندارند"
 
@@ -3329,7 +3350,7 @@ msgstr "خارج از شمول"
 msgid "(no type)"
 msgstr "(فاقد نوع)"
 
-#: ../src/ui-widgets-data.c:73 ../src/ui-widgets.c:983
+#: ../src/ui-widgets-data.c:73 ../src/ui-widgets.c:994
 msgid "Cash"
 msgstr "وجه نقد"
 
@@ -3337,7 +3358,7 @@ msgstr "وجه نقد"
 msgid "Asset"
 msgstr "دارایی"
 
-#: ../src/ui-widgets-data.c:75 ../src/ui-widgets.c:981
+#: ../src/ui-widgets-data.c:75 ../src/ui-widgets.c:992
 msgid "Credit card"
 msgstr "کارت اعتباری"
 
@@ -3526,42 +3547,39 @@ msgstr "دسامبر"
 msgid "Search..."
 msgstr "جستجو..."
 
-#: ../src/ui-widgets.c:982
+#: ../src/ui-widgets.c:993
 msgid "Check"
 msgstr "چک"
 
-#: ../src/ui-widgets.c:984
+#: ../src/ui-widgets.c:995
 msgid "Transfer"
 msgstr "انتقال"
 
-#: ../src/ui-widgets.c:985
+#: ../src/ui-widgets.c:996
 msgid "Internal transfer"
 msgstr "انتقال داخلی"
 
-#: ../src/ui-widgets.c:986
+#: ../src/ui-widgets.c:997
 msgid "Debit card"
 msgstr "کارت اعتباری"
 
-#: ../src/ui-widgets.c:987
+#: ../src/ui-widgets.c:998
 msgid "Standing order"
 msgstr "دستور پرداخت مستمر"
 
-#: ../src/ui-widgets.c:988
+#: ../src/ui-widgets.c:999
 msgid "Electronic payment"
 msgstr "پرداخت الکترونیکی"
 
-#: ../src/ui-widgets.c:989
+#: ../src/ui-widgets.c:1000
 msgid "Deposit"
 msgstr "واریز"
 
 #. TRANSLATORS: Financial institution fee
-#: ../src/ui-widgets.c:991
+#: ../src/ui-widgets.c:1002
 msgid "FI fee"
 msgstr "دستمزد ثابت"
 
-#: ../src/ui-widgets.c:992
+#: ../src/ui-widgets.c:1003
 msgid "Direct Debit"
 msgstr "بدهی مستقیم"
-
-#~ msgid "_Scheduled list"
-#~ msgstr "_فهرست برنامه ریزی"

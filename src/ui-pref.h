@@ -130,7 +130,8 @@ struct defpref_data
 	GtkWidget	*CM_dtex_qifmemo;
 	GtkWidget	*CM_dtex_qifswap;
 	GtkWidget	*CM_dtex_ucfirst;
-
+	GtkWidget	*CY_dtex_csvsep;
+	 
 	gint		country;
 
 };

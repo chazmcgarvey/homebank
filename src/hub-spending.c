@@ -119,8 +119,8 @@ Account *acc;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	type = hbtk_radio_get_active(GTK_CONTAINER(data->RA_type));
-	range = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_range));
+	type  = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type));
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
 
 	DB( g_print(" - type=%d, range=%d\n", type, range) );
 	DB( g_print(" - pref range=%d\n", PREFS->date_range_wal) );
@@ -369,19 +369,17 @@ GtkToolItem *toolitem;
 	toolitem = gtk_tool_item_new();
 	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
 	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-	
-	data->CY_range = make_daterange(label, FALSE);
+
+	data->CY_range = make_daterange(label, DATE_RANGE_CUSTOM_HIDE);
 	gtk_box_pack_end (GTK_BOX (hbox), data->CY_range, FALSE, FALSE, 0);
 
-	widget = hbtk_radio_new(CYA_CATSUBCAT, TRUE);
+	widget = hbtk_radio_button_new(CYA_CATSUBCAT, TRUE);
 	data->RA_type = widget;
 	gtk_box_pack_end (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
-	hbtk_radio_connect (GTK_CONTAINER(data->RA_type), "toggled", G_CALLBACK (ui_hub_spending_populate), &data);
+	hbtk_radio_button_connect (GTK_CONTAINER(data->RA_type), "toggled", G_CALLBACK (ui_hub_spending_populate), &data);
 
 	g_signal_connect (data->CY_range, "changed", G_CALLBACK (ui_hub_spending_populate), NULL);
-
-
 	
 	return hub;
 }

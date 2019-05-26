@@ -652,7 +652,12 @@ gint count;
 			result = ui_dialog_transaction_xfer_select_child(parent, ope, matchlist, &child);
 			if( result == GTK_RESPONSE_ACCEPT )
 			{
-				transaction_xfer_change_to_child(ope, child);
+				//#1827193 child can be null...
+				DB( g_print(" child %p\n", child) );
+				if( child != NULL )
+					transaction_xfer_change_to_child(ope, child);
+				else
+					transaction_xfer_create_child(ope);
 			}
 			else //GTK_RESPONSE_CANCEL
 			{

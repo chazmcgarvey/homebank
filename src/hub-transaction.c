@@ -21,6 +21,7 @@
 #include "homebank.h"
 
 #include "hub-transaction.h"
+#include "hub-account.h"
 #include "dsp-mainwindow.h"
 #include "list-operation.h"
 
@@ -77,14 +78,14 @@ GtkTreeIter	iter;
 			if(txn->date > GLOBALS->today)
 			{
 				gtk_list_store_insert_with_values(GTK_LIST_STORE(model1), &iter, -1,
-						LST_DSPOPE_DATAS, txn,
+						MODEL_TXN_POINTER, txn,
 						-1);
 			}
 
 			if(txn->status == TXN_STATUS_REMIND)
 			{
 				gtk_list_store_insert_with_values(GTK_LIST_STORE(model2), &iter, -1,
-						LST_DSPOPE_DATAS, txn,
+						MODEL_TXN_POINTER, txn,
 						-1);
 			}
 			lnk_txn = g_list_next(lnk_txn);
@@ -123,6 +124,11 @@ gboolean result;
 			//#1640885
 			GLOBALS->changes_count++;
 			ui_hub_transaction_populate(data);
+
+			//#1824515 when amount change update acc panel
+			if( old_txn->amount != new_txn->amount )
+				ui_hub_account_populate(GLOBALS->mainwindow, NULL);
+			
 		}
 
 		da_transaction_free (old_txn);

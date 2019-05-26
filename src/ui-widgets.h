@@ -20,16 +20,25 @@
 #ifndef __HB_WIDGETS_GTK_H__
 #define __HB_WIDGETS_GTK_H__
 
-typedef struct _hbtk__data		HbKvData;
 
-struct _hbtk__data {
+typedef struct _hbtk_kv_data		HbKvData;
+typedef struct _hbtk_kiv_data		HbKivData;
+
+struct _hbtk_kv_data {
 	guint32			key;
 	const gchar		*name;
 };
 
 
 
+#define HBTK_IS_SEPARATOR -66
 
+
+enum {
+	DATE_RANGE_CUSTOM_SHOW,
+	DATE_RANGE_CUSTOM_HIDE,
+	DATE_RANGE_CUSTOM_DISABLE
+};
 
 
 GtkWidget *make_label(gchar *str, gfloat xalign, gfloat yalign);
@@ -50,7 +59,8 @@ GtkWidget *make_scale(GtkWidget *label);
 GtkWidget *make_long(GtkWidget *label);
 GtkWidget *make_year(GtkWidget *label);
 GtkWidget *make_cycle(GtkWidget *label, gchar **items);
-GtkWidget *make_daterange(GtkWidget *label, gboolean custom);
+GtkWidget *make_daterange(GtkWidget *label, guint dspmode);
+
 
 void ui_label_set_integer(GtkLabel *label, gint value);
 
@@ -62,11 +72,13 @@ void hbtk_combo_box_text_append (GtkComboBoxText *combobox, guint32 key, gchar *
 GtkWidget *hbtk_combo_box_new (GtkWidget *label);
 GtkWidget *hbtk_combo_box_new_with_data (GtkWidget *label, HbKvData *kvdata);
 
-gint hbtk_radio_get_active (GtkContainer *container);
-void hbtk_radio_set_active (GtkContainer *container, gint active);
-GtkWidget *hbtk_radio_get_nth (GtkContainer *container, gint nth);
-void hbtk_radio_connect(GtkContainer *container, const gchar *detailed_signal, GCallback c_handler, gpointer data);
-GtkWidget *hbtk_radio_new (gchar **items, gboolean buttonstyle);
+gint hbtk_radio_button_get_active (GtkContainer *container);
+void hbtk_radio_button_set_active (GtkContainer *container, gint active);
+GtkWidget *hbtk_radio_button_get_nth (GtkContainer *container, gint nth);
+void hbtk_radio_button_unblock_by_func(GtkContainer *container, GCallback c_handler, gpointer data);
+void hbtk_radio_button_block_by_func(GtkContainer *container, GCallback c_handler, gpointer data);
+void hbtk_radio_button_connect(GtkContainer *container, const gchar *detailed_signal, GCallback c_handler, gpointer data);
+GtkWidget *hbtk_radio_button_new (gchar **items, gboolean buttonstyle);
 
 
 void gimp_label_set_attributes (GtkLabel *label, ...);
@@ -76,8 +88,6 @@ void hb_widget_visible(GtkWidget *widget, gboolean visible);
 void ui_gtk_entry_tag_name_append(GtkEntry *entry, gchar *tagname);
 void ui_gtk_entry_set_text(GtkWidget *widget, gchar *text);
 void ui_gtk_entry_replace_text(GtkWidget *widget, gchar **storage);
-
-GtkWidget *make_nainex(GtkWidget *label);
 
 /*
 guint make_popaccount_populate(GtkComboBox *combobox, GList *srclist);
@@ -95,6 +105,8 @@ GtkWidget *make_popcategory(GtkWidget *label);
 
 
 gchar *get_paymode_icon_name(gint index);
+
+
 GtkWidget *make_paymode(GtkWidget *label);
 GtkWidget *make_paymode_nointxfer(GtkWidget *label);
 GtkWidget *make_nainex(GtkWidget *label);

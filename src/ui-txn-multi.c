@@ -62,6 +62,12 @@ gchar *tagstr;
 				gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_date), (guint)ope->date);
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_date), TRUE);
 				break;
+			case LST_DSPOPE_AMOUNT:
+			case LST_DSPOPE_EXPENSE:
+			case LST_DSPOPE_INCOME:
+				gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), ope->amount);
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_amount), TRUE);
+				break;
 			case LST_DSPOPE_INFO:
 				gtk_combo_box_set_active(GTK_COMBO_BOX(data->NU_mode), ope->paymode);
 				gtk_entry_set_text(GTK_ENTRY(data->ST_info), (ope->info != NULL) ? ope->info : "");
@@ -101,6 +107,9 @@ struct ui_multipleedit_dialog_data *data;
 
 	if(data->PO_date)
 		gtk_widget_set_sensitive (data->PO_date, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_date)) );
+
+	if(data->ST_amount)
+		gtk_widget_set_sensitive (data->ST_amount , gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_amount )) );
 
 	if(data->NU_mode && data->ST_info)
 	{
@@ -147,7 +156,7 @@ GList *selection, *list;
 	GtkTreeIter iter;
 
 		gtk_tree_model_get_iter(model, &iter, list->data);
-		gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, &entry, -1);
+		gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, &entry, -1);
 
 		if(entry->paymode == PAYMODE_INTXFER)
 			data->has_xfer = TRUE;
@@ -187,10 +196,11 @@ guint changes;
 	gboolean change = FALSE;
 
 		gtk_tree_model_get_iter(model, &iter, list->data);
-		gtk_tree_model_get(model, &iter, LST_DSPOPE_DATAS, &txn, -1);
+		gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, &txn, -1);
 
 		DB( g_print(" modifying %s %.2f\n", txn->memo, txn->amount) );
 
+		//TODO: this is always true
 		if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_DATE) == TRUE )
 		{
 			if( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_date)) )
@@ -208,6 +218,17 @@ guint changes;
 			}
 		}
 
+		if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_AMOUNT) == TRUE
+		|| list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_EXPENSE) == TRUE
+		|| list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_INCOME) == TRUE )
+		{
+			if( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_amount)) )
+			{
+				txn->amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
+				change = TRUE;
+			}
+		}
+		
 		if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_INFO) == TRUE )
 		{
 			if( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_mode)) )
@@ -306,22 +327,6 @@ guint changes;
 				}
 			}
 		}
-
-		/* since 5.1 date and amount are no more editable
-			case LST_DSPOPE_DATE:
-				txn->date = gtk_date_entry_get_date(GTK_DATE_ENTRY(widget1));
-				data->do_sort = TRUE;
-				refreshbalance = TRUE;
-				break;
-			case LST_DSPOPE_EXPENSE:
-			case LST_DSPOPE_INCOME:
-			case LST_DSPOPE_AMOUNT:
-				txn->flags &= ~(OF_INCOME);	//delete flag
-				txn->amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget1));
-				if(txn->amount > 0) txn->flags |= OF_INCOME;
-				refreshbalance = TRUE;
-				break;
-		*/
 
 		if( change == TRUE )
 		{
@@ -423,6 +428,38 @@ gint row;
 		g_signal_connect (data->CM_date , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
 
+	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_AMOUNT) == TRUE
+	|| list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_EXPENSE) == TRUE
+	|| list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_INCOME) == TRUE )
+	{
+		row++;
+		label = make_label_widget(_("_Amount:"));
+		gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+		widget = gtk_check_button_new();
+		data->CM_amount = widget;
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+		widget = make_amount(label);
+		data->ST_amount = widget;
+		gtk_widget_set_hexpand (widget, TRUE);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+		
+		g_signal_connect (data->CM_amount , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
+	}
+
+	row++;
+	label = make_label_widget(_("A_ccount:"));
+	data->LB_acc = label;
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	widget = gtk_check_button_new();
+	data->CM_acc = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	widget = ui_acc_comboboxentry_new(label);
+	data->PO_acc = widget;
+	gtk_widget_set_hexpand (widget, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	
+	g_signal_connect (data->CM_acc , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
+
 	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_INFO) == TRUE )
 	{
 		row++;
@@ -452,20 +489,6 @@ gint row;
 
 		g_signal_connect (data->CM_info , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
-
-	row++;
-	label = make_label_widget(_("A_ccount:"));
-	data->LB_acc = label;
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = gtk_check_button_new();
-	data->CM_acc = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-	widget = ui_acc_comboboxentry_new(label);
-	data->PO_acc = widget;
-	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-	
-	g_signal_connect (data->CM_acc , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 
 	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_PAYEE) == TRUE )
 	{
@@ -499,22 +522,6 @@ gint row;
 		g_signal_connect (data->CM_cat  , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
 
-	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_TAGS) == TRUE )
-	{
-		row++;
-		label = make_label_widget(_("Ta_gs:"));
-		gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-		widget = gtk_check_button_new();
-		data->CM_tags = widget;
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-		widget = make_string(label);
-		data->ST_tags = widget;
-		gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-		g_signal_connect (data->CM_tags , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
-	}
-
 	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_MEMO) == TRUE )
 	{
 		row++;
@@ -531,6 +538,21 @@ gint row;
 		g_signal_connect (data->CM_memo , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
 
+	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_TAGS) == TRUE )
+	{
+		row++;
+		label = make_label_widget(_("Ta_gs:"));
+		gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+		widget = gtk_check_button_new();
+		data->CM_tags = widget;
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+		widget = make_string(label);
+		data->ST_tags = widget;
+		gtk_widget_set_hexpand (widget, TRUE);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+		g_signal_connect (data->CM_tags , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
+	}
 
 	ui_multipleedit_dialog_update(dialog, NULL);
 

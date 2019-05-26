@@ -20,10 +20,18 @@
 #ifndef __LIST_OPERATION__H__
 #define __LIST_OPERATION__H__
 
+
 enum {
-	LIST_TXN_TYPE_BOOK,
+	LIST_TXN_TYPE_BOOK = 0,
 	LIST_TXN_TYPE_DETAIL
 };
+
+
+enum {
+	MODEL_TXN_POINTER = 0,
+	MODEL_TXN_SPLITAMT
+};
+
 
 struct list_txn_data
 {

@@ -215,8 +215,7 @@ GList *homebank_qif_import(ImportContext *ictx, GenFile *genfile);
 GList *account_import_qif(gchar *filename, ImportContext *ictx);
 gdouble hb_qif_parser_get_amount(gchar *string);
 
-gboolean hb_csv_row_valid(gchar **str_array, guint nbcolumns, gint *csvtype);
-gchar **hb_csv_row_get(gchar *string, gchar *delimiter, gint max_tokens);
+gboolean hb_csv_test_line(gchar *rawline);
 
 #if MYDEBUG
 void _import_context_debug_file_list(ImportContext *ctx);

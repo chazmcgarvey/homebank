@@ -184,7 +184,7 @@ struct repbalance_data *data;
 	gtk_date_entry_set_mindate(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->mindate);
 	
 	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPBALANCE_RANGE]);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_OTHER);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), FLT_RANGE_OTHER);
 	g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPBALANCE_RANGE]);
 
 
@@ -224,7 +224,7 @@ gint range;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	range = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_range));
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
 
 	if(range != FLT_RANGE_OTHER)
 	{
@@ -644,7 +644,7 @@ Account *acc;
 
 	selectall = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_selectall));
 	eachday = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_eachday));
-	range = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_range));
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
 	
 	// get the account key
 	acckey = ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_acc));
@@ -941,7 +941,7 @@ GError *error = NULL;
 	row++;
 	label = make_label_widget(_("_Range:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	data->CY_range = make_daterange(label, FALSE);
+	data->CY_range = make_daterange(label, DATE_RANGE_CUSTOM_DISABLE);
 	gtk_grid_attach (GTK_GRID (table), data->CY_range, 2, row, 1, 1);
 
 	row++;
@@ -1134,7 +1134,7 @@ GError *error = NULL;
 	repbalance_sensitive(window, NULL);
 	repbalance_update_detail(window, NULL);
 
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_rep);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), PREFS->date_range_rep);
 
 
 	return(window);

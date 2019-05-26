@@ -24,6 +24,7 @@
 #include <config.h>
 #endif
 
+
 #include <ctype.h> 		/* isprint */
 #include <errno.h>
 #include <math.h>
@@ -74,13 +75,13 @@
 
 #define HB_VERSION_MAJOR	5
 #define HB_VERSION_MINOR	2
-#define HB_VERSION_MICRO	4
+#define HB_VERSION_MICRO	6
 
-#define HB_VERSION		"5.2.4"
+#define HB_VERSION		"5.2.6"
 #define HB_VERSION_NUM	(HB_VERSION_MAJOR*10000) + (HB_VERSION_MINOR*100) + HB_VERSION_MICRO
 
 #define FILE_VERSION		1.3
-#define PREF_VERSION		524
+#define PREF_VERSION		526
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -110,8 +111,10 @@
 /* container spacing */
 #define SPACING_TINY		3
 #define SPACING_SMALL		6
+#define SPACING_POPOVER		10
 #define SPACING_MEDIUM		12
 #define SPACING_LARGE		18
+
 
 #define HB_DATE_MAX_GAP	7
 
@@ -310,7 +313,7 @@ struct HomeBank
 
 };
 
-gint homebank_alienfile_recognize(gchar *filename);
+
 gchar *homebank_filepath_with_extention(gchar *path, gchar *extension);
 gchar *homebank_filename_without_extention(gchar *path);
 void homebank_file_ensure_xhb(gchar *filename);
