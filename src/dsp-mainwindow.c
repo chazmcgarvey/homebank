@@ -110,8 +110,7 @@ static void ui_mainwindow_action_toggle_upcoming(GtkToggleAction *action);
 static void ui_mainwindow_action_toggle_topspending(GtkToggleAction *action);
 static void ui_mainwindow_action_toggle_minor(GtkToggleAction *action);
 
-static void ui_mainwindow_action_showtransactions(void);
-static void ui_mainwindow_action_showalltransactions(void);
+static void ui_mainwindow_action_showtransactions(GtkAction *action);
 
 static void ui_mainwindow_action_addtransactions(void);
 static void ui_mainwindow_action_checkscheduled(void);
@@ -214,7 +213,8 @@ static GtkActionEntry entries[] = {
   /* TxnMenu */
   { "AddTxn"      , ICONNAME_HB_OPE_ADD    , N_("Add...")              , NULL, N_("Add transactions"),    G_CALLBACK (ui_mainwindow_action_addtransactions) },
   { "ShowTxn"     , ICONNAME_HB_OPE_SHOW   , N_("Show...")             , NULL, N_("Shows selected account transactions"),    G_CALLBACK (ui_mainwindow_action_showtransactions) },
-  { "ShowAllTxn"  , ICONNAME_HB_OPE_SHOW   , N_("Show all...")         , NULL, N_("Shows all account transactions"),    G_CALLBACK (ui_mainwindow_action_showalltransactions) },
+  //beware ShowAllTxn is used to detect showall
+  { "ShowAllTxn"  , ICONNAME_HB_OPE_SHOW   , N_("Show all...")         , NULL, N_("Shows all account transactions"),    G_CALLBACK (ui_mainwindow_action_showtransactions) },
   { "Scheduler"   , NULL                   , N_("Set scheduler...")    , NULL, N_("Configure the transaction scheduler"),    G_CALLBACK (ui_mainwindow_action_properties) },
   { "AddScheduled", NULL                   , N_("Post scheduled"), NULL, N_("Post pending scheduled transactions"),    G_CALLBACK (ui_mainwindow_action_checkscheduled) },
 
@@ -775,13 +775,21 @@ struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "ins
 
 }
 
-static void ui_mainwindow_action_showtransactions(void)
+static void ui_mainwindow_action_showtransactions(GtkAction *action)
 {
 struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "inst_data");
 GtkWidget *window;
+gboolean showall = FALSE;
 
-	//todo:change this
-	if( data->acc )
+	if( action != NULL )
+	{
+		DB( g_print(" actioname=%s\n", gtk_action_get_name(action)) );
+		if( hb_string_compare((gchar *)gtk_action_get_name(action), "ShowAllTxn" ) == 0 )
+			showall = TRUE;
+	}
+		
+	//TODO: change this
+	if( data->acc && showall == FALSE )
 	{
 		if( data->acc->window == NULL )
 		{
@@ -792,27 +800,21 @@ GtkWidget *window;
 		{
 			if(GTK_IS_WINDOW(data->acc->window))
 				gtk_window_present(GTK_WINDOW(data->acc->window));
-
 		}
-	}
-}
-
-
-static void ui_mainwindow_action_showalltransactions(void)
-{
-GtkWidget *window;
-
-	if( GLOBALS->alltxnwindow == NULL )
-	{
-		window = register_panel_window_new(NULL);
-		register_panel_window_init(window, NULL);
 	}
 	else
 	{
-		if(GTK_IS_WINDOW(GLOBALS->alltxnwindow))
-			gtk_window_present(GTK_WINDOW(GLOBALS->alltxnwindow));
+		if( GLOBALS->alltxnwindow == NULL )
+		{
+			window = register_panel_window_new(NULL);
+			register_panel_window_init(window, NULL);
+		}
+		else
+		{
+			if(GTK_IS_WINDOW(GLOBALS->alltxnwindow))
+				gtk_window_present(GTK_WINDOW(GLOBALS->alltxnwindow));
+		}
 	}
-
 }
 
 
@@ -1574,10 +1576,12 @@ gint flags;
 		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->manager, "/MenuBar/TxnMenu/AddScheduled"), sensitive);
 
 	// no active account: disable Edit, Over
-		sensitive = (active == TRUE ) ? TRUE : FALSE;
+	//disabled 5.2.6
+	/*	sensitive = (active == TRUE ) ? TRUE : FALSE;
 		if(data->acc && data->acc->window != NULL)
 			sensitive = FALSE;
 		gtk_action_set_sensitive(gtk_ui_manager_get_action(data->manager, "/MenuBar/TxnMenu/ShowTxn"), sensitive);
+	*/
 	}
 
 	/* update toolbar, list */
@@ -1605,7 +1609,7 @@ gint flags;
 
 		DB( g_print(" - show top_spending=%d\n", PREFS->wal_spending) );
 
-		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_wal);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), PREFS->date_range_wal);
 
 		if(PREFS->wal_spending)
 			gtk_widget_show(GTK_WIDGET(data->GR_top));
@@ -1680,7 +1684,7 @@ static void
 
        DB( g_print ("Double-clicked row contains name %s\n", acc->name) );
 
-		ui_mainwindow_action_showtransactions();
+		ui_mainwindow_action_showtransactions(NULL);
 
        //g_free(name);
     	}
@@ -2210,7 +2214,7 @@ GtkWidget *bar, *label;
 
 	data->filter = da_flt_malloc();
 	filter_reset(data->filter);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_wal);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), PREFS->date_range_wal);
 
 	action = gtk_ui_manager_get_action(data->manager, "/MenuBar/ViewMenu/Toolbar");
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(action), PREFS->wal_toolbar);

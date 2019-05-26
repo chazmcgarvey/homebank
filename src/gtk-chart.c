@@ -1388,7 +1388,7 @@ static void piechart_draw_slices(GtkWidget *widget, gpointer user_data)
 GtkChart *chart = GTK_CHART(user_data);
 cairo_t *cr;
 
-	if(chart->nb_items <= 0)
+	if(chart->nb_items <= 0 || chart->total == 0.0)
 		return;
 
 	DB( g_print("\n[pie] draw slices\n") );
@@ -1413,6 +1413,7 @@ cairo_t *cr;
 		//cr = cairo_create (chart->surface);
 
 		DB( g_print("rayon=%d\n", chart->rayon) );
+		DB( g_print("total=%.f\n", chart->total) );
 		
 		for(i=0; i< chart->nb_items ;i++)
 		{
@@ -1426,6 +1427,9 @@ cairo_t *cr;
 			dx = cx;
 			dy = cy;
 
+			DB( g_print("- s%2d: %.2f%% a1=%.2f a2=%.2f | %s %.f\n", i, sum / chart->total, a1, a2, item->label, item->serie1) );
+
+			
 			cairo_move_to(cr, dx, dy);
 			cairo_arc(cr, dx, dy, radius, a1, a2);
 
@@ -1435,8 +1439,6 @@ cairo_t *cr;
 				cairo_line_to(cr, cx, cy);
 				cairo_stroke_preserve(cr);
 			#endif
-
-			DB( g_print("- s%2d: %.2f%% a1=%.2f a2=%.2f\n", i, sum / chart->total, a1, a2) );
 
 			//g_print("color : %f %f %f\n", COLTOCAIRO(colors[i].r), COLTOCAIRO(colors[i].g), COLTOCAIRO(colors[i].b));
 

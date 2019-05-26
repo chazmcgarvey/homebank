@@ -496,10 +496,14 @@ GtkDateEntryPrivate *priv;
 
 	priv->popover = gtk_popover_new (priv->button);
 	gtk_popover_set_position(GTK_POPOVER(priv->popover), GTK_POS_BOTTOM);
-	gtk_container_set_border_width (GTK_CONTAINER (priv->popover), 6);
 	priv->calendar = gtk_calendar_new ();
 	gtk_container_add (GTK_CONTAINER (priv->popover), priv->calendar);
 
+	gtk_widget_set_margin_start (priv->calendar, 10);
+	gtk_widget_set_margin_end (priv->calendar, 10);
+	gtk_widget_set_margin_top (priv->calendar, 10);
+	gtk_widget_set_margin_bottom (priv->calendar, 10);
+	
 	gtk_widget_show_all (GTK_WIDGET(dateentry));
 
 	/* initialize datas */

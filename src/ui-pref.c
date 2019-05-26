@@ -141,6 +141,15 @@ N_("Append to Payee"),
 NULL
 };
 
+gchar *CYA_IMPORT_CSVSEPARATOR[] = {
+N_("Tab"),
+N_("Comma"),
+N_("Semicolon"),
+N_("Space"),
+NULL
+};
+
+
 
 extern gchar *CYA_CHART_COLORSCHEME[];
 extern gchar *CYA_MONTHS[];
@@ -932,7 +941,7 @@ GdkRGBA rgba;
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_load_last), PREFS->loadlast);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_append_scheduled), PREFS->appendscheduled);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_do_update_currency), PREFS->do_update_currency);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_daterange_wal), PREFS->date_range_wal);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_daterange_wal), PREFS->date_range_wal);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_fiscyearday), PREFS->fisc_year_day );
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_fiscyearmonth), PREFS->fisc_year_month - 1);
 
@@ -960,7 +969,7 @@ GdkRGBA rgba;
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_gridlines), PREFS->grid_lines);
 
 	// transactions
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_daterange_txn), PREFS->date_range_txn);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_daterange_txn), PREFS->date_range_txn);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_datefuture_nbdays), PREFS->date_future_nbdays);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_hide_reconciled), PREFS->hidereconciled);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_show_remind), PREFS->showremind);
@@ -982,9 +991,10 @@ GdkRGBA rgba;
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_dtex_qifswap), PREFS->dtex_qifswap);
 	gtk_entry_set_text(GTK_ENTRY(data->ST_path_import), PREFS->path_import);
 	gtk_entry_set_text(GTK_ENTRY(data->ST_path_export), PREFS->path_export);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_dtex_csvsep), PREFS->dtex_csvsep);
 
 	// report
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_daterange_rep), PREFS->date_range_rep);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_daterange_rep), PREFS->date_range_rep);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_color_scheme), PREFS->report_color_scheme);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_stat_byamount), PREFS->stat_byamount);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_stat_showrate), PREFS->stat_showrate);
@@ -1032,7 +1042,7 @@ const gchar *lang;
 	PREFS->loadlast  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_load_last));
 	PREFS->appendscheduled  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_append_scheduled));
 	PREFS->do_update_currency  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_do_update_currency));
-	PREFS->date_range_wal = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_daterange_wal));
+	PREFS->date_range_wal = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_daterange_wal));
 	PREFS->fisc_year_day = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_fiscyearday));
 	PREFS->fisc_year_month = 1 + gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_fiscyearmonth));
 
@@ -1068,7 +1078,7 @@ const gchar *lang;
 	//list_txn_colpref_get(GTK_TREE_VIEW(data->LV_opecolumns), PREFS->lst_ope_columns);
 
 	// transaction
-	PREFS->date_range_txn = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_daterange_txn));
+	PREFS->date_range_txn = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_daterange_txn));
 	PREFS->date_future_nbdays  = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_datefuture_nbdays));
 	PREFS->hidereconciled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_hide_reconciled));
 	PREFS->showremind = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_show_remind));
@@ -1091,9 +1101,10 @@ const gchar *lang;
 	PREFS->dtex_qifswap = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_dtex_qifswap));
 	ui_gtk_entry_replace_text(data->ST_path_import, &PREFS->path_import);
 	ui_gtk_entry_replace_text(data->ST_path_export, &PREFS->path_export);
+	PREFS->dtex_csvsep = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_dtex_csvsep));
 
 	// report
-	PREFS->date_range_rep = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_daterange_rep));
+	PREFS->date_range_rep = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_daterange_rep));
 	PREFS->report_color_scheme = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_color_scheme));
 	PREFS->stat_byamount   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_stat_byamount));
 	PREFS->stat_showrate   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_stat_showrate));
@@ -1134,7 +1145,7 @@ gint crow, row;
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
 
-	label = make_label_group(_("Date options"));
+	label = make_label_group(_("General options"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
@@ -1145,6 +1156,11 @@ gint crow, row;
 	data->CY_dtex_datefmt = widget;
 	//gtk_grid_attach (GTK_GRID (group_grid), data->CY_option[FILTER_DATE], 1, 2, row, row+1);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+	row++;
+	widget = gtk_check_button_new_with_mnemonic (_("Sentence _case memo/payee"));
+	data->CM_dtex_ucfirst = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 
 	// group :: OFX/QFX options
@@ -1197,14 +1213,20 @@ gint crow, row;
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
 
-	label = make_label_group(_("Other options"));
+	label = make_label_group(_("CSV options"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	widget = gtk_check_button_new_with_mnemonic (_("Sentence _case memo/payee"));
-	data->CM_dtex_ucfirst = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	label = make_label(_("(transaction import only)"), 0.0, 0.5);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 2, 1);
 
+	row++;
+	label = make_label_widget(_("Separator:"));
+	//----------------------------------------- l, r, t, b
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = make_cycle(label, CYA_IMPORT_CSVSEPARATOR);
+	data->CY_dtex_csvsep = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	return content_grid;
 }
@@ -1266,7 +1288,7 @@ gint crow, row;
 	label = make_label_widget(_("_Range:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_daterange(label, FALSE);
+	widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDE);
 	data->CY_daterange_rep = widget;
 	//gtk_grid_attach (GTK_GRID (group_grid), data->CY_option[FILTER_DATE], 1, 2, row, row+1);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
@@ -1621,7 +1643,7 @@ gint crow, row;
 	label = make_label(_("_Range:"), 0, 0.5);
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_daterange(label, FALSE);
+	widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDE);
 	data->CY_daterange_txn = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
@@ -1736,12 +1758,6 @@ gint crow, row;
 	widget = make_cycle(label, CYA_TOOLBAR_STYLE);
 	data->CY_toolbar = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-
-
-
-
-
 
 
 
@@ -2005,7 +2021,7 @@ gint crow, row;
 	row = 1;
 	label = make_label(_("_Range:"), 0, 0.5);
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_daterange(label, FALSE);
+	widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDE);
 	data->CY_daterange_wal = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
@@ -2722,7 +2738,7 @@ gint i;
 		if(i <= LST_DSPOPE_DATE) // status, date always displayed
 			continue;
 
-		//[i-1] here because lst_ope_columns[] do not store LST_DSPOPE_DATAS
+		//[i-1] here because lst_ope_columns[] do not store MODEL_TXN_POINTER
 		id = ABS(PREFS->lst_ope_columns[i-1]);
 		if(id == 0) id = i;	 //if we pass here, new column or weird into pref file
 		visible = (PREFS->lst_ope_columns[i-1] > 0) ? TRUE : FALSE;

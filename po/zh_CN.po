@@ -2,16 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-10 16:14+0200\n"
-"PO-Revision-Date: 2017-12-27 19:02+0000\n"
-"Last-Translator: Yang Wei <Unknown>\n"
+"POT-Creation-Date: 2019-05-12 16:29+0200\n"
+"PO-Revision-Date: 2019-05-04 03:53+0000\n"
+"Last-Translator: kangkang <Unknown>\n"
 "Language-Team: \n"
-"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2019-04-10 13:12+0000\n"
-"X-Generator: Launchpad (build 18920)\n"
+"X-Launchpad-Export-Date: 2019-05-12 14:40+0000\n"
+"X-Generator: Launchpad (build 18962)\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:943
 msgid "HomeBank"
@@ -32,9 +31,9 @@ msgstr "财务，会计，预算，个人，现金"
 
 #: ../data/homebank.appdata.xml.in.h:1
 msgid ""
-"HomeBank is a free software (as in \"free speech\" and also as in \"free beer"
-"\") that will assist you to manage your personal accounting."
-msgstr "HomeBank是一个免费的并且能协助你管理个人账户的软件。"
+"HomeBank is a free software (as in \"free speech\" and also as in \"free "
+"beer\") that will assist you to manage your personal accounting."
+msgstr "HomeBank 是一个免费的并且能协助你管理个人账户的自由软件。"
 
 #: ../data/homebank.appdata.xml.in.h:2
 msgid ""
@@ -46,9 +45,7 @@ msgstr "它易于使用并且能将你个人财务状况用强大的过滤工具
 msgid ""
 "If you are looking for a completely free and easy way to manage your "
 "personal accounting then HomeBank should be the software of choice."
-msgstr ""
-"如果你正在寻找一个完全免费并且能轻松上手的个人财务管理软件，HomeBank是一个很"
-"棒的选择。"
+msgstr "如果你正在寻找一个完全免费并且能轻松上手的个人财务管理软件，HomeBank是一个很棒的选择。"
 
 #: ../src/dsp-account.c:206
 #, c-format
@@ -116,13 +113,13 @@ msgstr ""
 msgid "_Create"
 msgstr ""
 
-#: ../src/dsp-account.c:1272
+#: ../src/dsp-account.c:1286
 msgid ""
 "Do you want to delete\n"
 "each of the selected transaction ?"
 msgstr "你想删除选中的记账吗？"
 
-#: ../src/dsp-account.c:1273 ../src/ui-account.c:1041 ../src/ui-account.c:1319
+#: ../src/dsp-account.c:1287 ../src/ui-account.c:1041 ../src/ui-account.c:1319
 #: ../src/ui-archive.c:400 ../src/ui-archive.c:1277 ../src/ui-assign.c:556
 #: ../src/ui-assign.c:772 ../src/ui-category.c:1105 ../src/ui-category.c:1561
 #: ../src/ui-category.c:1987 ../src/ui-currency.c:1547
@@ -131,275 +128,275 @@ msgstr "你想删除选中的记账吗？"
 msgid "_Delete"
 msgstr "删除"
 
-#: ../src/dsp-account.c:1336
+#: ../src/dsp-account.c:1350
 msgid "Are you sure you want to change the status to None?"
 msgstr ""
 
-#: ../src/dsp-account.c:1337 ../src/dsp-account.c:1397
+#: ../src/dsp-account.c:1351 ../src/dsp-account.c:1411
 msgid "Some transaction in your selection are already Reconciled."
 msgstr "你选中的选项已经一致。"
 
-#: ../src/dsp-account.c:1338 ../src/ui-assist-start.c:280
+#: ../src/dsp-account.c:1352 ../src/ui-assist-start.c:280
 #: ../src/ui-dialogs.c:383
 msgid "_Change"
 msgstr "更改(_C)"
 
-#: ../src/dsp-account.c:1396
+#: ../src/dsp-account.c:1410
 msgid "Are you sure you want to toggle the status Reconciled?"
 msgstr "您确定要切换状态吗？"
 
-#: ../src/dsp-account.c:1398
+#: ../src/dsp-account.c:1412
 msgid "_Toggle"
 msgstr "切换(_T)"
 
 #. label = g_strdup_printf(_("Account %d of %d"), acckey+1, nbacc);
 #. gtk_label_set_markup (GTK_LABEL(txndata->LB_acc_count), label);
 #. g_free(label);
-#: ../src/dsp-account.c:1689 ../src/ui-assist-import.c:1288
+#: ../src/dsp-account.c:1703 ../src/ui-assist-import.c:1288
 #, c-format
 msgid "%d transactions"
 msgstr ""
 
-#: ../src/dsp-account.c:1692
+#: ../src/dsp-account.c:1706
 #, c-format
 msgid "%d transactions, %d selected, avg: %s, sum: %s (%s - %s)"
 msgstr ""
 
-#: ../src/dsp-account.c:1791 ../src/dsp-account.c:2047
+#: ../src/dsp-account.c:1805 ../src/dsp-account.c:2061
 msgid "All transactions"
 msgstr ""
 
 #. name, icon-name, label
-#: ../src/dsp-account.c:1906
+#: ../src/dsp-account.c:1920
 msgid "A_ccount"
 msgstr "账户(_C)："
 
-#: ../src/dsp-account.c:1907
+#: ../src/dsp-account.c:1921
 msgid "Transacti_on"
 msgstr "记账(_O)"
 
-#: ../src/dsp-account.c:1908
+#: ../src/dsp-account.c:1922
 msgid "_Status"
 msgstr "状态(_S)"
 
-#: ../src/dsp-account.c:1909 ../src/dsp-mainwindow.c:167
+#: ../src/dsp-account.c:1923 ../src/dsp-mainwindow.c:167
 msgid "_Tools"
 msgstr "工具(_T)"
 
 #. name, icon-name, label, accelerator, tooltip
-#: ../src/dsp-account.c:1913
+#: ../src/dsp-account.c:1927
 msgid "Export as PDF..."
 msgstr ""
 
-#: ../src/dsp-account.c:1913
+#: ../src/dsp-account.c:1927
 msgid "Export to a PDF file"
 msgstr ""
 
-#: ../src/dsp-account.c:1914
+#: ../src/dsp-account.c:1928
 msgid "Export QIF..."
 msgstr "导出为 QIF"
 
-#: ../src/dsp-account.c:1914 ../src/ui-dialogs.c:448
+#: ../src/dsp-account.c:1928 ../src/ui-dialogs.c:448
 msgid "Export as QIF"
 msgstr "导出为 QIF"
 
-#: ../src/dsp-account.c:1915
+#: ../src/dsp-account.c:1929
 msgid "Export CSV..."
 msgstr "导出 CSV..."
 
-#: ../src/dsp-account.c:1915 ../src/rep-vehicle.c:67 ../src/ui-dialogs.c:504
+#: ../src/dsp-account.c:1929 ../src/rep-vehicle.c:67 ../src/ui-dialogs.c:504
 msgid "Export as CSV"
 msgstr "导出为 CSV 格式"
 
-#: ../src/dsp-account.c:1916 ../src/dsp-mainwindow.c:184
+#: ../src/dsp-account.c:1930 ../src/dsp-mainwindow.c:184
 #: ../src/dsp-mainwindow.c:933 ../src/ui-account.c:1261
 #: ../src/ui-archive.c:1212 ../src/ui-assign.c:720 ../src/ui-budget.c:995
 #: ../src/ui-category.c:1805 ../src/ui-currency.c:1658 ../src/ui-dialogs.c:183
-#: ../src/ui-payee.c:1253 ../src/ui-tag.c:578 ../src/ui-transaction.c:1159
-#: ../src/ui-transaction.c:1167
+#: ../src/ui-payee.c:1253 ../src/ui-tag.c:578 ../src/ui-transaction.c:1164
+#: ../src/ui-transaction.c:1172
 msgid "_Close"
 msgstr "关闭(_C)"
 
-#: ../src/dsp-account.c:1916
+#: ../src/dsp-account.c:1930
 msgid "Close the current account"
 msgstr "关闭当前账户"
 
-#: ../src/dsp-account.c:1918
+#: ../src/dsp-account.c:1932
 msgid "_Add..."
 msgstr "添加(_A)..."
 
-#: ../src/dsp-account.c:1918
+#: ../src/dsp-account.c:1932
 msgid "Add a new transaction"
 msgstr "添加一个新的记账文件"
 
-#: ../src/dsp-account.c:1919
+#: ../src/dsp-account.c:1933
 msgid "_Inherit..."
 msgstr "套用(_I)..."
 
-#: ../src/dsp-account.c:1919
+#: ../src/dsp-account.c:1933
 msgid "Inherit from the active transaction"
 msgstr "套用选中的记账"
 
-#: ../src/dsp-account.c:1920
+#: ../src/dsp-account.c:1934
 msgid "_Edit..."
 msgstr "编辑(_E)..."
 
-#: ../src/dsp-account.c:1920
+#: ../src/dsp-account.c:1934
 msgid "Edit the active transaction"
 msgstr "编辑选中的记账"
 
-#: ../src/dsp-account.c:1922
+#: ../src/dsp-account.c:1936
 msgid "_None"
 msgstr "无"
 
-#: ../src/dsp-account.c:1922
+#: ../src/dsp-account.c:1936
 msgid "Toggle none for selected transaction(s)"
 msgstr ""
 
-#: ../src/dsp-account.c:1923
+#: ../src/dsp-account.c:1937
 msgid "_Cleared"
 msgstr ""
 
-#: ../src/dsp-account.c:1923
+#: ../src/dsp-account.c:1937
 msgid "Toggle cleared for selected transaction(s)"
 msgstr ""
 
-#: ../src/dsp-account.c:1924
+#: ../src/dsp-account.c:1938
 msgid "_Reconciled"
 msgstr "已对账(_R)"
 
-#: ../src/dsp-account.c:1924
+#: ../src/dsp-account.c:1938
 msgid "Toggle reconciled for selected transaction(s)"
 msgstr ""
 
-#: ../src/dsp-account.c:1926
+#: ../src/dsp-account.c:1940
 msgid "_Multiple Edit..."
 msgstr ""
 
-#: ../src/dsp-account.c:1926
+#: ../src/dsp-account.c:1940
 msgid "Edit multiple transaction"
 msgstr "编辑多个交易选项"
 
-#: ../src/dsp-account.c:1927
+#: ../src/dsp-account.c:1941
 msgid "Create template..."
 msgstr "创建模板..."
 
-#: ../src/dsp-account.c:1927
+#: ../src/dsp-account.c:1941
 msgid "Create template"
 msgstr "创建模板"
 
-#: ../src/dsp-account.c:1928
+#: ../src/dsp-account.c:1942
 msgid "_Delete..."
 msgstr "删除(_D)..."
 
-#: ../src/dsp-account.c:1928
+#: ../src/dsp-account.c:1942
 msgid "Delete selected transaction(s)"
 msgstr "删除所选交易"
 
-#: ../src/dsp-account.c:1930
+#: ../src/dsp-account.c:1944
 msgid "Mark duplicate..."
 msgstr ""
 
 #. { "DuplicateClear", NULL                      , N_("Unmark duplicate"), NULL,	NULL, G_CALLBACK (register_panel_action_duplicate_unmark) },
-#: ../src/dsp-account.c:1933
+#: ../src/dsp-account.c:1947
 msgid "Check internal xfer"
 msgstr ""
 
-#: ../src/dsp-account.c:1934
+#: ../src/dsp-account.c:1948
 msgid "Auto. assignments"
 msgstr ""
 
-#: ../src/dsp-account.c:1934
+#: ../src/dsp-account.c:1948
 msgid "Run automatic assignments"
 msgstr ""
 
-#: ../src/dsp-account.c:1936
+#: ../src/dsp-account.c:1950
 msgid "_Filter..."
 msgstr "过滤(_F)..."
 
-#: ../src/dsp-account.c:1936
+#: ../src/dsp-account.c:1950
 msgid "Open the list filter"
 msgstr "打开列表过滤"
 
-#: ../src/dsp-account.c:1937
+#: ../src/dsp-account.c:1951
 msgid "Convert to Euro..."
 msgstr "兑换成欧元…"
 
-#: ../src/dsp-account.c:1937
+#: ../src/dsp-account.c:1951
 msgid "Convert this account to Euro currency"
 msgstr "把这个账户转换成欧元帐户"
 
-#: ../src/dsp-account.c:2040
+#: ../src/dsp-account.c:2054
 msgid "(closed)"
 msgstr ""
 
-#: ../src/dsp-account.c:2047
+#: ../src/dsp-account.c:2061
 #, c-format
 msgid "%s - HomeBank"
 msgstr ""
 
-#: ../src/dsp-account.c:2079 ../src/dsp-mainwindow.c:1991 ../src/ui-split.c:824
+#: ../src/dsp-account.c:2093 ../src/dsp-mainwindow.c:1991 ../src/ui-split.c:824
 msgid "Add"
 msgstr "添加"
 
-#: ../src/dsp-account.c:2082
+#: ../src/dsp-account.c:2096
 msgid "Inherit"
 msgstr "套用"
 
-#: ../src/dsp-account.c:2085 ../src/ui-split.c:786
+#: ../src/dsp-account.c:2099 ../src/ui-split.c:786
 msgid "Edit"
 msgstr "编辑"
 
-#: ../src/dsp-account.c:2088 ../src/rep-stats.c:72
+#: ../src/dsp-account.c:2102 ../src/rep-stats.c:72
 msgid "Filter"
 msgstr "过滤"
 
 #. info bar for duplicate
-#: ../src/dsp-account.c:2125
+#: ../src/dsp-account.c:2139
 msgid "_Refresh"
 msgstr "刷新(_R)"
 
 #. balances area
-#: ../src/dsp-account.c:2160
+#: ../src/dsp-account.c:2174
 msgid "Bank:"
 msgstr "余额"
 
-#: ../src/dsp-account.c:2166
+#: ../src/dsp-account.c:2180
 msgid "Today:"
 msgstr "今天："
 
-#: ../src/dsp-account.c:2172
+#: ../src/dsp-account.c:2186
 msgid "Future:"
 msgstr "将来："
 
-#: ../src/dsp-account.c:2195 ../src/rep-balance.c:942 ../src/rep-budget.c:1170
+#: ../src/dsp-account.c:2209 ../src/rep-balance.c:942 ../src/rep-budget.c:1183
 #: ../src/rep-stats.c:1539 ../src/rep-time.c:1270 ../src/rep-vehicle.c:749
-#: ../src/ui-pref.c:1262 ../src/ui-pref.c:1617 ../src/ui-pref.c:2002
+#: ../src/ui-pref.c:1283 ../src/ui-pref.c:1638 ../src/ui-pref.c:2023
 msgid "_Range:"
 msgstr "范围(_R)："
 
-#: ../src/dsp-account.c:2203
+#: ../src/dsp-account.c:2217
 msgid "Toggle show future transaction"
 msgstr ""
 
-#: ../src/dsp-account.c:2207 ../src/rep-budget.c:1145 ../src/rep-stats.c:1497
+#: ../src/dsp-account.c:2221 ../src/rep-budget.c:1158 ../src/rep-stats.c:1497
 #: ../src/ui-account.c:1349 ../src/ui-assist-start.c:391
 msgid "_Type:"
 msgstr "类型(_T)："
 
-#: ../src/dsp-account.c:2212 ../src/ui-archive.c:1089
-#: ../src/ui-transaction.c:1301
+#: ../src/dsp-account.c:2226 ../src/ui-archive.c:1089
+#: ../src/ui-transaction.c:1306
 msgid "_Status:"
 msgstr "状态(_S)："
 
 #. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
-#: ../src/dsp-account.c:2218 ../src/ui-filter.c:1352 ../src/ui-pref.c:2099
-#: ../src/ui-pref.c:2120
+#: ../src/dsp-account.c:2232 ../src/ui-filter.c:1352 ../src/ui-pref.c:2120
+#: ../src/ui-pref.c:2141
 msgid "_Reset"
 msgstr "重置(_R)"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2223 ../src/rep-balance.c:921 ../src/rep-budget.c:1157
+#: ../src/dsp-account.c:2237 ../src/rep-balance.c:921 ../src/rep-budget.c:1170
 #: ../src/rep-stats.c:1511 ../src/rep-time.c:1249 ../src/rep-vehicle.c:736
 msgid "Euro _minor"
 msgstr "欧元设置"
@@ -644,7 +641,7 @@ msgstr "配置记账计划"
 msgid "Post scheduled"
 msgstr ""
 
-#: ../src/dsp-mainwindow.c:213 ../src/ui-pref.c:1982
+#: ../src/dsp-mainwindow.c:213 ../src/ui-pref.c:2003
 msgid "Post pending scheduled transactions"
 msgstr "待定交易"
 
@@ -883,7 +880,8 @@ msgid "The file has been modified since reading it."
 msgstr ""
 
 #: ../src/dsp-mainwindow.c:1398
-msgid "If you save it, all the external changes could be lost. Save it anyway?"
+msgid ""
+"If you save it, all the external changes could be lost. Save it anyway?"
 msgstr ""
 
 #: ../src/dsp-mainwindow.c:1399
@@ -915,7 +913,7 @@ msgstr "交易人"
 
 #. category
 #: ../src/dsp-mainwindow.c:1978 ../src/list-operation.c:1239
-#: ../src/rep-budget.c:1465 ../src/rep-budget.c:1646 ../src/rep-stats.c:146
+#: ../src/rep-budget.c:1478 ../src/rep-budget.c:1659 ../src/rep-stats.c:146
 #: ../src/rep-time.c:126 ../src/ui-assist-import.c:390 ../src/ui-budget.c:232
 #: ../src/ui-dialogs.c:238 ../src/ui-split.c:202 ../src/ui-split.c:791
 #: ../src/ui-widgets-data.c:49
@@ -929,7 +927,7 @@ msgstr "模板"
 
 #. column: Income
 #: ../src/dsp-mainwindow.c:1985 ../src/dsp-mainwindow.c:1997
-#: ../src/rep-budget.c:911 ../src/rep-budget.c:1465 ../src/rep-budget.c:1661
+#: ../src/rep-budget.c:924 ../src/rep-budget.c:1478 ../src/rep-budget.c:1674
 msgid "Budget"
 msgstr "预算"
 
@@ -994,7 +992,7 @@ msgid "Date"
 msgstr "日期"
 
 #: ../src/hb-export.c:442 ../src/list-operation.c:1003
-#: ../src/ui-assist-import.c:372 ../src/ui-pref.c:133 ../src/ui-pref.c:2349
+#: ../src/ui-assist-import.c:372 ../src/ui-pref.c:133 ../src/ui-pref.c:2370
 msgid "Info"
 msgstr "信息"
 
@@ -1012,7 +1010,7 @@ msgstr "备注"
 #: ../src/rep-time.c:1664 ../src/rep-vehicle.c:222 ../src/rep-vehicle.c:1143
 #: ../src/ui-assist-import.c:367 ../src/ui-split.c:236 ../src/ui-split.c:799
 msgid "Amount"
-msgstr "金额"
+msgstr "总额"
 
 #: ../src/hb-hbfile.c:596 ../src/ui-assist-import.c:2028
 msgid "Unknown"
@@ -1057,20 +1055,20 @@ msgstr "输出账户信息并退出"
 msgid "[FILE]"
 msgstr "[文件]"
 
-#: ../src/homebank.c:361
+#: ../src/homebank.c:249
 msgid "Browser error."
 msgstr "浏览器错误"
 
-#: ../src/homebank.c:362
+#: ../src/homebank.c:250
 #, c-format
 msgid "Could not display the URL '%s'"
 msgstr "无法显示 URL '%s'"
 
-#: ../src/homebank.c:971 ../src/homebank.c:972
+#: ../src/homebank.c:859 ../src/homebank.c:860
 msgid "HomeBank options"
 msgstr "家庭理财选项"
 
-#: ../src/homebank.c:1101
+#: ../src/homebank.c:989
 #, c-format
 msgid "Unable to open '%s', the file does not exist.\n"
 msgstr "无法打开“%s”，文件不存在。\n"
@@ -1108,10 +1106,6 @@ msgid "By type"
 msgstr "按类型"
 
 #: ../src/hub-account.c:469
-msgid "By group"
-msgstr ""
-
-#: ../src/hub-account.c:470
 msgid "By institution"
 msgstr ""
 
@@ -1169,7 +1163,7 @@ msgstr "其它"
 msgid "Where your money goes"
 msgstr "资金流动情况"
 
-#: ../src/hb-import.c:1229
+#: ../src/hb-import.c:1321
 msgid "imported account"
 msgstr ""
 
@@ -1281,13 +1275,13 @@ msgstr "%d/%d 在 %s 以下"
 msgid "Balance report"
 msgstr "余额报告"
 
-#: ../src/rep-balance.c:899 ../src/rep-budget.c:1133 ../src/rep-stats.c:1485
+#: ../src/rep-balance.c:899 ../src/rep-budget.c:1146 ../src/rep-stats.c:1485
 #: ../src/rep-time.c:1181 ../src/rep-vehicle.c:724
 msgid "Display"
 msgstr "显示"
 
 #: ../src/rep-balance.c:903 ../src/rep-time.c:1193 ../src/ui-archive.c:1029
-#: ../src/ui-transaction.c:1237 ../src/ui-txn-multi.c:457
+#: ../src/ui-transaction.c:1242 ../src/ui-txn-multi.c:457
 msgid "A_ccount:"
 msgstr "账户(_C)："
 
@@ -1303,18 +1297,18 @@ msgstr "每天(_D)"
 msgid "_Zoom X:"
 msgstr "拉伸 X 轴(_Z)："
 
-#: ../src/rep-balance.c:938 ../src/rep-budget.c:1166 ../src/rep-stats.c:1535
+#: ../src/rep-balance.c:938 ../src/rep-budget.c:1179 ../src/rep-stats.c:1535
 #: ../src/rep-time.c:1266 ../src/rep-vehicle.c:745
 msgid "Date filter"
 msgstr "筛选日期"
 
-#: ../src/rep-balance.c:948 ../src/rep-budget.c:1176 ../src/rep-stats.c:1545
+#: ../src/rep-balance.c:948 ../src/rep-budget.c:1189 ../src/rep-stats.c:1545
 #: ../src/rep-time.c:1276 ../src/rep-vehicle.c:755 ../src/ui-filter.c:1109
 #: ../src/ui-filter.c:1212
 msgid "_From:"
 msgstr "从(_F)："
 
-#: ../src/rep-balance.c:954 ../src/rep-budget.c:1182 ../src/rep-stats.c:1551
+#: ../src/rep-balance.c:954 ../src/rep-budget.c:1195 ../src/rep-stats.c:1551
 #: ../src/rep-time.c:1282 ../src/rep-vehicle.c:761 ../src/ui-filter.c:1115
 #: ../src/ui-filter.c:1219
 msgid "_To:"
@@ -1328,81 +1322,81 @@ msgstr ""
 msgid "View results as stack bars"
 msgstr ""
 
-#: ../src/rep-budget.c:853
+#: ../src/rep-budget.c:866
 msgid " over"
 msgstr " 超支"
 
-#: ../src/rep-budget.c:859
+#: ../src/rep-budget.c:872
 msgid " left"
 msgstr " 结余"
 
-#: ../src/rep-budget.c:862
+#: ../src/rep-budget.c:875
 msgid " under"
 msgstr " 严重超支"
 
 #. update stack chart
-#: ../src/rep-budget.c:905
+#: ../src/rep-budget.c:918
 #, c-format
 msgid "Budget for %s"
 msgstr ""
 
 #. column: Result
-#: ../src/rep-budget.c:911 ../src/rep-budget.c:1465 ../src/rep-budget.c:1665
+#: ../src/rep-budget.c:924 ../src/rep-budget.c:1478 ../src/rep-budget.c:1678
 #: ../src/rep-stats.c:1820 ../src/rep-stats.c:1980
 msgid "Result"
 msgstr "事项"
 
-#: ../src/rep-budget.c:1108
+#: ../src/rep-budget.c:1121
 msgid "Budget report"
 msgstr "预算报表"
 
-#: ../src/rep-budget.c:1137 ../src/rep-stats.c:1489 ../src/rep-time.c:1185
+#: ../src/rep-budget.c:1150 ../src/rep-stats.c:1489 ../src/rep-time.c:1185
 msgid "_View by:"
 msgstr "查看方式(_V)："
 
-#: ../src/rep-budget.c:1152
+#: ../src/rep-budget.c:1165
 msgid "Only out of budget"
 msgstr ""
 
 #. gtk_widget_set_halign (menu, GTK_ALIGN_END);
-#: ../src/rep-budget.c:1246 ../src/rep-stats.c:1624 ../src/rep-time.c:1349
+#: ../src/rep-budget.c:1259 ../src/rep-stats.c:1624 ../src/rep-time.c:1349
 msgid "_Result to clipboard"
 msgstr ""
 
-#: ../src/rep-budget.c:1250 ../src/rep-stats.c:1628 ../src/rep-time.c:1353
+#: ../src/rep-budget.c:1263 ../src/rep-stats.c:1628 ../src/rep-time.c:1353
 msgid "_Result to CSV"
 msgstr ""
 
-#: ../src/rep-budget.c:1254 ../src/rep-stats.c:1632 ../src/rep-time.c:1357
+#: ../src/rep-budget.c:1267 ../src/rep-stats.c:1632 ../src/rep-time.c:1357
 msgid "_Detail to clipboard"
 msgstr ""
 
-#: ../src/rep-budget.c:1259 ../src/rep-stats.c:1637 ../src/rep-time.c:1362
+#: ../src/rep-budget.c:1272 ../src/rep-stats.c:1637 ../src/rep-time.c:1362
 msgid "_Detail to CSV"
 msgstr ""
 
-#: ../src/rep-budget.c:1293
+#: ../src/rep-budget.c:1306
 msgid "Result:"
 msgstr "结果:"
 
-#: ../src/rep-budget.c:1299
+#: ../src/rep-budget.c:1312
 msgid "Budget:"
 msgstr "预算："
 
-#: ../src/rep-budget.c:1305
+#: ../src/rep-budget.c:1318
 msgid "Spent:"
 msgstr "花费："
 
-#: ../src/rep-budget.c:1426
+#: ../src/rep-budget.c:1439
 msgid "No account is defined to be part of the budget."
 msgstr "未定义账户"
 
-#: ../src/rep-budget.c:1427
+#: ../src/rep-budget.c:1440
 msgid "You should include some accounts from the account dialog."
 msgstr "请在账户对话框中选择账户"
 
 #. column: Expense
-#: ../src/rep-budget.c:1465 ../src/rep-budget.c:1657
+#: ../src/rep-budget.c:1478 ../src/rep-budget.c:1670
 msgid "Spent"
 msgstr "花费"
 
@@ -1532,13 +1526,13 @@ msgid "Trend Time Report"
 msgstr "走势报表"
 
 #: ../src/rep-time.c:1201 ../src/ui-archive.c:1078 ../src/ui-assign.c:872
-#: ../src/ui-hbfile.c:279 ../src/ui-payee.c:925 ../src/ui-transaction.c:1289
+#: ../src/ui-hbfile.c:279 ../src/ui-payee.c:925 ../src/ui-transaction.c:1294
 #: ../src/ui-txn-multi.c:489
 msgid "_Category:"
 msgstr "类别(_C)："
 
 #: ../src/rep-time.c:1209 ../src/ui-archive.c:1070 ../src/ui-assign.c:843
-#: ../src/ui-transaction.c:1281 ../src/ui-txn-multi.c:473
+#: ../src/ui-transaction.c:1286 ../src/ui-txn-multi.c:473
 msgid "_Payee:"
 msgstr "交易人(_P)："
 
@@ -1566,7 +1560,7 @@ msgstr "时间段"
 msgid "Export"
 msgstr "导出"
 
-#.
+#. 
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1575,10 +1569,10 @@ msgstr "导出"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#.
-#.
+#. 
+#. 
 #. column: Memo
-#.
+#. 
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1586,7 +1580,7 @@ msgstr "导出"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#.
+#. 
 #. column: Meter
 #: ../src/rep-vehicle.c:219 ../src/rep-vehicle.c:1131
 msgid "Meter"
@@ -1638,7 +1632,7 @@ msgstr "费用合计："
 #. populate_view_acc(data->LV_acc, GLOBALS->acc_list, TRUE);
 #. populate template
 #: ../src/ui-account.c:338 ../src/ui-account.c:1231 ../src/ui-assign.c:98
-#: ../src/ui-currency.c:245 ../src/ui-tag.c:137 ../src/ui-widgets.c:980
+#: ../src/ui-currency.c:245 ../src/ui-tag.c:137 ../src/ui-widgets.c:991
 msgid "(none)"
 msgstr "(无)"
 
@@ -1654,8 +1648,8 @@ msgstr "可见"
 #: ../src/ui-dialogs.c:451 ../src/ui-dialogs.c:512 ../src/ui-dialogs.c:578
 #: ../src/ui-dialogs.c:652 ../src/ui-dialogs.c:722 ../src/ui-dialogs.c:772
 #: ../src/ui-dialogs.c:918 ../src/ui-filter.c:1354 ../src/ui-hbfile.c:194
-#: ../src/ui-payee.c:883 ../src/ui-payee.c:1046 ../src/ui-pref.c:2122
-#: ../src/ui-split.c:726 ../src/ui-tag.c:389 ../src/ui-transaction.c:1150
+#: ../src/ui-payee.c:883 ../src/ui-payee.c:1046 ../src/ui-pref.c:2143
+#: ../src/ui-split.c:726 ../src/ui-tag.c:389 ../src/ui-transaction.c:1155
 #: ../src/ui-txn-multi.c:379
 msgid "_Cancel"
 msgstr "取消"
@@ -1664,8 +1658,8 @@ msgstr "取消"
 #: ../src/ui-account.c:649 ../src/ui-category.c:1292 ../src/ui-currency.c:779
 #: ../src/ui-currency.c:1147 ../src/ui-dialogs.c:335 ../src/ui-dialogs.c:919
 #: ../src/ui-filter.c:1356 ../src/ui-hbfile.c:196 ../src/ui-payee.c:885
-#: ../src/ui-pref.c:2124 ../src/ui-split.c:740 ../src/ui-tag.c:391
-#: ../src/ui-transaction.c:1151 ../src/ui-txn-multi.c:381
+#: ../src/ui-pref.c:2145 ../src/ui-split.c:740 ../src/ui-tag.c:391
+#: ../src/ui-transaction.c:1156 ../src/ui-txn-multi.c:381
 msgid "_OK"
 msgstr "确定(_O)"
 
@@ -1731,12 +1725,12 @@ msgstr ""
 
 #: ../src/ui-account.c:1315 ../src/ui-archive.c:1273 ../src/ui-assign.c:768
 #: ../src/ui-category.c:1977 ../src/ui-currency.c:1726 ../src/ui-payee.c:1370
-#: ../src/ui-tag.c:652 ../src/ui-transaction.c:1161
+#: ../src/ui-tag.c:652 ../src/ui-transaction.c:1166
 msgid "_Add"
 msgstr "添加"
 
 #: ../src/ui-account.c:1336 ../src/ui-hbfile.c:222 ../src/ui-pref.c:84
-#: ../src/ui-pref.c:1354 ../src/ui-pref.c:1726
+#: ../src/ui-pref.c:1375 ../src/ui-pref.c:1747
 msgid "General"
 msgstr "常规"
 
@@ -1768,7 +1762,7 @@ msgstr "支票簿_1"
 msgid "Checkbook _2:"
 msgstr "支票簿_2:"
 
-#: ../src/ui-account.c:1422 ../src/ui-budget.c:1198
+#: ../src/ui-account.c:1422 ../src/ui-budget.c:1199
 msgid "Options"
 msgstr "设置"
 
@@ -1826,15 +1820,15 @@ msgstr "模板 %d"
 msgid "If you delete a scheduled/template, it will be permanently lost."
 msgstr "如果删除计划/模板，它将永久丢失。"
 
-#: ../src/ui-archive.c:1013 ../src/ui-transaction.c:1219
+#: ../src/ui-archive.c:1013 ../src/ui-transaction.c:1224
 msgid "_Amount:"
 msgstr "金额(_A)："
 
-#: ../src/ui-archive.c:1021 ../src/ui-transaction.c:1228
+#: ../src/ui-archive.c:1021 ../src/ui-transaction.c:1233
 msgid "Toggle amount sign"
 msgstr "标记总数标记"
 
-#: ../src/ui-archive.c:1024 ../src/ui-split.c:723 ../src/ui-transaction.c:1231
+#: ../src/ui-archive.c:1024 ../src/ui-split.c:723 ../src/ui-transaction.c:1236
 msgid "Transaction splits"
 msgstr ""
 
@@ -1846,7 +1840,7 @@ msgstr "转入账户(_T)"
 msgid "Pay_ment:"
 msgstr "付款方式(_M)："
 
-#: ../src/ui-archive.c:1061 ../src/ui-transaction.c:1265
+#: ../src/ui-archive.c:1061 ../src/ui-transaction.c:1270
 msgid "Of notebook _2"
 msgstr "用支票本 _2"
 
@@ -1854,7 +1848,7 @@ msgstr "用支票本 _2"
 msgid "_Memo:"
 msgstr "备忘(_M)："
 
-#: ../src/ui-archive.c:1105 ../src/ui-transaction.c:1316
+#: ../src/ui-archive.c:1105 ../src/ui-transaction.c:1321
 #: ../src/ui-txn-multi.c:505
 msgid "Ta_gs:"
 msgstr "标签(_g):"
@@ -2158,23 +2152,23 @@ msgstr ""
 msgid "Target account identification by name or number failed."
 msgstr ""
 
-#: ../src/ui-assist-import.c:1635 ../src/ui-pref.c:1137
+#: ../src/ui-assist-import.c:1635 ../src/ui-pref.c:1147
 msgid "Date order:"
 msgstr "日期顺序:"
 
-#: ../src/ui-assist-import.c:1651 ../src/ui-pref.c:1183
+#: ../src/ui-assist-import.c:1651 ../src/ui-pref.c:1198
 msgid "_Import memos"
 msgstr ""
 
-#: ../src/ui-assist-import.c:1655 ../src/ui-pref.c:1186
+#: ../src/ui-assist-import.c:1655 ../src/ui-pref.c:1201
 msgid "_Swap memos with payees"
 msgstr ""
 
-#: ../src/ui-assist-import.c:1665 ../src/ui-pref.c:1156
+#: ../src/ui-assist-import.c:1665 ../src/ui-pref.c:1171
 msgid "OFX _Name:"
 msgstr ""
 
-#: ../src/ui-assist-import.c:1671 ../src/ui-pref.c:1165
+#: ../src/ui-assist-import.c:1671 ../src/ui-pref.c:1180
 msgid "OFX _Memo:"
 msgstr ""
 
@@ -2198,7 +2192,7 @@ msgstr "无"
 msgid "Invert"
 msgstr "反向选择"
 
-#: ../src/ui-assist-import.c:1715 ../src/ui-pref.c:1200
+#: ../src/ui-assist-import.c:1715 ../src/ui-pref.c:1156
 msgid "Sentence _case memo/payee"
 msgstr ""
 
@@ -2290,7 +2284,7 @@ msgstr ""
 msgid "is different"
 msgstr "不同"
 
-#: ../src/ui-budget.c:1203
+#: ../src/ui-budget.c:1204
 msgid "_Force monitoring this category"
 msgstr "强制监视该类别(_F)"
 
@@ -2381,7 +2375,7 @@ msgstr ""
 msgid "Symbol"
 msgstr "货币符号"
 
-#: ../src/ui-currency.c:639 ../src/ui-currency.c:819 ../src/ui-pref.c:1396
+#: ../src/ui-currency.c:639 ../src/ui-currency.c:819 ../src/ui-pref.c:1417
 msgid "Exchange rate"
 msgstr "汇率"
 
@@ -2393,35 +2387,35 @@ msgstr ""
 msgid "Edit currency"
 msgstr "编辑货币"
 
-#: ../src/ui-currency.c:805 ../src/ui-pref.c:1369
+#: ../src/ui-currency.c:805 ../src/ui-pref.c:1390
 msgid "Currency"
 msgstr "币种"
 
-#: ../src/ui-currency.c:838 ../src/ui-pref.c:1414
+#: ../src/ui-currency.c:838 ../src/ui-pref.c:1435
 msgid "Format"
 msgstr "格式"
 
-#: ../src/ui-currency.c:847 ../src/ui-pref.c:1423 ../src/ui-pref.c:1503
+#: ../src/ui-currency.c:847 ../src/ui-pref.c:1444 ../src/ui-pref.c:1524
 msgid "_Customize"
 msgstr "自定义(_C)"
 
-#: ../src/ui-currency.c:856 ../src/ui-pref.c:1432
+#: ../src/ui-currency.c:856 ../src/ui-pref.c:1453
 msgid "_Symbol:"
 msgstr "符号(_S)："
 
-#: ../src/ui-currency.c:863 ../src/ui-pref.c:1439
+#: ../src/ui-currency.c:863 ../src/ui-pref.c:1460
 msgid "Is pre_fix"
 msgstr ""
 
-#: ../src/ui-currency.c:868 ../src/ui-pref.c:1444
+#: ../src/ui-currency.c:868 ../src/ui-pref.c:1465
 msgid "_Decimal char:"
 msgstr ""
 
-#: ../src/ui-currency.c:875 ../src/ui-pref.c:1451
+#: ../src/ui-currency.c:875 ../src/ui-pref.c:1472
 msgid "_Frac digits:"
 msgstr "小数位数(_F)："
 
-#: ../src/ui-currency.c:882 ../src/ui-pref.c:1458
+#: ../src/ui-currency.c:882 ../src/ui-pref.c:1479
 msgid "_Grouping char:"
 msgstr ""
 
@@ -2517,7 +2511,7 @@ msgstr ""
 msgid "Save HomeBank file as"
 msgstr "另存为"
 
-#: ../src/ui-dialogs.c:589 ../src/ui-pref.c:1877
+#: ../src/ui-dialogs.c:589 ../src/ui-pref.c:1898
 msgid "HomeBank files"
 msgstr "家庭理财文件(.xhb)"
 
@@ -2620,7 +2614,7 @@ msgstr "年(_Y)："
 msgid "Texts"
 msgstr "文本"
 
-#: ../src/ui-filter.c:1166 ../src/ui-transaction.c:1270
+#: ../src/ui-filter.c:1166 ../src/ui-transaction.c:1275
 #: ../src/ui-txn-multi.c:443
 msgid "_Info:"
 msgstr "信息(_I)："
@@ -2707,7 +2701,7 @@ msgstr "你确定你想永久删除未使用的付款人？"
 msgid "Default"
 msgstr "默认"
 
-#: ../src/ui-payee.c:933 ../src/ui-transaction.c:1254 ../src/ui-txn-multi.c:429
+#: ../src/ui-payee.c:933 ../src/ui-transaction.c:1259 ../src/ui-txn-multi.c:429
 msgid "Pa_yment:"
 msgstr "支付(_y)"
 
@@ -2772,7 +2766,7 @@ msgstr "导入/导出"
 msgid "Report"
 msgstr "报表"
 
-#: ../src/ui-pref.c:90 ../src/ui-pref.c:1829
+#: ../src/ui-pref.c:90 ../src/ui-pref.c:1850
 msgid "Backup"
 msgstr ""
 
@@ -2852,96 +2846,120 @@ msgstr "添加到提示"
 msgid "Append to Payee"
 msgstr ""
 
-#: ../src/ui-pref.c:477
+#: ../src/ui-pref.c:146
+msgid "Tab"
+msgstr ""
+
+#: ../src/ui-pref.c:147
+msgid "Comma"
+msgstr ""
+
+#: ../src/ui-pref.c:148
+msgid "Semicolon"
+msgstr ""
+
+#: ../src/ui-pref.c:149
+msgid "Space"
+msgstr ""
+
+#: ../src/ui-pref.c:486
 msgid "System Language"
 msgstr "系统语言"
 
-#: ../src/ui-pref.c:638
+#: ../src/ui-pref.c:647
 msgid "Choose a default HomeBank files folder"
 msgstr "选择一个默认的 HomeBank 档案文件夹"
 
-#: ../src/ui-pref.c:643
+#: ../src/ui-pref.c:652
 msgid "Choose a default import folder"
 msgstr ""
 
-#: ../src/ui-pref.c:648
+#: ../src/ui-pref.c:657
 msgid "Choose a default export folder"
 msgstr ""
 
-#: ../src/ui-pref.c:1133
+#: ../src/ui-pref.c:1143
 msgid "Date options"
 msgstr "日期选项"
 
-#: ../src/ui-pref.c:1152
+#: ../src/ui-pref.c:1167
 msgid "OFX/QFX options"
 msgstr ""
 
-#: ../src/ui-pref.c:1179
+#: ../src/ui-pref.c:1194
 msgid "QIF options"
 msgstr "QIF 选项"
 
-#: ../src/ui-pref.c:1196
-msgid "Other options"
+#: ../src/ui-pref.c:1211
+msgid "CSV options"
 msgstr ""
 
-#: ../src/ui-pref.c:1258
+#: ../src/ui-pref.c:1215
+msgid "(transaction import only)"
+msgstr ""
+
+#: ../src/ui-pref.c:1219
+msgid "Separator:"
+msgstr ""
+
+#: ../src/ui-pref.c:1279
 msgid "Initial filter"
 msgstr ""
 
-#: ../src/ui-pref.c:1276
+#: ../src/ui-pref.c:1297
 msgid "Charts options"
 msgstr ""
 
-#: ../src/ui-pref.c:1280
+#: ../src/ui-pref.c:1301
 msgid "Color scheme:"
 msgstr "配色方案:"
 
-#: ../src/ui-pref.c:1302
+#: ../src/ui-pref.c:1323
 msgid "Statistics options"
 msgstr "统计选项"
 
-#: ../src/ui-pref.c:1306
+#: ../src/ui-pref.c:1327
 msgid "Show by _amount"
 msgstr "显示金额(_A)"
 
-#: ../src/ui-pref.c:1311
+#: ../src/ui-pref.c:1332
 msgid "Show _rate column"
 msgstr "显示百分比(_R)"
 
-#: ../src/ui-pref.c:1316 ../src/ui-pref.c:1330
+#: ../src/ui-pref.c:1337 ../src/ui-pref.c:1351
 msgid "Show _details"
 msgstr "显示明细(_D)"
 
-#: ../src/ui-pref.c:1326
+#: ../src/ui-pref.c:1347
 msgid "Budget options"
 msgstr ""
 
-#: ../src/ui-pref.c:1358
+#: ../src/ui-pref.c:1379
 msgid "_Enable"
 msgstr "启用(_E)"
 
 #. row++;
-#: ../src/ui-pref.c:1379 ../src/ui-pref.c:1773
+#: ../src/ui-pref.c:1400 ../src/ui-pref.c:1794
 msgid "_Preset:"
 msgstr "预设(_P)："
 
-#: ../src/ui-pref.c:1484
+#: ../src/ui-pref.c:1505
 msgid "User interface"
 msgstr ""
 
-#: ../src/ui-pref.c:1488
+#: ../src/ui-pref.c:1509
 msgid "_Language:"
 msgstr "语言(_L)："
 
-#: ../src/ui-pref.c:1496
+#: ../src/ui-pref.c:1517
 msgid "_Date display:"
 msgstr ""
 
-#: ../src/ui-pref.c:1512
+#: ../src/ui-pref.c:1533
 msgid "_Format:"
 msgstr "格式："
 
-#: ../src/ui-pref.c:1525
+#: ../src/ui-pref.c:1546
 msgid ""
 "%a locale's abbreviated weekday name.\n"
 "%A locale's full weekday name. \n"
@@ -2961,162 +2979,162 @@ msgid ""
 "%Y year with century as a decimal number."
 msgstr ""
 
-#: ../src/ui-pref.c:1555
+#: ../src/ui-pref.c:1576
 msgid "Fiscal year"
 msgstr "会计年度"
 
 #. TRANSLATORS: (fiscal year) starts on
-#: ../src/ui-pref.c:1560
+#: ../src/ui-pref.c:1581
 msgid "Starts _on:"
 msgstr ""
 
-#: ../src/ui-pref.c:1580
+#: ../src/ui-pref.c:1601
 msgid "Measurement units"
 msgstr ""
 
-#: ../src/ui-pref.c:1584
+#: ../src/ui-pref.c:1605
 msgid "Use _miles for meter"
 msgstr ""
 
-#: ../src/ui-pref.c:1589
+#: ../src/ui-pref.c:1610
 msgid "Use _gallon for fuel"
 msgstr ""
 
-#: ../src/ui-pref.c:1613
+#: ../src/ui-pref.c:1634
 msgid "Transaction window"
 msgstr ""
 
-#: ../src/ui-pref.c:1625
+#: ../src/ui-pref.c:1646
 msgid "_Show future:"
 msgstr ""
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
-#: ../src/ui-pref.c:1634
+#: ../src/ui-pref.c:1655
 msgid "days ahead"
 msgstr ""
 
-#: ../src/ui-pref.c:1638
+#: ../src/ui-pref.c:1659
 msgid "Hide reconciled transactions"
 msgstr "隐藏已对账记账"
 
-#: ../src/ui-pref.c:1643
+#: ../src/ui-pref.c:1664
 msgid "Always show remind transactions"
 msgstr ""
 
-#: ../src/ui-pref.c:1653
+#: ../src/ui-pref.c:1674
 msgid "Multiple add"
 msgstr ""
 
-#: ../src/ui-pref.c:1657
+#: ../src/ui-pref.c:1678
 msgid "Keep the last date"
 msgstr "保留最新日期"
 
-#: ../src/ui-pref.c:1667
+#: ../src/ui-pref.c:1688
 msgid "Memo autocomplete"
 msgstr ""
 
-#: ../src/ui-pref.c:1671
+#: ../src/ui-pref.c:1692
 msgid "Active"
 msgstr ""
 
-#: ../src/ui-pref.c:1679
+#: ../src/ui-pref.c:1700
 msgid "rolling days"
 msgstr ""
 
-#: ../src/ui-pref.c:1730
+#: ../src/ui-pref.c:1751
 msgid "_Toolbar:"
 msgstr "工具栏(_T)："
 
 #. widget = gtk_check_button_new_with_mnemonic (_("Enable rows in alternating colors"));
 #. data->CM_ruleshint = widget;
-#: ../src/ui-pref.c:1752
+#: ../src/ui-pref.c:1773
 msgid "_Grid line:"
 msgstr ""
 
-#: ../src/ui-pref.c:1764
+#: ../src/ui-pref.c:1785
 msgid "Amount colors"
 msgstr ""
 
-#: ../src/ui-pref.c:1768
+#: ../src/ui-pref.c:1789
 msgid "Uses custom colors"
 msgstr "使用自定义颜色"
 
-#: ../src/ui-pref.c:1783
+#: ../src/ui-pref.c:1804
 msgid "_Expense:"
 msgstr "支出(_E)："
 
-#: ../src/ui-pref.c:1795
+#: ../src/ui-pref.c:1816
 msgid "_Income:"
 msgstr "收入(_I)："
 
-#: ../src/ui-pref.c:1802
+#: ../src/ui-pref.c:1823
 msgid "_Warning:"
 msgstr "提醒(_W)："
 
-#: ../src/ui-pref.c:1833
+#: ../src/ui-pref.c:1854
 msgid "_Enable automatic backups"
 msgstr ""
 
-#: ../src/ui-pref.c:1838
+#: ../src/ui-pref.c:1859
 msgid "_Number of backups to keep:"
 msgstr ""
 
-#: ../src/ui-pref.c:1853
+#: ../src/ui-pref.c:1874
 msgid "Backup frequency is once a day"
 msgstr ""
 
-#: ../src/ui-pref.c:1881
+#: ../src/ui-pref.c:1902
 msgid "_Wallets:"
 msgstr ""
 
-#: ../src/ui-pref.c:1905
+#: ../src/ui-pref.c:1926
 msgid "Exchange files"
 msgstr ""
 
-#: ../src/ui-pref.c:1909
+#: ../src/ui-pref.c:1930
 msgid "_Import:"
 msgstr "导入(_I)："
 
-#: ../src/ui-pref.c:1928
+#: ../src/ui-pref.c:1949
 msgid "_Export:"
 msgstr "导出(_E)："
 
-#: ../src/ui-pref.c:1968
+#: ../src/ui-pref.c:1989
 msgid "Program start"
 msgstr ""
 
-#: ../src/ui-pref.c:1972
+#: ../src/ui-pref.c:1993
 msgid "Show splash screen"
 msgstr "显示启动画面"
 
-#: ../src/ui-pref.c:1977
+#: ../src/ui-pref.c:1998
 msgid "Load last opened file"
 msgstr "自动打开上次的财务文档"
 
-#: ../src/ui-pref.c:1987
+#: ../src/ui-pref.c:2008
 msgid "Update currencies online"
 msgstr ""
 
-#: ../src/ui-pref.c:1998
+#: ../src/ui-pref.c:2019
 msgid "Main window reports"
 msgstr "主窗口图表"
 
-#: ../src/ui-pref.c:2097
+#: ../src/ui-pref.c:2118
 msgid "Reset All Preferences"
 msgstr ""
 
-#: ../src/ui-pref.c:2098
+#: ../src/ui-pref.c:2119
 msgid ""
 "Do you really want to reset\n"
 "all preferences to default\n"
 "values?"
 msgstr ""
 
-#: ../src/ui-pref.c:2117
+#: ../src/ui-pref.c:2138
 msgid "Preferences"
 msgstr "首选项"
 
-#: ../src/ui-pref.c:2350
+#: ../src/ui-pref.c:2371
 msgid ""
 "You will have to restart HomeBank\n"
 "for the language change to take effect."
@@ -3190,11 +3208,11 @@ msgstr "已核对"
 msgid "From acc_ount:"
 msgstr ""
 
-#: ../src/ui-transaction.c:666 ../src/ui-transaction.c:1245
+#: ../src/ui-transaction.c:666 ../src/ui-transaction.c:1250
 msgid "To acc_ount:"
 msgstr "到账户(_o)"
 
-#: ../src/ui-transaction.c:750
+#: ../src/ui-transaction.c:756
 msgid ""
 "Do you want to break the internal transfer ?\n"
 "\n"
@@ -3204,35 +3222,35 @@ msgstr ""
 "\n"
 "继续将删除目标记账。"
 
-#: ../src/ui-transaction.c:752
+#: ../src/ui-transaction.c:758
 msgid "_Break"
 msgstr ""
 
-#: ../src/ui-transaction.c:1019
+#: ../src/ui-transaction.c:1024
 msgid "Show _scheduled"
 msgstr ""
 
-#: ../src/ui-transaction.c:1023
+#: ../src/ui-transaction.c:1028
 msgid "Show _all accounts"
 msgstr ""
 
-#: ../src/ui-transaction.c:1049
+#: ../src/ui-transaction.c:1054
 msgid "Use a _template"
 msgstr "使用模板(_T)"
 
-#: ../src/ui-transaction.c:1160
+#: ../src/ui-transaction.c:1165
 msgid "_Add & keep"
 msgstr "添加并继续"
 
-#: ../src/ui-transaction.c:1168
+#: ../src/ui-transaction.c:1173
 msgid "_Post"
 msgstr "发布(_P)"
 
-#: ../src/ui-transaction.c:1201 ../src/ui-txn-multi.c:413
+#: ../src/ui-transaction.c:1206 ../src/ui-txn-multi.c:413
 msgid "_Date:"
 msgstr "日期(_D)："
 
-#: ../src/ui-transaction.c:1207
+#: ../src/ui-transaction.c:1212
 msgid ""
 "Date accepted here are:\n"
 "day,\n"
@@ -3244,17 +3262,17 @@ msgstr ""
 "日/月 或者 月/日，\n"
 "或者本地化设置中设定的完整日期"
 
-#: ../src/ui-transaction.c:1286 ../src/ui-transaction.c:1294
+#: ../src/ui-transaction.c:1291 ../src/ui-transaction.c:1299
 msgid ""
 "Autocompletion and direct seizure\n"
 "is available"
 msgstr ""
 
-#: ../src/ui-transaction.c:1308 ../src/ui-txn-multi.c:521
+#: ../src/ui-transaction.c:1313 ../src/ui-txn-multi.c:521
 msgid "M_emo:"
 msgstr "备注(_e)"
 
-#: ../src/ui-transaction.c:1335
+#: ../src/ui-transaction.c:1340
 msgid "Warning: amount and category sign don't match"
 msgstr ""
 
@@ -3282,7 +3300,7 @@ msgstr "排除"
 msgid "(no type)"
 msgstr "(缺少类型)"
 
-#: ../src/ui-widgets-data.c:73 ../src/ui-widgets.c:983
+#: ../src/ui-widgets-data.c:73 ../src/ui-widgets.c:994
 msgid "Cash"
 msgstr "现金"
 
@@ -3290,7 +3308,7 @@ msgstr "现金"
 msgid "Asset"
 msgstr "资产"
 
-#: ../src/ui-widgets-data.c:75 ../src/ui-widgets.c:981
+#: ../src/ui-widgets-data.c:75 ../src/ui-widgets.c:992
 msgid "Credit card"
 msgstr "信用卡"
 
@@ -3479,42 +3497,39 @@ msgstr "12月"
 msgid "Search..."
 msgstr "搜索..."
 
-#: ../src/ui-widgets.c:982
+#: ../src/ui-widgets.c:993
 msgid "Check"
 msgstr "支票"
 
-#: ../src/ui-widgets.c:984
+#: ../src/ui-widgets.c:995
 msgid "Transfer"
 msgstr "转账"
 
-#: ../src/ui-widgets.c:985
+#: ../src/ui-widgets.c:996
 msgid "Internal transfer"
 msgstr "内部转帐"
 
-#: ../src/ui-widgets.c:986
+#: ../src/ui-widgets.c:997
 msgid "Debit card"
 msgstr "借记卡"
 
-#: ../src/ui-widgets.c:987
+#: ../src/ui-widgets.c:998
 msgid "Standing order"
 msgstr "定期转账"
 
-#: ../src/ui-widgets.c:988
+#: ../src/ui-widgets.c:999
 msgid "Electronic payment"
 msgstr "电子付款"
 
-#: ../src/ui-widgets.c:989
+#: ../src/ui-widgets.c:1000
 msgid "Deposit"
 msgstr "存款"
 
 #. TRANSLATORS: Financial institution fee
-#: ../src/ui-widgets.c:991
+#: ../src/ui-widgets.c:1002
 msgid "FI fee"
 msgstr "费用"
 
-#: ../src/ui-widgets.c:992
+#: ../src/ui-widgets.c:1003
 msgid "Direct Debit"
 msgstr "直接记账"
-
-#~ msgid "_Scheduled list"
-#~ msgstr "计划列表(_S)"

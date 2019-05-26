@@ -426,7 +426,8 @@ gint i;
 	PREFS->dtex_ofxmemo = 2;
 	PREFS->dtex_qifmemo = TRUE;
 	PREFS->dtex_qifswap = FALSE;
-
+	PREFS->dtex_csvsep = PRF_DTEX_CSVSEP_SEMICOLON;
+	
 	//todo: add intelligence here
 	PREFS->euro_active  = FALSE;
 
@@ -995,7 +996,7 @@ GError *error = NULL;
 				homebank_pref_get_integer(keyfile, group, "OfxMemo", &PREFS->dtex_ofxmemo);
 				homebank_pref_get_boolean(keyfile, group, "QifMemo", &PREFS->dtex_qifmemo);
 				homebank_pref_get_boolean(keyfile, group, "QifSwap", &PREFS->dtex_qifswap);
-
+				homebank_pref_get_integer(keyfile, group, "CsvSep", &PREFS->dtex_csvsep);
 
 			//group = "Chart";
 			//PREFS->chart_legend = g_key_file_get_boolean (keyfile, group, "Legend", NULL);
@@ -1213,7 +1214,7 @@ GError *error = NULL;
 		g_key_file_set_integer (keyfile, group, "OfxMemo", PREFS->dtex_ofxmemo);
 		g_key_file_set_boolean (keyfile, group, "QifMemo", PREFS->dtex_qifmemo);
 		g_key_file_set_boolean (keyfile, group, "QifSwap", PREFS->dtex_qifswap);
-
+		g_key_file_set_integer (keyfile, group, "CsvSep", PREFS->dtex_csvsep);
 
 		//group = "Chart";
 		//g_key_file_set_boolean (keyfile, group, "Legend", PREFS->chart_legend);

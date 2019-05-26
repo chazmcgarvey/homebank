@@ -248,7 +248,7 @@ struct repbudget_data *data;
 	gtk_date_entry_set_mindate(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->mindate);
 
 	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPBUDGET_RANGE]);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_OTHER);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), FLT_RANGE_OTHER);
 	g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPBUDGET_RANGE]);
 
 
@@ -267,7 +267,7 @@ gint range;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	range = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_range));
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
 	
 
 	if(range != FLT_RANGE_OTHER)
@@ -535,6 +535,7 @@ GtkTreeIter  iter;
 		{
 		Account *acc;
 		Transaction *ope = list->data;
+		gdouble dtlamt = ope->amount;
 		guint pos = 0;
 		gboolean insert = FALSE;
 
@@ -552,7 +553,8 @@ GtkTreeIter  iter;
 			guint nbsplit = da_splits_length(ope->splits);
 			Split *split;
 			guint i;
-			
+
+				dtlamt = 0.0;
 				for(i=0;i<nbsplit;i++)
 				{
 					split = da_splits_get(ope->splits, i);
@@ -571,7 +573,12 @@ GtkTreeIter  iter;
 					}
 					
 					if( pos == active )
-					{	insert = TRUE; break; }
+					{
+						insert = TRUE; 
+						dtlamt += split->amount;
+						// no more break here as we need to compute split 4 cat
+						//break;
+					}
 				}
 			}
 			else
@@ -600,7 +607,8 @@ GtkTreeIter  iter;
 
 		    	gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 	     		gtk_list_store_set (GTK_LIST_STORE(model), &iter,
-					LST_DSPOPE_DATAS, ope,
+					MODEL_TXN_POINTER, ope,
+			        MODEL_TXN_SPLITAMT, dtlamt,
 					-1);
 			}
 
@@ -627,15 +635,28 @@ Category *cat;
 	cat = da_cat_get(key);
 	if(cat)
 	{
-		DB( g_print(" -> affecting %.2f to cat %d sub=%d, bud=%.2f\n", amount, cat->key, (cat->flags & GF_SUB), tmp_budget[cat->key]) );
+		DB( g_print(" cat %02d:%02d (sub=%d), bud=%.2f\n", cat->parent, cat->key, (cat->flags & GF_SUB), tmp_budget[cat->key]) );
+
 		if( (cat->flags & GF_FORCED) || (cat->flags & GF_BUDGET) )
-			tmp_spent[cat->key] += amount;
-		//#1814213 only count subcat with budget
-		//if( (cat->flags & GF_SUB) )
-		if( (cat->flags & GF_FORCED) || ((cat->flags & GF_SUB) && (cat->flags & GF_BUDGET)) )
 		{
-			DB( g_print(" -> affecting %.2f to parent %d, bud=%.2f\n", amount, cat->parent, tmp_budget[cat->parent]) );
-			tmp_spent[cat->parent] += amount;
+			DB( g_print("  + spend %.2f to cat %d\n", amount, cat->key) );
+			tmp_spent[cat->key] += amount;
+		}
+
+		//#1825653 subcat without budget must be computed
+		if( (cat->flags & GF_SUB) )
+		{
+		Category *pcat = da_cat_get(cat->parent);
+
+			if(pcat)
+			{
+				if( (cat->flags & GF_FORCED) || (cat->flags & GF_BUDGET) || (pcat->flags & GF_FORCED) || (pcat->flags & GF_BUDGET) )
+				{
+					DB( g_print("  + spend %.2f to parent %d\n", amount, cat->parent) );
+					tmp_spent[pcat->key] += amount;
+				}
+
+			}
 		}
 	}				
 }
@@ -704,7 +725,7 @@ gchar *title;
 			if( entry == NULL)
 				continue;
 
-			DB( g_print(" category %d:'%s' issub=%d hasbudget=%d custom=%d\n", 
+			DB( g_print(" %d:'%s' issub=%d hasbudget=%d custom=%d\n", 
 				entry->key, entry->name, (entry->flags & GF_SUB), (entry->flags & GF_BUDGET), (entry->flags & GF_CUSTOM)) );
 
 			//debug
@@ -757,7 +778,7 @@ gchar *title;
 		{
 		Transaction *ope = list->data;
 
-			DB( g_print("%d, get ope: %s :: acc=%d, cat=%d, mnt=%.2f\n", i, ope->memo, ope->kacc, ope->kcat, ope->amount) );
+			DB( g_print("ope: %s :: acc=%d, cat=%d, mnt=%.2f\n", ope->memo, ope->kacc, ope->kcat, ope->amount) );
 
 			if( ope->flags & OF_SPLIT )
 			{
@@ -1169,7 +1190,7 @@ GError *error = NULL;
 	row++;
 	label = make_label_widget(_("_Range:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	data->CY_range = make_daterange(label, FALSE);
+	data->CY_range = make_daterange(label, DATE_RANGE_CUSTOM_DISABLE);
 	gtk_grid_attach (GTK_GRID (table), data->CY_range, 2, row, 1, 1);
 
 	row++;
@@ -1440,7 +1461,7 @@ GError *error = NULL;
 	repbudget_update_detail(window, NULL);
 
 	if( PREFS->date_range_rep != 0)
-		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_rep);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), PREFS->date_range_rep);
 	else
 		repbudget_compute(window, NULL);
 

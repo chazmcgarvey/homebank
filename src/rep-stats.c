@@ -265,7 +265,7 @@ struct ui_repdist_data *data = user_data;
 		ui_repdist_update_daterange(data->window, NULL);
 
 		g_signal_handler_block(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
-		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_OTHER);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), FLT_RANGE_OTHER);
 		g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
 
 	}
@@ -312,7 +312,7 @@ struct ui_repdist_data *data;
 	gtk_date_entry_set_mindate(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->mindate);
 
 	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_OTHER);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), FLT_RANGE_OTHER);
 	g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
 
 	ui_repdist_compute(widget, NULL);
@@ -330,7 +330,7 @@ gint range;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	range = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_range));
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
 
 	if(range != FLT_RANGE_OTHER)
 	{
@@ -658,6 +658,7 @@ GtkTreeIter  iter;
 		while (list != NULL)
 		{
 		Transaction *ope = list->data;
+		gdouble dtlamt = ope->amount;
 
 			if(filter_txn_match(data->filter, ope) == 1)
 			{
@@ -670,7 +671,8 @@ GtkTreeIter  iter;
 					{
 					guint nbsplit = da_splits_length(ope->splits);
 					Split *split;
-					
+
+						dtlamt = 0.0;
 						for(i=0;i<nbsplit;i++)
 						{
 							split = da_splits_get(ope->splits, i);
@@ -678,7 +680,9 @@ GtkTreeIter  iter;
 							if( pos == active )
 							{
 								match = TRUE;
-								break;
+								dtlamt += split->amount;
+								// no more break here as we need to compute split 4 cat
+								//break;
 							}
 						}
 					}
@@ -717,7 +721,8 @@ GtkTreeIter  iter;
 				if( match == TRUE )
 				{
 					gtk_list_store_insert_with_values (GTK_LIST_STORE(model), &iter, -1,
-						LST_DSPOPE_DATAS, ope,
+						MODEL_TXN_POINTER, ope,
+						MODEL_TXN_SPLITAMT, dtlamt,
 						-1);
 				}
 			}
@@ -758,7 +763,7 @@ gdouble exprate, incrate, balrate;
 	tmptype = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_type));
 
 
-	DB( g_print(" for=%d,kind=%d\n", tmpsrc, tmpkind) );
+	DB( g_print(" for=%d,type=%d\n", tmpsrc, tmptype) );
 
 	//get our min max date
 	from = data->filter->mindate;
@@ -811,7 +816,7 @@ gdouble exprate, incrate, balrate;
 		{
 		Transaction *ope = list->data;
 			
-			DB( g_print("** testing '%s', cat=%d==> %d\n", ope->memo, ope->kcat, filter_test(data->filter, ope)) );
+			DB( g_print("** testing '%s', cat=%d==> %d\n", ope->memo, ope->kcat, filter_txn_match(data->filter, ope)) );
 
 			if( (filter_txn_match(data->filter, ope) == 1) )
 			{
@@ -977,7 +982,9 @@ gdouble exprate, incrate, balrate;
 
 
 			/* filter empty results */
-			if(tmpsrc == REPORT_SRC_CATEGORY || tmpsrc == REPORT_SRC_SUBCATEGORY || tmpsrc == REPORT_SRC_PAYEE || tmpsrc == REPORT_SRC_TAG)
+			// 1829630 crash _cairo_arc_in_direction (account was missing here)
+			
+			if( !(tmpsrc == REPORT_SRC_MONTH || tmpsrc == REPORT_SRC_YEAR) )
 			{
 				if( tmptype == 1 && !tmp_expense[i] ) continue;
 				if( tmptype == 2 && !tmp_income[i] ) continue;
@@ -1123,9 +1130,6 @@ gdouble exprate, incrate, balrate;
 	ui_repdist_update(widget, user_data);
 
 }
-
-
-
 
 
 /*
@@ -1538,7 +1542,7 @@ GError *error = NULL;
 	row++;
 	label = make_label_widget(_("_Range:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	data->CY_range = make_daterange(label, TRUE);
+	data->CY_range = make_daterange(label, DATE_RANGE_CUSTOM_DISABLE);
 	gtk_grid_attach (GTK_GRID (table), data->CY_range, 2, row, 1, 1);
 
 	row++;
@@ -1792,7 +1796,7 @@ GError *error = NULL;
 	DB( g_print("range: %d\n", PREFS->date_range_rep) );
 
 	if( PREFS->date_range_rep != 0)
-		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_rep);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), PREFS->date_range_rep);
 	else
 		ui_repdist_compute(window, NULL);
 

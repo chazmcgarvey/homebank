@@ -86,6 +86,27 @@ HbKvData CYA_ACC_TYPE[] =
 };
 
 
+HbKvData CYA_FLT_RANGE[] = {
+	{ FLT_RANGE_THISMONTH,		N_("This month") },
+	{ FLT_RANGE_LASTMONTH,		N_("Last month") },
+	{ FLT_RANGE_THISQUARTER,	N_("This quarter") },
+	{ FLT_RANGE_LASTQUARTER,	N_("Last quarter") },
+	{ FLT_RANGE_THISYEAR,		N_("This year") },
+	{ FLT_RANGE_LASTYEAR,		N_("Last year") },
+	{ HBTK_IS_SEPARATOR, "" },
+	{ FLT_RANGE_LAST30DAYS,		N_("Last 30 days") },
+	{ FLT_RANGE_LAST60DAYS,		N_("Last 60 days") },
+	{ FLT_RANGE_LAST90DAYS,		N_("Last 90 days") },
+	{ FLT_RANGE_LAST12MONTHS,	N_("Last 12 months") },
+	{ HBTK_IS_SEPARATOR, "" },
+//	{ FLT_RANGE_OTHER,			N_("Other...") },
+	{ FLT_RANGE_OTHER,			N_("custom") },
+	{ HBTK_IS_SEPARATOR, "" },
+	{ FLT_RANGE_ALLDATE,		N_("All date") },
+	{ 0, NULL }
+};
+
+
 gchar *CYA_ARC_UNIT[] = {
 	N_("Day"), 
 	N_("Week"), 
@@ -130,7 +151,7 @@ gchar *CYA_FLT_STATUS[] = {
 	NULL
 };
 
-gchar *CYA_FLT_RANGE[] = {
+/*gchar *OLD_CYA_FLT_RANGE[] = {
 	N_("This month"),
 	N_("Last month"),
 	N_("This quarter"),
@@ -147,7 +168,7 @@ gchar *CYA_FLT_RANGE[] = {
 	"",
 	N_("All date"),
 	NULL
-};
+};*/
 
 //ui_filter.c only
 gchar *CYA_SELECT[] =

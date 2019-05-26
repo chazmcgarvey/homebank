@@ -41,15 +41,12 @@ extern struct HomeBank *GLOBALS;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-extern gchar *CYA_FLT_RANGE[];
-
-
+extern HbKvData CYA_FLT_RANGE[];
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-
-
+//TODO: only WEIGHT & SCALE are used for now
 void
 gimp_label_set_attributes (GtkLabel *label,
                            ...)
@@ -413,56 +410,67 @@ GtkWidget *entry;
 }
 
 
-
 static void hb_amount_insert_text_handler (GtkEntry *entry, const gchar *text, gint length, gint *position, gpointer data)
 {
 GtkEditable *editable = GTK_EDITABLE(entry);
-int i, count=0, dcpos=-1;
-gchar *result = g_new0 (gchar, length+1);
-int digits = 2;
-const gchar *numtext;
-
-	//g_message("insert_text-handler: text:%s - pos:%d - length:%d", text, *position, length);
+gint i, digits, count=0, dcpos=-1;
+gchar *clntxt;
+	
+	DB( g_print("-----\ninsert_text-handler: instxt:%s pos:%d len:%d\n", text, *position, length) );
 
 	digits = gtk_spin_button_get_digits(GTK_SPIN_BUTTON(entry));
-	numtext = gtk_entry_get_text(entry);
-	for (i=0 ; numtext[i]!='\0' ; i++)
+
+	// most common : only 1 char to be inserted
+	if( length == 1 )
 	{
- 		if(numtext[i]==',' || numtext[i]=='.')
-			dcpos = i;
-	}
+	const gchar *curtxt = gtk_entry_get_text(entry);
 
-	//g_message("previous text='%s' dcpos:'%d'", numtext, dcpos);
-	for (i=0 ; i < length ; i++)
+		for (i=0 ; curtxt[i]!='\0' ; i++)
+		{
+	 		if(curtxt[i]==',' || curtxt[i]=='.')
+				dcpos = i;
+		}
+		DB( g_print(" dcpos:'%d'\n", dcpos) );
+
+		clntxt = g_new0 (gchar, length+1);
+		for (i=0 ; i < length ; i++)
+		{
+			if( g_ascii_isdigit(text[i]) && ( (*position <= dcpos + digits) || dcpos < 0) )
+				goto doinsert;
+
+			if( text[i]=='-' && *position==0 )	/* minus sign only at position 0 */
+				goto doinsert;
+
+			if( dcpos < 0 && (text[i]=='.' || text[i]==',') )	/* decimal separator if not in previous string */
+				clntxt[count++] = '.';
+
+			continue;
+
+		doinsert:
+			clntxt[count++] = text[i];
+		}
+	}
+	// less common: paste a full text
+	else
 	{
-		if( g_ascii_isdigit(text[i]) && ( (*position <= dcpos + digits) || dcpos < 0) )
-			goto inserttext;
-
-		if( text[i]=='-' && *position==0 )	/* minus sign only at position 0 */
-			goto inserttext;
-
-		if( dcpos < 0 && (text[i]=='.' || text[i]==',') )	/* decimal separator if not in previous string */
-			result[count++] = '.';
-
-		continue;
-
-	inserttext:
-		result[count++] = text[i];
+		clntxt = hb_string_dup_raw_amount_clean(text, digits);
+		count = strlen(clntxt);
 	}
-
-	if (count > 0) {
+		
+	if (count > 0)
+	{
+		DB( g_print(" insert %d char '%s' at %d\n", count, clntxt, *position) );
 		g_signal_handlers_block_by_func (G_OBJECT (editable), G_CALLBACK (hb_amount_insert_text_handler), data);
-		gtk_editable_insert_text (editable, result, count, position);
+		gtk_editable_insert_text (editable, clntxt, count, position);
 		g_signal_handlers_unblock_by_func (G_OBJECT (editable), G_CALLBACK (hb_amount_insert_text_handler), data);
 	}
-	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
 
-	g_free (result);
+	g_free (clntxt);
+
+	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
 }
 
-/*
-**
-*/
+
 GtkWidget *make_amount(GtkWidget *label)
 {
 GtkWidget *spinner;
@@ -568,6 +576,171 @@ GtkAdjustment *adj;
 }
 
 
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+gint hbtk_radio_button_get_active (GtkContainer *container)
+{
+GList *lchild, *list;
+GtkWidget *radio;
+gint i, retval = 0;
+
+	if(!GTK_IS_CONTAINER(container))
+		return -1;
+
+	lchild = list = gtk_container_get_children (container);
+	for(i=0;list != NULL;i++)
+	{
+		radio = list->data;
+		if(GTK_IS_TOGGLE_BUTTON(radio))
+		{
+			if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio)) == TRUE )
+			{
+				retval = i;
+				break;
+			}
+		}
+		list = g_list_next(list);
+	}
+	g_list_free(lchild);
+	
+	return retval;
+}
+
+
+void hbtk_radio_button_set_active (GtkContainer *container, gint active)
+{
+GList *lchild, *list;
+GtkWidget *radio;
+
+	if(!GTK_IS_CONTAINER(container))
+		return;
+
+	lchild = list = gtk_container_get_children (container);
+	radio = g_list_nth_data (list, active);
+	if(radio != NULL && GTK_IS_TOGGLE_BUTTON(radio))
+	{
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio), TRUE);
+	}
+	g_list_free(lchild);
+}
+
+
+GtkWidget *hbtk_radio_button_get_nth (GtkContainer *container, gint nth)
+{
+GList *lchild, *list;
+GtkWidget *radio;
+
+	if(!GTK_IS_CONTAINER(container))
+		return NULL;
+
+	lchild = list = gtk_container_get_children (container);
+	radio = g_list_nth_data (list, nth);
+	g_list_free(lchild);
+	return radio;   //may return NULL
+}
+
+
+void hbtk_radio_button_unblock_by_func(GtkContainer *container, GCallback c_handler, gpointer data)
+{
+GList *lchild, *list;
+GtkWidget *radio;
+gint i;
+
+	if(!GTK_IS_CONTAINER(container))
+		return;
+
+	lchild = list = gtk_container_get_children (container);
+	for(i=0;list != NULL;i++)
+	{
+		radio = list->data;
+		if(GTK_IS_TOGGLE_BUTTON(radio))
+		{
+			g_signal_handlers_unblock_by_func (radio, c_handler, data);
+		}
+		list = g_list_next(list);
+	}
+	g_list_free(lchild);
+}
+
+
+void hbtk_radio_button_block_by_func(GtkContainer *container, GCallback c_handler, gpointer data)
+{
+GList *lchild, *list;
+GtkWidget *radio;
+gint i;
+
+	if(!GTK_IS_CONTAINER(container))
+		return;
+
+	lchild = list = gtk_container_get_children (container);
+	for(i=0;list != NULL;i++)
+	{
+		radio = list->data;
+		if(GTK_IS_TOGGLE_BUTTON(radio))
+		{
+			g_signal_handlers_block_by_func (radio, c_handler, data);
+		}
+		list = g_list_next(list);
+	}
+	g_list_free(lchild);
+}
+
+
+void hbtk_radio_button_connect(GtkContainer *container, const gchar *detailed_signal, GCallback c_handler, gpointer data)
+{
+GList *lchild, *list;
+GtkWidget *radio;
+gint i;
+
+	if(!GTK_IS_CONTAINER(container))
+		return;
+
+	lchild = list = gtk_container_get_children (container);
+	for(i=0;list != NULL;i++)
+	{
+		radio = list->data;
+		if(GTK_IS_TOGGLE_BUTTON(radio))
+		{
+			g_signal_connect (radio, "toggled", c_handler, data);
+		}
+		list = g_list_next(list);
+	}
+	g_list_free(lchild);
+
+}
+
+
+GtkWidget *hbtk_radio_button_new (gchar **items, gboolean buttonstyle)
+{
+GtkWidget *box, *button, *newbutton;
+guint i;
+
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+
+    button = gtk_radio_button_new_with_label (NULL, _(items[0]));
+	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), !buttonstyle);
+    gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
+	for (i = 1; items[i] != NULL; i++)
+	{
+		newbutton = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (button), _(items[i]));
+		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (newbutton), !buttonstyle);
+	    gtk_box_pack_start (GTK_BOX (box), newbutton, FALSE, FALSE, 0);
+	}
+
+	if(buttonstyle)
+	{
+		gtk_style_context_add_class (gtk_widget_get_style_context (box), GTK_STYLE_CLASS_LINKED);
+		gtk_style_context_add_class (gtk_widget_get_style_context (box), GTK_STYLE_CLASS_RAISED);
+	}
+	
+	return box;
+}
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
 static gboolean
 is_separator (GtkTreeModel *model,
 	      GtkTreeIter  *iter,
@@ -589,25 +762,6 @@ is_separator (GtkTreeModel *model,
 
 
   return retval;
-}
-
-static void
-set_sensitive (GtkCellLayout   *cell_layout,
-	       GtkCellRenderer *cell,
-	       GtkTreeModel    *tree_model,
-	       GtkTreeIter     *iter,
-	       gpointer         data)
-{
-GtkTreePath *path;
-gint *indices;
-gboolean sensitive;
-
-	path = gtk_tree_model_get_path (tree_model, iter);
-	indices = gtk_tree_path_get_indices (path);
-	sensitive = indices[0] != FLT_RANGE_OTHER;  
-	gtk_tree_path_free (path);
-
-	g_object_set (cell, "sensitive", sensitive, NULL);
 }
 
 
@@ -635,50 +789,8 @@ guint i;
 }
 
 
-GtkWidget *make_daterange(GtkWidget *label, gboolean custom)
-{
-GtkWidget *combobox;
-GList *renderers, *list;
-GtkCellRenderer *renderer;
-gchar **items = CYA_FLT_RANGE;
-guint i;
-
-	combobox = gtk_combo_box_text_new ();
-
-	for (i = 0; items[i] != NULL; i++)
-	{
-		if(*items[i] != 0)
-			gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT(combobox), _(items[i]));
-		else
-			gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT(combobox), "");
-	}
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), 0);
-
-	if(label)
-		gtk_label_set_mnemonic_widget (GTK_LABEL(label), combobox);
-
-	// special stuffs
-	renderers = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT(combobox));
-	if(g_list_length(renderers) == 1 && custom == FALSE)
-	{
-		list = g_list_first(renderers);
-		renderer = list->data;
-	
-	
-		gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (combobox),
-						renderer,
-						set_sensitive,
-						NULL, NULL);
-	}	
-	g_list_free(renderers);
-
-	gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combobox), is_separator, NULL, NULL);
-
-	return combobox;
-}
-
-
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
 
 #define HB_KV_BUFFER_MAX_LEN	8
 #define HB_KV_ITEMS_MAX_LEN		32
@@ -796,117 +908,71 @@ guint32 i;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-
-gint hbtk_radio_get_active (GtkContainer *container)
+static void
+set_sensitive (GtkCellLayout   *cell_layout,
+	       GtkCellRenderer *cell,
+	       GtkTreeModel    *tree_model,
+	       GtkTreeIter     *iter,
+	       gpointer         data)
 {
-GList *lchild, *list;
-GtkWidget *radio;
-gint i, retval = 0;
+GtkTreePath *path;
+gint *indices;
+gboolean sensitive;
 
-	if(!GTK_IS_CONTAINER(container))
-		return -1;
+	path = gtk_tree_model_get_path (tree_model, iter);
+	indices = gtk_tree_path_get_indices (path);
+	sensitive = indices[0] != FLT_RANGE_OTHER;  
+	gtk_tree_path_free (path);
 
-	lchild = list = gtk_container_get_children (container);
-	for(i=0;list != NULL;i++)
+	g_object_set (cell, "sensitive", sensitive, NULL);
+}
+
+
+
+GtkWidget *make_daterange(GtkWidget *label, guint dspmode)
+{
+GtkWidget *combobox = hbtk_combo_box_new(label);
+GList *renderers, *list;
+HbKvData *tmp, *kvdata = CYA_FLT_RANGE;
+guint32 i;
+
+	for(i=0;i<HB_KV_ITEMS_MAX_LEN;i++)
 	{
-		radio = list->data;
-		if(GTK_IS_TOGGLE_BUTTON(radio))
+		tmp = &kvdata[i];
+		if( tmp->name == NULL )
+			break;
+
+		if( (tmp->key == FLT_RANGE_OTHER) )
 		{
-			if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio)) == TRUE )
+			if( dspmode == DATE_RANGE_CUSTOM_DISABLE )
 			{
-				retval = i;
-				break;
+				renderers = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT(combobox));
+				if(g_list_length(renderers) == 1)
+				{
+					list = g_list_first(renderers);
+					gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (combobox),
+									list->data,
+									set_sensitive,
+									NULL, NULL);
+				}	
+				g_list_free(renderers);
+			}
+			else
+			if( dspmode == DATE_RANGE_CUSTOM_HIDE )
+			{
+				//if hide, we do not show it
+				i++;
+				continue;
 			}
 		}
-		list = g_list_next(list);
-	}
-	g_list_free(lchild);
-	
-	return retval;
-}
 
-
-void hbtk_radio_set_active (GtkContainer *container, gint active)
-{
-GList *lchild, *list;
-GtkWidget *radio;
-
-	if(!GTK_IS_CONTAINER(container))
-		return;
-
-	lchild = list = gtk_container_get_children (container);
-	radio = g_list_nth_data (list, active);
-	if(radio != NULL && GTK_IS_TOGGLE_BUTTON(radio))
-	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(radio), TRUE);
-	}
-	g_list_free(lchild);
-}
-
-
-GtkWidget *hbtk_radio_get_nth (GtkContainer *container, gint nth)
-{
-GList *lchild, *list;
-GtkWidget *radio;
-
-	if(!GTK_IS_CONTAINER(container))
-		return NULL;
-
-	lchild = list = gtk_container_get_children (container);
-	radio = g_list_nth_data (list, nth);
-	g_list_free(lchild);
-	return radio;   //may return NULL
-}
-
-
-void hbtk_radio_connect(GtkContainer *container, const gchar *detailed_signal, GCallback c_handler, gpointer data)
-{
-GList *lchild, *list;
-GtkWidget *radio;
-gint i;
-
-	if(!GTK_IS_CONTAINER(container))
-		return;
-
-	lchild = list = gtk_container_get_children (container);
-	for(i=0;list != NULL;i++)
-	{
-		radio = list->data;
-		if(GTK_IS_TOGGLE_BUTTON(radio))
-		{
-			g_signal_connect (radio, "toggled", c_handler, data);
-		}
-		list = g_list_next(list);
-	}
-	g_list_free(lchild);
-
-}
-
-
-GtkWidget *hbtk_radio_new (gchar **items, gboolean buttonstyle)
-{
-GtkWidget *box, *button, *newbutton;
-guint i;
-
-	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-
-    button = gtk_radio_button_new_with_label (NULL, _(items[0]));
-	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), !buttonstyle);
-    gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
-	for (i = 1; items[i] != NULL; i++)
-	{
-		newbutton = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (button), _(items[i]));
-		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (newbutton), !buttonstyle);
-	    gtk_box_pack_start (GTK_BOX (box), newbutton, FALSE, FALSE, 0);
+		hbtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(combobox), tmp->key, (*tmp->name != 0) ? (gchar *)_(tmp->name) : (gchar *)"");
 	}
 
-	if(buttonstyle)
-	{
-		gtk_style_context_add_class (gtk_widget_get_style_context (box), GTK_STYLE_CLASS_LINKED);
-		gtk_style_context_add_class (gtk_widget_get_style_context (box), GTK_STYLE_CLASS_RAISED);
-	}
-	
-	return box;
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), 0);
+	gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combobox), hbtk_combo_box_is_separator, NULL, NULL);
+
+	return combobox;
 }
 
 

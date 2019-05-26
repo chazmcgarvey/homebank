@@ -54,6 +54,8 @@ gint hb_string_compare(gchar *s1, gchar *s2);
 gint hb_string_utf8_strstr(gchar *haystack, gchar *needle, gboolean exact);
 gint hb_string_utf8_compare(gchar *s1, gchar *s2);
 
+gchar *hb_string_dup_raw_amount_clean(const gchar *string, gint digits);
+
 void hb_string_strip_crlf(gchar *str);
 void hb_string_replace_char(gchar c, gchar *str);
 gchar *hb_string_copy_jsonpair(gchar *dst, gchar *str);

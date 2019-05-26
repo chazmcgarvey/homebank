@@ -42,6 +42,16 @@
 #define DEFAULT_INC_COLOR		"#4e9a36"	//Chameleon
 #define DEFAULT_WARN_COLOR		"#a40000"	//Scarlett Red
 
+
+#define PRF_DTEX_CSVSEP_BUFFER "\t,; "
+enum {
+	PRF_DTEX_CSVSEP_TAB,
+	PRF_DTEX_CSVSEP_COMMA,
+	PRF_DTEX_CSVSEP_SEMICOLON,
+	PRF_DTEX_CSVSEP_SPACE,
+};
+
+
 /*
 ** Preference datas
 */
@@ -95,6 +105,7 @@ struct Preferences
 	gboolean	dtex_qifmemo;
 	gboolean	dtex_qifswap;
 	gboolean	dtex_ucfirst;
+	gint		dtex_csvsep;
 
 	//report options
 	gint		date_range_rep;

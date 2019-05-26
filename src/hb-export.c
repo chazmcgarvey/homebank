@@ -18,7 +18,9 @@
  */
 
 #include "homebank.h"
+
 #include "hb-export.h"
+#include "list-operation.h"
 
 /****************************************************************************/
 /* Debug macros                                                             */
@@ -552,7 +554,7 @@ gint i, col;
 	Transaction *txn;
 	int tw, th;
 			
-		gtk_tree_model_get (model, &iter, LST_DSPOPE_DATAS, &txn, -1);
+		gtk_tree_model_get (model, &iter, MODEL_TXN_POINTER, &txn, -1);
 
 		i = 0;
 		g_date_set_julian (date, txn->date);
@@ -624,7 +626,7 @@ gint i, col;
 	Transaction *txn;
 	int tw, th;
 			
-		gtk_tree_model_get (model, &iter, LST_DSPOPE_DATAS, &txn, -1);
+		gtk_tree_model_get (model, &iter, MODEL_TXN_POINTER, &txn, -1);
 
 		//DB( g_print(" - %d, %d, %s\n", x, y, txn->memo) );
 		if(cur_page_line == 1)

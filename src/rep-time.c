@@ -265,7 +265,7 @@ struct ui_reptime_data *data;
 	gtk_date_entry_set_mindate(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->mindate);
 
 	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPTIME_RANGE]);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_OTHER);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), FLT_RANGE_OTHER);
 	g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPTIME_RANGE]);
 
 	ui_reptime_compute(widget, NULL);
@@ -303,7 +303,7 @@ gint range;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	range = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_range));
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
 
 	if(range != FLT_RANGE_OTHER)
 	{
@@ -618,8 +618,11 @@ GtkTreeIter  iter;
 				pos = report_interval_get_pos(tmpintvl, from, ope);
 				if( pos == active )
 				{
+				gdouble dtlamt = report_txn_amount_get(data->filter, ope);
+
 					gtk_list_store_insert_with_values (GTK_LIST_STORE(model), &iter, -1,
-						LST_DSPOPE_DATAS, ope,
+						MODEL_TXN_POINTER, ope,
+					    MODEL_TXN_SPLITAMT, dtlamt,
 						-1);
 				}
 			}
@@ -663,7 +666,7 @@ guint32 selkey;
 	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
 	cumul     = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_cumul));
 	showall   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_all));
-	range     = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_range));
+	range     = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
 	showempty = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_showempty));
 
 	selkey = 0;
@@ -739,7 +742,8 @@ guint32 selkey;
 
 				trn_amount = report_txn_amount_get(data->filter, ope);
 
-				if( tmpsrc == REPORT_SRC_ACCOUNT && showall == TRUE )
+				 //#1829603 Multi currencies problem in Trend Time Report 
+				if( ! ( tmpsrc == REPORT_SRC_ACCOUNT && showall == FALSE) )
 					trn_amount = hb_amount_base(trn_amount, ope->kcur);
 				
 				pos = report_interval_get_pos(tmpintvl, from, ope);
@@ -1269,7 +1273,7 @@ GError *error = NULL;
 	row++;
 	label = make_label_widget(_("_Range:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	data->CY_range = make_daterange(label, FALSE);
+	data->CY_range = make_daterange(label, DATE_RANGE_CUSTOM_DISABLE);
 	gtk_grid_attach (GTK_GRID (table), data->CY_range, 2, row, 1, 1);
 
 	row++;
@@ -1514,7 +1518,7 @@ GError *error = NULL;
 	DB( g_print("range: %d\n", PREFS->date_range_rep) );
 
 	if( PREFS->date_range_rep != 0)
-		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_rep);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), PREFS->date_range_rep);
 	else
 		ui_reptime_compute(window, NULL);
 
