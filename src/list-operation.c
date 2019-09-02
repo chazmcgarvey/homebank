@@ -340,6 +340,23 @@ Transaction *ope;
 	}
 }
 
+
+static void list_txn_payeexfer_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+Transaction *ope;
+gchar *direction = "";
+	
+	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &ope, -1);
+	list_txn_eval_future(renderer, ope);
+
+	if(ope->paymode == PAYMODE_INTXFER)
+	{
+		direction = ( ope->flags & OF_INCOME ) ? "<" : ">";
+	}
+	g_object_set(renderer, "text", direction, NULL);
+}
+
+
 /*
 ** payee cell function
 */
@@ -895,7 +912,8 @@ GtkTreeViewColumn *column = user_data;
 }
 
 
-static gboolean list_txn_column_popup_callback ( GtkWidget *button,
+static gboolean
+list_txn_column_popup_callback ( GtkWidget *button,
                         GdkEventButton *ev,
                         gpointer user_data )
 {
@@ -989,14 +1007,27 @@ list_txn_column_text_create(gint list_type, gchar *title, gint sortcolumnid, Gtk
 GtkTreeViewColumn  *column;
 GtkCellRenderer    *renderer;
 
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(column, title);
+	
+	//5.3 add > < for internal xfer
+	if( sortcolumnid == LST_DSPOPE_PAYEE )
+	{
+		renderer = gtk_cell_renderer_text_new ();
+		gtk_tree_view_column_pack_start(column, renderer, FALSE);
+		gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_payeexfer_cell_data_function, NULL, NULL);
+	}
+	   
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set(renderer, 
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
+		//taken from nemo, not exactly a resize to content, but good compromise
+	    "width-chars", 40,
 	    NULL);
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, func, NULL, NULL);
 	
-	column = gtk_tree_view_column_new_with_attributes(title, renderer, NULL);
-
 	gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 
@@ -1027,10 +1058,12 @@ GtkCellRenderer    *renderer;
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_info_cell_data_function, GINT_TO_POINTER(1), NULL);
 
 	renderer = gtk_cell_renderer_text_new ();
-	/*g_object_set(renderer, 
+	g_object_set(renderer, 
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
-	    NULL);*/
+		//taken from nemo, not exactly a resize to content, but good compromise
+	    "width-chars", 40,
+	    NULL);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_info_cell_data_function, GINT_TO_POINTER(2), NULL);
 

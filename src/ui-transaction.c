@@ -88,47 +88,31 @@ gboolean sensitive;
 }
 
 
-//1336928 combobox tags
-static void deftransaction_update_tags(GtkWidget *widget, gpointer user_data)
-{
-struct deftransaction_data *data;
-gchar *newtag;
-	
-	DB( g_print("\n[ui-transaction] update tags\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	newtag = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(data->CY_tags));
-	ui_gtk_entry_tag_name_append(GTK_ENTRY(data->ST_tags), newtag);
-	g_free(newtag);
-	
-	//revert back to ----
-	g_signal_handlers_block_by_func (G_OBJECT (data->CY_tags), G_CALLBACK (deftransaction_update_tags), NULL);
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_tags), 0);
-	g_signal_handlers_unblock_by_func (G_OBJECT (data->CY_tags), G_CALLBACK (deftransaction_update_tags), NULL);
-}
-
-
 static void deftransaction_update_warnsign(GtkWidget *widget, gpointer user_data)
 {
 struct deftransaction_data *data;
 gboolean warning = FALSE;
 gdouble amount;
-gint amttype;
+gint paymode, type;
 Category *cat;
 
 	DB( g_print("\n[ui-transaction] update warning sign\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	cat = ui_cat_comboboxentry_get(GTK_COMBO_BOX(data->PO_cat));
-	if(cat != NULL && cat->key > 0)
+	//#1830707 no warning for xfer
+	paymode = gtk_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
+	if( paymode != PAYMODE_INTXFER )
 	{
-		amount = hb_amount_round(gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount)), 2);
-		if(amount != 0.0)
+		cat = ui_cat_comboboxentry_get(GTK_COMBO_BOX(data->PO_cat));
+		if(cat != NULL && cat->key > 0)
 		{
-			amttype = (amount > 0) ? 1 : -1;
-			warning = (category_type_get(cat) != amttype) ? TRUE : FALSE;
+			amount = hb_amount_round(gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount)), 2);
+			if(amount != 0.0)
+			{
+				type = (amount > 0) ? 1 : -1;
+				warning = (category_type_get(cat) != type) ? TRUE : FALSE;
+			}
 		}
 	}
 
@@ -211,7 +195,8 @@ Payee *pay;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	pay = ui_pay_comboboxentry_get(GTK_COMBO_BOX(data->PO_pay));
+	//pay = ui_pay_comboboxentry_get(GTK_COMBO_BOX(data->PO_pay));
+	pay = ui_pay_entry_popover_get(GTK_BOX(data->PO_pay));
 	if( pay != NULL )
 	{
 		// only set for empty category
@@ -375,7 +360,8 @@ gchar *tagstr, *txt;
 	txt = (entry->info != NULL) ? entry->info : "";
 	gtk_entry_set_text(GTK_ENTRY(data->ST_info), txt);
 	ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_cat), entry->kcat);
-	ui_pay_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_pay), entry->kpay);
+	//ui_pay_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_pay), entry->kpay);
+	ui_pay_entry_popover_set_active(GTK_BOX(data->PO_pay), entry->kpay);
 
 	tagstr = tags_tostring(entry->tags);
 	DB( g_print(" - tags: '%s'\n", txt) );
@@ -485,7 +471,8 @@ gint active;
 
 	entry->paymode  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
 	entry->kcat     = ui_cat_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->PO_cat));
-	entry->kpay     = ui_pay_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->PO_pay));
+	//entry->kpay     = ui_pay_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->PO_pay));
+	entry->kpay     = ui_pay_entry_popover_get_key_add_new(GTK_BOX(data->PO_pay));
 	entry->kacc     = ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_acc));
 	entry->kxferacc = ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_accto));
 
@@ -825,39 +812,22 @@ static void deftransaction_setup(struct deftransaction_data *data)
 
 	DB( g_print("\n[ui-transaction] setup\n") );
 
-	ui_pay_comboboxentry_populate(GTK_COMBO_BOX(data->PO_pay), GLOBALS->h_pay);
-	ui_cat_comboboxentry_populate(GTK_COMBO_BOX(data->PO_cat), GLOBALS->h_cat);
-	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_acc), GLOBALS->h_acc, ACC_LST_INSERT_NORMAL);
-	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_accto), GLOBALS->h_acc, ACC_LST_INSERT_NORMAL);
-
 	if( data->showtemplate )
 	{
 		deftransaction_template_popover_populate (data, GLOBALS->arc_list);
 		gtk_tree_model_filter_refilter(GTK_TREE_MODEL_FILTER(data->modelfilter));
 	}
 
-	ui_tag_combobox_populate(GTK_COMBO_BOX_TEXT(data->CY_tags));
+	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_acc), GLOBALS->h_acc, ACC_LST_INSERT_NORMAL);
+	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_accto), GLOBALS->h_acc, ACC_LST_INSERT_NORMAL);
 
-}
+	ui_cat_comboboxentry_populate(GTK_COMBO_BOX(data->PO_cat), GLOBALS->h_cat);
 
-static GtkWidget *
-create_popover (GtkWidget       *parent,
-                GtkWidget       *child,
-                GtkPositionType  pos)
-{
-GtkWidget *popover;
 
-	popover = gtk_popover_new (parent);
-	gtk_popover_set_position (GTK_POPOVER (popover), pos);
-	gtk_container_add (GTK_CONTAINER (popover), child);
-	gtk_widget_show (child);
+	//5.2.7 done in popover
+	//ui_pay_comboboxentry_populate(GTK_COMBO_BOX(data->PO_pay), GLOBALS->h_pay);
+	//ui_tag_combobox_populate(GTK_COMBO_BOX_TEXT(data->CY_tags));
 
-	gtk_widget_set_margin_start (child, SPACING_POPOVER);
-	gtk_widget_set_margin_end (child, SPACING_POPOVER);
-	gtk_widget_set_margin_top (child, SPACING_POPOVER);
-	gtk_widget_set_margin_bottom (child, SPACING_POPOVER);
-
-	return popover;
 }
 
 
@@ -1218,7 +1188,8 @@ gint row;
 	data->PO_date = widget;
 	gtk_widget_set_halign(widget, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-	gtk_widget_set_tooltip_text(widget, _("Date accepted here are:\nday,\nday/month or month/day,\nand complete date into your locale"));
+	//gtk_widget_set_tooltip_text(widget, _("Date accepted here are:\nday,\nday/month or month/day,\nand complete date into your locale"));
+	gtk_widget_set_tooltip_text(widget, _("- type: d, d/m, m/d a complete date\n- use arrow key + ctrl or shift\n- empty for today"));
 
 	data->showtemplate = FALSE;
 	if( data->type != TRANSACTION_EDIT_MODIFY && da_archive_length() > 0 && !postmode )
@@ -1291,13 +1262,34 @@ gint row;
 	gtk_widget_set_margin_bottom(widget, SPACING_SMALL);
 
 
-	row++;
+	/*row++;
 	label = make_label_widget(_("_Payee:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	widget = ui_pay_comboboxentry_new(label);
 	data->PO_pay = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
-	gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
+	//gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
+	gtk_widget_set_tooltip_text(widget, _("- type some letter for autocompletion\n- type new text to create entry"));
+	*/
+
+	row++;
+	label = make_label_widget(_("_Payee:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
+	gtk_widget_set_hexpand(hbox, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 2, 1);
+
+		widget = ui_pay_entry_popover_new(label);
+		data->PO_pay = widget;
+		gtk_widget_set_hexpand(widget, TRUE);
+		gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+		//widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
+		gtk_widget_set_tooltip_text(widget, _("- type some letter for autocompletion\n- type new text to create entry"));
+		//gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+	gtk_widget_set_margin_bottom(label, SPACING_SMALL);
+	gtk_widget_set_margin_bottom(hbox, SPACING_SMALL);
 
 	row++;
 	label = make_label_widget(_("_Category:"));
@@ -1305,11 +1297,8 @@ gint row;
 	widget = ui_cat_comboboxentry_new(label);
 	data->PO_cat = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
-	gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
-
-	gtk_widget_set_margin_bottom(label, SPACING_SMALL);
-	gtk_widget_set_margin_bottom(widget, SPACING_SMALL);
-
+	//gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
+	gtk_widget_set_tooltip_text(widget, _("- type some letter for autocompletion\n- type new text to create entry"));
 	
 	row++;
 	label = make_label_widget(_("_Status:"));
@@ -1331,18 +1320,19 @@ gint row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_hexpand(hbox, TRUE);
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(hbox)), GTK_STYLE_CLASS_LINKED);
 	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 2, 1);
 
 		widget = make_string(label);
 		data->ST_tags = widget;
 		gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
 
-		widget = ui_tag_combobox_new(NULL);
+		widget = ui_tag_popover_list(data->ST_tags);
 		data->CY_tags = widget;
 		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 	
 	gtk_widget_show_all(mainvbox);
-	
+
 	bar = gtk_info_bar_new ();
 	data->IB_warnsign = bar;
 	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_WARNING);
@@ -1365,10 +1355,9 @@ gint row;
 	g_signal_connect (data->NU_mode  , "changed", G_CALLBACK (deftransaction_paymode), NULL);
 	g_signal_connect (data->CM_cheque, "toggled", G_CALLBACK (deftransaction_paymode), NULL);
 
-	g_signal_connect (data->PO_pay  , "changed", G_CALLBACK (deftransaction_update_payee), NULL);
+	//g_signal_connect (data->PO_pay  , "changed", G_CALLBACK (deftransaction_cb_payee_changed), NULL);
+	g_signal_connect (ui_pay_entry_popover_get_entry(GTK_BOX(data->PO_pay)), "changed", G_CALLBACK (deftransaction_update_payee), NULL);
 	g_signal_connect (data->PO_cat  , "changed", G_CALLBACK (deftransaction_update_warnsign), NULL);
-
-	g_signal_connect (data->CY_tags , "changed", G_CALLBACK (deftransaction_update_tags), NULL);
 
 	//setup, init and show window
 	deftransaction_setup(data);

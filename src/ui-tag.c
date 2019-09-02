@@ -40,7 +40,7 @@ extern struct Preferences *PREFS;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-
+//TODO: still used in rep_time
 void
 ui_tag_combobox_populate(GtkComboBoxText *combobox)
 {
@@ -73,6 +73,75 @@ GtkWidget *combobox;
 
 	combobox = hbtk_combo_box_new(label);
 	return combobox;
+}
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+static void ui_tag_popover_cb_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, gpointer user_data)
+{
+GtkTreeSelection *treeselection;
+GtkTreeModel *model;
+GtkTreeIter iter;
+GtkEntry *entry = user_data;
+
+	if( GTK_IS_ENTRY(entry) )
+	{
+		treeselection = gtk_tree_view_get_selection(tree_view);
+		if( gtk_tree_selection_get_selected(treeselection, &model, &iter) )
+		{
+		Tag *item;
+
+			gtk_tree_model_get(model, &iter, LST_DEFTAG_DATAS, &item, -1);
+
+			hbtk_entry_tag_name_append(GTK_ENTRY(user_data), item->name);
+		}
+	}
+}
+
+
+GtkWidget *
+ui_tag_popover_list(GtkWidget *entry)
+{
+GtkWidget *box, *menubutton, *image, *scrollwin, *treeview;
+
+	menubutton = gtk_menu_button_new ();
+	image = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
+	gtk_container_add(GTK_CONTAINER(menubutton), image);
+
+	//gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_DOWN );
+	//gtk_widget_set_halign (menubutton, GTK_ALIGN_END);
+	gtk_widget_show_all(menubutton);
+
+	//GtkWidget *template = ui_popover_tpl_create(data);
+
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
+	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	gtk_box_pack_start(GTK_BOX(box), scrollwin, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	treeview = ui_tag_listview_new(FALSE);
+	//data.LV_tag = treeview;
+	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
+	gtk_widget_show_all(box);
+
+	gtk_tree_view_set_hover_selection(GTK_TREE_VIEW(treeview), TRUE);
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
+	gtk_tree_view_set_activate_on_single_click(GTK_TREE_VIEW(treeview), TRUE);
+
+	
+	GtkWidget *popover = create_popover (menubutton, box, GTK_POS_BOTTOM);
+	gtk_widget_set_size_request (popover, HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
+
+	gtk_menu_button_set_popover(GTK_MENU_BUTTON(menubutton), popover);
+
+	ui_tag_listview_populate(treeview, 0);
+
+	g_signal_connect (treeview, "row-activated", G_CALLBACK (ui_tag_popover_cb_row_activated), entry);
+	g_signal_connect_swapped(treeview, "row-activated", G_CALLBACK(gtk_popover_popdown), popover);
+	
+	return menubutton;
 }
 
 
@@ -316,6 +385,40 @@ GtkTreeViewColumn	*column;
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+static void ui_tag_manage_filter_text_handler (GtkEntry    *entry,
+                          const gchar *text,
+                          gint         length,
+                          gint        *position,
+                          gpointer     data)
+{
+GtkEditable *editable = GTK_EDITABLE(entry);
+gint i, count=0;
+gchar *result = g_new0 (gchar, length+1);
+
+  for (i=0; i < length; i++)
+  {
+    if (text[i]==' ')
+      continue;
+    result[count++] = text[i];
+  }
+
+
+  if (count > 0) {
+    g_signal_handlers_block_by_func (G_OBJECT (editable),
+                                     G_CALLBACK (ui_tag_manage_filter_text_handler),
+                                     data);
+    gtk_editable_insert_text (editable, result, count, position);
+    g_signal_handlers_unblock_by_func (G_OBJECT (editable),
+                                       G_CALLBACK (ui_tag_manage_filter_text_handler),
+                                       data);
+  }
+  g_signal_stop_emission_by_name (G_OBJECT (editable), "insert_text");
+
+  g_free (result);
+}
+
 
 
 /**
@@ -664,7 +767,8 @@ gint w, h, row;
 	g_object_bind_property (data.BT_add, "active", addreveal, "reveal-child", G_BINDING_BIDIRECTIONAL);
 
 	g_signal_connect (G_OBJECT (data.ST_name), "activate", G_CALLBACK (ui_tag_manage_dialog_add), NULL);
-
+	g_signal_connect(G_OBJECT(data.ST_name), "insert-text", G_CALLBACK(ui_tag_manage_filter_text_handler), NULL);
+	
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data.LV_tag)), "changed", G_CALLBACK (ui_tag_manage_dialog_selection), NULL);
 	g_signal_connect (GTK_TREE_VIEW(data.LV_tag), "row-activated", G_CALLBACK (ui_tag_manage_dialog_onRowActivated), NULL);
 

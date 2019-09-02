@@ -36,6 +36,50 @@
 extern struct HomeBank *GLOBALS;
 
 
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+static void
+da_archive_clean(Archive *item)
+{
+	if(item != NULL)
+	{
+		if(item->memo != NULL)
+		{
+			g_free(item->memo);
+			item->memo = NULL;
+		}
+
+
+
+
+
+		//5.3 added as it was a leak
+		if(item->tags != NULL)
+		{
+			g_free(item->tags);
+			item->tags = NULL;
+		}
+		if(item->splits != NULL)
+		{
+			da_split_destroy(item->splits);
+			item->splits = NULL;
+			item->flags &= ~(OF_SPLIT); //Flag that Splits are cleared
+		}
+	}
+}
+
+
+void da_archive_free(Archive *item)
+{
+	if(item != NULL)
+	{
+		da_archive_clean(item);
+		g_free(item);
+	}
+}
+
+
 Archive *da_archive_malloc(void)
 {
 Archive *item;
@@ -66,19 +110,6 @@ Archive *new_item = g_memdup(src_item, sizeof(Archive));
 			new_item->flags |= OF_SPLIT; //Flag that Splits are active
 	}
 	return new_item;
-}
-
-
-void da_archive_free(Archive *item)
-{
-	if(item != NULL)
-	{
-		if(item->memo != NULL)
-			g_free(item->memo);
-		if(item->splits != NULL)
-			da_split_destroy(item->splits);
-		g_free(item);
-	}
 }
 
 

@@ -143,6 +143,7 @@ void filter_status_cat_clear_except(Filter *flt, guint32 selkey);
 void filter_reset(Filter *flt);
 void filter_preset_daterange_set(Filter *flt, gint range, guint32 kacc);
 void filter_preset_type_set(Filter *flt, gint value);
+gboolean filter_preset_daterange_future_enable(gint range);
 void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays);
 
 void filter_set_tag_by_id(Filter *flt, guint32 key);

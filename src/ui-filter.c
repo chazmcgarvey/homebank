@@ -53,6 +53,30 @@ extern gchar *nainex_label_names[];
 /* = = = = = = = = = = = = = = = = = = = = */
 
 
+static void ui_flt_hub_category_expand_all(GtkWidget *widget, gpointer user_data)
+{
+struct ui_flt_manage_data *data;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	DB( g_print("\n(ui_flt_hub_category) expand all (data=%p)\n", data) );
+
+	gtk_tree_view_expand_all(GTK_TREE_VIEW(data->LV_cat));
+
+}
+
+
+static void ui_flt_hub_category_collapse_all(GtkWidget *widget, gpointer user_data)
+{
+struct ui_flt_manage_data *data;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	DB( g_print("\n(ui_flt_hub_category) collapse all (data=%p)\n", data) );
+
+	gtk_tree_view_collapse_all(GTK_TREE_VIEW(data->LV_cat));
+
+}
+
+
 static void ui_flt_panel_category_get(struct ui_flt_manage_data *data)
 {
 gint i;
@@ -269,16 +293,17 @@ ui_flt_panel_category_activate_link (GtkWidget   *label,
 static GtkWidget *
 ui_flt_panel_category_new (struct ui_flt_manage_data *data)
 {
-GtkWidget *scrollwin, *hbox, *vbox, *label;
-
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
+GtkWidget *hubbox, *scrollwin, *hbox, *vbox, *widget, *label, *tbar;
+GtkToolItem *toolitem;
+	
+	hubbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
 
 	label = make_label (_("Categories"), 0, 0);
 	gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_LARGE, -1);
-	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);	
+	gtk_box_pack_start (GTK_BOX (hubbox), label, FALSE, FALSE, 0);	
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hubbox), hbox, FALSE, FALSE, 0);
 
 	label = make_label (_("Select:"), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
@@ -298,19 +323,50 @@ GtkWidget *scrollwin, *hbox, *vbox, *label;
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	g_signal_connect (label, "activate-link", G_CALLBACK (ui_flt_panel_category_activate_link), NULL);
 
+	//list
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_box_pack_start (GTK_BOX (hubbox), vbox, TRUE, TRUE, 0);
 
  	scrollwin = gtk_scrolled_window_new(NULL,NULL);
-	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
-
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	//gtk_container_set_border_width (GTK_CONTAINER(scrollwin), SPACING_SMALL);
-
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	//gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
 	data->LV_cat = (GtkWidget *)ui_cat_listview_new(TRUE, FALSE);
 	gtk_container_add(GTK_CONTAINER(scrollwin), data->LV_cat);
+	gtk_widget_set_hexpand (scrollwin, TRUE);
+	gtk_widget_set_vexpand (scrollwin, TRUE);
+	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
+
+	//list toolbar
+	tbar = gtk_toolbar_new();
+	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
+	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
+	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
+
+	toolitem = gtk_separator_tool_item_new ();
+	gtk_tool_item_set_expand (toolitem, TRUE);
+	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	toolitem = gtk_tool_item_new();
+	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	
+		widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
+		data->BT_expand = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+		widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
+		data->BT_collapse = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+	g_signal_connect (G_OBJECT (data->BT_expand), "clicked", G_CALLBACK (ui_flt_hub_category_expand_all), NULL);
+	g_signal_connect (G_OBJECT (data->BT_collapse), "clicked", G_CALLBACK (ui_flt_hub_category_collapse_all), NULL);
 
 
-	return(vbox);
+	return(hubbox);
 }
 
 
@@ -1320,11 +1376,8 @@ gint i, row;
 		image = gtk_image_new_from_icon_name( get_paymode_icon_name(i), GTK_ICON_SIZE_MENU);
 		gtk_grid_attach (GTK_GRID (table1), image, 0, row, 1, 1);
 
-		data->CM_paymode[i] = gtk_check_button_new();
+		data->CM_paymode[i] = gtk_check_button_new_with_mnemonic(_(paymode_label_names[i]));
 		gtk_grid_attach (GTK_GRID (table1), data->CM_paymode[i], 1, row, 1, 1);
-
-		label = make_label(_(paymode_label_names[i]), 0.0, 0.5);
-		gtk_grid_attach (GTK_GRID (table1), label, 2, row, 1, 1);
 	}
 
 	return table;
