@@ -61,6 +61,7 @@ GtkWidget *make_year(GtkWidget *label);
 GtkWidget *make_cycle(GtkWidget *label, gchar **items);
 GtkWidget *make_daterange(GtkWidget *label, guint dspmode);
 
+GtkWidget *create_popover (GtkWidget *parent, GtkWidget *child, GtkPositionType pos);
 
 void ui_label_set_integer(GtkLabel *label, gint value);
 
@@ -85,7 +86,7 @@ void gimp_label_set_attributes (GtkLabel *label, ...);
 
 
 void hb_widget_visible(GtkWidget *widget, gboolean visible);
-void ui_gtk_entry_tag_name_append(GtkEntry *entry, gchar *tagname);
+void hbtk_entry_tag_name_append(GtkEntry *entry, gchar *tagname);
 void ui_gtk_entry_set_text(GtkWidget *widget, gchar *text);
 void ui_gtk_entry_replace_text(GtkWidget *widget, gchar **storage);
 

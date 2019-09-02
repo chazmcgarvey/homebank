@@ -56,6 +56,8 @@ struct ui_tag_dialog_data
 void ui_tag_combobox_populate(GtkComboBoxText *combobox);
 GtkWidget *ui_tag_combobox_new(GtkWidget *label);
 
+GtkWidget *
+ui_tag_popover_list(GtkWidget *entry);
 
 /* = = = = = = = = = = */
 

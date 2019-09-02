@@ -187,7 +187,7 @@ gchar buf[16];
 }
 
 
-void ui_gtk_entry_tag_name_append(GtkEntry *entry, gchar *tagname)
+void hbtk_entry_tag_name_append(GtkEntry *entry, gchar *tagname)
 {
 GtkEntryBuffer *buffer;
 const gchar *text;
@@ -196,7 +196,7 @@ guint len;
 	text = gtk_entry_get_text(entry);
 	if( g_strstr_len(text, -1, tagname) == NULL )
 	{
-		DB( g_print(" gtkentry append tagname '%'\n", tagname) );
+		DB( g_print(" gtkentry append tagname '%s'\n", tagname) );
 		buffer = gtk_entry_get_buffer(GTK_ENTRY(entry));
 		if(buffer)
 		{
@@ -573,6 +573,27 @@ GtkAdjustment *adj;
 		gtk_label_set_mnemonic_widget (GTK_LABEL(label), spinner);
 
 	return spinner;
+}
+
+
+GtkWidget *
+create_popover (GtkWidget       *parent,
+                GtkWidget       *child,
+                GtkPositionType  pos)
+{
+GtkWidget *popover;
+
+	popover = gtk_popover_new (parent);
+	gtk_popover_set_position (GTK_POPOVER (popover), pos);
+	gtk_container_add (GTK_CONTAINER (popover), child);
+	gtk_widget_show (child);
+
+	gtk_widget_set_margin_start (child, SPACING_POPOVER);
+	gtk_widget_set_margin_end (child, SPACING_POPOVER);
+	gtk_widget_set_margin_top (child, SPACING_POPOVER);
+	gtk_widget_set_margin_bottom (child, SPACING_POPOVER);
+
+	return popover;
 }
 
 

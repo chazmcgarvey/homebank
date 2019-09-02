@@ -48,11 +48,24 @@ struct ui_pay_manage_dialog_data
 	gint		change;
 };
 
+
 struct payPopContext
 {
 	GtkTreeModel *model;
 	guint	except_key;
 };
+
+
+
+/* = = = = = = = = = = */
+
+GtkWidget *ui_pay_entry_popover_get_entry(GtkBox *box);
+Payee *ui_pay_entry_popover_get(GtkBox *box);
+guint32 ui_pay_entry_popover_get_key_add_new(GtkBox *box);
+guint32 ui_pay_entry_popover_get_key(GtkBox *box);
+void ui_pay_entry_popover_set_active(GtkBox *box, guint32 key);
+GtkWidget *ui_pay_entry_popover_new(GtkWidget *label);
+
 
 /* = = = = = = = = = = */
 
@@ -60,9 +73,7 @@ guint32 ui_pay_comboboxentry_get_key(GtkComboBox *entry_box);
 guint32 ui_pay_comboboxentry_get_key_add_new(GtkComboBox *entry_box);
 Payee *ui_pay_comboboxentry_get(GtkComboBox *entry_box);
 gboolean ui_pay_comboboxentry_set_active(GtkComboBox *entry_box, guint32 key);
-void ui_pay_comboboxentry_add(GtkComboBox *entry_box, Payee *pay);
 void ui_pay_comboboxentry_populate(GtkComboBox *entry_box, GHashTable *hash);
-void ui_pay_comboboxentry_populate_except(GtkComboBox *entry_box, GHashTable *hash, guint except_key);
 GtkWidget *ui_pay_comboboxentry_new(GtkWidget *label);
 
 /* = = = = = = = = = = */

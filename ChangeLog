@@ -1,9 +1,34 @@
 
 
-2019-06-24  Maxime Doyen
+2019-07-28  Maxime Doyen
+
+ Made 5.2.7 release.
+
+ * new   : dropped usage of comboboxentry in profit of a popover list for tags
+ * new   : payee column shows >account or <account for internal transfer
+ * change: transaction tooltip were clarified
+ * bugfix: filter payment click on label was not working
+ * bugfix: tags add from manager was allowing input space in name
+ * bugfix: tags were not freed from archives
+ * bugfix: #1837838 create an account in new file wizard allows trailing space in account name
+ * bugfix: #1836380 vehicle cost report show bad km stats in some case
+ * bugfix: #1835588 toggle future transactions button is faulty always showed
+ * bugfix: #1832982 typo in src/dsp-account.c
+ * bugfix: #1832216 win: open payee menu crash on libcairo, and is slow
+ * bugfix: #1830880 changing a transaction in the future screen doesn't activate the save button
+ * bugfix: #1830710 tag list is slow with lots of items and too wide
+ * bugfix: #1830707 no warning for "amount and category sign don't match" if internal transfer
+ * bugfix: #1830656 Payee and Memo colums on scheduled screen sometimes revert to minimum width
+ * bugfix: #1830523 future/remind txn main panel list shows 0.00 amount 
+ * bugfix: #1792277 not all columns auto-size to contents
+ * wish  : #1828732 add expand/collapse all for categories in edit filter
+
+
+2019-05-24  Maxime Doyen
 
  Made 5.2.6 release.
 
+ * new   : windows: added ofxdump.exe to the installer so you can test your OFX/QFX file
  * change: access to the show all transaction with the toolbar
  * bugfix: #1829630	homebank: _cairo_arc_in_direction(): homebank killed by SIGABRT 
  * bugfix: #1829076 status "no category" filter not working

@@ -403,6 +403,8 @@ GtkTreeViewColumn  *column;
 	g_object_set(renderer, 
 		"ellipsize", PANGO_ELLIPSIZE_END,
 		"ellipsize-set", TRUE,
+		//taken from nemo, not exactly a resize to content, but good compromise
+	    "width-chars", 40,
 		NULL);
 
 	column = gtk_tree_view_column_new();

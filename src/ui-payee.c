@@ -39,6 +39,314 @@ extern struct Preferences *PREFS;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
+static GtkWidget *
+container_get_nth(GtkBox *container, gint nth)
+{
+GList *lchild, *list;
+GtkWidget *child;
+
+	if(!GTK_IS_CONTAINER(container))
+		return NULL;
+
+	lchild = list = gtk_container_get_children (GTK_CONTAINER(container));
+	child = g_list_nth_data (list, nth);
+	g_list_free(lchild);
+	
+	return child;
+}
+
+
+GtkWidget *
+ui_pay_entry_popover_get_entry(GtkBox *box)
+{
+	return container_get_nth(box, 0);
+}
+
+
+Payee
+*ui_pay_entry_popover_get(GtkBox *box)
+{
+GtkWidget *entry;
+gchar *name;
+Payee *item = NULL;
+
+	DB( g_print ("ui_pay_entry_popover_get()\n") );
+
+	entry = container_get_nth(box, 0);
+	if( entry != NULL && GTK_IS_ENTRY(entry) )
+	{
+		name = (gchar *)gtk_entry_get_text(GTK_ENTRY (entry));
+		item = da_pay_get_by_name(name);
+	}
+	return item;
+}
+
+
+guint32
+ui_pay_entry_popover_get_key_add_new(GtkBox *box)
+{
+Payee *item = ui_pay_entry_popover_get(box);
+GtkWidget *entry;
+GtkTreeModel *store;
+	
+	if( item == NULL )
+	{
+		/* automatic add */
+		//todo: check prefs + ask the user here 1st time
+		entry = container_get_nth(box, 0);
+		if( entry != NULL && GTK_IS_ENTRY(entry) )
+		{
+			item = da_pay_malloc();
+			item->name = g_strdup(gtk_entry_get_text(GTK_ENTRY (entry)));
+			da_pay_append(item);
+
+			store = gtk_entry_completion_get_model(gtk_entry_get_completion(GTK_ENTRY(entry)));
+			if( store )
+				gtk_list_store_insert_with_values(GTK_LIST_STORE(store), NULL, -1,
+					0, item->name, -1);
+		}
+	}
+	return item->key;
+}
+
+
+guint32
+ui_pay_entry_popover_get_key(GtkBox *box)
+{
+Payee *item = ui_pay_entry_popover_get(box);
+
+	return ((item != NULL) ? item->key : 0);
+}
+
+
+void
+ui_pay_entry_popover_set_active(GtkBox *box, guint32 key)
+{
+GtkWidget *entry;
+
+	DB( g_print ("ui_pay_comboboxentry_set_active()\n") );
+
+	entry = container_get_nth(box, 0);
+	if( entry != NULL && GTK_IS_ENTRY(entry) )
+	{
+	Payee *item = da_pay_get(key);
+
+		ui_gtk_entry_set_text(GTK_WIDGET(entry), item != NULL ? item->name : "");
+	}
+}
+
+
+static void 
+ui_pay_entry_popover_cb_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, gpointer user_data)
+{
+GtkTreeSelection *treeselection;
+GtkTreeModel *model;
+GtkTreeIter iter;
+GtkEntry *entry = user_data;
+
+	if( GTK_IS_ENTRY(entry) )
+	{
+		treeselection = gtk_tree_view_get_selection(tree_view);
+		if( gtk_tree_selection_get_selected(treeselection, &model, &iter) )
+		{
+		gchar *item;
+
+			gtk_tree_model_get(model, &iter, 0, &item, -1);
+			gtk_entry_set_text(GTK_ENTRY(user_data), item);
+			g_free(item);			
+		}
+	}
+}
+
+
+static void
+ui_pay_entry_popover_populate(GtkListStore *store)
+{
+GHashTableIter hiter;
+gpointer key, value;
+
+	g_hash_table_iter_init (&hiter, GLOBALS->h_pay);
+	while (g_hash_table_iter_next (&hiter, &key, &value))
+	{
+	Payee *pay = value;
+
+		gtk_list_store_insert_with_values(GTK_LIST_STORE(store), NULL, -1,
+			0, pay->name, -1);
+	}
+
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
+
+}
+
+
+static void
+ui_pay_entry_popover_function (GtkEditable *editable, gpointer user_data)
+{
+
+	g_print("text changed to %s\n", gtk_entry_get_text(GTK_ENTRY(editable)) );
+	
+
+
+}
+
+
+static gint
+ui_pay_entry_popover_compare_func (GtkTreeModel *model, GtkTreeIter  *a, GtkTreeIter  *b, gpointer      userdata)
+{
+gint retval = 0;
+gchar *name1, *name2;
+
+    gtk_tree_model_get(model, a, 0, &name1, -1);
+    gtk_tree_model_get(model, b, 0, &name2, -1);
+
+	retval = hb_string_utf8_compare(name1, name2);
+
+    g_free(name2);
+    g_free(name1);
+
+  	return retval;
+  }
+
+
+static void 
+ui_pay_entry_popover_destroy( GtkWidget *widget, gpointer user_data )
+{
+
+    g_print ("[pay entry popover] destroy\n");
+
+}
+
+
+GtkWidget *
+ui_pay_entry_popover_new(GtkWidget *label)
+{
+GtkWidget *mainbox, *box, *entry, *menubutton, *image, *popover, *scrollwin, *treeview;
+GtkListStore *store;
+GtkEntryCompletion *completion;
+
+    g_print ("[pay entry popover] new\n");
+
+	mainbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(mainbox)), GTK_STYLE_CLASS_LINKED);
+	
+	entry = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(mainbox), entry, TRUE, TRUE, 0);
+
+	menubutton = gtk_menu_button_new ();
+	//data->MB_template = menubutton;
+	image = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
+	gtk_container_add(GTK_CONTAINER(menubutton), image);
+	//gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_DOWN );
+	//gtk_widget_set_halign (menubutton, GTK_ALIGN_END);
+	gtk_box_pack_start(GTK_BOX(mainbox), menubutton, FALSE, FALSE, 0);
+	
+    completion = gtk_entry_completion_new ();
+
+	gtk_entry_set_completion (GTK_ENTRY (entry), completion);
+	g_object_unref(completion);
+	
+	store = gtk_list_store_new (1,
+		G_TYPE_STRING
+		);
+
+	gtk_tree_sortable_set_default_sort_func(GTK_TREE_SORTABLE(store), ui_pay_entry_popover_compare_func, NULL, NULL);
+
+	ui_pay_entry_popover_populate(store);
+
+	
+    gtk_entry_completion_set_model (completion, GTK_TREE_MODEL(store));
+	g_object_unref(store);
+
+	gtk_entry_completion_set_text_column (completion, 0);
+
+	gtk_widget_show_all(mainbox);
+
+
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
+	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	gtk_box_pack_start(GTK_BOX(box), scrollwin, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	//gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
+	treeview = gtk_tree_view_new_with_model (GTK_TREE_MODEL(store));
+	gtk_container_add(GTK_CONTAINER(scrollwin), GTK_WIDGET(treeview));
+	gtk_widget_show_all(box);
+
+	//gtk_widget_set_can_focus(GTK_WIDGET(treeview), FALSE);
+
+GtkCellRenderer *renderer;
+  GtkTreeViewColumn *column;
+	
+  renderer = gtk_cell_renderer_text_new ();
+  column = gtk_tree_view_column_new_with_attributes (NULL,
+                                                     renderer,
+                                                     "text",
+                                                     0,
+                                                     NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
+
+	gtk_tree_view_set_hover_selection(GTK_TREE_VIEW(treeview), TRUE);
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
+	gtk_tree_view_set_activate_on_single_click(GTK_TREE_VIEW(treeview), TRUE);
+
+	
+	//gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), GTK_SELECTION_BROWSE);
+	
+	
+	popover = create_popover (menubutton, box, GTK_POS_BOTTOM);
+	gtk_widget_set_size_request (popover, HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
+
+	gtk_menu_button_set_popover(GTK_MENU_BUTTON(menubutton), popover);
+
+	// connect our dispose function
+	g_signal_connect (entry, "destroy", G_CALLBACK (ui_pay_entry_popover_destroy), NULL);
+
+	g_signal_connect_after (entry  , "changed", G_CALLBACK (ui_pay_entry_popover_function), NULL);
+
+	g_signal_connect (treeview, "row-activated", G_CALLBACK (ui_pay_entry_popover_cb_row_activated), entry);
+	g_signal_connect_swapped(treeview, "row-activated", G_CALLBACK(gtk_popover_popdown), popover);
+	//g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), "changed", G_CALLBACK (ui_pay_entry_popover_cb_selection), entry);
+	//g_signal_connect_swapped(gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), "changed", G_CALLBACK(gtk_popover_popdown), popover);
+
+	
+	if(label)
+		gtk_label_set_mnemonic_widget (GTK_LABEL(label), entry);
+
+	//gtk_widget_set_size_request(comboboxentry, HB_MINWIDTH_LIST, -1);
+
+	return mainbox;
+}
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+/**
+ * ui_pay_comboboxentry_add:
+ *
+ * Add a single element (useful for dynamics add)
+ *
+ * Return value: --
+ *
+ */
+static void
+ui_pay_comboboxentry_add(GtkComboBox *entry_box, Payee *pay)
+{
+	if( pay->name != NULL )
+	{
+	GtkTreeModel *model;
+	GtkTreeIter  iter;
+
+		model = gtk_combo_box_get_model(GTK_COMBO_BOX(entry_box));
+
+		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
+		gtk_list_store_set (GTK_LIST_STORE(model), &iter, 0, pay->name, -1);
+	}
+}
+
+
+
 /**
  * ui_pay_comboboxentry_get_key_add_new:
  *
@@ -135,28 +443,6 @@ Payee *item;
 	return FALSE;
 }
 
-/**
- * ui_pay_comboboxentry_add:
- *
- * Add a single element (useful for dynamics add)
- *
- * Return value: --
- *
- */
-void
-ui_pay_comboboxentry_add(GtkComboBox *entry_box, Payee *pay)
-{
-	if( pay->name != NULL )
-	{
-	GtkTreeModel *model;
-	GtkTreeIter  iter;
-
-		model = gtk_combo_box_get_model(GTK_COMBO_BOX(entry_box));
-
-		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
-		gtk_list_store_set (GTK_LIST_STORE(model), &iter, 0, pay->name, -1);
-	}
-}
 
 static void
 ui_pay_comboboxentry_populate_ghfunc(gpointer key, gpointer value, struct payPopContext *ctx)
@@ -173,21 +459,9 @@ Payee *pay = value;
 	}
 }
 
-/**
- * ui_pay_comboboxentry_populate:
- *
- * Populate the list and completion
- *
- * Return value: --
- *
- */
-void
-ui_pay_comboboxentry_populate(GtkComboBox *entry_box, GHashTable *hash)
-{
-	ui_pay_comboboxentry_populate_except(entry_box, hash, -1);
-}
 
-void
+//not used except here
+static void
 ui_pay_comboboxentry_populate_except(GtkComboBox *entry_box, GHashTable *hash, guint except_key)
 {
 GtkTreeModel *model;
@@ -221,6 +495,20 @@ struct payPopContext ctx;
 	//gtk_entry_completion_set_model (completion, model);
 	//g_object_unref(model);
 	
+}
+
+/**
+ * ui_pay_comboboxentry_populate:
+ *
+ * Populate the list and completion
+ *
+ * Return value: --
+ *
+ */
+void
+ui_pay_comboboxentry_populate(GtkComboBox *entry_box, GHashTable *hash)
+{
+	ui_pay_comboboxentry_populate_except(entry_box, hash, -1);
 }
 
 
@@ -316,8 +604,6 @@ GtkCellRenderer    *renderer;
 					    renderer,
 					    ui_pay_comboboxentry_test,
 					    NULL, NULL);
-
-
 
 	gtk_entry_set_completion (GTK_ENTRY (gtk_bin_get_child(GTK_BIN (comboboxentry))), completion);
 
@@ -659,19 +945,22 @@ GtkTreeViewColumn	*column;
 
 	// column: name
 	renderer = gtk_cell_renderer_text_new ();
+
 	g_object_set(renderer, 
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
+		//taken from nemo, not exactly a resize to content, but good compromise
+	    "width-chars", 40,
 	    NULL);
 
 	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(column, _("Name"));
+	gtk_tree_view_column_set_title(column, _("Payee"));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_pay_listview_name_cell_data_function, GINT_TO_POINTER(LST_DEFPAY_DATAS), NULL);
 	gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
 	gtk_tree_view_column_set_sort_column_id (column, LST_DEFPAY_SORT_NAME);
-	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	// column: usage
@@ -696,17 +985,25 @@ GtkTreeViewColumn	*column;
 		g_object_set(renderer, 
 			"ellipsize", PANGO_ELLIPSIZE_END,
 			"ellipsize-set", TRUE,
+			//taken from nemo, not exactly a resize to content, but good compromise
+			"width-chars", 40,
 			NULL);
 
 		column = gtk_tree_view_column_new();
-		gtk_tree_view_column_set_title(column, _("Default category"));
+		gtk_tree_view_column_set_title(column, _("Category"));
 		gtk_tree_view_column_pack_start(column, renderer, TRUE);
 		gtk_tree_view_column_set_cell_data_func(column, renderer, ui_pay_listview_defcat_cell_data_function, GINT_TO_POINTER(LST_DEFPAY_DATAS), NULL);
 		gtk_tree_view_column_set_alignment (column, 0.5);
-		gtk_tree_view_column_set_sort_column_id (column, LST_DEFPAY_SORT_DEFCAT);
 		gtk_tree_view_column_set_resizable(column, TRUE);
+		gtk_tree_view_column_set_sort_column_id (column, LST_DEFPAY_SORT_DEFCAT);
 		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	}
+
+
+	/* empty */
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
 
 	gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(treeview), ui_pay_listview_search_equal_func, NULL, NULL);
 

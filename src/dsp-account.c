@@ -290,7 +290,7 @@ gint count;
 	if(count <= 0)
 	{
 		ui_dialog_msg_infoerror(GTK_WINDOW(data->window), GTK_MESSAGE_INFO,
-		_("Check internal transfert result"),
+		_("Check internal transfer result"),
 		_("No inconsistency found !")
 		);
 	}
@@ -300,7 +300,7 @@ gint count;
 	
 		do_fix = ui_dialog_msg_question(
 			GTK_WINDOW(data->window),
-			_("Check internal transfert result"),
+			_("Check internal transfer result"),
 			_("Inconsistency were found: %d\n"
 			  "do you want to review and fix ?"),
 			count

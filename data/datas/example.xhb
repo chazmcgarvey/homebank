@@ -129,19 +129,19 @@
 <ope date="731575" amount="-29" account="1" paymode="1" st="2" payee="19" category="13" wording="Tokyo" info="29.12"/>
 <ope date="731583" amount="-46" account="1" paymode="2" st="2" payee="20" category="6" wording="Monitor 1083S" info="8760943"/>
 <ope date="731583" amount="-30" account="1" paymode="1" st="2" payee="8" category="34" wording="Internet DSL"/>
-<ope date="731594" amount="-1" account="1" paymode="1" st="2" payee="7" category="1" wording="Refuel (d=92340 v=7.7)" info="12.01"/>
+<ope date="731594" amount="-85.44" account="1" paymode="1" st="2" payee="7" category="1" wording="Refuel (d=5000 v=62.41)" info="12.01"/>
 <ope date="731595" amount="-66" account="1" paymode="4" st="2" payee="6" category="33" wording="Home sweet home"/>
-<ope date="731595" amount="-2" account="1" paymode="1" st="2" payee="7" category="1" wording="Refuel (d=92414 v=16.47)" info="14.01"/>
+<ope date="731595" amount="-41.07" account="1" paymode="1" st="2" payee="7" category="1" wording="Refuel (d=5453 v~30.00)" info="14.01"/>
 <ope date="731599" amount="-3" account="1" paymode="3" st="2" payee="16" category="49" wording="Cash"/>
 <ope date="731602" amount="-48" account="1" paymode="2" st="2" payee="12" wording="PEAVEY Envoy 110" info="8760944"/>
 <ope date="731609" amount="-8" account="1" paymode="1" st="2" payee="10" category="5" wording="Black shoes" info="26.01"/>
 <ope date="731610" amount="-121.95999999999999" account="1" dst_account="2" paymode="5" st="2" wording="Savings" kxfer="1"/>
-<ope date="731610" amount="-2" account="1" paymode="1" st="2" payee="7" category="1" wording="Refuel (d=92597 v=15.41)" info="30.01"/>
+<ope date="731610" amount="-78.57" account="1" paymode="1" st="2" payee="7" category="1" wording="Refuel (d=5935 v=57.39)" info="30.01"/>
 <ope date="731610" amount="1371" account="1" paymode="4" st="2" flags="2" payee="2" category="57" wording="Amiga Technologies"/>
 <ope date="731614" amount="-46" account="1" paymode="2" st="2" payee="20" category="6" wording="Harddisk 420Mb" info="8760945"/>
 <ope date="731614" amount="-30" account="1" paymode="1" st="2" payee="8" category="34" wording="Internet DSL"/>
 <ope date="731616" amount="-46" account="1" paymode="2" st="2" payee="3" category="6" wording="Amiga 1200 Explorer" info="8760946"/>
-<ope date="731625" amount="-5" account="1" paymode="1" st="2" payee="7" category="1" wording="Refuel (d=92788 v=40)" info="14.02"/>
+<ope date="731625" amount="-76.46" account="1" paymode="1" st="2" payee="7" category="1" wording="Refuel (d=6504 v=55.85)" info="14.02"/>
 <ope date="731626" amount="-66" account="1" paymode="4" st="2" payee="6" category="33" wording="Home sweet home"/>
 <ope date="731636" amount="-3" account="1" paymode="3" st="2" payee="16" category="49" wording="Cash"/>
 <ope date="731638" amount="-121.95999999999999" account="1" dst_account="2" paymode="5" st="2" wording="Savings" kxfer="2"/>
@@ -150,6 +150,7 @@
 <ope date="731643" amount="-30" account="1" paymode="1" st="2" payee="8" category="34" wording="Internet DSL"/>
 <ope date="731652" amount="-81" account="1" paymode="2" st="2" payee="12" wording="Korg 05R-W" info="8760947"/>
 <ope date="731654" amount="-37" account="1" paymode="2" st="2" payee="12" wording="ZOOM Player 2020" info="8760948"/>
+<ope date="731654" amount="-10.54" account="1" paymode="1" st="2" payee="7" category="1" wording="Refuel (d=7094 v~7.7)" info="14.02"/>
 <ope date="731654" amount="-3" account="1" paymode="3" st="2" payee="16" category="49" wording="Cash"/>
 <ope date="731655" amount="-66" account="1" paymode="4" st="2" payee="6" category="33" wording="Home sweet home"/>
 <ope date="731667" amount="1371" account="1" paymode="4" st="2" flags="2" payee="2" category="57" wording="Amiga Technologies"/>

@@ -781,27 +781,6 @@ gboolean sensitive = TRUE;
 }
 
 
-//1336928 combobox tags
-static void ui_arc_manage_update_tags(GtkWidget *widget, gpointer user_data)
-{
-struct ui_arc_manage_data *data;
-gchar *newtag;
-	
-	DB( g_print("\n[ui_scheduled] update tags\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	newtag = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(data->CY_tags));
-	ui_gtk_entry_tag_name_append(GTK_ENTRY(data->ST_tags), newtag);
-	g_free(newtag);
-	
-	//revert back to ----
-	g_signal_handlers_block_by_func (G_OBJECT (data->CY_tags), G_CALLBACK (ui_arc_manage_update_tags), NULL);
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_tags), 0);
-	g_signal_handlers_unblock_by_func (G_OBJECT (data->CY_tags), G_CALLBACK (ui_arc_manage_update_tags), NULL);
-}
-
-
 /*
 ** update the widgets status and contents from action/selection value
 */
@@ -994,7 +973,8 @@ static void ui_arc_manage_setup(struct ui_arc_manage_data *data)
 	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_acc)  , GLOBALS->h_acc, ACC_LST_INSERT_NORMAL);
 	ui_acc_comboboxentry_populate(GTK_COMBO_BOX(data->PO_accto), GLOBALS->h_acc, ACC_LST_INSERT_NORMAL);
 
-	ui_tag_combobox_populate(GTK_COMBO_BOX_TEXT(data->CY_tags));
+	////5.2.7 done in popover
+	//ui_tag_combobox_populate(GTK_COMBO_BOX_TEXT(data->CY_tags));
 }
 
 
@@ -1105,6 +1085,7 @@ gint row;
 	label = make_label_widget(_("Ta_gs:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(hbox)), GTK_STYLE_CLASS_LINKED);
 	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 1, 1);
 
 		widget = make_string(label);
@@ -1112,7 +1093,7 @@ gint row;
 		//gtk_widget_set_hexpand (widget, TRUE);
 		gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
 	
-		widget = ui_tag_combobox_new(NULL);
+		widget = ui_tag_popover_list(data->ST_tags);
 		data->CY_tags = widget;
 		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 	
@@ -1319,8 +1300,6 @@ gint w, h, row;
 	//data.handler_id[HID_ARC_VALID]  = g_signal_connect (data.CM_valid , "toggled", G_CALLBACK (ui_arc_manage_togglestatus), GINT_TO_POINTER(HID_ARC_VALID));
 	//data.handler_id[HID_ARC_REMIND] = g_signal_connect (data.CM_remind, "toggled", G_CALLBACK (ui_arc_manage_togglestatus), GINT_TO_POINTER(HID_ARC_REMIND));
 
-	g_signal_connect (data.CY_tags , "changed", G_CALLBACK (ui_arc_manage_update_tags), NULL);
-	
 	g_signal_connect (data.CM_auto, "toggled", G_CALLBACK (ui_arc_manage_scheduled), NULL);
 	g_signal_connect (data.CM_limit, "toggled", G_CALLBACK (ui_arc_manage_scheduled), NULL);
 
