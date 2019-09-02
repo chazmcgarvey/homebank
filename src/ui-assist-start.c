@@ -81,6 +81,8 @@ gdouble value;
 	if (txt && *txt)
 	{
 		item->name = g_strdup(txt);
+		//#1837838 remove extra lead/tail space
+		g_strstrip(item->name);
 	}
 
 	item->kcur = GLOBALS->kcur;
@@ -182,22 +184,27 @@ struct assist_start_data *data = user_data;
 
 }
 
+
 static void
 on_entry_changed (GtkWidget *widget, gpointer data)
 {
-  GtkAssistant *assistant = GTK_ASSISTANT (data);
-  GtkWidget *current_page;
-  gint page_number;
-  const gchar *text;
+GtkAssistant *assistant = GTK_ASSISTANT (data);
+GtkWidget *current_page;
+gint page_number;
+gchar *text;
 
-  page_number = gtk_assistant_get_current_page (assistant);
-  current_page = gtk_assistant_get_nth_page (assistant, page_number);
-  text = gtk_entry_get_text (GTK_ENTRY (widget));
+	page_number = gtk_assistant_get_current_page (assistant);
+	current_page = gtk_assistant_get_nth_page (assistant, page_number);
+	//#1837838: complete space or leadin/trialin space is possible
+	text = g_strdup(gtk_entry_get_text (GTK_ENTRY (widget)));
+	g_strstrip(text);
+	
+	if (strlen(text) > 0)
+		gtk_assistant_set_page_complete (assistant, current_page, TRUE);
+	else
+		gtk_assistant_set_page_complete (assistant, current_page, FALSE);
 
-  if (text && *text)
-    gtk_assistant_set_page_complete (assistant, current_page, TRUE);
-  else
-    gtk_assistant_set_page_complete (assistant, current_page, FALSE);
+	g_free(text);
 }
 
 

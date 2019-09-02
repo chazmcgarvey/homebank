@@ -49,7 +49,6 @@ guint32		da_tag_get_max_key(void);
 Tag		*da_tag_get_by_name(gchar *name);
 Tag		*da_tag_get(guint32 key);
 
-
 guint tags_count(guint32 *tags);
 guint32 *tags_clone(guint32 *tags);
 guint32 *tags_parse(const gchar *tagstring);

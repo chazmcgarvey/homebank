@@ -313,20 +313,21 @@ guint i;
 
 static void list_upcoming_destroy(GtkTreeView *treeview, gpointer user_data)
 {
-GtkTreeViewColumn  *column;
+GtkTreeViewColumn *column;
 
 	DB( g_print ("\n[list_upcoming] destroy\n") );
 
+	//#1830656 use xxx_get_fixed_width instead of width, as if not visible will save 0 otherwise
 	column = list_upcoming_get_column(treeview, COL_DSPUPC_PAYEE);
 	if( column )
 	{
-		PREFS->pnl_upc_col_pay_width = gtk_tree_view_column_get_width(column);
+		PREFS->pnl_upc_col_pay_width = gtk_tree_view_column_get_fixed_width(column);
 	}
 	
 	column = list_upcoming_get_column(treeview, COL_DSPUPC_MEMO);
 	if( column )
 	{
-		PREFS->pnl_upc_col_mem_width = gtk_tree_view_column_get_width(column);
+		PREFS->pnl_upc_col_mem_width = gtk_tree_view_column_get_fixed_width(column);
 	}
 
 	DB( g_print(" width payee:%d, memo:%d\n", PREFS->pnl_upc_col_pay_width, PREFS->pnl_upc_col_mem_width) );

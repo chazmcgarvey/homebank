@@ -79,6 +79,7 @@ GtkTreeIter	iter;
 			{
 				gtk_list_store_insert_with_values(GTK_LIST_STORE(model1), &iter, -1,
 						MODEL_TXN_POINTER, txn,
+						MODEL_TXN_SPLITAMT, txn->amount,
 						-1);
 			}
 
@@ -86,6 +87,7 @@ GtkTreeIter	iter;
 			{
 				gtk_list_store_insert_with_values(GTK_LIST_STORE(model2), &iter, -1,
 						MODEL_TXN_POINTER, txn,
+						MODEL_TXN_SPLITAMT, txn->amount,
 						-1);
 			}
 			lnk_txn = g_list_next(lnk_txn);
@@ -128,6 +130,9 @@ gboolean result;
 			//#1824515 when amount change update acc panel
 			if( old_txn->amount != new_txn->amount )
 				ui_hub_account_populate(GLOBALS->mainwindow, NULL);
+
+			//#1830880 update mainwindow
+			ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_BALANCE));
 			
 		}
 

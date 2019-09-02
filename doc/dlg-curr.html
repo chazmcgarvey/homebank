@@ -28,9 +28,16 @@
       <tr>
         <th>Update on-line</th>
         <td>Trigger to update exchanges rate on-line. This is disabled when you only have a single currency.<br>
-        <img src="images/d-warn.png">&nbsp;<span class="warning">This is an extra feature relying on third party, your currencies may not be supported. See additional notes below.</span></td>
+        </td>
       </tr>
     </table>
+    <p><img src="images/d-warn.png"/>&nbsp;<span class="warning">
+    <b>Update Online</b> is an extra feature relying on a third party web service.<br>
+    Your currencies may not be supported:<br>
+    - as base currency: and nothing will update<br>
+    - as a target currency: this currency will not be updated<br>
+    See additional notes below</span></p>
+
     <h3><img align="bottom" border="0" height="12" id="graphics6" name="graphics6" src="images/2.png" width="12"> Currencies list</h3>
     <p>display currency ISO code, name, symbol, exchange rate and last modified date</p>
     <h3><img align="bottom" border="0" height="12" id="graphics7" src="images/3.png" width="12"> Buttons</h3>
@@ -66,8 +73,11 @@
     </p>
 
     <h3>Online Currency Update</h3>
-    <p>Here are the list of third party API service current and used in the past.<br>
-    - current:     https://frankfurter.app<br>
+    <p>The current API is:<br>
+    - <a href="https://frankfurter.app">frankfurter.app</a><br>
+    - <a href="https://frankfurter.app/currencies">list of supported currencies</a></p>
+    <p>
+    <p>Previous third party API service used in the past.<br>
     - until 5.2:   https://api.fixer.io, see <a href="https://bugs.launchpad.net/homebank/+bug/1785210">#1785210</a><br>
     - until 5.1.7: yahoo, see <a href="https://bugs.launchpad.net/homebank/+bug/1730527">#1730527</a><br>
   </p>

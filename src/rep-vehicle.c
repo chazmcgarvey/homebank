@@ -81,7 +81,7 @@ static void repvehicle_date_change(GtkWidget *widget, gpointer user_data)
 {
 struct repvehicle_data *data;
 
-	DB( g_print("(repvehicle) date change\n") );
+	DB( g_print("\n[vehiclecost] date change\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -123,7 +123,7 @@ static void repvehicle_range_change(GtkWidget *widget, gpointer user_data)
 struct repvehicle_data *data;
 gint range;
 
-	DB( g_print("(repvehicle) range change\n") );
+	DB( g_print("\n[vehiclecost] range change\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -276,7 +276,7 @@ struct repvehicle_data *data;
 GList *list;
 guint32 catkey;
 
-	DB( g_print("(repvehicle) compute\n") );
+	DB( g_print("\n[vehiclecost] compute\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -298,7 +298,7 @@ guint32 catkey;
 
 	// collect transactions
 	// the purpose here is to collect all cat transaction
-	// and precompute some datas
+	// and precompute item-> meter/fuel/partial
 	list = g_queue_peek_head_link(data->txn_queue);
 	while (list != NULL)
 	{
@@ -374,9 +374,10 @@ GtkTreeIter  iter;
 GList *list;
 gchar *buf;
 gint nb_refuel = 0;
+int nb_fullrefuel = 0; 
 guint lastmeter = 0;
 
-	DB( g_print("(repvehicle) update\n") );
+	DB( g_print("\n[vehiclecost] update\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -428,45 +429,50 @@ guint lastmeter = 0;
 				lastmeter = item->meter;
 				nb_refuel++;
 
-				DB( g_print(" eval : d=%d v=%4.2f $%8.2f dist=%d\n", item->meter, item->fuel, trn_amount, item->dist) );
+				DB( g_print("\n eval %02d :: d=%d v=%.2f $%.2f dist=%d\n", nb_refuel, item->meter, item->fuel, trn_amount, item->dist) );
+				DB( g_print(" + %s :: pf=%.2f pd=%d\n", item->partial ? "partial" : "full", partial_fuel, partial_dist) );
 
-				//bugfix #159066
+				centkm = 0;
+				dist = 0;
+
+				//bugfix #159066 partial/full
 				if(item->partial == FALSE)
 				{
-					// full refuel after partial
-					if(partial_fuel && partial_dist)
+					//#1836380 if we don't have a full already, the computing will be wrong
+					if( nb_fullrefuel > 0 )
 					{
-						DB( g_print(" + full refuel after partial\n") );
-						partial_fuel += item->fuel;
-						partial_dist += item->dist;
-						dist = item->dist;
-						centkm = partial_dist != 0 ? partial_fuel * 100 / partial_dist : 0;
-					}
-					else
-					{
-						DB( g_print(" + real full refuel\n") );
-						dist = item->dist;
-						centkm = item->dist != 0 ? item->fuel * 100 / item->dist : 0;
+						// full refuel after partial
+						if(partial_fuel && partial_dist)
+						{
+							partial_fuel += item->fuel;
+							partial_dist += item->dist;
+							dist = item->dist;
+							centkm = partial_dist != 0 ? partial_fuel * 100 / partial_dist : 0;
+							DB( g_print(" + centkm=%.2f %.2f * 100 / %d (full after partial)\n", centkm, partial_fuel, partial_dist) );
+						}
+						else
+						{
+							dist = item->dist;
+							centkm = item->dist != 0 ? item->fuel * 100 / item->dist : 0;
+							DB( g_print(" + centkm=%.2f :: %.2f * 100 / %d (full after full)\n", centkm, item->fuel, item->dist) );
+						}
 					}
 					partial_fuel = 0;
 					partial_dist = 0;
+					nb_fullrefuel++;
 				}
 				// partial refuel
 				else
 				{
-					DB( g_print(" + partial refuel\n") );
 					partial_fuel += item->fuel;
 					partial_dist += item->dist;
 					dist = item->dist;
-					centkm = 0;
+					DB( g_print(" + centkm= not computable\n") );
 				}
 
 				distbyvol = 0;
 				if(centkm != 0)
 					distbyvol = hb_amount_round((1/centkm)*100, 0);
-
-				DB( g_print(" + pf=%.2f pd=%d :: dbv=%d\n", partial_fuel, partial_dist, distbyvol) );
-
 
 
 		    	gtk_list_store_append (GTK_LIST_STORE(model), &iter);
@@ -484,7 +490,7 @@ guint lastmeter = 0;
 				    LST_CAR_PARTIAL, item->partial,
 					-1);
 
-				DB( g_print(" + insert d=%d v=%4.2f $%8.2f %d %5.2f\n", item->meter, item->fuel, trn_amount, dist, centkm) );
+				//DB( g_print("\n insert d=%d v=%4.2f $%8.2f %d %5.2f\n", item->meter, item->fuel, trn_amount, dist, centkm) );
 
 				if(item->dist)
 				{
@@ -508,63 +514,63 @@ guint lastmeter = 0;
 	GLOBALS->minor = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_minor));
 
 
-		DB( g_print(" coef = 100 / %.2f = %.2f\n", (gdouble)data->total_dist, coef) );
+	DB( g_print(" coef = 100 / %.2f = %.2f\n", (gdouble)data->total_dist, coef) );
 
-		// row 1 is for 100km
-		/*
-		gtk_label_set_text(GTK_LABEL(data->LA_total[1][1]), "1:1");	//Consumption
-		gtk_label_set_text(GTK_LABEL(data->LA_total[2][1]), "2:1");	//Fuel cost
-		gtk_label_set_text(GTK_LABEL(data->LA_total[3][1]), "3:1");	//Other cost
-		gtk_label_set_text(GTK_LABEL(data->LA_total[4][1]), "4:1");	//Total cost
-		*/
+	// row 1 is for 100km
+	/*
+	gtk_label_set_text(GTK_LABEL(data->LA_total[1][1]), "1:1");	//Consumption
+	gtk_label_set_text(GTK_LABEL(data->LA_total[2][1]), "2:1");	//Fuel cost
+	gtk_label_set_text(GTK_LABEL(data->LA_total[3][1]), "3:1");	//Other cost
+	gtk_label_set_text(GTK_LABEL(data->LA_total[4][1]), "4:1");	//Total cost
+	*/
 
-		// 100km fuel
-		buf = g_strdup_printf(PREFS->vehicle_unit_vol, data->total_fuel * coef);
-		gtk_label_set_text(GTK_LABEL(data->LA_avera[CAR_RES_FUEL]), buf);
-		g_free(buf);
+	// 100km fuel
+	buf = g_strdup_printf(PREFS->vehicle_unit_vol, data->total_fuel * coef);
+	gtk_label_set_text(GTK_LABEL(data->LA_avera[CAR_RES_FUEL]), buf);
+	g_free(buf);
 
-		// 100km fuelcost
-		//hb_label_set_colvaluecurr(GTK_LABEL(data->LA_avera[CAR_RES_FUELCOST]), data->total_fuelcost * coef, GLOBALS->kcur);
-		hb_label_set_colvalue(GTK_LABEL(data->LA_avera[CAR_RES_FUELCOST]), data->total_fuelcost * coef, GLOBALS->kcur, GLOBALS->minor);
+	// 100km fuelcost
+	//hb_label_set_colvaluecurr(GTK_LABEL(data->LA_avera[CAR_RES_FUELCOST]), data->total_fuelcost * coef, GLOBALS->kcur);
+	hb_label_set_colvalue(GTK_LABEL(data->LA_avera[CAR_RES_FUELCOST]), data->total_fuelcost * coef, GLOBALS->kcur, GLOBALS->minor);
 
-		// 100km other cost
-		//hb_label_set_colvaluecurr(GTK_LABEL(data->LA_avera[CAR_RES_OTHERCOST]), data->total_misccost * coef, GLOBALS->kcur);
-		hb_label_set_colvalue(GTK_LABEL(data->LA_avera[CAR_RES_OTHERCOST]), data->total_misccost * coef, GLOBALS->kcur, GLOBALS->minor);
+	// 100km other cost
+	//hb_label_set_colvaluecurr(GTK_LABEL(data->LA_avera[CAR_RES_OTHERCOST]), data->total_misccost * coef, GLOBALS->kcur);
+	hb_label_set_colvalue(GTK_LABEL(data->LA_avera[CAR_RES_OTHERCOST]), data->total_misccost * coef, GLOBALS->kcur, GLOBALS->minor);
 
-		// 100km cost
-		//hb_label_set_colvaluecurr(GTK_LABEL(data->LA_avera[CAR_RES_TOTALCOST]), (data->total_fuelcost + data->total_misccost) * coef, GLOBALS->kcur);
-		hb_label_set_colvalue(GTK_LABEL(data->LA_avera[CAR_RES_TOTALCOST]), (data->total_fuelcost + data->total_misccost) * coef, GLOBALS->kcur, GLOBALS->minor);
+	// 100km cost
+	//hb_label_set_colvaluecurr(GTK_LABEL(data->LA_avera[CAR_RES_TOTALCOST]), (data->total_fuelcost + data->total_misccost) * coef, GLOBALS->kcur);
+	hb_label_set_colvalue(GTK_LABEL(data->LA_avera[CAR_RES_TOTALCOST]), (data->total_fuelcost + data->total_misccost) * coef, GLOBALS->kcur, GLOBALS->minor);
 
 
-		// row 2 is for total
-		/*
-		gtk_label_set_text(GTK_LABEL(data->LA_total[1][2]), "1:2");	//Consumption
-		gtk_label_set_text(GTK_LABEL(data->LA_total[2][2]), "2:2");	//Fuel cost
-		gtk_label_set_text(GTK_LABEL(data->LA_total[3][2]), "3:2");	//Other cost
-		gtk_label_set_text(GTK_LABEL(data->LA_total[4][2]), "4:2");	//Total
-		*/
+	// row 2 is for total
+	/*
+	gtk_label_set_text(GTK_LABEL(data->LA_total[1][2]), "1:2");	//Consumption
+	gtk_label_set_text(GTK_LABEL(data->LA_total[2][2]), "2:2");	//Fuel cost
+	gtk_label_set_text(GTK_LABEL(data->LA_total[3][2]), "3:2");	//Other cost
+	gtk_label_set_text(GTK_LABEL(data->LA_total[4][2]), "4:2");	//Total
+	*/
 
-		// total distance
-		buf = g_strdup_printf(PREFS->vehicle_unit_dist, data->total_dist);
-		gtk_label_set_text(GTK_LABEL(data->LA_total[CAR_RES_METER]), buf);
-		g_free(buf);
+	// total distance
+	buf = g_strdup_printf(PREFS->vehicle_unit_dist, data->total_dist);
+	gtk_label_set_text(GTK_LABEL(data->LA_total[CAR_RES_METER]), buf);
+	g_free(buf);
 
-		// total fuel
-		buf = g_strdup_printf(PREFS->vehicle_unit_vol, data->total_fuel);
-		gtk_label_set_text(GTK_LABEL(data->LA_total[CAR_RES_FUEL]), buf);
-		g_free(buf);
+	// total fuel
+	buf = g_strdup_printf(PREFS->vehicle_unit_vol, data->total_fuel);
+	gtk_label_set_text(GTK_LABEL(data->LA_total[CAR_RES_FUEL]), buf);
+	g_free(buf);
 
-		// total fuelcost
-		//hb_label_set_colvaluecurr(GTK_LABEL(data->LA_total[CAR_RES_FUELCOST]), data->total_fuelcost, GLOBALS->kcur);
-		hb_label_set_colvalue(GTK_LABEL(data->LA_total[CAR_RES_FUELCOST]), data->total_fuelcost, GLOBALS->kcur, GLOBALS->minor);
+	// total fuelcost
+	//hb_label_set_colvaluecurr(GTK_LABEL(data->LA_total[CAR_RES_FUELCOST]), data->total_fuelcost, GLOBALS->kcur);
+	hb_label_set_colvalue(GTK_LABEL(data->LA_total[CAR_RES_FUELCOST]), data->total_fuelcost, GLOBALS->kcur, GLOBALS->minor);
 
-		// total other cost
-		//hb_label_set_colvaluecurr(GTK_LABEL(data->LA_total[CAR_RES_OTHERCOST]), data->total_misccost, GLOBALS->kcur);
-		hb_label_set_colvalue(GTK_LABEL(data->LA_total[CAR_RES_OTHERCOST]), data->total_misccost, GLOBALS->kcur, GLOBALS->minor);
+	// total other cost
+	//hb_label_set_colvaluecurr(GTK_LABEL(data->LA_total[CAR_RES_OTHERCOST]), data->total_misccost, GLOBALS->kcur);
+	hb_label_set_colvalue(GTK_LABEL(data->LA_total[CAR_RES_OTHERCOST]), data->total_misccost, GLOBALS->kcur, GLOBALS->minor);
 
-		// total cost
-		//hb_label_set_colvaluecurr(GTK_LABEL(data->LA_total[CAR_RES_TOTALCOST]), data->total_fuelcost + data->total_misccost, GLOBALS->kcur);
-		hb_label_set_colvalue(GTK_LABEL(data->LA_total[CAR_RES_TOTALCOST]), data->total_fuelcost + data->total_misccost, GLOBALS->kcur, GLOBALS->minor);
+	// total cost
+	//hb_label_set_colvaluecurr(GTK_LABEL(data->LA_total[CAR_RES_TOTALCOST]), data->total_fuelcost + data->total_misccost, GLOBALS->kcur);
+	hb_label_set_colvalue(GTK_LABEL(data->LA_total[CAR_RES_TOTALCOST]), data->total_fuelcost + data->total_misccost, GLOBALS->kcur, GLOBALS->minor);
 
 
 }
@@ -573,7 +579,7 @@ static void repvehicle_toggle_minor(GtkWidget *widget, gpointer user_data)
 {
 struct repvehicle_data *data;
 
-	DB( g_print("(repvehicle) toggle\n") );
+	DB( g_print("\n[vehiclecost] toggle\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -599,7 +605,7 @@ struct repvehicle_data *data;
 */
 static void repvehicle_setup(struct repvehicle_data *data)
 {
-	DB( g_print("(repvehicle) setup\n") );
+	DB( g_print("\n[vehiclecost] setup\n") );
 
 	data->txn_queue = g_queue_new ();
 	data->vehicle_list = NULL;
@@ -642,7 +648,7 @@ static gboolean repvehicle_window_dispose(GtkWidget *widget, GdkEvent *event, gp
 struct repvehicle_data *data = user_data;
 struct WinGeometry *wg;
 
-	DB( g_print("(repvehicle) dispose\n") );
+	DB( g_print("\n[vehiclecost] dispose\n") );
 
 	g_queue_free (data->txn_queue);
 	
@@ -683,7 +689,7 @@ GError *error = NULL;
 	data = g_malloc0(sizeof(struct repvehicle_data));
 	if(!data) return NULL;
 
-	DB( g_print("(repvehicle) new\n") );
+	DB( g_print("\n[vehiclecost] new\n") );
 
 	//disable define windows
 	GLOBALS->define_off++;

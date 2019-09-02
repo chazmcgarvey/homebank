@@ -60,6 +60,9 @@ struct ui_flt_manage_data
 	GtkWidget	*LV_pay, *BT_pay[MAX_BUTTON];
 	GtkWidget	*LV_cat, *BT_cat[MAX_BUTTON];
 
+	GtkWidget	*BT_expand, *BT_collapse;
+
+
 	gboolean	show_account;
 
 

@@ -240,6 +240,25 @@ GList *lnk_txn;
 }
 
 
+gboolean filter_preset_daterange_future_enable(gint range)
+{
+	switch( range )
+	{
+		case FLT_RANGE_THISMONTH:
+		case FLT_RANGE_THISQUARTER:
+		case FLT_RANGE_THISYEAR:
+		case FLT_RANGE_LAST30DAYS:
+		case FLT_RANGE_LAST60DAYS:
+		case FLT_RANGE_LAST90DAYS:
+		case FLT_RANGE_LAST12MONTHS:
+			return TRUE;
+			break;
+	}
+
+	return FALSE;
+}
+
+
 void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays)
 {
 
@@ -253,19 +272,9 @@ void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays)
 	}*/
 
 	filter->nbdaysfuture = 0;
-	
-	switch( filter->range )
-	{
-		case FLT_RANGE_THISMONTH:
-		case FLT_RANGE_THISQUARTER:
-		case FLT_RANGE_THISYEAR:
-		case FLT_RANGE_LAST30DAYS:
-		case FLT_RANGE_LAST60DAYS:
-		case FLT_RANGE_LAST90DAYS:
-		case FLT_RANGE_LAST12MONTHS:
-			filter->nbdaysfuture = nbdays;
-			break;
-	}
+	if( filter_preset_daterange_future_enable(filter->range) )
+		filter->nbdaysfuture = nbdays;
+
 }
 
 
