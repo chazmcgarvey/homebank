@@ -136,6 +136,9 @@ struct _ImportContext
 	gboolean	opt_qifswap;
 	gboolean	opt_ucfirst;
 
+	gboolean	do_auto_payee;
+	gboolean	do_auto_assign;
+	
 	//gboolean	is_ccard;
 
 	//GList			*trans_list;	// trn storage

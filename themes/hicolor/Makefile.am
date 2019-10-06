@@ -22,11 +22,13 @@ private_icons = \
 	hicolor_actions_24x24_hb-budget.png \
 	hicolor_actions_24x24_hb-category.png \
 	hicolor_actions_24x24_hb-currency.png \
+	hicolor_actions_24x24_hb-donate.png \
 	hicolor_actions_24x24_hb-file-export.png \
 	hicolor_actions_24x24_hb-file-import.png \
 	hicolor_actions_24x24_hb-file-valid.png \
 	hicolor_actions_24x24_hb-file-invalid.png \
 	hicolor_actions_24x24_hb-filter.png \
+	hicolor_actions_24x24_hb-help.png \
 	hicolor_actions_24x24_hb-legend.png \
 	hicolor_actions_24x24_hb-ope-add.png \
 	hicolor_actions_24x24_hb-ope-cleared.png \

@@ -251,12 +251,12 @@ gchar *cheque_str;
 			}
 		}
 	}
-	else
+	// #1843648: no reason to empty info here
+	/*else
 	if( amount > 0 )
 	{
 		gtk_entry_set_text(GTK_ENTRY(data->ST_info), "");
-	}
-	
+	}*/
 }
 
 
@@ -1141,7 +1141,7 @@ gint row;
 		{
 			gtk_dialog_add_buttons (GTK_DIALOG(dialog),
 				_("_Close"), GTK_RESPONSE_REJECT,
-				_("_Add & keep"), HB_RESPONSE_ADDKEEP,
+				_("Add & _Keep"), HB_RESPONSE_ADDKEEP,
 				_("_Add"), HB_RESPONSE_ADD,
 				NULL);
 		}
@@ -1184,7 +1184,7 @@ gint row;
 	row=0;
 	label = make_label_widget(_("_Date:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = gtk_date_entry_new();
+	widget = gtk_date_entry_new(label);
 	data->PO_date = widget;
 	gtk_widget_set_halign(widget, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
@@ -1201,7 +1201,7 @@ gint row;
 	}
 
 	row++;
-	label = make_label_widget(_("_Amount:"));
+	label = make_label_widget(_("Amou_nt:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_hexpand(hbox, TRUE);
@@ -1227,13 +1227,12 @@ gint row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 	row++;
-	label = make_label_widget(_("To acc_ount:"));
+	label = make_label_widget(_("T_o:"));
 	data->LB_accto = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	widget = ui_acc_comboboxentry_new(label);
 	data->PO_accto = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
-
 	
 	row++;
 	label = make_label_widget(_("Pa_yment:"));
@@ -1292,7 +1291,7 @@ gint row;
 	gtk_widget_set_margin_bottom(hbox, SPACING_SMALL);
 
 	row++;
-	label = make_label_widget(_("_Category:"));
+	label = make_label_widget(_("Cate_gory:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	widget = ui_cat_comboboxentry_new(label);
 	data->PO_cat = widget;
@@ -1316,7 +1315,7 @@ gint row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 	row++;
-	label = make_label_widget(_("Ta_gs:"));
+	label = make_label_widget(_("_Tags:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_hexpand(hbox, TRUE);

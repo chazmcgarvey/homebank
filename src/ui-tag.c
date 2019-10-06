@@ -139,8 +139,12 @@ GtkWidget *box, *menubutton, *image, *scrollwin, *treeview;
 	ui_tag_listview_populate(treeview, 0);
 
 	g_signal_connect (treeview, "row-activated", G_CALLBACK (ui_tag_popover_cb_row_activated), entry);
-	g_signal_connect_swapped(treeview, "row-activated", G_CALLBACK(gtk_popover_popdown), popover);
-	
+	#if( (GTK_MAJOR_VERSION == 3) && (GTK_MINOR_VERSION >= 22) )
+		g_signal_connect_swapped(treeview, "row-activated", G_CALLBACK(gtk_popover_popdown), popover);
+	#else
+		g_signal_connect_swapped(treeview, "row-activated", G_CALLBACK(gtk_widget_hide), popover);
+	#endif
+
 	return menubutton;
 }
 

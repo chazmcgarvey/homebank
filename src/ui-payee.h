@@ -28,8 +28,10 @@ enum
 };
 
 #define LST_DEFPAY_SORT_NAME	 1
-#define LST_DEFPAY_SORT_USED	 2
+#define LST_DEFPAY_SORT_DEFPAY   2
 #define LST_DEFPAY_SORT_DEFCAT   3
+#define LST_DEFPAY_SORT_USED	 4
+
 
 struct ui_pay_manage_dialog_data
 {

@@ -1279,13 +1279,13 @@ GError *error = NULL;
 	row++;
 	label = make_label_widget(_("_From:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	data->PO_mindate = gtk_date_entry_new();
+	data->PO_mindate = gtk_date_entry_new(label);
 	gtk_grid_attach (GTK_GRID (table), data->PO_mindate, 2, row, 1, 1);
 
 	row++;
 	label = make_label_widget(_("_To:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	data->PO_maxdate = gtk_date_entry_new();
+	data->PO_maxdate = gtk_date_entry_new(label);
 	gtk_grid_attach (GTK_GRID (table), data->PO_maxdate, 2, row, 1, 1);
 
 

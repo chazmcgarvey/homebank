@@ -809,15 +809,24 @@ gchar *pathfilename;
 static void
 homebank_init_i18n (void)
 {
-  /*  We may change the locale later if the user specifies a language
-   *  in the gimprc file. Here we are just initializing the locale
-   *  according to the environment variables and set up the paths to
-   *  the message catalogs.
-   */
+	/*  We may change the locale later if the user specifies a language
+	*  in the gimprc file. Here we are just initializing the locale
+	*  according to the environment variables and set up the paths to
+	*  the message catalogs.
+	*/
 
 	setlocale (LC_ALL, "");
 
+	//#1842292 as indicated in gtk+ win32 gtk_get_localedir [1], bindtextdomain() is not
+	// UTF-8 aware on win32, so it needs a filename in locale encoding
+	#ifdef G_OS_WIN32
+	gchar *localedir = g_win32_locale_filename_from_utf8 (homebank_app_get_locale_dir ());
+	bindtextdomain (GETTEXT_PACKAGE, localedir);
+	g_free(localedir);
+	#else
 	bindtextdomain (GETTEXT_PACKAGE, homebank_app_get_locale_dir ());
+	#endif
+
 //#ifdef HAVE_BIND_TEXTDOMAIN_CODESET
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 //#endif

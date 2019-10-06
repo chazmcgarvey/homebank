@@ -40,6 +40,7 @@ struct list_txn_data
 	
 	gint				list_type;
 	gboolean			showall;
+	gboolean			warnnocategory;
 	gboolean			tvc_is_visible;
 	gboolean			save_column_width;
 };
@@ -47,6 +48,8 @@ struct list_txn_data
 
 GtkWidget *create_list_transaction(gint type, gboolean *pref_columns);
 GtkWidget *create_list_import_transaction(gboolean enable_choose);
+
+void list_txn_set_warn_nocategory(GtkTreeView *treeview, gboolean warn);
 
 gboolean list_txn_column_id_isvisible(GtkTreeView *treeview, gint sort_id);
 void list_txn_set_column_acc_visible(GtkTreeView *treeview, gboolean visible);

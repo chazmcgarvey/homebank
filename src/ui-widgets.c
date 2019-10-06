@@ -279,11 +279,11 @@ GtkWidget *make_label(char *str, gfloat xalign, gfloat yalign)
 {
 GtkWidget *label = gtk_label_new_with_mnemonic (str);
 
-	#if GTK_MINOR_VERSION >= 16
+	#if( (GTK_MAJOR_VERSION == 3) && (GTK_MINOR_VERSION < 16) )
+	gtk_misc_set_alignment (GTK_MISC (label), xalign, yalign);
+	#else
 	gtk_label_set_xalign(GTK_LABEL(label), xalign);
 	gtk_label_set_yalign(GTK_LABEL(label), yalign);
-	#else
-	gtk_misc_set_alignment (GTK_MISC (label), xalign, yalign);
 	#endif
 	return label;
 }

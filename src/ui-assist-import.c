@@ -735,8 +735,6 @@ gint res;
 		                                  GTK_RESPONSE_ACCEPT,
 		                                  NULL);
 
-	gtk_window_set_position(GTK_WINDOW(data->assistant), GTK_WIN_POS_CENTER_ON_PARENT);
-
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(dialog), PREFS->path_import);
 	DB( g_print(" set current folder '%s'\n", PREFS->path_import) );
 
@@ -814,6 +812,26 @@ gint res;
 	
 	ui_import_page_filechooser_eval(widget,  NULL);
 	
+}
+
+
+static void
+ui_import_page_filechooser_visible (GtkWidget *widget, gpointer   user_data)
+{
+struct import_data *data;
+
+	DB( g_print("\n[ui-import] page_filechooser_visible\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	
+	//open the file add if no file
+	if( gtk_tree_model_iter_n_children(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_file)), NULL) == 0 )
+	{
+		//g_signal_emit_by_name(data->BT_file_add, "clicked", NULL);
+		ui_import_page_filechooser_add_action(data->BT_file_add, NULL);
+	}
+
 }
 
 
@@ -1000,9 +1018,11 @@ guint count = 0;
 				/* append to our treeview */
 				//gtk_list_store_append (GTK_LIST_STORE(dupmodel), &newiter);
 				//gtk_list_store_set (GTK_LIST_STORE(dupmodel), &newiter,
+				//#1830523/#1840393
 				count++;
 				gtk_list_store_insert_with_values(GTK_LIST_STORE(dupmodel), &newiter, -1,
 					MODEL_TXN_POINTER, tmp,
+				    MODEL_TXN_SPLITAMT, tmp->amount,
 					-1);
 
 				//DB( g_print(" - fill: %s %.2f %x\n", item->memo, item->amount, (unsigned int)item->same) );
@@ -1512,8 +1532,6 @@ gchar *txt;
 }
 
 
-
-
 static gboolean
 ui_import_page_transaction_cb_activate_link (GtkWidget *label, const gchar *uri, gpointer user_data)
 {
@@ -1833,31 +1851,51 @@ gint row;
 static GtkWidget *
 ui_import_page_confirmation_create(GtkWidget *assistant, struct import_data *data)
 {
-GtkWidget *mainbox, *label, *widget, *scrollwin;
-
-	mainbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
-	//gtk_container_set_border_width (GTK_CONTAINER(mainbox), SPACING_SMALL);
-
+GtkWidget *group_grid, *label, *widget, *scrollwin;
+gint row = 0;
+	
+	group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	
 	scrollwin = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_NONE);
+	//gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_hexpand(scrollwin, TRUE);
 	gtk_widget_set_vexpand(scrollwin, TRUE);
 	widget = gtk_label_new (NULL);
 	data->TX_summary = widget;
 	gtk_container_add (GTK_CONTAINER (scrollwin), widget);
-	gtk_box_pack_start (GTK_BOX (mainbox), scrollwin, TRUE, TRUE, 0);
+	//gtk_box_pack_start (GTK_BOX (mainbox), scrollwin, TRUE, TRUE, 0);
+	gtk_grid_attach (GTK_GRID (group_grid), scrollwin, 0, row, 4, 1);
 
-	label = make_label(
-		_("Click \"Apply\" to update your accounts.\n"), 0.5, 0.5);
-		gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, 0);
+	row++;
+	label = make_label_group(_("Run automation"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
 
-	gtk_widget_set_margin_top(GTK_WIDGET(label), SPACING_SMALL);
-	gtk_widget_set_margin_bottom(GTK_WIDGET(label), SPACING_SMALL);
+	row++;
+	widget = gtk_check_button_new_with_mnemonic(_("1) Enrich with _payee default"));
+	gtk_widget_set_margin_start(widget, SPACING_MEDIUM);
+	data->CM_do_auto_payee = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 3, row, 1, 1);
+	
+	row++;
+	widget = gtk_check_button_new_with_mnemonic(_("2) Run automatic _assigment rules"));
+	gtk_widget_set_margin_start(widget, SPACING_MEDIUM);
+	data->CM_do_auto_assign = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 3, row, 1, 1);
 
-	gtk_widget_show_all (mainbox);
+	row++;
+	label = make_label(_("Click \"Apply\" to update your accounts."), 0, 0.5);
+	gtk_widget_set_margin_top(label, SPACING_LARGE);
+	gtk_widget_set_margin_bottom(label, SPACING_LARGE);
+	gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
+	
+	gtk_widget_show_all (group_grid);
 
-	return mainbox;
+	return group_grid;
 }
 
 
@@ -1944,13 +1982,6 @@ gint current_page, n_pages;
 		case PAGE_FILES:
 			DB( g_print("\n #2 file choose\n") );
 			gtk_assistant_set_page_complete (GTK_ASSISTANT(data->assistant), page, FALSE);
-
-			//open the file add if no file
-			if( gtk_tree_model_iter_n_children(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_file)), NULL) == 0 )
-			{
-				//g_signal_emit_by_name(data->BT_file_add, "clicked", NULL);
-				ui_import_page_filechooser_add_action(data->BT_file_add, NULL);
-			}
 
 			// the page complete is contextual in ui_import_page_filechooser_selection_changed
 				// check is something valid :: count total rows
@@ -2085,10 +2116,16 @@ static void
 ui_import_assistant_apply (GtkWidget *widget, gpointer user_data)
 {
 struct import_data *data;
+ImportContext *ictx;
 
 	DB( g_print("\n[ui-import] apply\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	ictx = &data->ictx;
+
+	ictx->do_auto_payee  = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_do_auto_payee));
+	ictx->do_auto_assign = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_do_auto_assign));
 
 	hb_import_apply(&data->ictx);
 }
@@ -2149,7 +2186,7 @@ GtkWidget *assistant = (GtkWidget *) user_data;
 GtkWidget *ui_import_assistant_new (gchar **paths)
 {
 struct import_data *data;
-GtkWidget *assistant, *page;
+GtkWidget *assistant, *page, *page_file;
 gint w, h;
 
 	DB( g_print("\n[ui-import] new\n") );
@@ -2179,6 +2216,7 @@ gint w, h;
 	gtk_assistant_set_page_complete (GTK_ASSISTANT(assistant), page, TRUE );
 
 	page = ui_import_page_filechooser_create (assistant, data);
+	page_file = page;
 	gtk_assistant_append_page (GTK_ASSISTANT (assistant), page);
 	gtk_assistant_set_page_title (GTK_ASSISTANT (assistant), page, _("Select file(s)"));
 
@@ -2227,10 +2265,14 @@ gint w, h;
 
 	//connect all our signals
 	//g_signal_connect (window, "delete-event", G_CALLBACK (hbfile_dispose), (gpointer)data);
+	g_signal_connect (G_OBJECT (assistant), "prepare", G_CALLBACK (ui_import_assistant_prepare), NULL);
+
+	g_signal_connect (G_OBJECT (page_file), "map", G_CALLBACK (ui_import_page_filechooser_visible), NULL);
+
+
 	g_signal_connect (G_OBJECT (assistant), "cancel", G_CALLBACK (ui_import_assistant_close_cancel), assistant);
 	g_signal_connect (G_OBJECT (assistant), "close", G_CALLBACK (ui_import_assistant_close_cancel), assistant);
 	g_signal_connect (G_OBJECT (assistant), "apply", G_CALLBACK (ui_import_assistant_apply), NULL);
-	g_signal_connect (G_OBJECT (assistant), "prepare", G_CALLBACK (ui_import_assistant_prepare), NULL);
 	
 	gtk_widget_show (assistant);
 

@@ -69,6 +69,8 @@ gchar dc;
 	amount = 0.0;
 	dc = '?';
 
+	//TODO: we should use here ==> hb_string_dup_raw_amount_clean(const gchar *string, gint digits)
+
 	l = strlen(string) - 1;
 
 	// the first non-digit is a grouping, or a decimal separator
@@ -339,6 +341,7 @@ GenTxn tran = { 0 };
 						Account *dst_acc;
 						
 							genacc = hb_import_gen_acc_get_next (ctx, FILETYPE_QIF, tmpgenacc.name, NULL);
+							// number is null for QIF because it is not a QIF account field into specification
 							dst_acc = hb_import_acc_find_existing(tmpgenacc.name, NULL );
 							if( dst_acc != NULL )
 							{

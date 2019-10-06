@@ -117,9 +117,9 @@ gchar *type[5] = { "string", "date", "int", "double" };
 gint lasttype;
 #endif
 
-	DB( g_print("\n** hb_string_csv_valid: init %d\n", valid) );
+	DB( g_print("\n[import-csv] row valid\n") );
 
-	DB( g_print(" -> length %d, nbcolumns %d\n", g_strv_length( str_array ), nbcolumns) );
+	DB( g_print(" -> strarr_len=%d, expected=%d\n", g_strv_length( str_array ), nbcolumns) );
 
 	if( g_strv_length( str_array ) != nbcolumns )
 	{
@@ -184,6 +184,8 @@ gchar *remainder;
 	g_return_val_if_fail (string != NULL, NULL);
 	g_return_val_if_fail (delimiter != '\0', NULL);
 
+	DB( g_print("\n[import-csv] row get\n") );
+	
 	if (max_tokens < 1)
 		max_tokens = G_MAXINT;
 
@@ -239,6 +241,8 @@ gchar **str_array;
 gchar sep;
 gboolean isvalid = FALSE;
 
+	DB( g_print("\n[import-csv] test line\n") );
+	
 	hb_string_strip_crlf(rawline);
 	sep = hb_csv_get_separator();
 	str_array = hb_csv_row_get(rawline, sep, 8);
@@ -255,7 +259,7 @@ GList *homebank_csv_import(ImportContext *ictx, GenFile *genfile)
 GIOChannel *io;
 //GList *list = NULL;
 
-	DB( g_print("\n[import] homebank csv\n") );
+	DB( g_print("\n[import-csv] homebank csv\n") );
 
 	io = g_io_channel_new_file(genfile->filepath, "r", NULL);
 	if(io != NULL)

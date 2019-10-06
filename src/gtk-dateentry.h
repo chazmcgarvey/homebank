@@ -72,7 +72,7 @@ struct _GtkDateEntryPrivate
 	GDate	*date;
 	guint32	lastdate;
 
-	GDate	mindate, maxdate;
+	GDate	nowdate, mindate, maxdate;
 	
 	gulong	hid_dayselect;
 };
@@ -80,12 +80,14 @@ struct _GtkDateEntryPrivate
 
 GType		gtk_date_entry_get_type(void) G_GNUC_CONST;
 
-GtkWidget	*gtk_date_entry_new(void);
+GtkWidget	*gtk_date_entry_new(GtkWidget *label);
 
 guint32		gtk_date_entry_get_date(GtkDateEntry * dateentry);
 void		gtk_date_entry_set_date(GtkDateEntry * dateentry, guint32 julian_days);
 void		gtk_date_entry_set_mindate(GtkDateEntry * dateentry, guint32 julian_days);
 void		gtk_date_entry_set_maxdate(GtkDateEntry * dateentry, guint32 julian_days);
+
+GDateWeekday gtk_date_entry_get_weekday(GtkDateEntry *dateentry);
 
 G_END_DECLS
 

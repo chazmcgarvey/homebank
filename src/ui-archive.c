@@ -1124,7 +1124,7 @@ gint row;
 	label = gtk_label_new_with_mnemonic (_("Next _date:"));
 	data->LB_next = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = gtk_date_entry_new();
+	widget = gtk_date_entry_new(label);
 	data->PO_next = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 

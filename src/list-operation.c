@@ -514,28 +514,49 @@ gchar *color;
 */
 static void list_txn_category_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
+struct list_txn_data *data = NULL;
+GtkWidget *widget;
 Transaction *ope;
 Category *cat;
+gchar *color, *text;
 
+	widget = gtk_tree_view_column_get_tree_view(col);
+	if( widget )
+		data = g_object_get_data(G_OBJECT(widget), "inst_data");
+	
 	gtk_tree_model_get(model, iter, MODEL_TXN_POINTER, &ope, -1);
 	list_txn_eval_future(renderer, ope);
 
+	color = NULL;
+	text = "";
+	
 	if(ope->flags & OF_SPLIT)
 	{
-		g_object_set(renderer, "text", _("- split -"), NULL);
+		text = _("- split -");
 	}
 	else
 	{
-		cat = da_cat_get(ope->kcat);
-		if( cat != NULL )
+		if( ope->kcat > 0 )
 		{
-			g_object_set(renderer, "text", cat->fullname, NULL);
+			cat = da_cat_get(ope->kcat);
+			text = (cat != NULL) ? cat->fullname : "";
 		}
 		else
-			g_object_set(renderer, "text", "", NULL);
-
+		{
+			// #1673902 add a visual marker for uncategorized txn 
+			if( data->warnnocategory == TRUE )
+			{
+				color = PREFS->color_warn;
+				text = _("- this need a category -");
+			}
+		}
 	}
-	
+
+	g_object_set(renderer,
+		"foreground",  color,
+		"text", text,
+		NULL);
+
 }
 
 
@@ -712,6 +733,16 @@ struct list_txn_data *data;
 	{
 		data->save_column_width = save_column_width;
 	}
+}
+
+
+void list_txn_set_warn_nocategory(GtkTreeView *treeview, gboolean warn)
+{
+struct list_txn_data *data;
+
+	data = g_object_get_data(G_OBJECT(treeview), "inst_data");
+
+	data->warnnocategory = warn;
 }
 
 
@@ -1142,8 +1173,9 @@ GtkTreeViewColumn  *column, *col_acc = NULL, *col_status = NULL;
 	if(!data) return NULL;
 
 	data->list_type = list_type;
+	data->warnnocategory = FALSE;
 	data->save_column_width = FALSE;
-	
+
 	/* create list store */
 	store = gtk_list_store_new(
 		2, G_TYPE_POINTER,	// MODEL_TXN_POINTER
