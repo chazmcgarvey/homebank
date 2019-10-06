@@ -195,7 +195,6 @@ GenTxn *gentxn;
 	if(data.amount_valid==true)
 	{
 		gentxn->amount = data.amount;
-
 	}
 
 // check number :: The check number is most likely an integer and can probably be converted properly with atoi(). 
@@ -294,14 +293,34 @@ GenTxn *gentxn;
 	{
 		gentxn->account = g_strdup(ctx->curr_acc->name);
 
+		#if MYDEBUG == 1
+		if(gentxn->rawinfo)
+			g_print(" len info %d %ld\n", (int)strlen(gentxn->rawinfo) , g_utf8_strlen(gentxn->rawinfo, -1));
+		if(gentxn->rawmemo)
+			g_print(" len memo %d %ld\n", (int)strlen(gentxn->rawmemo) , g_utf8_strlen(gentxn->rawmemo, -1));
+		if(gentxn->rawpayee)
+			g_print(" len name %d %ld\n", (int)strlen(gentxn->rawpayee), g_utf8_strlen(gentxn->rawpayee, -1));
+		#endif
+
+		//#1842935 workaround for libofx truncate bug that can leave invalid UTF-8 string 
+		//NAME = A-32 (96 allowed)
+		if( gentxn->rawpayee && g_utf8_strlen(gentxn->rawpayee, -1) > 32 )
+		{
+		gchar *oldtxt = gentxn->rawpayee;
+			DB( g_print(" ensure UTF-8 for truncated NAME='%s'\n", oldtxt) );
+			gentxn->rawpayee = g_utf8_make_valid(oldtxt, -1);
+			g_free(oldtxt);
+		}
+		//TODO: maybe MEMO = A-255
+		
 		/* ensure utf-8 here, has under windows, libofx not always return utf-8 as it should */
-	#ifndef G_OS_UNIX
+		#ifndef G_OS_UNIX
 		DB( g_print(" ensure UTF-8\n") );
 
-		gentxn->rawinfo = homebank_utf8_ensure(gentxn->rawinfo);
-		gentxn->rawmemo = homebank_utf8_ensure(gentxn->rawmemo);
+		gentxn->rawinfo  = homebank_utf8_ensure(gentxn->rawinfo);
+		gentxn->rawmemo  = homebank_utf8_ensure(gentxn->rawmemo);
 		gentxn->rawpayee = homebank_utf8_ensure(gentxn->rawpayee);
-	#endif
+		#endif
 
 		da_gen_txn_append(ctx, gentxn);
 
@@ -321,7 +340,6 @@ GenTxn *gentxn;
 
 	return 0;
 }
-
 
 
 static LibofxProcStatusCallback

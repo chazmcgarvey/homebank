@@ -1164,13 +1164,13 @@ gint row;
 	row++;
 	label = make_label_widget(_("_From:"));
 	gtk_grid_attach (GTK_GRID (table), label, 0, row, 1, 1);
-	data->PO_mindate = gtk_date_entry_new();
+	data->PO_mindate = gtk_date_entry_new(label);
 	gtk_grid_attach (GTK_GRID (table), data->PO_mindate, 1, row, 2, 1);
 
 	row++;
 	label = make_label_widget(_("_To:"));
 	gtk_grid_attach (GTK_GRID (table), label, 0, row, 1, 1);
-	data->PO_maxdate = gtk_date_entry_new();
+	data->PO_maxdate = gtk_date_entry_new(label);
 	gtk_grid_attach (GTK_GRID (table), data->PO_maxdate, 1, row, 2, 1);
 
 	row++;

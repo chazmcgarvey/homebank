@@ -285,7 +285,8 @@ da_pay_get(guint32 key)
 void da_pay_consistency(Payee *item)
 {
 	g_strstrip(item->name);
-	//5.2.4 we drop internal xfer here as it will disapear 
+	//5.2.4 we drop internal xfer here as it will disapear
+	//was faulty possible
 	if( item->paymode == PAYMODE_INTXFER )
 		item->paymode = PAYMODE_XFER;
 }

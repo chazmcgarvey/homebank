@@ -990,8 +990,10 @@ GtkTreeIter			 newiter;
 	
 		gtk_list_store_append (GTK_LIST_STORE(newmodel), &newiter);
 
+		//#1830523/#1840393
 		gtk_list_store_set (GTK_LIST_STORE(newmodel), &newiter,
 		MODEL_TXN_POINTER, stxn,
+		MODEL_TXN_SPLITAMT, stxn->amount,
 		-1);
 	}
 
@@ -1007,8 +1009,10 @@ GtkTreeIter			 newiter;
 		/* append to our treeview */
 			gtk_list_store_append (GTK_LIST_STORE(newmodel), &newiter);
 
+			//#1830523/#1840393
 			gtk_list_store_set (GTK_LIST_STORE(newmodel), &newiter,
 			MODEL_TXN_POINTER, tmp,
+			MODEL_TXN_SPLITAMT, tmp->amount,
 			-1);
 
 		//DB( g_print(" - fill: %s %.2f %x\n", item->memo, item->amount, (unsigned int)item->same) );

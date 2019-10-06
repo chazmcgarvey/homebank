@@ -574,7 +574,7 @@ hb_strdup_nobrackets (const gchar *str)
 static gchar hb_string_raw_amount_guess_dchar(const gchar *s, gint len, gshort digit)
 {
 gint nbc, nbd, i;
-gchar gdc='?';
+gchar gdc='.';
 
 	DB( g_print(" digit=%d maxidx=%d\n", digit, len-digit-1) );
 	

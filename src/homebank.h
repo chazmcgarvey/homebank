@@ -75,13 +75,13 @@
 
 #define HB_VERSION_MAJOR	5
 #define HB_VERSION_MINOR	2
-#define HB_VERSION_MICRO	7
+#define HB_VERSION_MICRO	8
 
-#define HB_VERSION		"5.2.7"
+#define HB_VERSION		"5.2.8"
 #define HB_VERSION_NUM	(HB_VERSION_MAJOR*10000) + (HB_VERSION_MINOR*100) + HB_VERSION_MICRO
 
 #define FILE_VERSION		1.3
-#define PREF_VERSION		527
+#define PREF_VERSION		528
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -111,9 +111,9 @@
 /* container spacing */
 #define SPACING_TINY		3
 #define SPACING_SMALL		6
-#define SPACING_POPOVER		10
 #define SPACING_MEDIUM		12
 #define SPACING_LARGE		18
+#define SPACING_POPOVER		10
 
 
 #define HB_DATE_MAX_GAP	7
@@ -191,6 +191,7 @@ typedef enum
 #define ICONNAME_EMBLEM_SYSTEM		"emblem-system-symbolic"
 #define ICONNAME_WINDOW_CLOSE		"window-close-symbolic"
 #define ICONNAME_LIST_ADD			"list-add-symbolic"
+#define ICONNAME_LIST_EDIT			"document-edit-symbolic"
 #define ICONNAME_LIST_REMOVE		"list-remove-symbolic"
 #define ICONNAME_LIST_REMOVE_ALL	"list-remove-all-symbolic"
 #define ICONNAME_CHANGES_PREVENT	"changes-prevent-symbolic"
@@ -202,6 +203,7 @@ typedef enum
 #define ICONNAME_HB_BUTTON_EXPAND	"list-expand-all-symbolic"
 #define ICONNAME_HB_BUTTON_SPLIT	"edit-split-symbolic"
 #define ICONNAME_HB_TOGGLE_SIGN		"toggle-sign-symbolic"
+#define ICONNAME_HB_LIST_MERGE		"list-merge-symbolic"
 
 
 /* -------- named icons (Custom to homebank) -------- */
@@ -220,6 +222,8 @@ typedef enum
 #define ICONNAME_HB_REP_BALANCE     "hb-rep-balance"
 #define ICONNAME_HB_REP_BUDGET      "hb-rep-budget"
 #define ICONNAME_HB_REP_CAR         "hb-rep-vehicle"
+#define ICONNAME_HB_HELP            "hb-help"
+#define ICONNAME_HB_DONATE          "hb-donate"
 
 #define ICONNAME_HB_VIEW_LIST	    "hb-view-list"   //"view-list-text"
 #define ICONNAME_HB_VIEW_BAR	    "hb-view-bar"    //"view-chart-bar"
@@ -243,7 +247,8 @@ typedef enum
 #define ICONNAME_HB_FILE_INVALID	"hb-file-invalid"
 
 #define ICONNAME_HB_OPE_AUTO        "hb-ope-auto"   //? 
-#define ICONNAME_HB_OPE_BUDGET      "hb-ope-budget" //? 
+#define ICONNAME_HB_OPE_BUDGET      "hb-ope-budget" //?
+#define ICONNAME_HB_OPE_FORCED      "hb-ope-forced" //?
 #define ICONNAME_HB_OPE_ADD         "hb-ope-add"	//? "edit-add"
 #define ICONNAME_HB_OPE_HERIT       "hb-ope-herit"  //? "edit-clone"
 #define ICONNAME_HB_OPE_EDIT        "hb-ope-edit"   //
@@ -254,6 +259,7 @@ typedef enum
 
 #define ICONNAME_HB_OPE_NEW		     "hb-ope-new"
 // edit is defined above
+#define ICONNAME_HB_OPE_VOID        "hb-ope-void"
 #define ICONNAME_HB_OPE_REMIND      "hb-ope-remind"
 #define ICONNAME_HB_OPE_SIMILAR     "hb-ope-similar"
 

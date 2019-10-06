@@ -71,6 +71,8 @@ typedef struct _GDateParseTokens GDateParseTokens;
 
 #define NUM_LEN 10
 
+static void gtk_date_entry_cb_calendar_today_mark(GtkWidget *calendar, GtkDateEntry *dateentry);
+
 static void
 hb_date_fill_parse_tokens (const gchar *str, GDateParseTokens *pt)
 {
@@ -247,6 +249,24 @@ GtkDateEntryPrivate *priv = dateentry->priv;
 }
 
 
+static void
+gtk_date_entry_cb_calendar_today_mark(GtkWidget *calendar, GtkDateEntry *dateentry)
+{
+GtkDateEntryPrivate *priv = dateentry->priv;
+guint year, month, day;
+
+	DB( g_print("\n[dateentry] cb_calendar_mark_day\n") );
+
+	gtk_calendar_get_date (GTK_CALENDAR (priv->calendar), &year, &month, &day);
+
+	//maybe 1828914
+	gtk_calendar_clear_marks(GTK_CALENDAR(priv->calendar));
+	if( year == g_date_get_year (&priv->nowdate) && month == (g_date_get_month (&priv->nowdate)-1) )	
+		gtk_calendar_mark_day(GTK_CALENDAR(priv->calendar), g_date_get_day (&priv->nowdate));
+
+}
+
+
 static void 
 gtk_date_entry_cb_calendar_monthyear(GtkWidget *calendar, GtkDateEntry *dateentry)
 {
@@ -261,7 +281,8 @@ guint year, month, day;
 
 	if( year > 2200)
 		g_object_set(calendar, "year", 2200, NULL);
-	
+
+	gtk_date_entry_cb_calendar_today_mark(calendar, dateentry);
 }
 
 
@@ -351,20 +372,20 @@ gtk_date_entry_cb_button_clicked (GtkWidget * widget, GtkDateEntry * dateentry)
 {
 GtkDateEntryPrivate *priv = dateentry->priv;
 //GdkRectangle rect;
-int month;
+guint day, month;
 
 	DB( g_print("\n[dateentry] button_clicked\n") );
 
 	/* GtkCalendar expects month to be in 0-11 range (inclusive) */
+	day   = g_date_get_day (priv->date);
 	month = g_date_get_month (priv->date) - 1;
-	
+
 	g_signal_handler_block(priv->calendar, priv->hid_dayselect);
-	
+
 	gtk_calendar_select_month (GTK_CALENDAR (priv->calendar),
 			   CLAMP (month, 0, 11),
 			   g_date_get_year (priv->date));
-    gtk_calendar_select_day (GTK_CALENDAR (priv->calendar),
-			 g_date_get_day (priv->date));
+    gtk_calendar_select_day (GTK_CALENDAR (priv->calendar), day);
 			 
 	g_signal_handler_unblock(priv->calendar, priv->hid_dayselect);
 
@@ -372,6 +393,8 @@ int month;
 	//gtk_widget_get_clip(priv->arrow, &rect);
 	//gtk_popover_set_pointing_to (GTK_POPOVER (priv->popover), &rect);
 
+	gtk_date_entry_cb_calendar_today_mark(widget, dateentry);
+	
 	gtk_widget_show_all (priv->popover);
 }
 
@@ -509,6 +532,7 @@ GtkDateEntryPrivate *priv;
 	/* initialize datas */
 	priv->date = g_date_new();
 	g_date_set_time_t(priv->date, time(NULL));
+	g_date_set_time_t(&priv->nowdate, time(NULL));
 	g_date_set_dmy(&priv->mindate,  1,  1, 1900);	//693596
 	g_date_set_dmy(&priv->maxdate, 31, 12, 2200);	//803533
 	update_text(dateentry);
@@ -547,7 +571,7 @@ GtkDateEntryPrivate *priv;
 
 
 GtkWidget *
-gtk_date_entry_new ()
+gtk_date_entry_new (GtkWidget *label)
 {
 GtkDateEntry *dateentry;
 
@@ -555,6 +579,13 @@ GtkDateEntry *dateentry;
 
 	dateentry = g_object_new (GTK_TYPE_DATE_ENTRY, NULL);
 
+	if(dateentry)
+	{
+	GtkDateEntryPrivate *priv = dateentry->priv;
+	
+		if(label)
+			gtk_label_set_mnemonic_widget (GTK_LABEL(label), priv->entry);
+	}
 	return GTK_WIDGET(dateentry);
 }
 
@@ -636,3 +667,15 @@ GtkDateEntryPrivate *priv = dateentry->priv;
 	return(g_date_get_julian(priv->date));
 }
 
+
+GDateWeekday
+gtk_date_entry_get_weekday(GtkDateEntry *dateentry)
+{
+GtkDateEntryPrivate *priv = dateentry->priv;
+	
+	DB( g_print("\n[dateentry] get weekday\n") );
+
+	g_return_val_if_fail (GTK_IS_DATE_ENTRY (dateentry), 0);
+
+	return(g_date_get_weekday(priv->date));
+}

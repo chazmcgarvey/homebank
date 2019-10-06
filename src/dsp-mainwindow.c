@@ -62,6 +62,7 @@
 
 #define HOMEBANK_URL_HELP           "index.html"
 #define HOMEBANK_URL_HELP_ONLINE    "http://homebank.free.fr/support.php"
+#define HOMEBANK_URL_HELP_DONATE    "http://homebank.free.fr/donate.php"
 #define HOMEBANK_URL_HELP_UPDATES   "http://homebank.free.fr/downloads.php"
 #define HOMEBANK_URL_HELP_PROBLEM   "http://homebank.free.fr/development.php#bug"
 #define HOMEBANK_URL_HELP_TRANSLATE "http://homebank.free.fr/development.php#translate"
@@ -131,6 +132,7 @@ static void ui_mainwindow_action_pluginprefs(void);
 static void ui_mainwindow_action_help(void);
 void ui_mainwindow_action_help_welcome(void);
 static void ui_mainwindow_action_help_online(void);
+static void ui_mainwindow_action_help_donate(void);
 static void ui_mainwindow_action_help_updates(void);
 static void ui_mainwindow_action_help_releasenotes(void);
 static void ui_mainwindow_action_help_translate(void);
@@ -234,13 +236,14 @@ static GtkActionEntry entries[] = {
   { "PluginPreferences", "prf-plugins", N_("_Plugins..."), "<control>U", N_("Configure plugin preferences"), G_CALLBACK(ui_mainwindow_action_pluginprefs) },
 
   /* HelpMenu */
-  { "Contents"    , ICONNAME_HELP     , N_("_Contents")                    , "F1", N_("Documentation about HomeBank"), G_CALLBACK (ui_mainwindow_action_help) },
-  { "Online"      , "lpi-help"        , N_("Get Help Online...")           , NULL, N_("Connect to the LaunchPad website for online help"), G_CALLBACK (ui_mainwindow_action_help_online) },
+  { "Contents"    , NULL              , N_("_Contents")                    , "F1", N_("Documentation about HomeBank"), G_CALLBACK (ui_mainwindow_action_help) },
+  { "Online"      , ICONNAME_HB_HELP  , N_("Get Help Online")           , NULL, N_("Get Help Online"), G_CALLBACK (ui_mainwindow_action_help_online) },
+  { "Donate"      , ICONNAME_HB_DONATE, N_("Donate to HomeBank project")   , NULL, N_("Donate to HomeBank project"), G_CALLBACK (ui_mainwindow_action_help_donate) },
 
   { "Updates"     , NULL              , N_("Check for updates...")         , NULL, N_("Visit HomeBank website to check for update"), G_CALLBACK (ui_mainwindow_action_help_updates) },
   { "ReleaseNotes", NULL              , N_("Release Notes")                , NULL, N_("Display the release notes"), G_CALLBACK (ui_mainwindow_action_help_releasenotes) },
-  { "Problem"     , "lpi-bug"         , N_("Report a Problem...")          , NULL, N_("Connect to the LaunchPad website to help fix problems"), G_CALLBACK (ui_mainwindow_action_help_problem) },
-  { "Translate"   , "lpi-translate"   , N_("Translate this Application..."), NULL, N_("Connect to the LaunchPad website to help translate this application"), G_CALLBACK (ui_mainwindow_action_help_translate) },
+  { "Problem"     , "lpi-bug"         , N_("Report a Problem...")          , NULL, N_("Report a Problem..."), G_CALLBACK (ui_mainwindow_action_help_problem) },
+  { "Translate"   , "lpi-translate"   , N_("Translate this Application..."), NULL, N_("Translate this Application..."), G_CALLBACK (ui_mainwindow_action_help_translate) },
 
   { "About"       , ICONNAME_ABOUT      , N_("_About")     , NULL, N_("About HomeBank")      ,G_CALLBACK (ui_mainwindow_action_about) },
 
@@ -370,6 +373,8 @@ static const gchar *ui_info =
 "    <toolitem action='RBudget'/>"
 "    <toolitem action='RVehiculeCost'/>"
 "      <separator/>"
+"    <toolitem action='Online'/>"
+"    <toolitem action='Donate'/>"
 "  </toolbar>"
 
 "</ui>";
@@ -1053,6 +1058,13 @@ const gchar *link = HOMEBANK_URL_HELP_UPDATES;
 static void ui_mainwindow_action_help_online(void)
 {
 const gchar *link = HOMEBANK_URL_HELP_ONLINE;
+
+	homebank_util_url_show (link);
+}
+
+static void ui_mainwindow_action_help_donate(void)
+{
+const gchar *link = HOMEBANK_URL_HELP_DONATE;
 
 	homebank_util_url_show (link);
 }

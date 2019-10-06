@@ -377,7 +377,8 @@ guint32 acckey;
 			{
 				gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 		 		gtk_list_store_set (GTK_LIST_STORE(model), &iter,
-					LST_DSPOPE_DATAS, ope,
+					MODEL_TXN_POINTER, ope,
+				    MODEL_TXN_SPLITAMT, ope->amount,
 							-1);
 			}
 			list = g_list_next(list);
@@ -947,13 +948,13 @@ GError *error = NULL;
 	row++;
 	label = make_label_widget(_("_From:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	data->PO_mindate = gtk_date_entry_new();
+	data->PO_mindate = gtk_date_entry_new(label);
 	gtk_grid_attach (GTK_GRID (table), data->PO_mindate, 2, row, 1, 1);
 
 	row++;
 	label = make_label_widget(_("_To:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	data->PO_maxdate = gtk_date_entry_new();
+	data->PO_maxdate = gtk_date_entry_new(label);
 	gtk_grid_attach (GTK_GRID (table), data->PO_maxdate, 2, row, 1, 1);
 
 

@@ -6,19 +6,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2019-07-28 16:17+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-19 13:46+0200\n"
 "PO-Revision-Date: 2019-03-25 04:17+0000\n"
 "Last-Translator: Serdar Sağlam <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2019-07-28 14:36+0000\n"
-"X-Generator: Launchpad (build 19010)\n"
-"Language: tr\n"
+"X-Launchpad-Export-Date: 2019-09-18 11:28+0000\n"
+"X-Generator: Launchpad (build 19048)\n"
 
-#: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:945
+#: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:951
 msgid "HomeBank"
 msgstr "HomeBank"
 
@@ -26,8 +26,8 @@ msgstr "HomeBank"
 msgid "Personal finance"
 msgstr "Kişisel finans"
 
-#: ../data/homebank.desktop.in.in.h:3 ../src/dsp-mainwindow.c:466
-#: ../src/dsp-mainwindow.c:949
+#: ../data/homebank.desktop.in.in.h:3 ../src/dsp-mainwindow.c:472
+#: ../src/dsp-mainwindow.c:955
 msgid "Free, easy, personal accounting for everyone"
 msgstr "Herkes için ücretsiz kolay ve kişisel muhasebe"
 
@@ -37,8 +37,8 @@ msgstr "finans;muhasebe;bütçe;kişisel;para;"
 
 #: ../data/homebank.appdata.xml.in.h:1
 msgid ""
-"HomeBank is a free software (as in \"free speech\" and also as in \"free "
-"beer\") that will assist you to manage your personal accounting."
+"HomeBank is a free software (as in \"free speech\" and also as in \"free beer"
+"\") that will assist you to manage your personal accounting."
 msgstr ""
 "HomeBank, kişisel muhasebenizi yönetmenize yardımcı olacak ücretsiz bir "
 "yazılımdır (\"ücretsiz konuşma\" ve \"ücretsiz bira\" gibi)"
@@ -128,7 +128,7 @@ msgstr ""
 msgid "_Create"
 msgstr "_Oluştur"
 
-#: ../src/dsp-account.c:1286
+#: ../src/dsp-account.c:1288
 msgid ""
 "Do you want to delete\n"
 "each of the selected transaction ?"
@@ -136,321 +136,321 @@ msgstr ""
 "Seçilen her işlemi silmek\n"
 "istiyor musunuz ?"
 
-#: ../src/dsp-account.c:1287 ../src/ui-account.c:1041 ../src/ui-account.c:1319
+#: ../src/dsp-account.c:1289 ../src/ui-account.c:1041 ../src/ui-account.c:1319
 #: ../src/ui-archive.c:400 ../src/ui-archive.c:1258 ../src/ui-assign.c:556
 #: ../src/ui-assign.c:772 ../src/ui-category.c:1105 ../src/ui-category.c:1561
 #: ../src/ui-category.c:1987 ../src/ui-currency.c:1547
-#: ../src/ui-currency.c:1734 ../src/ui-payee.c:1039 ../src/ui-payee.c:1462
-#: ../src/ui-payee.c:1677 ../src/ui-tag.c:608 ../src/ui-tag.c:762
+#: ../src/ui-currency.c:1734 ../src/ui-payee.c:1105 ../src/ui-payee.c:1528
+#: ../src/ui-payee.c:1743 ../src/ui-tag.c:612 ../src/ui-tag.c:766
 msgid "_Delete"
 msgstr "_Sil"
 
-#: ../src/dsp-account.c:1350
+#: ../src/dsp-account.c:1351
 msgid "Are you sure you want to change the status to None?"
 msgstr "Durumu Hiçbiri olarak değiştirmek istediğinize emin misiniz?"
 
-#: ../src/dsp-account.c:1351 ../src/dsp-account.c:1411
+#: ../src/dsp-account.c:1352 ../src/dsp-account.c:1410
 msgid "Some transaction in your selection are already Reconciled."
 msgstr "Seçiminizdeki bir işlem zaten Bağdaşık."
 
-#: ../src/dsp-account.c:1352 ../src/ui-assist-start.c:287
+#: ../src/dsp-account.c:1353 ../src/ui-assist-start.c:287
 #: ../src/ui-dialogs.c:383
 msgid "_Change"
 msgstr "_Değiştir"
 
-#: ../src/dsp-account.c:1410
+#: ../src/dsp-account.c:1409
 msgid "Are you sure you want to toggle the status Reconciled?"
 msgstr "Bağdaşık duruma geçiş yapmak istediğinize emin misiniz?"
 
-#: ../src/dsp-account.c:1412
+#: ../src/dsp-account.c:1411
 msgid "_Toggle"
 msgstr "_Geçiş"
 
 #. label = g_strdup_printf(_("Account %d of %d"), acckey+1, nbacc);
 #. gtk_label_set_markup (GTK_LABEL(txndata->LB_acc_count), label);
 #. g_free(label);
-#: ../src/dsp-account.c:1704 ../src/ui-assist-import.c:1288
+#: ../src/dsp-account.c:1710 ../src/ui-assist-import.c:1308
 #, c-format
 msgid "%d transactions"
 msgstr "%d işlem"
 
-#: ../src/dsp-account.c:1707
+#: ../src/dsp-account.c:1713
 #, c-format
 msgid "%d transactions, %d selected, avg: %s, sum: %s (%s - %s)"
 msgstr "%d hareketleri, %d seçili, ortalama: %s, toplam: %s (%s - %s)"
 
-#: ../src/dsp-account.c:1806 ../src/dsp-account.c:2064
+#: ../src/dsp-account.c:1812 ../src/dsp-account.c:2073
 msgid "All transactions"
 msgstr "Tüm işlemler"
 
 #. name, icon-name, label
-#: ../src/dsp-account.c:1923
+#: ../src/dsp-account.c:1932
 msgid "A_ccount"
 msgstr "H_esap"
 
-#: ../src/dsp-account.c:1924
+#: ../src/dsp-account.c:1933
 msgid "Transacti_on"
 msgstr "İşle_m"
 
-#: ../src/dsp-account.c:1925
+#: ../src/dsp-account.c:1934
 msgid "_Status"
 msgstr "_Durum"
 
-#: ../src/dsp-account.c:1926 ../src/dsp-mainwindow.c:166
+#: ../src/dsp-account.c:1935 ../src/dsp-mainwindow.c:168
 msgid "_Tools"
 msgstr "_Araçlar"
 
 #. name, icon-name, label, accelerator, tooltip
-#: ../src/dsp-account.c:1930
+#: ../src/dsp-account.c:1939
 msgid "Export as PDF..."
 msgstr "Dışa Aktar PDF..."
 
-#: ../src/dsp-account.c:1930
+#: ../src/dsp-account.c:1939
 msgid "Export to a PDF file"
 msgstr "PDF Olarak Dışa Aktar"
 
-#: ../src/dsp-account.c:1931
+#: ../src/dsp-account.c:1940
 msgid "Export QIF..."
 msgstr "Dışa Aktar QIF..."
 
-#: ../src/dsp-account.c:1931 ../src/ui-dialogs.c:448
+#: ../src/dsp-account.c:1940 ../src/ui-dialogs.c:448
 msgid "Export as QIF"
 msgstr "QIF Olarak Dışa Aktar"
 
-#: ../src/dsp-account.c:1932
+#: ../src/dsp-account.c:1941
 msgid "Export CSV..."
 msgstr "Dışa Aktar CSV..."
 
-#: ../src/dsp-account.c:1932 ../src/rep-vehicle.c:67 ../src/ui-dialogs.c:504
+#: ../src/dsp-account.c:1941 ../src/rep-vehicle.c:67 ../src/ui-dialogs.c:504
 msgid "Export as CSV"
 msgstr "CSV Olarak Dışa Aktar"
 
-#: ../src/dsp-account.c:1933 ../src/dsp-mainwindow.c:183
-#: ../src/dsp-mainwindow.c:935 ../src/ui-account.c:1261
+#: ../src/dsp-account.c:1942 ../src/dsp-mainwindow.c:185
+#: ../src/dsp-mainwindow.c:941 ../src/ui-account.c:1261
 #: ../src/ui-archive.c:1193 ../src/ui-assign.c:720 ../src/ui-budget.c:995
 #: ../src/ui-category.c:1805 ../src/ui-currency.c:1658 ../src/ui-dialogs.c:183
-#: ../src/ui-payee.c:1550 ../src/ui-tag.c:681 ../src/ui-transaction.c:1143
+#: ../src/ui-payee.c:1616 ../src/ui-tag.c:685 ../src/ui-transaction.c:1143
 #: ../src/ui-transaction.c:1151
 msgid "_Close"
 msgstr "_Kapat"
 
-#: ../src/dsp-account.c:1933
+#: ../src/dsp-account.c:1942
 msgid "Close the current account"
 msgstr "Geçerli hesabı kapat"
 
-#: ../src/dsp-account.c:1935
+#: ../src/dsp-account.c:1944
 msgid "_Add..."
 msgstr "_Ekle..."
 
-#: ../src/dsp-account.c:1935
+#: ../src/dsp-account.c:1944
 msgid "Add a new transaction"
 msgstr "Yeni bir işlem ekle"
 
-#: ../src/dsp-account.c:1936
+#: ../src/dsp-account.c:1945
 msgid "_Inherit..."
 msgstr "_Devral..."
 
-#: ../src/dsp-account.c:1936
+#: ../src/dsp-account.c:1945
 msgid "Inherit from the active transaction"
 msgstr "Etkin işlemden devral"
 
-#: ../src/dsp-account.c:1937
+#: ../src/dsp-account.c:1946
 msgid "_Edit..."
 msgstr "_Düzenle..."
 
-#: ../src/dsp-account.c:1937
+#: ../src/dsp-account.c:1946
 msgid "Edit the active transaction"
 msgstr "Etkin işlemleri düzenle"
 
-#: ../src/dsp-account.c:1939
+#: ../src/dsp-account.c:1948
 msgid "_None"
 msgstr "_Hiçbiri"
 
-#: ../src/dsp-account.c:1939
+#: ../src/dsp-account.c:1948
 msgid "Toggle none for selected transaction(s)"
 msgstr "Seçilen işlem(ler) için hiçbiri olana geçiş yap"
 
-#: ../src/dsp-account.c:1940
+#: ../src/dsp-account.c:1949
 msgid "_Cleared"
 msgstr "_Temizlendi"
 
-#: ../src/dsp-account.c:1940
+#: ../src/dsp-account.c:1949
 msgid "Toggle cleared for selected transaction(s)"
 msgstr "Seçilen işlem(ler) için temizlenmiş olana geçiş yap"
 
-#: ../src/dsp-account.c:1941
+#: ../src/dsp-account.c:1950
 msgid "_Reconciled"
 msgstr "_Bağdaşık"
 
-#: ../src/dsp-account.c:1941
+#: ../src/dsp-account.c:1950
 msgid "Toggle reconciled for selected transaction(s)"
 msgstr "Seçilen işlem(ler) için bağdaşık olana geçiş yap"
 
-#: ../src/dsp-account.c:1943
+#: ../src/dsp-account.c:1952
 msgid "_Multiple Edit..."
 msgstr "_Çoklu değiştir..."
 
-#: ../src/dsp-account.c:1943
+#: ../src/dsp-account.c:1952
 msgid "Edit multiple transaction"
 msgstr "Çoklu hareket düzenle"
 
-#: ../src/dsp-account.c:1944
+#: ../src/dsp-account.c:1953
 msgid "Create template..."
 msgstr "Taslak oluştur..."
 
-#: ../src/dsp-account.c:1944
+#: ../src/dsp-account.c:1953
 msgid "Create template"
 msgstr "Şablon oluştur"
 
-#: ../src/dsp-account.c:1945
+#: ../src/dsp-account.c:1954
 msgid "_Delete..."
 msgstr "_Sil..."
 
-#: ../src/dsp-account.c:1945
+#: ../src/dsp-account.c:1954
 msgid "Delete selected transaction(s)"
 msgstr "Seçilen işlemleri sil"
 
-#: ../src/dsp-account.c:1947
+#: ../src/dsp-account.c:1956
 msgid "Mark duplicate..."
 msgstr "Yineleneni işaretle..."
 
 #. { "DuplicateClear", NULL                      , N_("Unmark duplicate"), NULL,	NULL, G_CALLBACK (register_panel_action_duplicate_unmark) },
-#: ../src/dsp-account.c:1950
+#: ../src/dsp-account.c:1959
 msgid "Check internal xfer"
 msgstr "İç kontrol xfer"
 
-#: ../src/dsp-account.c:1951
+#: ../src/dsp-account.c:1960
 msgid "Auto. assignments"
 msgstr "Otomatik tahsis"
 
-#: ../src/dsp-account.c:1951
+#: ../src/dsp-account.c:1960
 msgid "Run automatic assignments"
 msgstr "Otomatik tahsis işle"
 
-#: ../src/dsp-account.c:1953
+#: ../src/dsp-account.c:1962
 msgid "_Filter..."
 msgstr "_Süzgeç..."
 
-#: ../src/dsp-account.c:1953
+#: ../src/dsp-account.c:1962
 msgid "Open the list filter"
 msgstr "Liste filtremeyi aç"
 
-#: ../src/dsp-account.c:1954
+#: ../src/dsp-account.c:1963
 msgid "Convert to Euro..."
 msgstr "Euro'ya çevir..."
 
-#: ../src/dsp-account.c:1954
+#: ../src/dsp-account.c:1963
 msgid "Convert this account to Euro currency"
 msgstr "Bu hesabı Euro'ya çevir"
 
-#: ../src/dsp-account.c:2057
+#: ../src/dsp-account.c:2066
 msgid "(closed)"
 msgstr "(kapandı)"
 
-#: ../src/dsp-account.c:2064
+#: ../src/dsp-account.c:2073
 #, c-format
 msgid "%s - HomeBank"
 msgstr "%s -HomeBank"
 
-#: ../src/dsp-account.c:2096 ../src/dsp-mainwindow.c:1995 ../src/ui-split.c:824
+#: ../src/dsp-account.c:2105 ../src/dsp-mainwindow.c:2008 ../src/ui-split.c:824
 msgid "Add"
 msgstr "Ekle"
 
-#: ../src/dsp-account.c:2099
+#: ../src/dsp-account.c:2108
 msgid "Inherit"
 msgstr "Devral"
 
-#: ../src/dsp-account.c:2102 ../src/ui-split.c:786
+#: ../src/dsp-account.c:2111 ../src/ui-split.c:786
 msgid "Edit"
 msgstr "Düzenle"
 
-#: ../src/dsp-account.c:2105 ../src/rep-stats.c:72
+#: ../src/dsp-account.c:2114 ../src/rep-stats.c:72
 msgid "Filter"
 msgstr "Süz"
 
 #. info bar for duplicate
-#: ../src/dsp-account.c:2142
+#: ../src/dsp-account.c:2151
 msgid "_Refresh"
 msgstr "_Yenile"
 
 #. balances area
-#: ../src/dsp-account.c:2177
+#: ../src/dsp-account.c:2186
 msgid "Bank:"
 msgstr "Banka:"
 
-#: ../src/dsp-account.c:2183
+#: ../src/dsp-account.c:2192
 msgid "Today:"
 msgstr "Bugün:"
 
-#: ../src/dsp-account.c:2189
+#: ../src/dsp-account.c:2198
 msgid "Future:"
 msgstr "Gelecek:"
 
-#: ../src/dsp-account.c:2212 ../src/rep-balance.c:942 ../src/rep-budget.c:1191
+#: ../src/dsp-account.c:2221 ../src/rep-balance.c:943 ../src/rep-budget.c:1191
 #: ../src/rep-stats.c:1543 ../src/rep-time.c:1274 ../src/rep-vehicle.c:755
 #: ../src/ui-pref.c:1284 ../src/ui-pref.c:1639 ../src/ui-pref.c:2018
 msgid "_Range:"
 msgstr "_Aralık:"
 
-#: ../src/dsp-account.c:2220
+#: ../src/dsp-account.c:2229
 msgid "Toggle show future transaction"
 msgstr "İleri tarihli işlemleri göster/gizle"
 
-#: ../src/dsp-account.c:2224 ../src/rep-budget.c:1166 ../src/rep-stats.c:1501
+#: ../src/dsp-account.c:2233 ../src/rep-budget.c:1166 ../src/rep-stats.c:1501
 #: ../src/ui-account.c:1349 ../src/ui-assist-start.c:398
 msgid "_Type:"
 msgstr "_Tür:"
 
-#: ../src/dsp-account.c:2229 ../src/ui-archive.c:1069
-#: ../src/ui-transaction.c:1304
+#: ../src/dsp-account.c:2238 ../src/ui-archive.c:1069
+#: ../src/ui-transaction.c:1303
 msgid "_Status:"
 msgstr "_Durum:"
 
 #. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
-#: ../src/dsp-account.c:2235 ../src/ui-filter.c:1405 ../src/ui-pref.c:2115
+#: ../src/dsp-account.c:2244 ../src/ui-filter.c:1405 ../src/ui-pref.c:2115
 #: ../src/ui-pref.c:2136
 msgid "_Reset"
 msgstr "_Sıfırla"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2240 ../src/rep-balance.c:921 ../src/rep-budget.c:1178
+#: ../src/dsp-account.c:2249 ../src/rep-balance.c:922 ../src/rep-budget.c:1178
 #: ../src/rep-stats.c:1515 ../src/rep-time.c:1253 ../src/rep-vehicle.c:742
 msgid "Euro _minor"
 msgstr "Euro _kuru"
 
 #. name, icon-name, label
-#: ../src/dsp-mainwindow.c:158
+#: ../src/dsp-mainwindow.c:160
 msgid "_File"
 msgstr "_Dosya"
 
 #. { "ImportMenu" , NULL, N_("_Import"), NULL, NULL, NULL },
-#: ../src/dsp-mainwindow.c:160
+#: ../src/dsp-mainwindow.c:162
 msgid "Open _Recent"
 msgstr "Son _Kullanılanı Aç"
 
 #. todo: useless ?
-#: ../src/dsp-mainwindow.c:161 ../src/ui-category.c:1981
-#: ../src/ui-currency.c:1730 ../src/ui-payee.c:1671 ../src/ui-tag.c:759
+#: ../src/dsp-mainwindow.c:163 ../src/ui-category.c:1981
+#: ../src/ui-currency.c:1730 ../src/ui-payee.c:1737 ../src/ui-tag.c:763
 msgid "_Edit"
 msgstr "_Düzenle"
 
-#: ../src/dsp-mainwindow.c:162
+#: ../src/dsp-mainwindow.c:164
 msgid "_View"
 msgstr "_Görüntüle"
 
-#: ../src/dsp-mainwindow.c:163
+#: ../src/dsp-mainwindow.c:165
 msgid "_Manage"
 msgstr "_Yönet"
 
-#: ../src/dsp-mainwindow.c:164
+#: ../src/dsp-mainwindow.c:166
 msgid "_Transactions"
 msgstr "_İşlemler"
 
-#: ../src/dsp-mainwindow.c:165
+#: ../src/dsp-mainwindow.c:167
 msgid "_Reports"
 msgstr "_Raporlar"
 
-#: ../src/dsp-mainwindow.c:167
+#: ../src/dsp-mainwindow.c:169
 msgid "_Help"
 msgstr "_Yardım"
 
@@ -458,346 +458,337 @@ msgstr "_Yardım"
 #. { "Export"       , NULL, N_("Export to") },
 #. name, icon-name, label, accelerator, tooltip
 #. FileMenu
-#: ../src/dsp-mainwindow.c:174
+#: ../src/dsp-mainwindow.c:176
 msgid "_New"
 msgstr "_Yeni"
 
-#: ../src/dsp-mainwindow.c:174
+#: ../src/dsp-mainwindow.c:176
 msgid "Create a new file"
 msgstr "Yeni bir dosya oluştur"
 
-#: ../src/dsp-mainwindow.c:175
+#: ../src/dsp-mainwindow.c:177
 msgid "_Open..."
 msgstr "_Aç..."
 
-#: ../src/dsp-mainwindow.c:175 ../src/dsp-mainwindow.c:2049
+#: ../src/dsp-mainwindow.c:177 ../src/dsp-mainwindow.c:2062
 msgid "Open a file"
 msgstr "Bir dosya aç"
 
-#: ../src/dsp-mainwindow.c:176 ../src/ui-dialogs.c:452 ../src/ui-dialogs.c:505
+#: ../src/dsp-mainwindow.c:178 ../src/ui-dialogs.c:452 ../src/ui-dialogs.c:505
 #: ../src/ui-dialogs.c:572 ../src/ui-dialogs.c:723
 msgid "_Save"
 msgstr "_Kaydet"
 
-#: ../src/dsp-mainwindow.c:176
+#: ../src/dsp-mainwindow.c:178
 msgid "Save the current file"
 msgstr "Mevcut dosyayı kaydet"
 
-#: ../src/dsp-mainwindow.c:177
+#: ../src/dsp-mainwindow.c:179
 msgid "Save _As..."
 msgstr "Farklı _Kaydet..."
 
-#: ../src/dsp-mainwindow.c:177
+#: ../src/dsp-mainwindow.c:179
 msgid "Save the current file with a different name"
 msgstr "Mevcut dosyayı farklı bir isimle kaydet"
 
-#: ../src/dsp-mainwindow.c:179
+#: ../src/dsp-mainwindow.c:181
 msgid "Revert"
 msgstr "Eskiye Dön"
 
-#: ../src/dsp-mainwindow.c:179
+#: ../src/dsp-mainwindow.c:181
 msgid "Revert to a saved version of this file"
 msgstr "Bu dosyanın daha önce kayıtlı bir sürümüne dön"
 
-#: ../src/dsp-mainwindow.c:180
+#: ../src/dsp-mainwindow.c:182
 msgid "Restore backup"
 msgstr "Yedeklemeyi Geri Yükle"
 
-#: ../src/dsp-mainwindow.c:180
+#: ../src/dsp-mainwindow.c:182
 msgid "Restore from a backup file"
 msgstr "Yedekleme dosyasından geri yükle"
 
-#: ../src/dsp-mainwindow.c:182
+#: ../src/dsp-mainwindow.c:184
 msgid "Properties..."
 msgstr "Özellikler..."
 
-#: ../src/dsp-mainwindow.c:182
+#: ../src/dsp-mainwindow.c:184
 msgid "Configure the file"
 msgstr "Dosya konfigürasyonu"
 
-#: ../src/dsp-mainwindow.c:183
+#: ../src/dsp-mainwindow.c:185
 msgid "Close the current file"
 msgstr "Mevcut dosyayı kapat"
 
-#: ../src/dsp-mainwindow.c:184
+#: ../src/dsp-mainwindow.c:186
 msgid "_Quit"
 msgstr "_Çık"
 
-#: ../src/dsp-mainwindow.c:184
+#: ../src/dsp-mainwindow.c:186
 msgid "Quit HomeBank"
 msgstr "HomeBank Çıkış"
 
 #. Exchange
-#: ../src/dsp-mainwindow.c:187
+#: ../src/dsp-mainwindow.c:189
 msgid "Import..."
 msgstr "İçeri Aktar..."
 
-#: ../src/dsp-mainwindow.c:187
+#: ../src/dsp-mainwindow.c:189
 msgid "Open the import assistant"
 msgstr "İçeri aktarma yardımcısını aç"
 
 #. { "ImportQIF" , ICONNAME_HB_FILE_IMPORT  , N_("QIF file...")     , NULL, N_("Open the import assistant"),    G_CALLBACK (ui_mainwindow_action_import) },
 #. { "ImportOFX" , ICONNAME_HB_FILE_IMPORT  , N_("OFX/QFX file...")     , NULL, N_("Open the import assistant"),    G_CALLBACK (ui_mainwindow_action_import) },
 #. { "ImportCSV" , ICONNAME_HB_FILE_IMPORT  , N_("CSV file...")     , NULL, N_("Open the import assistant"),    G_CALLBACK (ui_mainwindow_action_import) },
-#: ../src/dsp-mainwindow.c:192
+#: ../src/dsp-mainwindow.c:194
 msgid "Export as QIF..."
 msgstr "Dışa Aktar QIF..."
 
-#: ../src/dsp-mainwindow.c:192
+#: ../src/dsp-mainwindow.c:194
 msgid "Export all account in a QIF file"
 msgstr "Tüm hesabı QIF dosyasında dışa aktar"
 
 #. EditMenu
-#: ../src/dsp-mainwindow.c:195
+#: ../src/dsp-mainwindow.c:197
 msgid "Preferences..."
 msgstr "Tercihler..."
 
-#: ../src/dsp-mainwindow.c:195
+#: ../src/dsp-mainwindow.c:197
 msgid "Configure HomeBank"
 msgstr "HomeBank'i ayarla"
 
 #. ManageMenu
-#: ../src/dsp-mainwindow.c:198
+#: ../src/dsp-mainwindow.c:200
 msgid "Currencies..."
 msgstr "Dövizler..."
 
-#: ../src/dsp-mainwindow.c:198
+#: ../src/dsp-mainwindow.c:200
 msgid "Configure the currencies"
 msgstr "Dövizleri ayarla"
 
-#: ../src/dsp-mainwindow.c:199
+#: ../src/dsp-mainwindow.c:201
 msgid "Acc_ounts..."
 msgstr "He_saplar..."
 
-#: ../src/dsp-mainwindow.c:199
+#: ../src/dsp-mainwindow.c:201
 msgid "Configure the accounts"
 msgstr "Hesapları yapılandır"
 
-#: ../src/dsp-mainwindow.c:200
+#: ../src/dsp-mainwindow.c:202
 msgid "_Payees..."
 msgstr "_Alacaklılar..."
 
-#: ../src/dsp-mainwindow.c:200
+#: ../src/dsp-mainwindow.c:202
 msgid "Configure the payees"
 msgstr "Alacaklıları yapılandır"
 
-#: ../src/dsp-mainwindow.c:201
+#: ../src/dsp-mainwindow.c:203
 msgid "Categories..."
 msgstr "Kategoriler..."
 
-#: ../src/dsp-mainwindow.c:201
+#: ../src/dsp-mainwindow.c:203
 msgid "Configure the categories"
 msgstr "Kategorileri yapılandır"
 
-#: ../src/dsp-mainwindow.c:202
+#: ../src/dsp-mainwindow.c:204
 msgid "Scheduled/Template..."
 msgstr "Zamanlanmış/taslak..."
 
-#: ../src/dsp-mainwindow.c:202
+#: ../src/dsp-mainwindow.c:204
 msgid "Configure the scheduled/template transactions"
 msgstr "Zamanlanmış ve taslak işlemlerini yapılandır"
 
-#: ../src/dsp-mainwindow.c:203
+#: ../src/dsp-mainwindow.c:205
 msgid "Budget..."
 msgstr "Bütçe..."
 
-#: ../src/dsp-mainwindow.c:203
+#: ../src/dsp-mainwindow.c:205
 msgid "Configure the budget"
 msgstr "Bütçeyi yapılandır"
 
-#: ../src/dsp-mainwindow.c:204
+#: ../src/dsp-mainwindow.c:206
 msgid "Assignments..."
 msgstr "Tanımlamalar..."
 
-#: ../src/dsp-mainwindow.c:204
+#: ../src/dsp-mainwindow.c:206
 msgid "Configure the automatic assignments"
 msgstr "Otomatik tanımlamaları düzenle"
 
-#: ../src/dsp-mainwindow.c:205
+#: ../src/dsp-mainwindow.c:207
 msgid "Tags..."
 msgstr "Etiketler..."
 
-#: ../src/dsp-mainwindow.c:205
+#: ../src/dsp-mainwindow.c:207
 msgid "Configure the tags"
 msgstr "Etiketleri yapılandır"
 
 #. TxnMenu
-#: ../src/dsp-mainwindow.c:208
+#: ../src/dsp-mainwindow.c:210
 msgid "Add..."
 msgstr "Ekle ..."
 
-#: ../src/dsp-mainwindow.c:208
+#: ../src/dsp-mainwindow.c:210
 msgid "Add transactions"
 msgstr "İşlemleri ekle"
 
-#: ../src/dsp-mainwindow.c:209
+#: ../src/dsp-mainwindow.c:211
 msgid "Show..."
 msgstr "Göster..."
 
-#: ../src/dsp-mainwindow.c:209
+#: ../src/dsp-mainwindow.c:211
 msgid "Shows selected account transactions"
 msgstr "Seçili hesap işlemlerini gösterir"
 
 #. beware ShowAllTxn is used to detect showall
-#: ../src/dsp-mainwindow.c:211
+#: ../src/dsp-mainwindow.c:213
 msgid "Show all..."
 msgstr "Hepsini görüntüle..."
 
-#: ../src/dsp-mainwindow.c:211
+#: ../src/dsp-mainwindow.c:213
 msgid "Shows all account transactions"
 msgstr "Tüm hesap işlemlerini görüntüle"
 
-#: ../src/dsp-mainwindow.c:212
+#: ../src/dsp-mainwindow.c:214
 msgid "Set scheduler..."
 msgstr "Zamanlayıcıyı ayarla..."
 
-#: ../src/dsp-mainwindow.c:212
+#: ../src/dsp-mainwindow.c:214
 msgid "Configure the transaction scheduler"
 msgstr "İşlem zamanlayıcısını yapılandır"
 
-#: ../src/dsp-mainwindow.c:213
+#: ../src/dsp-mainwindow.c:215
 msgid "Post scheduled"
 msgstr "Zamanlanmış işlemler"
 
-#: ../src/dsp-mainwindow.c:213 ../src/ui-pref.c:1998
+#: ../src/dsp-mainwindow.c:215 ../src/ui-pref.c:1998
 msgid "Post pending scheduled transactions"
 msgstr "Bekleyen zamanlanmış işlemleri yayınla"
 
 #. ReportMenu
-#: ../src/dsp-mainwindow.c:216
+#: ../src/dsp-mainwindow.c:218
 msgid "_Statistics..."
 msgstr "İs_tatistikler..."
 
-#: ../src/dsp-mainwindow.c:216
+#: ../src/dsp-mainwindow.c:218
 msgid "Open the Statistics report"
 msgstr "İstatistik raporlarını aç"
 
-#: ../src/dsp-mainwindow.c:217
+#: ../src/dsp-mainwindow.c:219
 msgid "_Trend Time..."
 msgstr "_Eğilim zamanı..."
 
-#: ../src/dsp-mainwindow.c:217
+#: ../src/dsp-mainwindow.c:219
 msgid "Open the Trend Time report"
 msgstr "Eğilim zamanı raporlarını aç"
 
-#: ../src/dsp-mainwindow.c:218
+#: ../src/dsp-mainwindow.c:220
 msgid "B_udget..."
 msgstr "B_ütçe..."
 
-#: ../src/dsp-mainwindow.c:218
+#: ../src/dsp-mainwindow.c:220
 msgid "Open the Budget report"
 msgstr "Bütçe raporunu aç"
 
-#: ../src/dsp-mainwindow.c:219
+#: ../src/dsp-mainwindow.c:221
 msgid "Balance..."
 msgstr "Denge..."
 
-#: ../src/dsp-mainwindow.c:219
+#: ../src/dsp-mainwindow.c:221
 msgid "Open the Balance report"
 msgstr "Denge raporunu aç"
 
-#: ../src/dsp-mainwindow.c:220
+#: ../src/dsp-mainwindow.c:222
 msgid "_Vehicle cost..."
 msgstr "_Araç maliyeti..."
 
-#: ../src/dsp-mainwindow.c:220
+#: ../src/dsp-mainwindow.c:222
 msgid "Open the Vehicle cost report"
 msgstr "Araç maliyeti raporunu aç"
 
 #. Tools
-#: ../src/dsp-mainwindow.c:223
+#: ../src/dsp-mainwindow.c:225
 msgid "Show welcome dialog..."
 msgstr "Hoşgeldin penceresini göster..."
 
-#: ../src/dsp-mainwindow.c:224
+#: ../src/dsp-mainwindow.c:226
 msgid "File statistics..."
 msgstr "Dosya istatistikleri..."
 
-#: ../src/dsp-mainwindow.c:225
+#: ../src/dsp-mainwindow.c:227
 msgid "Anonymize..."
 msgstr "Anonimleştir..."
 
 #. HelpMenu
-#: ../src/dsp-mainwindow.c:228
+#: ../src/dsp-mainwindow.c:230
 msgid "_Contents"
 msgstr "İçinde_kiler"
 
-#: ../src/dsp-mainwindow.c:228
+#: ../src/dsp-mainwindow.c:230
 msgid "Documentation about HomeBank"
 msgstr "HomeBank hakkındaki belgeleme"
 
-#: ../src/dsp-mainwindow.c:229
-msgid "Get Help Online..."
-msgstr "Çevrimiçi yardım al..."
-
-#: ../src/dsp-mainwindow.c:229
-msgid "Connect to the LaunchPad website for online help"
-msgstr "LaunchPad sitesine çevrim içi yardım için bağlan"
-
 #: ../src/dsp-mainwindow.c:231
+msgid "Get Help Online"
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:232
+msgid "Donate to HomeBank project"
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:234
 msgid "Check for updates..."
 msgstr "Güncellemeleri denetle..."
 
-#: ../src/dsp-mainwindow.c:231
+#: ../src/dsp-mainwindow.c:234
 msgid "Visit HomeBank website to check for update"
 msgstr "Güncellemeleri denetlemek için Homebank sitesine git"
 
-#: ../src/dsp-mainwindow.c:232
+#: ../src/dsp-mainwindow.c:235
 msgid "Release Notes"
 msgstr "Sürüm notları"
 
-#: ../src/dsp-mainwindow.c:232
+#: ../src/dsp-mainwindow.c:235
 msgid "Display the release notes"
 msgstr "Sürüm notlarını göster"
 
-#: ../src/dsp-mainwindow.c:233
+#: ../src/dsp-mainwindow.c:236
 msgid "Report a Problem..."
 msgstr "Bir sorun bildir..."
 
-#: ../src/dsp-mainwindow.c:233
-msgid "Connect to the LaunchPad website to help fix problems"
-msgstr "LaunchPad sitesine problemleri çözmek için bağlan"
-
-#: ../src/dsp-mainwindow.c:234
+#: ../src/dsp-mainwindow.c:237
 msgid "Translate this Application..."
 msgstr "Uygulamayı tercüme et..."
 
-#: ../src/dsp-mainwindow.c:234
-msgid "Connect to the LaunchPad website to help translate this application"
-msgstr ""
-"LaunchPad sitesine bu uygulamayı tercümet etmesinde yardım etmek için bağlan"
-
-#: ../src/dsp-mainwindow.c:236
+#: ../src/dsp-mainwindow.c:239
 msgid "_About"
 msgstr "_Hakkında"
 
-#: ../src/dsp-mainwindow.c:236
+#: ../src/dsp-mainwindow.c:239
 msgid "About HomeBank"
 msgstr "HomeBank hakkında"
 
 #. name         , icon-name, label, accelerator, tooltip, callback, is_active
-#: ../src/dsp-mainwindow.c:244
+#: ../src/dsp-mainwindow.c:247
 msgid "_Toolbar"
 msgstr "_Araç çubuğu"
 
-#: ../src/dsp-mainwindow.c:245
+#: ../src/dsp-mainwindow.c:248
 msgid "_Top spending"
 msgstr "Üst harcama"
 
-#: ../src/dsp-mainwindow.c:246
+#: ../src/dsp-mainwindow.c:249
 msgid "_Bottom Lists"
 msgstr ""
 
-#: ../src/dsp-mainwindow.c:247 ../src/ui-pref.c:92
+#: ../src/dsp-mainwindow.c:250 ../src/ui-pref.c:92
 msgid "Euro minor"
 msgstr "Euro kuru"
 
-#: ../src/dsp-mainwindow.c:384
+#: ../src/dsp-mainwindow.c:390
 #, c-format
 msgid "Revert unsaved changes to file '%s'?"
 msgstr "'%s' dosyası için kaydedilmemiş değişiklikleri eski durumuna getir?"
 
-#: ../src/dsp-mainwindow.c:387
+#: ../src/dsp-mainwindow.c:393
 msgid ""
 "- Changes made to the file will be permanently lost\n"
 "- File will be reloaded from the last save (.xhb~)"
@@ -805,15 +796,15 @@ msgstr ""
 "-Dosyada yapılan değişiklikler kalıcı olarak kaybedilecek\n"
 "-Dosya son kayıttan yeniden yüklenecek (.xhb~)"
 
-#: ../src/dsp-mainwindow.c:394
+#: ../src/dsp-mainwindow.c:400
 msgid "_Revert"
 msgstr "_Eski Durumuna Getir"
 
-#: ../src/dsp-mainwindow.c:585
+#: ../src/dsp-mainwindow.c:591
 msgid "Are you sure you want to anonymize the file?"
 msgstr "Dosyayı anonimize etmek istediğinize emin misiniz?"
 
-#: ../src/dsp-mainwindow.c:588
+#: ../src/dsp-mainwindow.c:594
 msgid ""
 "Proceeding will anonymize any text, \n"
 "like 'account x', 'payee y', 'memo z', ..."
@@ -821,39 +812,39 @@ msgstr ""
 "Bu hareket herhangi bir metni anonimize edecektir, \n"
 "'hesap x', 'alacaklı y', 'not z', gibi..."
 
-#: ../src/dsp-mainwindow.c:595
+#: ../src/dsp-mainwindow.c:601
 msgid "_Anonymize"
 msgstr "Anonimize"
 
-#: ../src/dsp-mainwindow.c:932
+#: ../src/dsp-mainwindow.c:938
 msgid "Welcome to HomeBank"
 msgstr "HomeBank'a hoş geldiniz"
 
-#: ../src/dsp-mainwindow.c:959
+#: ../src/dsp-mainwindow.c:965
 msgid "What do you want to do:"
 msgstr "Ne yapmak istiyorsunuz:"
 
-#: ../src/dsp-mainwindow.c:963
+#: ../src/dsp-mainwindow.c:969
 msgid "Read HomeBank _Manual"
 msgstr "HomeBank _Kılavuzu Oku"
 
-#: ../src/dsp-mainwindow.c:967
+#: ../src/dsp-mainwindow.c:973
 msgid "Configure _preferences"
 msgstr "Tercihleri düzenle"
 
-#: ../src/dsp-mainwindow.c:971
+#: ../src/dsp-mainwindow.c:977
 msgid "Create a _new file"
 msgstr "Ye_ni bir dosya oluştur"
 
-#: ../src/dsp-mainwindow.c:975
+#: ../src/dsp-mainwindow.c:981
 msgid "_Open an existing file"
 msgstr "Var_olan bir dosyayı aç"
 
-#: ../src/dsp-mainwindow.c:979
+#: ../src/dsp-mainwindow.c:985
 msgid "Open the _example file"
 msgstr "Örnek _dosyayı aç"
 
-#: ../src/dsp-mainwindow.c:1208
+#: ../src/dsp-mainwindow.c:1221
 #, c-format
 msgid ""
 "Your are about to open the backup file '%s'.\n"
@@ -863,135 +854,134 @@ msgstr ""
 "Yedek dosyasını açmak üzeresiniz '%s'.\n"
 "Bunu yapmak istediğinden emin misin?"
 
-#: ../src/dsp-mainwindow.c:1212
+#: ../src/dsp-mainwindow.c:1225
 msgid "Open the backup file ?"
 msgstr "Yedekleme dosyasını aç?"
 
-#: ../src/dsp-mainwindow.c:1214
+#: ../src/dsp-mainwindow.c:1227
 msgid "_Open backup"
 msgstr "Yedek Aç"
 
-#: ../src/dsp-mainwindow.c:1312 ../src/ui-currency.c:1312
+#: ../src/dsp-mainwindow.c:1325 ../src/ui-currency.c:1312
 msgid "Unknown error"
 msgstr "Bilinmeyen hata"
 
-#: ../src/dsp-mainwindow.c:1317 ../src/dsp-mainwindow.c:1423
+#: ../src/dsp-mainwindow.c:1330 ../src/dsp-mainwindow.c:1436
 #, c-format
 msgid "I/O error for file '%s'."
 msgstr "'%s' dosyası için G/Ç hatası."
 
-#: ../src/dsp-mainwindow.c:1320
+#: ../src/dsp-mainwindow.c:1333
 #, c-format
 msgid "The file '%s' is not a valid HomeBank file."
 msgstr "'%s' dosyası HomeBank için uygun değil."
 
-#: ../src/dsp-mainwindow.c:1323
+#: ../src/dsp-mainwindow.c:1336
 #, c-format
 msgid ""
 "The file '%s' was saved with a higher version of HomeBank\n"
 "and cannot be loaded by the current version."
 msgstr "Dosya '%s' HomeBank'in ileri versiyonu ile kaydedildi."
 
-#: ../src/dsp-mainwindow.c:1328 ../src/dsp-mainwindow.c:1426
+#: ../src/dsp-mainwindow.c:1341 ../src/dsp-mainwindow.c:1439
 msgid "File error"
 msgstr "Dosya hatası"
 
-#: ../src/dsp-mainwindow.c:1399
+#: ../src/dsp-mainwindow.c:1412
 msgid "The file has been modified since reading it."
 msgstr "Dosya yüklendikten sonra değiştirilmiş."
 
-#: ../src/dsp-mainwindow.c:1400
-msgid ""
-"If you save it, all the external changes could be lost. Save it anyway?"
+#: ../src/dsp-mainwindow.c:1413
+msgid "If you save it, all the external changes could be lost. Save it anyway?"
 msgstr ""
 "Eğer kaydederdeniz, tüm dış kaynaklı değişiklikler kaybolabilir. Kaydetmek "
 "istiyor musunuz?"
 
-#: ../src/dsp-mainwindow.c:1401
+#: ../src/dsp-mainwindow.c:1414
 msgid "S_ave Anyway"
 msgstr "Yine de Kaydet"
 
-#: ../src/dsp-mainwindow.c:1970 ../src/dsp-mainwindow.c:2061
+#: ../src/dsp-mainwindow.c:1983 ../src/dsp-mainwindow.c:2074
 msgid "Open"
 msgstr "Aç"
 
 #. 5.2 we always create the column and set it not visible
 #. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, _("Transaction"));
 #. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, genacc->name);
-#: ../src/dsp-mainwindow.c:1976 ../src/list-operation.c:1198
+#: ../src/dsp-mainwindow.c:1989 ../src/list-operation.c:1230
 #: ../src/list-scheduled.c:483 ../src/rep-stats.c:149 ../src/rep-time.c:125
-#: ../src/ui-account.c:1345 ../src/ui-assist-import.c:2028
+#: ../src/ui-account.c:1345 ../src/ui-assist-import.c:2059
 #: ../src/ui-dialogs.c:211
 msgid "Account"
 msgstr "Hesap"
 
 #. payee
-#: ../src/dsp-mainwindow.c:1979 ../src/hb-export.c:445
-#: ../src/list-operation.c:1232 ../src/list-scheduled.c:419
+#: ../src/dsp-mainwindow.c:1992 ../src/hb-export.c:445
+#: ../src/list-operation.c:1264 ../src/list-scheduled.c:419
 #: ../src/rep-stats.c:148 ../src/rep-time.c:127 ../src/ui-archive.c:291
-#: ../src/ui-assist-import.c:386 ../src/ui-dialogs.c:229 ../src/ui-payee.c:957
+#: ../src/ui-assist-import.c:386 ../src/ui-dialogs.c:229 ../src/ui-payee.c:1009
 #: ../src/ui-pref.c:132 ../src/ui-widgets-data.c:36
 msgid "Payee"
 msgstr "Alacaklı"
 
 #. category
-#: ../src/dsp-mainwindow.c:1982 ../src/list-operation.c:1293
+#: ../src/dsp-mainwindow.c:1995 ../src/list-operation.c:1325
 #: ../src/rep-budget.c:1486 ../src/rep-budget.c:1667 ../src/rep-stats.c:146
 #: ../src/rep-time.c:126 ../src/ui-assist-import.c:390 ../src/ui-budget.c:232
-#: ../src/ui-dialogs.c:238 ../src/ui-payee.c:993 ../src/ui-split.c:202
+#: ../src/ui-dialogs.c:238 ../src/ui-payee.c:1058 ../src/ui-split.c:202
 #: ../src/ui-split.c:791 ../src/ui-widgets-data.c:49
 msgid "Category"
 msgstr "Kategori"
 
 #. TRANSLATORS: an archive is stored transaction buffers (kind of bookmark to prefill manual insertion)
-#: ../src/dsp-mainwindow.c:1986
+#: ../src/dsp-mainwindow.c:1999
 msgid "Archive"
 msgstr "Arşiv"
 
 #. column: Income
-#: ../src/dsp-mainwindow.c:1989 ../src/dsp-mainwindow.c:2001
+#: ../src/dsp-mainwindow.c:2002 ../src/dsp-mainwindow.c:2014
 #: ../src/rep-budget.c:932 ../src/rep-budget.c:1486 ../src/rep-budget.c:1682
 msgid "Budget"
 msgstr "Bütçe"
 
-#: ../src/dsp-mainwindow.c:1992
+#: ../src/dsp-mainwindow.c:2005
 msgid "Show"
 msgstr "Göster"
 
-#: ../src/dsp-mainwindow.c:1998
+#: ../src/dsp-mainwindow.c:2011
 msgid "Statistics"
 msgstr "İstatistikler"
 
 #. column: Balance
-#: ../src/dsp-mainwindow.c:2004 ../src/hb-export.c:449
-#: ../src/list-operation.c:1311 ../src/rep-balance.c:1314
+#: ../src/dsp-mainwindow.c:2017 ../src/hb-export.c:449
+#: ../src/list-operation.c:1343 ../src/rep-balance.c:1315
 #: ../src/rep-stats.c:161 ../src/rep-stats.c:1824 ../src/rep-stats.c:2007
 msgid "Balance"
 msgstr "Bakiye"
 
-#: ../src/dsp-mainwindow.c:2007 ../src/ui-hbfile.c:275
+#: ../src/dsp-mainwindow.c:2020 ../src/ui-hbfile.c:275
 msgid "Vehicle cost"
 msgstr "Araç maliyeti"
 
-#: ../src/dsp-mainwindow.c:2048 ../src/ui-assist-import.c:734
+#: ../src/dsp-mainwindow.c:2061 ../src/ui-assist-import.c:734
 #: ../src/ui-dialogs.c:499 ../src/ui-dialogs.c:567 ../src/ui-dialogs.c:653
 msgid "_Open"
 msgstr "_Aç"
 
-#: ../src/dsp-mainwindow.c:2053
+#: ../src/dsp-mainwindow.c:2066
 msgid "Open a recently used file"
 msgstr "Yakın geçmişteki bir dosyayı aç"
 
-#: ../src/dsp-mainwindow.c:2148 ../src/ui-widgets-data.c:28
+#: ../src/dsp-mainwindow.c:2161 ../src/ui-widgets-data.c:28
 msgid "Scheduled"
 msgstr "Zamanlanmış"
 
 #. Future
-#: ../src/dsp-mainwindow.c:2152 ../src/list-account.c:432
+#: ../src/dsp-mainwindow.c:2165 ../src/list-account.c:432
 msgid "Future"
 msgstr "Gelecek"
 
-#: ../src/dsp-mainwindow.c:2155 ../src/ui-transaction.c:59
+#: ../src/dsp-mainwindow.c:2168 ../src/ui-transaction.c:59
 msgid "Remind"
 msgstr "Hatırlat"
 
@@ -1004,23 +994,23 @@ msgstr "(yeni arşiv)"
 msgid "(no category)"
 msgstr "(kategorisiz)"
 
-#: ../src/hb-category.c:944 ../src/hb-payee.c:562
+#: ../src/hb-category.c:944 ../src/hb-payee.c:563
 msgid "invalid CSV format"
 msgstr "geçersiz CSV uzantısı"
 
-#: ../src/hb-export.c:443 ../src/list-operation.c:1209
-#: ../src/rep-balance.c:1295 ../src/rep-vehicle.c:218 ../src/rep-vehicle.c:1104
+#: ../src/hb-export.c:443 ../src/list-operation.c:1241
+#: ../src/rep-balance.c:1296 ../src/rep-vehicle.c:218 ../src/rep-vehicle.c:1104
 #: ../src/ui-assist-import.c:358
 msgid "Date"
 msgstr "Tarih"
 
-#: ../src/hb-export.c:444 ../src/list-operation.c:1054
+#: ../src/hb-export.c:444 ../src/list-operation.c:1085
 #: ../src/ui-assist-import.c:372 ../src/ui-pref.c:133 ../src/ui-pref.c:2365
 msgid "Info"
 msgstr "Bilgi"
 
 #. memo
-#: ../src/hb-export.c:446 ../src/list-operation.c:1240
+#: ../src/hb-export.c:446 ../src/list-operation.c:1272
 #: ../src/list-scheduled.c:440 ../src/ui-archive.c:275
 #: ../src/ui-assist-import.c:363 ../src/ui-pref.c:131 ../src/ui-split.c:220
 #: ../src/ui-split.c:795 ../src/ui-widgets-data.c:35
@@ -1029,13 +1019,13 @@ msgstr "Not"
 
 #. column: Amount
 #. amount
-#: ../src/hb-export.c:447 ../src/list-operation.c:1269 ../src/rep-time.c:1546
+#: ../src/hb-export.c:447 ../src/list-operation.c:1301 ../src/rep-time.c:1546
 #: ../src/rep-time.c:1668 ../src/rep-vehicle.c:222 ../src/rep-vehicle.c:1149
 #: ../src/ui-assist-import.c:367 ../src/ui-split.c:236 ../src/ui-split.c:799
 msgid "Amount"
 msgstr "Miktar"
 
-#: ../src/hb-hbfile.c:596 ../src/ui-assist-import.c:2028
+#: ../src/hb-hbfile.c:596 ../src/ui-assist-import.c:2059
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
@@ -1087,11 +1077,11 @@ msgstr "Gezinme hatası."
 msgid "Could not display the URL '%s'"
 msgstr "URL '%s' gösterilemedi"
 
-#: ../src/homebank.c:859 ../src/homebank.c:860
+#: ../src/homebank.c:868 ../src/homebank.c:869
 msgid "HomeBank options"
 msgstr "HomeBank seçenekleri"
 
-#: ../src/homebank.c:989
+#: ../src/homebank.c:998
 #, c-format
 msgid "Unable to open '%s', the file does not exist.\n"
 msgstr "'%s' dosyası açılamadı, dosya yok\n"
@@ -1198,7 +1188,7 @@ msgid "Accounts"
 msgstr "Hesaplar"
 
 #. Bank
-#: ../src/list-account.c:424 ../src/ui-widgets-data.c:72
+#: ../src/list-account.c:424 ../src/ui-widgets-data.c:70
 msgid "Bank"
 msgstr "Banka"
 
@@ -1207,31 +1197,35 @@ msgstr "Banka"
 msgid "Today"
 msgstr "Bugün"
 
-#: ../src/list-operation.c:525
+#: ../src/list-operation.c:535
 msgid "- split -"
 msgstr "- böl -"
 
-#: ../src/list-operation.c:1250
+#: ../src/list-operation.c:550
+msgid "- this need a category -"
+msgstr ""
+
+#: ../src/list-operation.c:1282
 msgid "Status"
 msgstr "Durum"
 
 #. column: Expense
-#: ../src/list-operation.c:1277 ../src/list-scheduled.c:454
-#: ../src/rep-balance.c:1306 ../src/rep-stats.c:159 ../src/rep-stats.c:1824
+#: ../src/list-operation.c:1309 ../src/list-scheduled.c:454
+#: ../src/rep-balance.c:1307 ../src/rep-stats.c:159 ../src/rep-stats.c:1824
 #: ../src/rep-stats.c:1995 ../src/ui-widgets-data.c:42
-#: ../src/ui-widgets-data.c:129 ../src/ui-widgets-data.c:136
+#: ../src/ui-widgets-data.c:127 ../src/ui-widgets-data.c:134
 msgid "Expense"
 msgstr "Gider"
 
 #. column: Income
-#: ../src/list-operation.c:1285 ../src/list-scheduled.c:465
-#: ../src/rep-balance.c:1310 ../src/rep-stats.c:160 ../src/rep-stats.c:1824
+#: ../src/list-operation.c:1317 ../src/list-scheduled.c:465
+#: ../src/rep-balance.c:1311 ../src/rep-stats.c:160 ../src/rep-stats.c:1824
 #: ../src/rep-stats.c:2001 ../src/ui-widgets-data.c:43
-#: ../src/ui-widgets-data.c:130 ../src/ui-widgets-data.c:137
+#: ../src/ui-widgets-data.c:128 ../src/ui-widgets-data.c:135
 msgid "Income"
 msgstr "Gelir"
 
-#: ../src/list-operation.c:1301
+#: ../src/list-operation.c:1333
 msgid "Tags"
 msgstr "Etiketler"
 
@@ -1296,44 +1290,44 @@ msgstr "Detaya geç"
 msgid "%d/%d under %s"
 msgstr "%d/%d altında %s"
 
-#: ../src/rep-balance.c:876
+#: ../src/rep-balance.c:877
 msgid "Balance report"
 msgstr "Bakiye raporu"
 
-#: ../src/rep-balance.c:899 ../src/rep-budget.c:1154 ../src/rep-stats.c:1489
+#: ../src/rep-balance.c:900 ../src/rep-budget.c:1154 ../src/rep-stats.c:1489
 #: ../src/rep-time.c:1185 ../src/rep-vehicle.c:730
 msgid "Display"
 msgstr "Görüntüle"
 
-#: ../src/rep-balance.c:903 ../src/rep-time.c:1197 ../src/ui-archive.c:1009
+#: ../src/rep-balance.c:904 ../src/rep-time.c:1197 ../src/ui-archive.c:1009
 #: ../src/ui-transaction.c:1222 ../src/ui-txn-multi.c:450
 msgid "A_ccount:"
 msgstr "H_esap:"
 
-#: ../src/rep-balance.c:910 ../src/rep-time.c:1229
+#: ../src/rep-balance.c:911 ../src/rep-time.c:1229
 msgid "Select _all"
 msgstr "_Tümünü seç"
 
-#: ../src/rep-balance.c:915
+#: ../src/rep-balance.c:916
 msgid "Each _day"
 msgstr "Tüm _günler"
 
-#: ../src/rep-balance.c:926 ../src/rep-stats.c:1521 ../src/rep-time.c:1258
+#: ../src/rep-balance.c:927 ../src/rep-stats.c:1521 ../src/rep-time.c:1258
 msgid "_Zoom X:"
 msgstr "_Yakınlaştır X:"
 
-#: ../src/rep-balance.c:938 ../src/rep-budget.c:1187 ../src/rep-stats.c:1539
+#: ../src/rep-balance.c:939 ../src/rep-budget.c:1187 ../src/rep-stats.c:1539
 #: ../src/rep-time.c:1270 ../src/rep-vehicle.c:751
 msgid "Date filter"
 msgstr "Tarih filtresi"
 
-#: ../src/rep-balance.c:948 ../src/rep-budget.c:1197 ../src/rep-stats.c:1549
+#: ../src/rep-balance.c:949 ../src/rep-budget.c:1197 ../src/rep-stats.c:1549
 #: ../src/rep-time.c:1280 ../src/rep-vehicle.c:761 ../src/ui-filter.c:1165
 #: ../src/ui-filter.c:1268
 msgid "_From:"
 msgstr "_Kaynak:"
 
-#: ../src/rep-balance.c:954 ../src/rep-budget.c:1203 ../src/rep-stats.c:1555
+#: ../src/rep-balance.c:955 ../src/rep-budget.c:1203 ../src/rep-stats.c:1555
 #: ../src/rep-time.c:1286 ../src/rep-vehicle.c:767 ../src/ui-filter.c:1171
 #: ../src/ui-filter.c:1275
 msgid "_To:"
@@ -1475,15 +1469,15 @@ msgstr "Alt kategori"
 msgid "Tag"
 msgstr "Etiket"
 
-#: ../src/rep-stats.c:151 ../src/rep-time.c:136 ../src/ui-widgets-data.c:113
+#: ../src/rep-stats.c:151 ../src/rep-time.c:136 ../src/ui-widgets-data.c:111
 msgid "Month"
 msgstr "Ay"
 
-#: ../src/rep-stats.c:152 ../src/rep-time.c:139 ../src/ui-widgets-data.c:114
+#: ../src/rep-stats.c:152 ../src/rep-time.c:139 ../src/ui-widgets-data.c:112
 msgid "Year"
 msgstr "Yıl"
 
-#: ../src/rep-stats.c:158 ../src/ui-widgets-data.c:128
+#: ../src/rep-stats.c:158 ../src/ui-widgets-data.c:126
 msgid "Exp. & Inc."
 msgstr "Gider & Gelir"
 
@@ -1493,7 +1487,7 @@ msgstr "Gider & Gelir"
 msgid "%s by %s"
 msgstr "%s seçimi %s"
 
-#: ../src/rep-stats.c:1034 ../src/ui-payee.c:547 ../src/ui-payee.c:745
+#: ../src/rep-stats.c:1034 ../src/ui-payee.c:585 ../src/ui-payee.c:797
 msgid "(no payee)"
 msgstr "(alacaklı yok)"
 
@@ -1517,11 +1511,11 @@ msgstr "Gelir:"
 msgid "Expense:"
 msgstr "Gider:"
 
-#: ../src/rep-time.c:134 ../src/ui-widgets-data.c:111
+#: ../src/rep-time.c:134 ../src/ui-widgets-data.c:109
 msgid "Day"
 msgstr "Gün"
 
-#: ../src/rep-time.c:135 ../src/ui-widgets-data.c:112
+#: ../src/rep-time.c:135 ../src/ui-widgets-data.c:110
 msgid "Week"
 msgstr "Hafta"
 
@@ -1551,13 +1545,12 @@ msgid "Trend Time Report"
 msgstr "Eğilim Zaman Raporu"
 
 #: ../src/rep-time.c:1205 ../src/ui-archive.c:1058 ../src/ui-assign.c:872
-#: ../src/ui-hbfile.c:279 ../src/ui-payee.c:1222 ../src/ui-transaction.c:1295
-#: ../src/ui-txn-multi.c:512
+#: ../src/ui-hbfile.c:279 ../src/ui-payee.c:1297
 msgid "_Category:"
 msgstr "_Kategori:"
 
 #: ../src/rep-time.c:1213 ../src/ui-archive.c:1050 ../src/ui-assign.c:843
-#: ../src/ui-transaction.c:1276 ../src/ui-txn-multi.c:496
+#: ../src/ui-transaction.c:1275 ../src/ui-txn-multi.c:496
 msgid "_Payee:"
 msgstr "_Alacaklı:"
 
@@ -1585,7 +1578,7 @@ msgstr "Zaman dilimi"
 msgid "Export"
 msgstr "Dışarıya Aktar"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1594,10 +1587,10 @@ msgstr "Dışarıya Aktar"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1605,7 +1598,7 @@ msgstr "Dışarıya Aktar"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
 #: ../src/rep-vehicle.c:219 ../src/rep-vehicle.c:1137
 msgid "Meter"
@@ -1657,12 +1650,12 @@ msgstr "Toplam giderler:"
 #. populate_view_acc(data->LV_acc, GLOBALS->acc_list, TRUE);
 #. populate template
 #: ../src/ui-account.c:338 ../src/ui-account.c:1231 ../src/ui-assign.c:98
-#: ../src/ui-currency.c:245 ../src/ui-tag.c:206 ../src/ui-widgets.c:1067
+#: ../src/ui-currency.c:245 ../src/ui-tag.c:210 ../src/ui-widgets.c:1067
 msgid "(none)"
 msgstr "(hiçbiri)"
 
 #: ../src/ui-account.c:497 ../src/ui-assign.c:249 ../src/ui-category.c:995
-#: ../src/ui-currency.c:599 ../src/ui-payee.c:937 ../src/ui-tag.c:349
+#: ../src/ui-currency.c:599 ../src/ui-payee.c:989 ../src/ui-tag.c:353
 msgid "Visible"
 msgstr "Görünür"
 
@@ -1673,8 +1666,8 @@ msgstr "Görünür"
 #: ../src/ui-dialogs.c:451 ../src/ui-dialogs.c:512 ../src/ui-dialogs.c:578
 #: ../src/ui-dialogs.c:652 ../src/ui-dialogs.c:722 ../src/ui-dialogs.c:772
 #: ../src/ui-dialogs.c:918 ../src/ui-filter.c:1407 ../src/ui-hbfile.c:194
-#: ../src/ui-payee.c:1180 ../src/ui-payee.c:1343 ../src/ui-pref.c:2138
-#: ../src/ui-split.c:726 ../src/ui-tag.c:492 ../src/ui-transaction.c:1134
+#: ../src/ui-payee.c:1246 ../src/ui-payee.c:1409 ../src/ui-pref.c:2138
+#: ../src/ui-split.c:726 ../src/ui-tag.c:496 ../src/ui-transaction.c:1134
 #: ../src/ui-txn-multi.c:384
 msgid "_Cancel"
 msgstr "_İptal"
@@ -1682,8 +1675,8 @@ msgstr "_İptal"
 #. gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Remove"), GTK_RESPONSE_SPLIT_REM);
 #: ../src/ui-account.c:649 ../src/ui-category.c:1292 ../src/ui-currency.c:779
 #: ../src/ui-currency.c:1147 ../src/ui-dialogs.c:335 ../src/ui-dialogs.c:919
-#: ../src/ui-filter.c:1409 ../src/ui-hbfile.c:196 ../src/ui-payee.c:1182
-#: ../src/ui-pref.c:2140 ../src/ui-split.c:740 ../src/ui-tag.c:494
+#: ../src/ui-filter.c:1409 ../src/ui-hbfile.c:196 ../src/ui-payee.c:1248
+#: ../src/ui-pref.c:2140 ../src/ui-split.c:740 ../src/ui-tag.c:498
 #: ../src/ui-transaction.c:1135 ../src/ui-txn-multi.c:386
 msgid "_OK"
 msgstr "_Tamam"
@@ -1693,7 +1686,7 @@ msgid "Account name"
 msgstr "Hesap adı"
 
 #: ../src/ui-account.c:969 ../src/ui-account.c:1082 ../src/ui-category.c:1361
-#: ../src/ui-payee.c:1276 ../src/ui-tag.c:552
+#: ../src/ui-payee.c:1342 ../src/ui-tag.c:556
 msgid "Error"
 msgstr "Hata"
 
@@ -1717,8 +1710,8 @@ msgid ""
 msgstr "Bu hesap işlemleri ve/veya iç transferlerin parçalarını içeriyor."
 
 #: ../src/ui-account.c:1033 ../src/ui-archive.c:392 ../src/ui-assign.c:548
-#: ../src/ui-category.c:1549 ../src/ui-currency.c:1539 ../src/ui-payee.c:1450
-#: ../src/ui-tag.c:596
+#: ../src/ui-category.c:1549 ../src/ui-currency.c:1539 ../src/ui-payee.c:1516
+#: ../src/ui-tag.c:600
 #, c-format
 msgid "Are you sure you want to permanently delete '%s'?"
 msgstr "'%s' ı kalıcı olarak silmek istediğinize emin misiniz?"
@@ -1750,8 +1743,8 @@ msgstr ""
 "Çift tıklayarak yeniden adlandırın"
 
 #: ../src/ui-account.c:1315 ../src/ui-archive.c:1254 ../src/ui-assign.c:768
-#: ../src/ui-category.c:1977 ../src/ui-currency.c:1726 ../src/ui-payee.c:1667
-#: ../src/ui-tag.c:755 ../src/ui-transaction.c:1145
+#: ../src/ui-category.c:1977 ../src/ui-currency.c:1726 ../src/ui-payee.c:1733
+#: ../src/ui-tag.c:759 ../src/ui-transaction.c:1145
 msgid "_Add"
 msgstr "_Ekle"
 
@@ -1797,7 +1790,7 @@ msgid "Institution"
 msgstr "Kurum"
 
 #: ../src/ui-account.c:1435 ../src/ui-assist-start.c:386
-#: ../src/ui-currency.c:1228 ../src/ui-payee.c:1205 ../src/ui-tag.c:517
+#: ../src/ui-currency.c:1228 ../src/ui-payee.c:1271 ../src/ui-tag.c:521
 msgid "_Name:"
 msgstr "_İsim:"
 
@@ -1844,11 +1837,9 @@ msgstr "(şablon %d)"
 
 #: ../src/ui-archive.c:394
 msgid "If you delete a scheduled/template, it will be permanently lost."
-msgstr ""
-"Eğer bir planlamayı/şablonu silerseniz, o kalıcı olarak yok olacaktır."
+msgstr "Eğer bir planlamayı/şablonu silerseniz, o kalıcı olarak yok olacaktır."
 
-#: ../src/ui-archive.c:993 ../src/ui-transaction.c:1204
-#: ../src/ui-txn-multi.c:436
+#: ../src/ui-archive.c:993
 msgid "_Amount:"
 msgstr "_Miktar:"
 
@@ -1868,7 +1859,7 @@ msgstr "_Hesaba:"
 msgid "Pay_ment:"
 msgstr "Öde_me:"
 
-#: ../src/ui-archive.c:1041 ../src/ui-transaction.c:1250
+#: ../src/ui-archive.c:1041 ../src/ui-transaction.c:1249
 msgid "Of notebook _2"
 msgstr "_2. Sayfanın"
 
@@ -1876,8 +1867,7 @@ msgstr "_2. Sayfanın"
 msgid "_Memo:"
 msgstr "_Not:"
 
-#: ../src/ui-archive.c:1085 ../src/ui-transaction.c:1319
-#: ../src/ui-txn-multi.c:544
+#: ../src/ui-archive.c:1085
 msgid "Ta_gs:"
 msgstr "Etiket:"
 
@@ -2041,7 +2031,7 @@ msgid "This is a confirmation page, press 'Apply' to apply changes"
 msgstr ""
 "Bu bir onaylama sayfası, değişiklikleri uygulamak için 'Uygula' ya basınız"
 
-#: ../src/ui-assist-start.c:454 ../src/ui-assist-import.c:2201
+#: ../src/ui-assist-start.c:454 ../src/ui-assist-import.c:2239
 msgid "Confirmation"
 msgstr "Onay"
 
@@ -2066,45 +2056,45 @@ msgstr "Geçerli"
 msgid "Name"
 msgstr "İsim"
 
-#: ../src/ui-assist-import.c:746
+#: ../src/ui-assist-import.c:744
 msgid "Known files"
 msgstr "Bilinen dosya"
 
-#: ../src/ui-assist-import.c:757 ../src/ui-dialogs.c:463
+#: ../src/ui-assist-import.c:755 ../src/ui-dialogs.c:463
 msgid "QIF files"
 msgstr "QIF dosyaları"
 
-#: ../src/ui-assist-import.c:765
+#: ../src/ui-assist-import.c:763
 msgid "OFX/QFX files"
 msgstr "OFX/QFX dosyaları"
 
-#: ../src/ui-assist-import.c:773 ../src/ui-dialogs.c:527
+#: ../src/ui-assist-import.c:771 ../src/ui-dialogs.c:527
 msgid "CSV files"
 msgstr "CSV dosyaları"
 
-#: ../src/ui-assist-import.c:780 ../src/ui-dialogs.c:464
+#: ../src/ui-assist-import.c:778 ../src/ui-dialogs.c:464
 #: ../src/ui-dialogs.c:528 ../src/ui-dialogs.c:590
 msgid "All files"
 msgstr "Tüm dosyalar"
 
-#: ../src/ui-assist-import.c:839
+#: ../src/ui-assist-import.c:857
 msgid "new global account"
 msgstr "yeni global hesap"
 
-#: ../src/ui-assist-import.c:842
+#: ../src/ui-assist-import.c:860
 msgid "new account"
 msgstr "yeni hesap"
 
-#: ../src/ui-assist-import.c:845
+#: ../src/ui-assist-import.c:863
 msgid "skipped"
 msgstr "atlandı"
 
-#: ../src/ui-assist-import.c:864
+#: ../src/ui-assist-import.c:882
 #, c-format
 msgid ", %d of %d transactions"
 msgstr ",%d %d hareketlerin"
 
-#: ../src/ui-assist-import.c:1109
+#: ../src/ui-assist-import.c:1129
 msgid ""
 "Some date cannot be converted. Please try to change the date order to "
 "continue."
@@ -2113,20 +2103,20 @@ msgstr ""
 "deneyin."
 
 #. label = g_strdup_printf(_("'%s' - %s"), genacc->name, hb_import_filetype_char_get(genacc));
-#: ../src/ui-assist-import.c:1273
+#: ../src/ui-assist-import.c:1293
 #, c-format
 msgid "Import <b>%s</b> in_to:"
 msgstr "İçe aktarma <b>%s</b> içine:"
 
-#: ../src/ui-assist-import.c:1273
+#: ../src/ui-assist-import.c:1293
 msgid "this file"
 msgstr "bu dosya"
 
-#: ../src/ui-assist-import.c:1273
+#: ../src/ui-assist-import.c:1293
 msgid "this account"
 msgstr "bu hesap"
 
-#: ../src/ui-assist-import.c:1280
+#: ../src/ui-assist-import.c:1300
 #, c-format
 msgid ""
 "Name: %s\n"
@@ -2139,11 +2129,11 @@ msgstr ""
 "Dosya: %s\n"
 "Kodlama: %s"
 
-#: ../src/ui-assist-import.c:1330
+#: ../src/ui-assist-import.c:1350
 msgid "Import transactions from bank or credit card"
 msgstr "İşlemleri banka veya kredi kartından içe aktarma"
 
-#: ../src/ui-assist-import.c:1338
+#: ../src/ui-assist-import.c:1358
 msgid ""
 "With this assistant you will be guided through the process of importing one "
 "or several\n"
@@ -2154,7 +2144,7 @@ msgstr ""
 "fazla ifadeyi\n"
 "aşağıdaki formatlarda içe aktarma işlemi boyunca yönlendirileceksiniz:"
 
-#: ../src/ui-assist-import.c:1344
+#: ../src/ui-assist-import.c:1364
 msgid ""
 "<b>Recommended:</b> .OFX or .QFX\n"
 "<i>(Sometimes named Money™ or Quicken™)</i>\n"
@@ -2170,7 +2160,7 @@ msgstr ""
 "<b>İleri düzey kullanıcılar:</b> .CSV\n"
 "<i>(biçimi HomeBank 'a özeldir, belgelere bakın)</i>"
 
-#: ../src/ui-assist-import.c:1364
+#: ../src/ui-assist-import.c:1384
 msgid ""
 "No changes will be made until you click \"Apply\" at the end of this "
 "assistant."
@@ -2178,11 +2168,11 @@ msgstr ""
 "Bu asistanın sonunda \"Uygula\" yı tıklayana kadar hiçbir değişiklik "
 "yapılmayacak."
 
-#: ../src/ui-assist-import.c:1368
+#: ../src/ui-assist-import.c:1388
 msgid "Don't show this again"
 msgstr "Bu mesajı tekrar gösterme"
 
-#: ../src/ui-assist-import.c:1427
+#: ../src/ui-assist-import.c:1447
 msgid ""
 "Drag&Drop one or several files to import.\n"
 "You can also use the add/remove buttons of the list."
@@ -2190,7 +2180,7 @@ msgstr ""
 "Almak için bir veya birkaç dosyayı sürükleyip bırakın.\n"
 "Ayrıca listenin ekle/kaldır düğmelerini de kullanabilirsiniz."
 
-#: ../src/ui-assist-import.c:1503
+#: ../src/ui-assist-import.c:1523
 msgid ""
 "There is too much account in the files you choosed,\n"
 "please use the back button to select less files."
@@ -2198,68 +2188,68 @@ msgstr ""
 "Seçtiğiniz dosyalarda çok fazla hesap var,\n"
 "daha az dosya seçmek için lütfen geri düğmesini kullanın."
 
-#: ../src/ui-assist-import.c:1622
+#: ../src/ui-assist-import.c:1640
 msgid "Target account identification by name or number failed."
 msgstr "İsme veya numaraya göre hedef hesap tanımlaması başarısız oldu."
 
-#: ../src/ui-assist-import.c:1635 ../src/ui-pref.c:1148
+#: ../src/ui-assist-import.c:1653 ../src/ui-pref.c:1148
 msgid "Date order:"
 msgstr "Tarih sırası:"
 
-#: ../src/ui-assist-import.c:1651 ../src/ui-pref.c:1199
+#: ../src/ui-assist-import.c:1669 ../src/ui-pref.c:1199
 msgid "_Import memos"
 msgstr "_Notları içe aktar"
 
-#: ../src/ui-assist-import.c:1655 ../src/ui-pref.c:1202
+#: ../src/ui-assist-import.c:1673 ../src/ui-pref.c:1202
 msgid "_Swap memos with payees"
 msgstr "Notları alacaklılarla _değiştirme"
 
-#: ../src/ui-assist-import.c:1665 ../src/ui-pref.c:1172
+#: ../src/ui-assist-import.c:1683 ../src/ui-pref.c:1172
 msgid "OFX _Name:"
 msgstr "OFX _Adı:"
 
-#: ../src/ui-assist-import.c:1671 ../src/ui-pref.c:1181
+#: ../src/ui-assist-import.c:1689 ../src/ui-pref.c:1181
 msgid "OFX _Memo:"
 msgstr "OFX _Notlar:"
 
-#: ../src/ui-assist-import.c:1687 ../src/ui-filter.c:308 ../src/ui-filter.c:453
+#: ../src/ui-assist-import.c:1705 ../src/ui-filter.c:308 ../src/ui-filter.c:453
 #: ../src/ui-filter.c:567
 msgid "Select:"
 msgstr "Seç:"
 
-#: ../src/ui-assist-import.c:1690 ../src/ui-filter.c:311 ../src/ui-filter.c:456
+#: ../src/ui-assist-import.c:1708 ../src/ui-filter.c:311 ../src/ui-filter.c:456
 #: ../src/ui-filter.c:570
 msgid "All"
 msgstr "Tümü"
 
-#: ../src/ui-assist-import.c:1694 ../src/ui-filter.c:316 ../src/ui-filter.c:461
+#: ../src/ui-assist-import.c:1712 ../src/ui-filter.c:316 ../src/ui-filter.c:461
 #: ../src/ui-filter.c:575 ../src/ui-pref.c:106 ../src/ui-transaction.c:56
 msgid "None"
 msgstr "Hiçbiri"
 
-#: ../src/ui-assist-import.c:1698 ../src/ui-filter.c:321 ../src/ui-filter.c:466
+#: ../src/ui-assist-import.c:1716 ../src/ui-filter.c:321 ../src/ui-filter.c:466
 #: ../src/ui-filter.c:580
 msgid "Invert"
 msgstr "Tersine çevir"
 
-#: ../src/ui-assist-import.c:1715 ../src/ui-pref.c:1157
+#: ../src/ui-assist-import.c:1733 ../src/ui-pref.c:1157
 msgid "Sentence _case memo/payee"
 msgstr "Cümle olay not/alacaklı"
 
-#: ../src/ui-assist-import.c:1749
+#: ../src/ui-assist-import.c:1767
 msgid "Similar transaction in target account (possible duplicate)"
 msgstr "Hedef hesapta benzer işlem (olası yinelenen)"
 
-#: ../src/ui-assist-import.c:1773
+#: ../src/ui-assist-import.c:1791
 msgid "Date _gap:"
 msgstr "Tarih _boşluğu:"
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days of date tolerance
-#: ../src/ui-assist-import.c:1781
+#: ../src/ui-assist-import.c:1799
 msgid "days"
 msgstr "günler"
 
-#: ../src/ui-assist-import.c:1789
+#: ../src/ui-assist-import.c:1807
 msgid ""
 "The match is done in order: by account, amount and date.\n"
 "A date tolerance of 0 day means an exact match"
@@ -2267,28 +2257,41 @@ msgstr ""
 "Eşleşme bu sıralamayla yapıldı: Hesap, miktar ve tarih.\n"
 "0 günlük yakınlık kesin sonucu gösterir"
 
-#: ../src/ui-assist-import.c:1852
-msgid "Click \"Apply\" to update your accounts.\n"
-msgstr "Uygula'ya tıklayarak hesabınızdaki değişiklikleri güncelle.\n"
+#: ../src/ui-assist-import.c:1874
+msgid "Run automation"
+msgstr ""
 
-#: ../src/ui-assist-import.c:2178
+#: ../src/ui-assist-import.c:1878
+msgid "1) Enrich with _payee default"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1884
+#, fuzzy
+msgid "2) Run automatic _assigment rules"
+msgstr "Otomatik tahsis işle"
+
+#: ../src/ui-assist-import.c:1890
+msgid "Click \"Apply\" to update your accounts."
+msgstr ""
+
+#: ../src/ui-assist-import.c:2215
 msgid "Welcome"
 msgstr "Hoşgeldiniz"
 
-#: ../src/ui-assist-import.c:2183
+#: ../src/ui-assist-import.c:2221
 msgid "Select file(s)"
 msgstr "Dosya(ları) seç"
 
 #. gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), page, GTK_ASSISTANT_PAGE_PROGRESS);
-#: ../src/ui-assist-import.c:2188
+#: ../src/ui-assist-import.c:2226
 msgid "Import"
 msgstr "İçe aktar"
 
-#: ../src/ui-budget.c:505 ../src/ui-category.c:1145 ../src/ui-payee.c:1078
+#: ../src/ui-budget.c:505 ../src/ui-category.c:1145 ../src/ui-payee.c:1144
 msgid "File format error"
 msgstr "Dosya biçimi hatası"
 
-#: ../src/ui-budget.c:506 ../src/ui-category.c:1146 ../src/ui-payee.c:1079
+#: ../src/ui-budget.c:506 ../src/ui-category.c:1146 ../src/ui-payee.c:1145
 msgid ""
 "The CSV file must contains the exact numbers of column,\n"
 "separated by a semi-colon, please see the help for more details."
@@ -2313,11 +2316,11 @@ msgstr "_Temizle"
 msgid "Manage Budget"
 msgstr "Bütçeyi Yönet"
 
-#: ../src/ui-budget.c:1033 ../src/ui-category.c:1849 ../src/ui-payee.c:1598
+#: ../src/ui-budget.c:1033 ../src/ui-category.c:1849 ../src/ui-payee.c:1664
 msgid "_Import CSV"
 msgstr "_İçe CSV aktar"
 
-#: ../src/ui-budget.c:1037 ../src/ui-category.c:1853 ../src/ui-payee.c:1602
+#: ../src/ui-budget.c:1037 ../src/ui-category.c:1853 ../src/ui-payee.c:1668
 msgid "E_xport CSV"
 msgstr "Dışa CSV aktar"
 
@@ -2341,7 +2344,7 @@ msgstr "farklı"
 msgid "_Force monitoring this category"
 msgstr "Bu kategoriyi göstermeye _zorla"
 
-#: ../src/ui-category.c:1024 ../src/ui-payee.c:973
+#: ../src/ui-category.c:1024 ../src/ui-payee.c:1025
 msgid "Usage"
 msgstr "Kullanım"
 
@@ -2357,7 +2360,7 @@ msgstr ""
 "Kullanılmayan kategorileri kalıcı\n"
 "olarak silmek ister misiniz?"
 
-#: ../src/ui-category.c:1287 ../src/ui-payee.c:1177 ../src/ui-tag.c:489
+#: ../src/ui-category.c:1287 ../src/ui-payee.c:1243 ../src/ui-tag.c:493
 msgid "Edit..."
 msgstr "Düzenle..."
 
@@ -2381,7 +2384,7 @@ msgstr ""
 msgid "Merge category '%s'"
 msgstr "Kategori '%s' i birleştir"
 
-#: ../src/ui-category.c:1438 ../src/ui-payee.c:1344
+#: ../src/ui-category.c:1438 ../src/ui-payee.c:1410
 msgid "Merge"
 msgstr "Birleştir"
 
@@ -2410,7 +2413,7 @@ msgstr ""
 msgid "Manage Categories"
 msgstr "Kategorileri Düzenle"
 
-#: ../src/ui-category.c:1860 ../src/ui-payee.c:1609
+#: ../src/ui-category.c:1860 ../src/ui-payee.c:1675
 msgid "_Delete unused"
 msgstr "_Kullanılmayanları sil"
 
@@ -2422,7 +2425,7 @@ msgstr "yeni kategori"
 msgid "new subcategory"
 msgstr "yeni alt kategori"
 
-#: ../src/ui-category.c:1984 ../src/ui-payee.c:1674
+#: ../src/ui-category.c:1984 ../src/ui-payee.c:1740
 msgid "_Merge"
 msgstr "_Birleştir"
 
@@ -2681,7 +2684,7 @@ msgstr "_Yıl:"
 msgid "Texts"
 msgstr "Metinler"
 
-#: ../src/ui-filter.c:1222 ../src/ui-transaction.c:1255
+#: ../src/ui-filter.c:1222 ../src/ui-transaction.c:1254
 #: ../src/ui-txn-multi.c:480
 msgid "_Info:"
 msgstr "_Bilgi:"
@@ -2750,11 +2753,16 @@ msgstr "ekle"
 msgid "days in advance the current date"
 msgstr "geçmiş gün"
 
-#: ../src/ui-payee.c:1037
+#. TRANSLATORS: this is abbreviation for Payment
+#: ../src/ui-payee.c:1038
+msgid "Pay."
+msgstr ""
+
+#: ../src/ui-payee.c:1103
 msgid "Delete unused payee"
 msgstr "Kullanılmayan alacaklıları sil"
 
-#: ../src/ui-payee.c:1038
+#: ../src/ui-payee.c:1104
 msgid ""
 "Are you sure you want to\n"
 "permanently delete unused payee?"
@@ -2762,16 +2770,16 @@ msgstr ""
 "Kullanılmayan alacaklıları kalıcı olarak\n"
 "silmek istediğinizden emin misiniz?"
 
-#: ../src/ui-payee.c:1218
+#: ../src/ui-payee.c:1284
 msgid "Default"
 msgstr "Varsayılan"
 
-#: ../src/ui-payee.c:1230 ../src/ui-transaction.c:1239
+#: ../src/ui-payee.c:1288 ../src/ui-transaction.c:1238
 #: ../src/ui-txn-multi.c:466
 msgid "Pa_yment:"
 msgstr "Ödeme:"
 
-#: ../src/ui-payee.c:1277
+#: ../src/ui-payee.c:1343
 #, c-format
 msgid ""
 "Cannot rename this Payee,\n"
@@ -2782,12 +2790,12 @@ msgstr ""
 "mevcut '%s' \n"
 "'%s' yeniden adlandırılamaz."
 
-#: ../src/ui-payee.c:1332
+#: ../src/ui-payee.c:1398
 #, c-format
 msgid "Merge payee '%s'"
 msgstr "Alacaklı '%s' i birleştir"
 
-#: ../src/ui-payee.c:1353
+#: ../src/ui-payee.c:1419
 msgid ""
 "Transactions assigned to this payee,\n"
 "will be moved to the payee selected below."
@@ -2795,12 +2803,12 @@ msgstr ""
 "Bu alacaklıyla ilgil işlemler aşağıda\n"
 "seçili alacaklıya aktarılacak."
 
-#: ../src/ui-payee.c:1363
+#: ../src/ui-payee.c:1429
 #, c-format
 msgid "_Delete the payee '%s'"
 msgstr "Alacaklı '%s' i _Sil"
 
-#: ../src/ui-payee.c:1454 ../src/ui-tag.c:600
+#: ../src/ui-payee.c:1520 ../src/ui-tag.c:604
 msgid ""
 "This payee is used.\n"
 "Any transaction using that payee will be set to (no payee)"
@@ -2808,11 +2816,11 @@ msgstr ""
 "Bu alacaklı kullanılmış.\n"
 "Bu alacaklıyı kullanan tüm işlemler (no payee) olarak ayarlanacak."
 
-#: ../src/ui-payee.c:1547
+#: ../src/ui-payee.c:1613
 msgid "Manage Payees"
 msgstr "Alacaklıları Düzenle"
 
-#: ../src/ui-payee.c:1657
+#: ../src/ui-payee.c:1723
 msgid "new payee"
 msgstr "yeni alacaklı"
 
@@ -3258,7 +3266,7 @@ msgstr "Atanmamış:"
 msgid "Sum of splits:"
 msgstr "Bölünme toplamı:"
 
-#: ../src/ui-tag.c:553
+#: ../src/ui-tag.c:557
 #, c-format
 msgid ""
 "Cannot rename this Tag,\n"
@@ -3269,11 +3277,11 @@ msgstr ""
 "%s' den '%s' e,\n"
 "Bu isim zaten mevcut."
 
-#: ../src/ui-tag.c:678
+#: ../src/ui-tag.c:682
 msgid "Manage Tags"
 msgstr "Etiketleri Yönet"
 
-#: ../src/ui-tag.c:745
+#: ../src/ui-tag.c:749
 msgid "new tag"
 msgstr "yeni etiket"
 
@@ -3289,11 +3297,11 @@ msgstr "İşlem devret"
 msgid "Modify transaction"
 msgstr "İşlem düzenle"
 
-#: ../src/ui-transaction.c:57 ../src/ui-widgets-data.c:148
+#: ../src/ui-transaction.c:57 ../src/ui-widgets-data.c:146
 msgid "Cleared"
 msgstr "Temizlendi"
 
-#: ../src/ui-transaction.c:58 ../src/ui-widgets-data.c:147
+#: ../src/ui-transaction.c:58 ../src/ui-widgets-data.c:145
 msgid "Reconciled"
 msgstr "Bağdaşık"
 
@@ -3301,7 +3309,7 @@ msgstr "Bağdaşık"
 msgid "From acc_ount:"
 msgstr "Hesaptan:"
 
-#: ../src/ui-transaction.c:662 ../src/ui-transaction.c:1230
+#: ../src/ui-transaction.c:662
 msgid "To acc_ount:"
 msgstr "Hesaba:"
 
@@ -3332,8 +3340,8 @@ msgid "Use a _template"
 msgstr "Bir _şablon kullan"
 
 #: ../src/ui-transaction.c:1144
-msgid "_Add & keep"
-msgstr "_Ekle & Sakla"
+msgid "Add & _Keep"
+msgstr ""
 
 #: ../src/ui-transaction.c:1152
 msgid "_Post"
@@ -3351,19 +3359,35 @@ msgid ""
 "- empty for today"
 msgstr ""
 
+#: ../src/ui-transaction.c:1204 ../src/ui-txn-multi.c:436
+msgid "Amou_nt:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1230
+msgid "T_o:"
+msgstr ""
+
 #. widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
 #. gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
-#: ../src/ui-transaction.c:1288 ../src/ui-transaction.c:1301
+#: ../src/ui-transaction.c:1287 ../src/ui-transaction.c:1300
 msgid ""
 "- type some letter for autocompletion\n"
 "- type new text to create entry"
 msgstr ""
 
-#: ../src/ui-transaction.c:1311 ../src/ui-txn-multi.c:528
+#: ../src/ui-transaction.c:1294 ../src/ui-txn-multi.c:512
+msgid "Cate_gory:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1310 ../src/ui-txn-multi.c:528
 msgid "M_emo:"
 msgstr "Not:"
 
-#: ../src/ui-transaction.c:1339
+#: ../src/ui-transaction.c:1318 ../src/ui-txn-multi.c:544
+msgid "_Tags:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1338
 msgid "Warning: amount and category sign don't match"
 msgstr "Uyarı: Tutar ve kategori işareti uyuşmuyor"
 
@@ -3387,201 +3411,201 @@ msgstr "Dahil et"
 msgid "Exclude"
 msgstr "Hariç tut"
 
-#: ../src/ui-widgets-data.c:71
+#: ../src/ui-widgets-data.c:69
 msgid "(no type)"
 msgstr "(belirsiz tip)"
 
-#: ../src/ui-widgets-data.c:73 ../src/ui-widgets.c:1070
+#: ../src/ui-widgets-data.c:71 ../src/ui-widgets.c:1070
 msgid "Cash"
 msgstr "Nakit"
 
-#: ../src/ui-widgets-data.c:74
+#: ../src/ui-widgets-data.c:72
 msgid "Asset"
 msgstr "Varlık"
 
-#: ../src/ui-widgets-data.c:75 ../src/ui-widgets.c:1068
+#: ../src/ui-widgets-data.c:73 ../src/ui-widgets.c:1068
 msgid "Credit card"
 msgstr "Kredi kartı"
 
-#: ../src/ui-widgets-data.c:76
+#: ../src/ui-widgets-data.c:74
 msgid "Liability"
 msgstr "Borçlar"
 
-#: ../src/ui-widgets-data.c:90
+#: ../src/ui-widgets-data.c:88
 msgid "This month"
 msgstr "Bu ay"
 
-#: ../src/ui-widgets-data.c:91
+#: ../src/ui-widgets-data.c:89
 msgid "Last month"
 msgstr "Geçen ay"
 
-#: ../src/ui-widgets-data.c:92
+#: ../src/ui-widgets-data.c:90
 msgid "This quarter"
 msgstr "Bu çeyrek"
 
-#: ../src/ui-widgets-data.c:93
+#: ../src/ui-widgets-data.c:91
 msgid "Last quarter"
 msgstr "Son çeyrek"
 
-#: ../src/ui-widgets-data.c:94
+#: ../src/ui-widgets-data.c:92
 msgid "This year"
 msgstr "Bu yıl"
 
-#: ../src/ui-widgets-data.c:95
+#: ../src/ui-widgets-data.c:93
 msgid "Last year"
 msgstr "Geçen yıl"
 
-#: ../src/ui-widgets-data.c:97
+#: ../src/ui-widgets-data.c:95
 msgid "Last 30 days"
 msgstr "Son 30 gün"
 
-#: ../src/ui-widgets-data.c:98
+#: ../src/ui-widgets-data.c:96
 msgid "Last 60 days"
 msgstr "Son 60 gün"
 
-#: ../src/ui-widgets-data.c:99
+#: ../src/ui-widgets-data.c:97
 msgid "Last 90 days"
 msgstr "Son 90 gün"
 
-#: ../src/ui-widgets-data.c:100
+#: ../src/ui-widgets-data.c:98
 msgid "Last 12 months"
 msgstr "Son 12 ay"
 
 #. { FLT_RANGE_OTHER,			N_("Other...") },
-#: ../src/ui-widgets-data.c:103
+#: ../src/ui-widgets-data.c:101
 msgid "custom"
 msgstr ""
 
-#: ../src/ui-widgets-data.c:105
+#: ../src/ui-widgets-data.c:103
 msgid "All date"
 msgstr "Tüm zamanlar"
 
-#: ../src/ui-widgets-data.c:120
+#: ../src/ui-widgets-data.c:118
 msgid "Possible"
 msgstr "Mümkün"
 
-#: ../src/ui-widgets-data.c:121
+#: ../src/ui-widgets-data.c:119
 msgid "Before"
 msgstr "Önce"
 
-#: ../src/ui-widgets-data.c:122
+#: ../src/ui-widgets-data.c:120
 msgid "After"
 msgstr "Sonra"
 
-#: ../src/ui-widgets-data.c:139
+#: ../src/ui-widgets-data.c:137
 msgid "Any Type"
 msgstr "Herhangibir Tip"
 
-#: ../src/ui-widgets-data.c:144
+#: ../src/ui-widgets-data.c:142
 msgid "Uncategorized"
 msgstr "Kategorilenmemiş"
 
-#: ../src/ui-widgets-data.c:145
+#: ../src/ui-widgets-data.c:143
 msgid "Unreconciled"
 msgstr "Sonuçlanmamış"
 
-#: ../src/ui-widgets-data.c:146
+#: ../src/ui-widgets-data.c:144
 msgid "Uncleared"
 msgstr "Temizlenmemiş"
 
-#: ../src/ui-widgets-data.c:150
+#: ../src/ui-widgets-data.c:148
 msgid "Any Status"
 msgstr "Herhangi bir durum"
 
-#: ../src/ui-widgets-data.c:177
+#: ../src/ui-widgets-data.c:175
 msgid "All month"
 msgstr "Tüm aylar"
 
-#: ../src/ui-widgets-data.c:178 ../src/ui-widgets-data.c:199
+#: ../src/ui-widgets-data.c:176 ../src/ui-widgets-data.c:197
 msgid "January"
 msgstr "Ocak"
 
-#: ../src/ui-widgets-data.c:179 ../src/ui-widgets-data.c:200
+#: ../src/ui-widgets-data.c:177 ../src/ui-widgets-data.c:198
 msgid "February"
 msgstr "Şubat"
 
-#: ../src/ui-widgets-data.c:180 ../src/ui-widgets-data.c:201
+#: ../src/ui-widgets-data.c:178 ../src/ui-widgets-data.c:199
 msgid "March"
 msgstr "Mart"
 
-#: ../src/ui-widgets-data.c:181 ../src/ui-widgets-data.c:202
+#: ../src/ui-widgets-data.c:179 ../src/ui-widgets-data.c:200
 msgid "April"
 msgstr "Nisan"
 
-#: ../src/ui-widgets-data.c:182 ../src/ui-widgets-data.c:203
-#: ../src/ui-widgets-data.c:223
+#: ../src/ui-widgets-data.c:180 ../src/ui-widgets-data.c:201
+#: ../src/ui-widgets-data.c:221
 msgid "May"
 msgstr "Mayıs"
 
-#: ../src/ui-widgets-data.c:183 ../src/ui-widgets-data.c:204
+#: ../src/ui-widgets-data.c:181 ../src/ui-widgets-data.c:202
 msgid "June"
 msgstr "Haziran"
 
-#: ../src/ui-widgets-data.c:184 ../src/ui-widgets-data.c:205
+#: ../src/ui-widgets-data.c:182 ../src/ui-widgets-data.c:203
 msgid "July"
 msgstr "Temmuz"
 
-#: ../src/ui-widgets-data.c:185 ../src/ui-widgets-data.c:206
+#: ../src/ui-widgets-data.c:183 ../src/ui-widgets-data.c:204
 msgid "August"
 msgstr "Ağustos"
 
-#: ../src/ui-widgets-data.c:186 ../src/ui-widgets-data.c:207
+#: ../src/ui-widgets-data.c:184 ../src/ui-widgets-data.c:205
 msgid "September"
 msgstr "Eylül"
 
-#: ../src/ui-widgets-data.c:187 ../src/ui-widgets-data.c:208
+#: ../src/ui-widgets-data.c:185 ../src/ui-widgets-data.c:206
 msgid "October"
 msgstr "Ekim"
 
-#: ../src/ui-widgets-data.c:188 ../src/ui-widgets-data.c:209
+#: ../src/ui-widgets-data.c:186 ../src/ui-widgets-data.c:207
 msgid "November"
 msgstr "Kasım"
 
-#: ../src/ui-widgets-data.c:189 ../src/ui-widgets-data.c:210
+#: ../src/ui-widgets-data.c:187 ../src/ui-widgets-data.c:208
 msgid "December"
 msgstr "Aralık"
 
-#: ../src/ui-widgets-data.c:219
+#: ../src/ui-widgets-data.c:217
 msgid "Jan"
 msgstr "Ocak"
 
-#: ../src/ui-widgets-data.c:220
+#: ../src/ui-widgets-data.c:218
 msgid "Feb"
 msgstr "Şubat"
 
-#: ../src/ui-widgets-data.c:221
+#: ../src/ui-widgets-data.c:219
 msgid "Mar"
 msgstr "Mart"
 
-#: ../src/ui-widgets-data.c:222
+#: ../src/ui-widgets-data.c:220
 msgid "Apr"
 msgstr "Nisan"
 
-#: ../src/ui-widgets-data.c:224
+#: ../src/ui-widgets-data.c:222
 msgid "Jun"
 msgstr "Haziran"
 
-#: ../src/ui-widgets-data.c:225
+#: ../src/ui-widgets-data.c:223
 msgid "Jul"
 msgstr "Temmuz"
 
-#: ../src/ui-widgets-data.c:226
+#: ../src/ui-widgets-data.c:224
 msgid "Aug"
 msgstr "Ağustos"
 
-#: ../src/ui-widgets-data.c:227
+#: ../src/ui-widgets-data.c:225
 msgid "Sep"
 msgstr "Eylül"
 
-#: ../src/ui-widgets-data.c:228
+#: ../src/ui-widgets-data.c:226
 msgid "Oct"
 msgstr "Ekim"
 
-#: ../src/ui-widgets-data.c:229
+#: ../src/ui-widgets-data.c:227
 msgid "Nov"
 msgstr "Kasım"
 
-#: ../src/ui-widgets-data.c:230
+#: ../src/ui-widgets-data.c:228
 msgid "Dec"
 msgstr "Aralık"
 
@@ -3626,32 +3650,22 @@ msgstr "Finans ücreti"
 msgid "Direct Debit"
 msgstr "Otomatik ödeme"
 
-#~ msgid ""
-#~ "Date accepted here are:\n"
-#~ "day,\n"
-#~ "day/month or month/day,\n"
-#~ "and complete date into your locale"
+#~ msgid "Connect to the LaunchPad website for online help"
+#~ msgstr "LaunchPad sitesine çevrim içi yardım için bağlan"
+
+#~ msgid "Connect to the LaunchPad website to help fix problems"
+#~ msgstr "LaunchPad sitesine problemleri çözmek için bağlan"
+
+#~ msgid "Connect to the LaunchPad website to help translate this application"
 #~ msgstr ""
-#~ "Burada kabul edilen tarih biçimleri:\n"
-#~ "gün,\n"
-#~ "gün/ay veya ay/gün\n"
-#~ "ya da sistem yerelindeki tam tarih biçimi"
+#~ "LaunchPad sitesine bu uygulamayı tercümet etmesinde yardım etmek için "
+#~ "bağlan"
 
-#~ msgid "Other..."
-#~ msgstr "Diğer..."
+#~ msgid "Click \"Apply\" to update your accounts.\n"
+#~ msgstr "Uygula'ya tıklayarak hesabınızdaki değişiklikleri güncelle.\n"
 
-#~ msgid "Check internal transfert result"
-#~ msgstr "Dahili işlem sonuçlarını kontrol et"
+#~ msgid "_Add & keep"
+#~ msgstr "_Ekle & Sakla"
 
-#~ msgid "Default category"
-#~ msgstr "Öntanımlı kategori"
-
-#~ msgid "Date options"
-#~ msgstr "Tarih seçenekleri"
-
-#~ msgid ""
-#~ "Autocompletion and direct seizure\n"
-#~ "is available"
-#~ msgstr ""
-#~ "Otomatik tamamlama ve doğrudan el koyma\n"
-#~ "etkin"
+#~ msgid "Get Help Online..."
+#~ msgstr "Çevrimiçi yardım al..."

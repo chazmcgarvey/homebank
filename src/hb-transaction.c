@@ -1398,6 +1398,43 @@ gint nbdup = 0;
 }
 
 
+guint
+transaction_auto_all_from_payee(GList *txnlist)
+{
+GList *list;
+Payee *pay;
+guint changes = 0;
+
+	DB( g_print("\n[transaction] auto from payee\n") );
+
+	list = g_list_first(txnlist);
+	while(list != NULL)
+	{
+	Transaction *txn = list->data;
+
+		pay = da_pay_get(txn->kpay);
+		if( pay != NULL )
+		{
+			if( txn->kcat == 0 )
+			{
+				txn->kcat = pay->kcat;
+				changes++;
+			}
+				
+			if( txn->paymode == PAYMODE_NONE )
+			{
+				txn->paymode = pay->paymode;
+				changes++;
+			}
+		}
+		list = g_list_next(list);
+	}
+
+	return changes;
+}
+
+
+
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 /* = = experimental = = */
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
