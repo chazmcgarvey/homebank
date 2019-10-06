@@ -98,7 +98,8 @@ struct import_data
 	
 	//summary
 	GtkWidget   *TX_summary;
-
+	GtkWidget	*CM_do_auto_payee;
+	GtkWidget	*CM_do_auto_assign;
 	// import context
 	ImportContext	ictx;
 	

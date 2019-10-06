@@ -183,10 +183,30 @@ static void
 ui_pay_entry_popover_function (GtkEditable *editable, gpointer user_data)
 {
 
-	g_print("text changed to %s\n", gtk_entry_get_text(GTK_ENTRY(editable)) );
+	DB( g_print("text changed to %s\n", gtk_entry_get_text(GTK_ENTRY(editable)) ) );
 	
 
 
+}
+
+
+static void
+ui_pay_entry_popover_cb_toggled (GtkToggleButton *togglebutton, gpointer user_data)
+{
+GtkWidget *entry = user_data;
+GtkAllocation allocation;
+GtkPopover *popover;
+
+	if(GTK_IS_ENTRY(entry))
+	{
+		gtk_widget_get_allocation (entry, &allocation);
+		popover = gtk_menu_button_get_popover(GTK_MENU_BUTTON(togglebutton));
+		if(GTK_IS_POPOVER(popover))
+		{
+			gtk_widget_set_size_request (GTK_WIDGET(popover), allocation.width + (2*SPACING_POPOVER), -1);	
+			DB( g_print("should set width to %d\n", allocation.width + (2*SPACING_POPOVER)) );	
+		}
+	}
 }
 
 
@@ -212,7 +232,7 @@ static void
 ui_pay_entry_popover_destroy( GtkWidget *widget, gpointer user_data )
 {
 
-    g_print ("[pay entry popover] destroy\n");
+    DB( g_print ("[pay entry popover] destroy\n") );
 
 }
 
@@ -224,7 +244,7 @@ GtkWidget *mainbox, *box, *entry, *menubutton, *image, *popover, *scrollwin, *tr
 GtkListStore *store;
 GtkEntryCompletion *completion;
 
-    g_print ("[pay entry popover] new\n");
+    DB( g_print ("[pay entry popover] new\n") );
 
 	mainbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(mainbox)), GTK_STYLE_CLASS_LINKED);
@@ -236,7 +256,7 @@ GtkEntryCompletion *completion;
 	//data->MB_template = menubutton;
 	image = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
 	gtk_container_add(GTK_CONTAINER(menubutton), image);
-	//gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_DOWN );
+	gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_LEFT );
 	//gtk_widget_set_halign (menubutton, GTK_ALIGN_END);
 	gtk_box_pack_start(GTK_BOX(mainbox), menubutton, FALSE, FALSE, 0);
 	
@@ -278,7 +298,15 @@ GtkCellRenderer *renderer;
   GtkTreeViewColumn *column;
 	
   renderer = gtk_cell_renderer_text_new ();
-  column = gtk_tree_view_column_new_with_attributes (NULL,
+
+	g_object_set(renderer, 
+		"ellipsize", PANGO_ELLIPSIZE_END,
+	    "ellipsize-set", TRUE,
+		//taken from nemo, not exactly a resize to content, but good compromise
+	    "width-chars", 40,
+	    NULL);
+
+	column = gtk_tree_view_column_new_with_attributes (NULL,
                                                      renderer,
                                                      "text",
                                                      0,
@@ -294,21 +322,31 @@ GtkCellRenderer *renderer;
 	//gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), GTK_SELECTION_BROWSE);
 	
 	
-	popover = create_popover (menubutton, box, GTK_POS_BOTTOM);
-	gtk_widget_set_size_request (popover, HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
-
+	//popover = create_popover (menubutton, box, GTK_POS_BOTTOM);
+	popover = create_popover (menubutton, box, GTK_POS_LEFT);
+	//gtk_widget_set_size_request (popover, HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
+	gtk_widget_set_vexpand(popover, TRUE);
+	
 	gtk_menu_button_set_popover(GTK_MENU_BUTTON(menubutton), popover);
-
+	
+	
 	// connect our dispose function
 	g_signal_connect (entry, "destroy", G_CALLBACK (ui_pay_entry_popover_destroy), NULL);
 
 	g_signal_connect_after (entry  , "changed", G_CALLBACK (ui_pay_entry_popover_function), NULL);
 
+	g_signal_connect (menubutton, "toggled", G_CALLBACK (ui_pay_entry_popover_cb_toggled), entry);
+	
 	g_signal_connect (treeview, "row-activated", G_CALLBACK (ui_pay_entry_popover_cb_row_activated), entry);
-	g_signal_connect_swapped(treeview, "row-activated", G_CALLBACK(gtk_popover_popdown), popover);
+
+	#if( (GTK_MAJOR_VERSION == 3) && (GTK_MINOR_VERSION >= 22) )
+		g_signal_connect_swapped(treeview, "row-activated", G_CALLBACK(gtk_popover_popdown), popover);
+	#else
+		g_signal_connect_swapped(treeview, "row-activated", G_CALLBACK(gtk_widget_hide), popover);
+	#endif
+
 	//g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), "changed", G_CALLBACK (ui_pay_entry_popover_cb_selection), entry);
 	//g_signal_connect_swapped(gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), "changed", G_CALLBACK(gtk_popover_popdown), popover);
-
 	
 	if(label)
 		gtk_label_set_mnemonic_widget (GTK_LABEL(label), entry);
@@ -612,7 +650,7 @@ GtkCellRenderer    *renderer;
 	if(label)
 		gtk_label_set_mnemonic_widget (GTK_LABEL(label), comboboxentry);
 
-	gtk_widget_set_size_request(comboboxentry, HB_MINWIDTH_LIST, -1);
+	//gtk_widget_set_size_request(comboboxentry, HB_MINWIDTH_LIST, -1);
 
 	return comboboxentry;
 }
@@ -662,6 +700,9 @@ gint retval = 0;
 			break;
 		case LST_DEFPAY_SORT_USED:
 			retval = entry1->usage_count - entry2->usage_count;
+			break;
+		case LST_DEFPAY_SORT_DEFPAY:
+			retval = entry1->paymode - entry2->paymode;
 			break;
 		case LST_DEFPAY_SORT_DEFCAT:
 			{
@@ -723,6 +764,17 @@ Category *cat;
 	}
 	else
 		g_object_set(renderer, "text", "", NULL);
+}
+
+static void
+ui_pay_listview_info_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+Payee *entry;
+
+	gtk_tree_model_get(model, iter, LST_DEFPAY_DATAS, &entry, -1);
+
+	g_object_set(renderer, "icon-name", get_paymode_icon_name(entry->paymode), NULL);
+
 }
 
 
@@ -978,6 +1030,19 @@ GtkTreeViewColumn	*column;
 		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	}
 
+	// column: payment
+	if( withtoggle == FALSE )
+	{
+		column = gtk_tree_view_column_new();
+		//TRANSLATORS: this is abbreviation for Payment
+		gtk_tree_view_column_set_title(column, _("Pay."));
+		renderer = gtk_cell_renderer_pixbuf_new ();
+		gtk_tree_view_column_pack_start(column, renderer, TRUE);
+		gtk_tree_view_column_set_cell_data_func(column, renderer, ui_pay_listview_info_cell_data_function, NULL, NULL);
+		gtk_tree_view_column_set_sort_column_id (column, LST_DEFPAY_SORT_DEFPAY);
+		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	}	
+
 	// column: category
 	if( withtoggle == FALSE )
 	{
@@ -1012,6 +1077,7 @@ GtkTreeViewColumn	*column;
 
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFPAY_SORT_NAME, ui_pay_listview_compare_func, GINT_TO_POINTER(LST_DEFPAY_SORT_NAME), NULL);
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFPAY_SORT_USED, ui_pay_listview_compare_func, GINT_TO_POINTER(LST_DEFPAY_SORT_USED), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFPAY_SORT_DEFPAY, ui_pay_listview_compare_func, GINT_TO_POINTER(LST_DEFPAY_SORT_DEFPAY), NULL);
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFPAY_SORT_DEFCAT, ui_pay_listview_compare_func, GINT_TO_POINTER(LST_DEFPAY_SORT_DEFCAT), NULL);
 
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_DEFPAY_SORT_NAME, GTK_SORT_ASCENDING);
@@ -1219,20 +1285,20 @@ guint32 key;
 		gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 4, 1);
 
 		row = 1;
-		label = make_label_widget(_("_Category:"));
-		gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-		widget = ui_cat_comboboxentry_new(label);
-		PO_cat = widget;
-		gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-
-		row++;
 		label = make_label_widget(_("Pa_yment:"));
 		gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 		//5.2.4 we drop internal xfer here as it will disapear 
 		//widget = make_paymode_nointxfer(label);
 		widget = make_paymode_nointxfer(label);
 		NU_mode = widget;
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+
+		row++;
+		label = make_label_widget(_("_Category:"));
+		gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+		widget = ui_cat_comboboxentry_new(label);
+		PO_cat = widget;
+		gtk_widget_set_hexpand (widget, TRUE);
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
 		//setup

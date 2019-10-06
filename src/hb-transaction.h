@@ -130,6 +130,7 @@ void transaction_xfer_child_sync(Transaction *s_txn, Transaction *child);
 void transaction_xfer_remove_child(Transaction *src);
 Transaction *transaction_old_get_child_transfer(Transaction *src);
 
+guint transaction_auto_all_from_payee(GList *txnlist);
 guint transaction_auto_assign(GList *ope_list, guint32 key);
 
 void da_transaction_consistency(Transaction *item);

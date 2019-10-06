@@ -1,5 +1,28 @@
 
 
+2019-09-18  Maxime Doyen
+
+ Made 5.2.8 release.
+
+ * new   : import: auto assigment is now optional
+ * new   : payee dialog: added a payment icon column to ease management
+ * new   : add help and donate toolbar buttons
+ * change: payee popover: improved the dimension of the popover to larger one
+ * wish  : #1843184 reorganize accelerator for txn dialog
+ * wish  : #1841462 shortcuts for register view
+ * wish  : #1828914 mark "Today" for calendar widget
+ * wish  : #1826211 csv import to assign category from payee choice
+ * wish  : #1673902 add a visual marker for uncategorized txn of budget account
+ * bugfix: fixed compile fail with GTK < 3.22 and gtk_popover_popdown
+ * bugfix: accelerator key was not working for date widget
+ * bugfix: #1843648 info gets empty after editing a txn with paymode cheque and positive amount
+ * bugfix: #1842935 can't save file after OFX import with long unicode strings
+ * bugfix: #1842292 windows: language change KO if install path as utf-8 char (é, ç, à, etc)
+ * bugfix: #1840998 transaction Screen only shows 3 weeks in advance
+ * bugfix: #1840393 import qfx similar transaction dialog amount show $0.00
+ * bugfix: #1839851 balance report details view all show amount 0.00
+
+
 2019-07-28  Maxime Doyen
 
  Made 5.2.7 release.
@@ -7,6 +30,7 @@
  * new   : dropped usage of comboboxentry in profit of a popover list for tags
  * new   : payee column shows >account or <account for internal transfer
  * change: transaction tooltip were clarified
+ * wish  : #1828732 add expand/collapse all for categories in edit filter
  * bugfix: filter payment click on label was not working
  * bugfix: tags add from manager was allowing input space in name
  * bugfix: tags were not freed from archives
@@ -21,7 +45,6 @@
  * bugfix: #1830656 Payee and Memo colums on scheduled screen sometimes revert to minimum width
  * bugfix: #1830523 future/remind txn main panel list shows 0.00 amount 
  * bugfix: #1792277 not all columns auto-size to contents
- * wish  : #1828732 add expand/collapse all for categories in edit filter
 
 
 2019-05-24  Maxime Doyen
@@ -30,13 +53,13 @@
 
  * new   : windows: added ofxdump.exe to the installer so you can test your OFX/QFX file
  * change: access to the show all transaction with the toolbar
- * bugfix: #1829630	homebank: _cairo_arc_in_direction(): homebank killed by SIGABRT 
- * bugfix: #1829076 status "no category" filter not working
- * bugfix: #1829603 multi currencies problem in Trend Time Report
  * wish  : #1829007 prefill txn dialog with account if single
  * wish  : #1828209 multiple edit could allow updating transaction amount
  * wish  : #1809022 detail txn show only category amount split part
  * wish  : #1792749 main window date 'other...' consistency 
+ * bugfix: #1829630	homebank: _cairo_arc_in_direction(): homebank killed by SIGABRT 
+ * bugfix: #1829076 status "no category" filter not working
+ * bugfix: #1829603 multi currencies problem in Trend Time Report
 
 
 2019-05-12  Maxime Doyen
@@ -44,6 +67,7 @@
  Made 5.2.5 release.
 
  * change: fixed some margin layout (buttonbox, popover)
+ * wish  : #1818071 configurable separator for CSV import
  * bugfix: #1827193 crash when select create new xfer target txn
  * bugfix: #1826659 budget dialog month widget label decay by one
  * bugfix: #1826080 paste an amount with mixed dot & comma is misinterpreted
@@ -51,7 +75,6 @@
  * bugfix: #1824561 trend time report by category don't show results
  * bugfix: #1824515 changing a transaction in future list doesn't update accounts summary
  * bugfix: #1812470 balance column dont update after change from another account 
- * wish  : #1818071 configurable separator for CSV import
 
 
 2019-04-10  Maxime Doyen
@@ -63,6 +86,9 @@
  * change: improved disable state into target xfer dialog
  * change: remind icon was changed to a bell icon
  * change: scheduled/budget icon moved to leftmost column
+ * wish  : #1752827 global assets view pie chart in statistics
+ * wish  : #1750434 home place to show remind txn for debt tracking
+ * wish  : #816947  showing future transactions on main screen 
  * bugfix: budget month label were wrong 1 offset
  * bugfix: payee default payment was fautly possible to internal xfer 
  * bugfix: cancelling the select xfer dialog was creating a target transaction
@@ -74,9 +100,6 @@
  * bugfix: #1820618 any import crash with systems having glib < 2.58.0
  * bugfix: #1820511 fixed size of fields in modify operation dialog
  * bugfix: #1820372 bank type on account main list untranslated
- * wish  : #1752827 global assets view pie chart in statistics
- * wish  : #1750434 home place to show remind txn for debt tracking
- * wish  : #816947  showing future transactions on main screen 
 
 
 2019-03-15  Maxime Doyen

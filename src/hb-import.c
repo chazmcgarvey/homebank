@@ -297,7 +297,8 @@ gint filetype;
 
 	// we keep everything here
 	//if( (filetype == FILETYPE_OFX) || (filetype == FILETYPE_QIF) || (filetype == FILETYPE_CSV_HB) )
-	//{
+	if( filetype != FILETYPE_HOMEBANK )
+	{
 	GenFile *existgenfile;
 
 		existgenfile = da_gen_file_get_by_name(ictx->gen_lst_file, filename);
@@ -312,7 +313,7 @@ gint filetype;
 			ictx->gen_lst_file = g_list_append(ictx->gen_lst_file, genfile);
 
 		}
-	//}
+	}
 
 	return genfile;
 }
@@ -348,6 +349,8 @@ da_gen_acc_get_by_key(GList *lst_acc, guint32 key)
 GenAcc *existacc = NULL;
 GList *list;
 
+	DB( g_print("da_gen_acc_get_by_key\n") );
+	
 	list = g_list_first(lst_acc);
 	while (list != NULL)
 	{
@@ -370,7 +373,7 @@ da_gen_acc_get_by_name(GList *lst_acc, gchar *name)
 GenAcc *existacc = NULL;
 GList *list;
 
-	//DB( g_print("da_gen_acc_get_by_name\n") );
+	DB( g_print("da_gen_acc_get_by_name\n") );
 
 	list = g_list_first(lst_acc);
 	while (list != NULL)
@@ -780,7 +783,6 @@ gint count = 0;
 
 	DB( g_print("\n[import] gen_txn_check_duplicate\n") );
 
-	
 	list1 = g_list_first(ictx->gen_lst_txn);
 	while (list1 != NULL)
 	{
@@ -918,68 +920,65 @@ gint count = 0;
 	Transaction *txn1 = list1->data;
 	GenAcc *acc;
 
-		acc = da_gen_acc_get_by_key(ictx->gen_lst_acc, txn1->kacc);
+		DB( g_print(" list:%p txn:%p\n", ictx->gen_lst_acc, txn1) );
+		if( txn1 != NULL )
+		{	
+			acc = da_gen_acc_get_by_key(ictx->gen_lst_acc, txn1->kacc);
 
-		DB( g_print(" src: kacc:%d dat:%d amt:%.2f %s kfxacc:%d\n", txn1->kacc, txn1->date, txn1->amount, txn1->memo, txn1->kxferacc) );
+			DB( g_print(" src: kacc:%d dat:%d amt:%.2f %s kfxacc:%d\n", txn1->kacc, txn1->date, txn1->amount, txn1->memo, txn1->kxferacc) );
 
-		if( (acc != NULL) && (acc->filetype == FILETYPE_OFX) )
-		{
-			match = NULL;
-			count = 0;
-			list2 = g_list_next(root);
-			while (list2 != NULL)
+			if( (acc != NULL) && (acc->filetype == FILETYPE_OFX) )
 			{
-			Transaction *txn2 = list2->data;
-
-				//DB( g_print(" -- chk: kacc:%d dat:%d amt:%.2f %s\n", txn2->kacc, txn2->date, txn2->amount, txn2->memo) );
-				if( (txn2->date > txn1->date) )
-					break;
-
-				if( (txn2 == txn1) || (txn2->paymode == PAYMODE_INTXFER) )
-					goto next;
-
-				//todo: maybe reinforce controls here
-				if( (txn2->kacc != txn1->kacc) 
-					&& (txn2->date == txn1->date)
-					&& (txn2->amount == -txn1->amount)
-					&& (hb_string_compare(txn2->memo, txn1->memo) == 0)
-				  )
+				match = NULL;
+				count = 0;
+				list2 = g_list_next(root);
+				while (list2 != NULL)
 				{
-					DB( g_print("  match: kacc:%d dat:%d amt:%.2f %s kfxacc:%d\n", txn2->kacc, txn2->date, txn2->amount, txn2->memo, txn2->kxferacc) );
-					match = g_list_append(match, txn2);
-					count++;
+				Transaction *txn2 = list2->data;
+
+					if(!txn2)
+						goto next;
+
+					//DB( g_print(" -- chk: kacc:%d dat:%d amt:%.2f %s\n", txn2->kacc, txn2->date, txn2->amount, txn2->memo) );
+					if( (txn2->date > txn1->date) )
+						break;
+
+					if( (txn2 == txn1) || (txn2->paymode == PAYMODE_INTXFER) )
+						goto next;
+
+					//todo: maybe reinforce controls here
+					if( (txn2->kacc != txn1->kacc) 
+						&& (txn2->date == txn1->date)
+						&& (txn2->amount == -txn1->amount)
+						&& (hb_string_compare(txn2->memo, txn1->memo) == 0)
+					  )
+					{
+						DB( g_print("  match: kacc:%d dat:%d amt:%.2f %s kfxacc:%d\n", txn2->kacc, txn2->date, txn2->amount, txn2->memo, txn2->kxferacc) );
+						match = g_list_append(match, txn2);
+						count++;
+					}
+				next:
+					list2 = g_list_next(list2);
 				}
-			next:
-				list2 = g_list_next(list2);
+			
+				if(count == 1)  //we found a single potential xfer, transform it
+				{
+				Transaction *txn2 ;
+
+					DB( g_print("  single found => convert both\n") );
+
+					list2 = g_list_first(match);	
+					txn2 = list2->data;
+					if( txn1 && txn2 )
+					{
+						txn1->paymode = PAYMODE_INTXFER;
+						transaction_xfer_change_to_child(txn1, txn2);
+					}					
+				}
+				// if more than one, we cannot be sure
+				g_list_free(match);
 			}
-		
-			if(count == 1)  //we found a single potential xfer, transform it
-			{
-			Transaction *txn2 ;
-
-				DB( g_print("  single found => convert both\n") );
-
-				list2 = g_list_first(match);	
-				txn2 = list2->data;
-
-				
-				txn1->paymode = PAYMODE_INTXFER;
-				transaction_xfer_change_to_child(txn1, txn2);
-				
-				/*list2 = g_list_first(match);	
-				txn2 = list2->data;
-				
-				txn1->paymode = PAYMODE_INTXFER;
-				txn1->kxferacc = txn2->kacc;
-				
-				txn2->paymode = PAYMODE_INTXFER;
-				txn2->kxferacc = txn1->kacc;
-				*/
-			}
-			// if more than one, we cannot be sure
-			g_list_free(match);
 		}
-
 		list1 = g_list_next(list1);
 	}
 	
@@ -1169,6 +1168,7 @@ gint nsplit;
 
 		//#773282 invert amount for ccard accounts
 		//todo: manage this (qif), it is not set to true anywhere
+		//= it is into the qif account see hb-import-qif.c
 		//if(ictx->is_ccard)
 		//	gentxn->amount *= -1;
 
@@ -1242,7 +1242,7 @@ gint nsplit;
 			g_free(newope->tags);
 			newope->tags = tags_parse(gentxn->tags);
 		}
-		
+
 		// splits, if not a xfer
 		//TODO: it seems this never happen
 		if( gentxn->paymode != PAYMODE_INTXFER )
@@ -1348,7 +1348,7 @@ guint changes = 0;
 		list = g_list_next(list);
 	}
 
-	// insert every transactions into a temporary list
+	// also keep every transactions into a temporary list
 	// we do this to keep a finished real txn list for detect xfer below
 	DB( g_print(" #2 insert txn\n") );
 
@@ -1385,19 +1385,30 @@ guint changes = 0;
 		lacc = g_list_next(lacc);
 	}
 
+	//auto from payee
+	if( ictx->do_auto_payee == TRUE )
+	{
+		DB( g_print(" call auto payee\n") );
+		transaction_auto_all_from_payee(txnlist);
+	}
+		
 	//auto assign
-	DB( g_print(" call auto assign\n") );
-	transaction_auto_assign(txnlist, 0);
-	
+	if( ictx->do_auto_assign == TRUE )
+	{
+		DB( g_print(" call auto assign\n") );
+		transaction_auto_assign(txnlist, 0);
+	}	
+
 	//check for ofx internal xfer
 	DB( g_print(" call hb_import_gen_xfer_eval\n") );
 	hb_import_gen_xfer_eval(ictx, txnlist);
 
-	g_list_free(txnlist);
-
+	
 	DB( g_print(" adding %d changes\n", changes) );
 	GLOBALS->changes_count += changes;
-	
+
+	g_list_free(txnlist);
+
 }
 
 

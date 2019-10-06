@@ -738,7 +738,7 @@ gushort lpos = 1;
 	Transaction *ope = list->data;
 	gdouble value;
 
-		//#1267344
+		//#1267344 no remind in running balance
 		if(!(ope->status == TXN_STATUS_REMIND))
 			balance += ope->amount;
 
@@ -749,7 +749,9 @@ gushort lpos = 1;
 		ope->overdraft = FALSE;
 		value = hb_amount_round(balance, 2);
 		if( value != 0.0 && value < data->acc->minimum )
+		{
 			ope->overdraft = TRUE;
+		}
 
 		if(ope->date == ldate)
 		{
@@ -856,7 +858,7 @@ guint i, qs_flag;
 	
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(GTK_LIST_STORE(model)), GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID, PREFS->lst_ope_sort_order);
 
-	hastext = gtk_entry_get_text_length (GTK_ENTRY(data->ST_search)) >= 2;
+	hastext = (gtk_entry_get_text_length (GTK_ENTRY(data->ST_search)) >= 2) ? TRUE : FALSE;
 	needle = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_search));
 
 	//build the mask flag for quick search
@@ -1334,7 +1336,6 @@ gboolean result;
 		}
 		break;
 
-		//none
 		case ACTION_ACCOUNT_NONE:
 		{
 		GtkTreeSelection *selection;
@@ -1373,7 +1374,7 @@ gboolean result;
 
 		}
 		break;
-		//clear
+
 		case ACTION_ACCOUNT_CLEAR:
 		{
 			GtkTreeSelection *selection;
@@ -1393,8 +1394,6 @@ gboolean result;
 		}
 		break;
 
-
-		//reconcile
 		case ACTION_ACCOUNT_RECONCILE:
 		{
 		GtkTreeSelection *selection;
@@ -1433,7 +1432,6 @@ gboolean result;
 
 		}
 		break;
-
 
 		case ACTION_ACCOUNT_FILTER:
 		{
@@ -1491,6 +1489,7 @@ static void register_panel_update(GtkWidget *widget, gpointer user_data)
 struct register_panel_data *data;
 GtkTreeSelection *selection;
 gint flags = GPOINTER_TO_INT(user_data);
+gboolean visible;
 gint count = 0;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
@@ -1631,6 +1630,13 @@ gint count = 0;
 		}
 		ui_hub_account_populate(GLOBALS->mainwindow, NULL);
 	}
+
+	//#1835588
+	visible = PREFS->date_future_nbdays > 0 ? TRUE : FALSE;
+	if( !(filter_preset_daterange_future_enable( hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range)) )) )
+		visible = FALSE;
+	hb_widget_visible(data->CM_future, visible);
+	DB( g_print(" - show future=%d\n", visible) );
 	
 	/* update fltinfo */
 	DB( g_print(" - statusbar\n") );
@@ -1817,14 +1823,17 @@ struct register_panel_data *data;
 
 	list_txn_set_column_acc_visible(GTK_TREE_VIEW(data->LV_ope), data->showall);
 
-	//DB( g_print(" mindate=%d, maxdate=%d %x\n", data->filter->mindate,data->filter->maxdate) );
+	if( (data->showall == FALSE) && !(data->acc->flags & AF_NOBUDGET) )
+		list_txn_set_warn_nocategory(GTK_TREE_VIEW(data->LV_ope), TRUE);
 
-	DB( g_print(" - call update visual\n") );
-	register_panel_update(widget, GINT_TO_POINTER(UF_VISUAL|UF_SENSITIVE));
+	//DB( g_print(" mindate=%d, maxdate=%d %x\n", data->filter->mindate,data->filter->maxdate) );
 
 	DB( g_print(" - set range or populate+update sensitive+balance\n") );
 	
 	register_panel_cb_filter_reset(widget, user_data);
+
+	DB( g_print(" - call update visual\n") );
+	register_panel_update(widget, GINT_TO_POINTER(UF_VISUAL|UF_SENSITIVE));
 
 }
 
@@ -1930,19 +1939,19 @@ static GtkActionEntry entries[] = {
 	{ "ExportPDF"	, NULL               		, N_("Export as PDF..."), NULL,		N_("Export to a PDF file"), G_CALLBACK (register_panel_action_exportpdf) },
 	{ "ExportQIF"	, NULL						, N_("Export QIF..."), NULL,		N_("Export as QIF"), G_CALLBACK (register_panel_action_exportqif) },
 	{ "ExportCSV"	, NULL				   		, N_("Export CSV..."), NULL,		N_("Export as CSV"), G_CALLBACK (register_panel_action_exportcsv) },
-	{ "Close" 	    , ICONNAME_CLOSE	        , N_("_Close")				, "<control>W", N_("Close the current account"),		G_CALLBACK (register_panel_action_close) },
+	{ "Close" 	    , ICONNAME_CLOSE	        , N_("_Close")		, "<control>W", N_("Close the current account"),		G_CALLBACK (register_panel_action_close) },
 
-	{ "Add"			, ICONNAME_HB_OPE_ADD	    , N_("_Add..."), NULL,		N_("Add a new transaction"), G_CALLBACK (register_panel_action_add) },
-	{ "Inherit"		, ICONNAME_HB_OPE_HERIT	    , N_("_Inherit..."), NULL, N_("Inherit from the active transaction"), G_CALLBACK (register_panel_action_inherit) },
-	{ "Edit"		, ICONNAME_HB_OPE_EDIT	    , N_("_Edit..."), NULL, N_("Edit the active transaction"),	G_CALLBACK (register_panel_action_edit) },
+	{ "Add"			, ICONNAME_HB_OPE_ADD	    , N_("_Add..."), "<control>N",		N_("Add a new transaction"), G_CALLBACK (register_panel_action_add) },
+	{ "Inherit"		, ICONNAME_HB_OPE_HERIT	    , N_("_Inherit..."), "<control>U", N_("Inherit from the active transaction"), G_CALLBACK (register_panel_action_inherit) },
+	{ "Edit"		, ICONNAME_HB_OPE_EDIT	    , N_("_Edit..."), "<control>E", N_("Edit the active transaction"),	G_CALLBACK (register_panel_action_edit) },
 
-	{ "None"	    , NULL                      , N_("_None"), "<control>N",		N_("Toggle none for selected transaction(s)"), G_CALLBACK (register_panel_action_none) },
-	{ "Cleared"	    , ICONNAME_HB_OPE_CLEARED   , N_("_Cleared"), "<control>C",		N_("Toggle cleared for selected transaction(s)"), G_CALLBACK (register_panel_action_clear) },
+	{ "None"	    , NULL                      , N_("_None"), "<control><shift>C",		N_("Toggle none for selected transaction(s)"), G_CALLBACK (register_panel_action_none) },
+	{ "Cleared"	    , ICONNAME_HB_OPE_CLEARED   , N_("_Cleared"), "<control><shift>R",		N_("Toggle cleared for selected transaction(s)"), G_CALLBACK (register_panel_action_clear) },
 	{ "Reconciled"	, ICONNAME_HB_OPE_RECONCILED, N_("_Reconciled"), "<control>R",		N_("Toggle reconciled for selected transaction(s)"), G_CALLBACK (register_panel_action_reconcile) },
 
 	{ "MultiEdit"	, ICONNAME_HB_OPE_MULTIEDIT , N_("_Multiple Edit..."), NULL, N_("Edit multiple transaction"),	G_CALLBACK (register_panel_action_multiedit) },
 	{ "Template"    , ICONNAME_CONVERT          , N_("Create template..."), NULL,		N_("Create template"), G_CALLBACK (register_panel_action_createtemplate) },
-	{ "Delete"		, ICONNAME_HB_OPE_DELETE    , N_("_Delete..."), NULL,		N_("Delete selected transaction(s)"), G_CALLBACK (register_panel_action_remove) },
+	{ "Delete"		, ICONNAME_HB_OPE_DELETE    , N_("_Delete..."), "Delete",		N_("Delete selected transaction(s)"), G_CALLBACK (register_panel_action_remove) },
 
 	{ "DuplicateMark", NULL                      , N_("Mark duplicate..."), NULL,	NULL, G_CALLBACK (register_panel_action_duplicate_mark) },
 //	{ "DuplicateClear", NULL                      , N_("Unmark duplicate"), NULL,	NULL, G_CALLBACK (register_panel_action_duplicate_unmark) },

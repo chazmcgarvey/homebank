@@ -264,17 +264,17 @@ void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays)
 
 	DB( g_print("\n[filter] range add future gap\n") );
 	
-	//fixed > 5.1.7
-	/*if( nbdays <= 0 )
-	{
-		filter->nbdaysfuture = 0;
-		return;
-	}*/
-
 	filter->nbdaysfuture = 0;
+	//#1840998 if future active and visible: we should always maxdate to today + nbdays
 	if( filter_preset_daterange_future_enable(filter->range) )
-		filter->nbdaysfuture = nbdays;
+	{
+	guint32 jtmpmax = GLOBALS->today + nbdays;
 
+		if( filter->maxdate < jtmpmax )
+			filter->nbdaysfuture = jtmpmax - filter->maxdate;
+		else
+			filter->nbdaysfuture = nbdays;
+	}
 }
 
 

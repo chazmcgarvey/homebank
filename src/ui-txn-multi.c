@@ -407,7 +407,7 @@ gint row;
 	group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_container_set_border_width (GTK_CONTAINER(group_grid), SPACING_MEDIUM);
+	gtk_container_set_border_width (GTK_CONTAINER(group_grid), SPACING_LARGE);
 	gtk_container_add (GTK_CONTAINER (content_area), group_grid);
 
 	row = -1;
@@ -420,9 +420,9 @@ gint row;
 		widget = gtk_check_button_new();
 		data->CM_date = widget;
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-		widget = gtk_date_entry_new();
+		widget = gtk_date_entry_new(label);
 		data->PO_date = widget;
-		gtk_widget_set_hexpand (widget, TRUE);
+		gtk_widget_set_hexpand (widget, FALSE);
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 		g_signal_connect (data->CM_date , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
@@ -433,14 +433,14 @@ gint row;
 	|| list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_INCOME) == TRUE )
 	{
 		row++;
-		label = make_label_widget(_("_Amount:"));
+		label = make_label_widget(_("Amou_nt:"));
 		gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 		widget = gtk_check_button_new();
 		data->CM_amount = widget;
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 		widget = make_amount(label);
 		data->ST_amount = widget;
-		gtk_widget_set_hexpand (widget, TRUE);
+		gtk_widget_set_hexpand (widget, FALSE);
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 		
 		g_signal_connect (data->CM_amount , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
@@ -456,7 +456,7 @@ gint row;
 	widget = ui_acc_comboboxentry_new(label);
 	data->PO_acc = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 	
 	g_signal_connect (data->CM_acc , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 
@@ -471,7 +471,7 @@ gint row;
 		gtk_grid_attach (GTK_GRID (group_grid), toggle, 1, row, 1, 1);
 		widget = make_paymode_nointxfer (label);
 		data->NU_mode = widget;
-		gtk_widget_set_hexpand (widget, TRUE);
+		//gtk_widget_set_hexpand (widget, TRUE);
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 		g_signal_connect (data->CM_mode , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
@@ -484,7 +484,7 @@ gint row;
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 		widget = make_string(label);
 		data->ST_info = widget;
-		gtk_widget_set_hexpand (widget, TRUE);
+		//gtk_widget_set_hexpand (widget, TRUE);
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 		g_signal_connect (data->CM_info , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
@@ -501,7 +501,7 @@ gint row;
 		widget = ui_pay_comboboxentry_new(label);
 		data->PO_pay = widget;
 		gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 
 		g_signal_connect (data->CM_pay  , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
@@ -509,7 +509,7 @@ gint row;
 	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_CATEGORY) == TRUE )
 	{
 		row++;
-		label = make_label_widget(_("_Category:"));
+		label = make_label_widget(_("Cate_gory:"));
 		gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 		widget = gtk_check_button_new();
 		data->CM_cat = widget;
@@ -517,7 +517,7 @@ gint row;
 		widget = ui_cat_comboboxentry_new(label);
 		data->PO_cat = widget;
 		gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 
 		g_signal_connect (data->CM_cat  , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
@@ -533,7 +533,7 @@ gint row;
 		widget = make_memo_entry(label);
 		data->ST_memo = widget;
 		gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 
 		g_signal_connect (data->CM_memo , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
@@ -541,7 +541,7 @@ gint row;
 	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_TAGS) == TRUE )
 	{
 		row++;
-		label = make_label_widget(_("Ta_gs:"));
+		label = make_label_widget(_("_Tags:"));
 		gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 		widget = gtk_check_button_new();
 		data->CM_tags = widget;
@@ -549,7 +549,7 @@ gint row;
 		widget = make_string(label);
 		data->ST_tags = widget;
 		gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 
 		g_signal_connect (data->CM_tags , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
